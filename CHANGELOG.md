@@ -6,6 +6,23 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `Stat` and `StatRow`, `StatusBadge`, `Pane`, `Timeline`, `Meter`, `FilterRail` and
+  `ActiveFilters`, and `Banner`.
+- `Chip`, `Sheet` (on the native modal dialog), `SeverityBadge`, `SourceBadge`, `NewBadge` and
+  `HelpTip` as components.
+- The categorical palette `ds-cat-1`…`ds-cat-5`, and the `ds-accent-mixed` role.
+- Helpers: `filtersToParams` / `filtersFromParams` for filter state in the URL, `formatRelative` /
+  `formatExact` / `formatAge` for dates and times, and the severity order and names.
+- Content rules for dates and times, and for missing values.
+
+### Changed
+
+- `Table` takes its ground and inset from its container (`--ds-table-bg`, `--ds-table-inset`), so
+  it sits flush in a `Pane`.
+- `HelpTip` shows its note on keyboard focus, not only on hover.
+
 ## [0.3.0] — 2026-10-14
 
 ### Added

@@ -85,9 +85,10 @@ Assign these centrally, not at each call site:
 | Overlay scrim | 60 |
 | `Dialog`, `Sheet` | 61 |
 | `Toaster` | 70 |
-| Full-width announcement bar | 80 |
 
 Raise a third-party positioner explicitly when its library writes `z-index: auto` inline — a
 popover opened above a sticky header rendering *underneath* it is the classic symptom.
+
+A **`Banner`** sits in the flow above the `TopBar` and pushes content down, so it needs no layer.
 
 **One `Toaster`**, mounted once at the root. Pages never render toasts themselves.

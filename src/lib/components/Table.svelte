@@ -328,8 +328,6 @@ belong in the pane's ActionBar.
 		position: relative;
 		min-width: 0;
 		overflow: auto;
-		--ds-table-bg: var(--ds-bg-1);
-		--ds-table-inset: 12px;
 		--row-h: 40px;
 	}
 	.ds-table[data-density='dense'] {
@@ -363,11 +361,11 @@ belong in the pane's ActionBar.
 	}
 	th:first-child,
 	td:first-child {
-		padding-inline-start: var(--ds-table-inset);
+		padding-inline-start: var(--ds-table-inset, 12px);
 	}
 	th:last-child,
 	td:last-child {
-		padding-inline-end: var(--ds-table-inset);
+		padding-inline-end: var(--ds-table-inset, 12px);
 	}
 	th {
 		position: sticky;
@@ -375,7 +373,7 @@ belong in the pane's ActionBar.
 		z-index: 1;
 		height: 34px;
 		border-bottom: 1px solid var(--ds-border);
-		background: var(--ds-table-bg);
+		background: var(--ds-table-bg, var(--ds-bg-1));
 		color: var(--ds-text-3);
 		font-size: var(--ds-text-xs);
 		line-height: var(--ds-lh-xs);
@@ -458,7 +456,7 @@ belong in the pane's ActionBar.
 	}
 	tr.empty td {
 		height: auto;
-		padding: 16px var(--ds-table-inset);
+		padding: 16px var(--ds-table-inset, 12px);
 		border-bottom: 0;
 	}
 	@container (max-width: 720px) {

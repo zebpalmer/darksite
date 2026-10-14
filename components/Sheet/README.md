@@ -6,7 +6,8 @@ The bottom sheet. Filters, sort, and **every choice on touch** — it replaces `
 `ds-radius-lg` on the top two corners, a grab handle, 44px rows (use `SheetItem`), safe-area
 padding, a scrim behind, `78dvh` max height. `ds-bg-3` with `ds-elev-3`.
 
-Built on the same dialog primitive as `Dialog`: focus trap, Esc, scroll lock, outside tap closes.
+Built on the native modal `<dialog>`: focus is trapped inside, Esc closes, the page behind cannot be
+reached or scrolled, and focus returns to where it was. A press on the scrim closes it too.
 
 ## `side="right"` is the edit drawer
 

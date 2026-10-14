@@ -1,22 +1,39 @@
 <script lang="ts">
 	// Components with a live page here; everything else is specified by its card in components/.
 	const live = new Set([
+		'ActiveFilters',
+		'Banner',
 		'Button',
 		'Checkbox',
+		'Chip',
 		'EmptyState',
+		'FilterRail',
+		'HelpTip',
 		'KeyCap',
+		'Menu',
+		'Meter',
+		'NewBadge',
+		'Pane',
 		'Radio',
+		'SeverityBadge',
+		'Sheet',
 		'SkeletonLoader',
+		'SourceBadge',
 		'Spinner',
+		'Stat',
+		'StatusBadge',
 		'Switch',
-		'Table'
+		'Table',
+		'Timeline'
 	]);
+	const route: Record<string, string> = { ActiveFilters: 'filterrail' };
 	const groups: Record<string, string[]> = {
 		Actions: ['Button', 'KeyCap'],
 		Selection: ['Chip', 'SegmentedControl', 'Tabs'],
+		Filtering: ['ActiveFilters', 'FilterRail'],
 		Severity: ['SeverityBadge', 'SeverityPicker'],
 		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch'],
-		Data: ['Table'],
+		Data: ['Meter', 'Stat', 'Table', 'Timeline'],
 		Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
 		Feedback: [
 			'EmptyState',
@@ -28,7 +45,7 @@
 			'Toaster'
 		],
 		Content: ['Avatar', 'Card', 'EntityCard'],
-		Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader'],
+		Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader', 'Pane'],
 		Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar']
 	};
 </script>
@@ -50,7 +67,7 @@
 				{#each names as name (name)}
 					<li>
 						{#if live.has(name)}
-							<a href="/{name.toLowerCase()}">{name}</a>
+							<a href="/{route[name] ?? name.toLowerCase()}">{name}</a>
 						{:else}
 							<span class="spec">{name}</span><span class="tag">spec</span>
 						{/if}

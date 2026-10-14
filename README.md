@@ -44,6 +44,12 @@ reason to improvise.
 - **Say the name, never the index.** A severity is `High`, not `4`. Digits appear only on key caps.
 - **Plain past tense for results**, in a toast: "Removed Urgent", "Saved as your default",
   "Archived 12 records". A background action's outcome is a toast, not an inline status line.
+- **Dates and times:** relative under seven days ("6 min ago", "2 days ago"), an absolute date
+  after that ("Oct 2", with the year when it isn't this year), both in the viewer's locale and time
+  zone, and the exact date, time and time zone in a tooltip. `formatRelative` and `formatExact`
+  implement it.
+- **Missing values** are an em dash in `ds-text-3`, announced as "No value" — never a blank, which
+  reads as still loading.
 - **Sentence case everywhere** — no Title Case headings, no ALL CAPS except the 11px uppercase
   group titles in the navigation. Use American spelling throughout.
 - **No emoji, anywhere** — not in copy, not as an icon.
@@ -110,6 +116,9 @@ page and on their own tints; every severity ink on its own ground (lowest: Low i
 Two rules keep it that way: `ds-text-3` stops at `ds-bg-3` — use `ds-text-2` on `ds-bg-4` and
 above — and a solid danger button takes `ds-danger-contrast`, never `ds-text-inverse`.
 
+**The categorical palette** (`ds-cat-1`…`5`) holds at least 3.5:1 on `ds-bg-2` and 3.2:1 on a
+meter track in both themes.
+
 **The focus ring meets 3:1 on every ground** — 6.9:1 at worst in dark, 3.6:1 at worst in light.
 
 **Three things do not meet 3:1, and you should decide whether that is acceptable for your
@@ -126,7 +135,8 @@ product:**
   dark grounds: on the light ones they fall to 1.9–3.0:1. That matters wherever a mark is the only
   signal; an invalid input also has its error text and icon, so its border is not alone. The Low and
   Medium severity marks sit at 2.9–3.0:1 on the light page ground and pass on `ds-bg-3`, where a
-  picker draws them. Every `-text` role still passes 4.5:1.
+  picker draws them. Every `-text` role still passes 4.5:1. A `Meter` segment with a semantic `tone` inherits
+  this in light theme.
 
 If you need strict conformance, **add a high-contrast theme** rather than re-tinting this one:
 borders at 3:1 against every ground they sit on, and text at 7:1. That keeps the default theme's

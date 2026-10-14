@@ -7,6 +7,14 @@
 	let { children }: { children: Snippet } = $props();
 	let theme = $state<'dark' | 'light'>('dark');
 
+	// `?theme=light` opens the gallery in the light theme, for screenshots.
+	$effect(() => {
+		if (new URLSearchParams(location.search).get('theme') === 'light') {
+			theme = 'light';
+			document.documentElement.dataset.theme = 'light';
+		}
+	});
+
 	function toggleTheme() {
 		theme = theme === 'dark' ? 'light' : 'dark';
 		document.documentElement.dataset.theme = theme;

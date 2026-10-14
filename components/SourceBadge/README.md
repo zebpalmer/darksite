@@ -20,7 +20,8 @@ an import, then a model, then a default — and keep that order in one place.
 ## What the consumer provides
 
 `source` (the display name — map the API's source enum to a label at the call site),
-`confidence` (0–1, or a percentage; omit it and no number is shown), `variant`, `class`.
+`confidence` (0–1, or a percentage; omit it and no number is shown), `variant`, `title` (the full
+source list), `class`.
 
 It is not a button. Nothing happens when you click it.
 

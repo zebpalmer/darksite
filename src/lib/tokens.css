@@ -77,6 +77,7 @@
   --ds-accent-text: var(--color-primary-300);
   --ds-accent-tint: var(--color-primary-900);
   --ds-accent-tint-hover: var(--color-primary-800);
+  --ds-accent-mixed: var(--color-primary-700);
   --ds-accent-contrast: #10111b;
   --ds-accent-key: var(--color-primary-400);
   --ds-accent-key-edge: var(--color-primary-700);
@@ -109,6 +110,11 @@
   --ds-sev-critical-bg: #331c35;
   --ds-sev-critical-ink: #e892c9;
   --ds-sev-off: #313446;
+  --ds-cat-1: #3388de;
+  --ds-cat-2: #edcf59;
+  --ds-cat-3: #25939f;
+  --ds-cat-4: #b5d878;
+  --ds-cat-5: #9ea0ac;
   --ds-elev-1: 0 0 0 1px #242636;
   --ds-elev-2: 0 0 0 1px #313446, 0 8px 24px rgba(4, 5, 10, 0.45);
   --ds-elev-3: 0 0 0 1px #4a4e62, 0 20px 48px rgba(4, 5, 10, 0.6);
@@ -134,6 +140,7 @@
   --ds-accent-text: var(--color-primary-700);
   --ds-accent-tint: #e7e5fe;
   --ds-accent-tint-hover: #d2cefd;
+  --ds-accent-mixed: var(--color-primary-500);
   --ds-accent-contrast: #f4f5fa;
   --ds-accent-key: var(--color-primary-800);
   --ds-accent-key-edge: var(--color-primary-900);
@@ -161,6 +168,11 @@
   --ds-sev-critical-bg: #efd9ea;
   --ds-sev-critical-ink: #661a52;
   --ds-sev-off: #cdd0dd;
+  --ds-cat-1: #185592;
+  --ds-cat-2: #9b7f11;
+  --ds-cat-3: #175c64;
+  --ds-cat-4: #698d29;
+  --ds-cat-5: #666978;
   --ds-elev-1: 0 0 0 1px #dfe1ea;
   --ds-elev-2: 0 0 0 1px #cdd0dd, 0 6px 18px rgba(26, 28, 41, 0.08);
   --ds-elev-3: 0 0 0 1px #cdd0dd, 0 16px 40px rgba(26, 28, 41, 0.14);

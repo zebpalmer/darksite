@@ -116,105 +116,120 @@ Actions menu, and every product will otherwise hand-roll it.
 
 ### 4. Stat
 
+Done in 0.4.0.
+
 A headline number. Dashboards and report summaries need it, and today each one invents a tile.
 
-- [ ] **Content.** A `label` (13px `ds-text-2`), a `value` (24/500, tabular figures), an optional
+- [x] **Content.** A `label` (13px `ds-text-2`), a `value` (24/500, tabular figures), an optional
   `unit` or "of N" after the value (13px `ds-text-3`), and **one** `meta` line (12px `ds-text-3`)
   that breaks the number down ("185 open · 78 in progress · 24 blocked").
-- [ ] **Surface.** `ds-bg-2` with a `ds-border-subtle` edge at `ds-radius-md`, 12px by 14px
+- [x] **Surface.** `ds-bg-2` with a `ds-border-subtle` edge at `ds-radius-md`, 12px by 14px
   padding. No shadow, no icon, no sparkline in the first version.
-- [ ] **As a link.** `href` makes the whole tile a link with hover `ds-bg-3` and the focus ring.
+- [x] **As a link.** `href` makes the whole tile a link with hover `ds-bg-3` and the focus ring.
   A stat that links nowhere should be rare.
-- [ ] **Attention.** An optional `severity` adds the severity mark as a 3px leading stripe and puts
+- [x] **Attention.** An optional `severity` adds the severity mark as a 3px leading stripe and puts
   a `SeverityBadge` in the meta line, following [`severity.md`](docs/severity.md). There is no other
   way to color a Stat.
-- [ ] **Layout.** A row of stats uses a container-driven grid (2 to 4 across by available width).
-- [ ] **Don'ts.** Don't put two numbers in `value`. Don't write a sentence in `meta`.
+- [x] **Layout.** A row of stats uses a container-driven grid (2 to 4 across by available width).
+- [x] **Don'ts.** Don't put two numbers in `value`. Don't write a sentence in `meta`.
 
 ### 5. StatusBadge
+
+Done in 0.4.0.
 
 A static, non-interactive state: lifecycle states, holds, "Primary". `SeverityBadge` is ordered
 and reserved, `Chip` is interactive, and `SourceBadge` and `NewBadge` are single-purpose, so plain
 state has nowhere to go.
 
-- [ ] **Geometry.** 22px tall (it is not a control, so it does not grow on touch), 7px inline
+- [x] **Geometry.** 22px tall (it is not a control, so it does not grow on touch), 7px inline
   padding, `ds-radius-xs`, 12/500 text, optional 14px leading Lucide icon.
-- [ ] **Tones.** `neutral` (a `ds-border` edge, `ds-text-2`), `accent` (a `ds-accent` edge,
+- [x] **Tones.** `neutral` (a `ds-border` edge, `ds-text-2`), `accent` (a `ds-accent` edge,
   `ds-accent-text`, for a marker such as "Primary"), `success`, `warning` and `danger` (each its
   `-tint` ground and `-text` ink), and `muted` (`ds-text-3`, for out-of-service states). **Never
   severity colors.**
-- [ ] **Duration.** An optional `since` date renders "· 12 days" after the label in mono, for a
+- [x] **Duration.** An optional `since` date renders "· 12 days" after the label in mono, for a
   hold or a state that ages.
-- [ ] **Don'ts.** Don't make it clickable; a clickable state is a `Chip`. Don't use a dashed edge;
+- [x] **Don'ts.** Don't make it clickable; a clickable state is a `Chip`. Don't use a dashed edge;
   dashed means suggested.
 
 ### 6. Pane
+
+Done in 0.4.0.
 
 A titled block inside a content page: a dashboard section, a block on a detail page.
 [`layout.md`](docs/layout.md) defines panes for work views, but a content page that stacks a few
 titled blocks has no primitive and no stated geometry.
 
-- [ ] **Header.** 44px: a title in `card-title` (14/500), optional `meta` (13px `ds-text-3`), an
+- [x] **Header.** 44px: a title in `card-title` (14/500), optional `meta` (13px `ds-text-3`), an
   optional `HelpTip`, and an `end` snippet for one link or one secondary action. Sentence case, no
   uppercase.
-- [ ] **Body.** Unpadded by default so a `Table` or list sits flush; `padded` for prose or a form.
+- [x] **Body.** Unpadded by default so a `Table` or list sits flush; `padded` for prose or a form.
   An optional `footer` snippet with a `ds-border-subtle` top edge.
-- [ ] **Surface.** `ds-bg-2`, a `ds-border-subtle` edge, `ds-radius-md`, no shadow.
-- [ ] **Don'ts.** Don't nest a Pane in a Pane. Don't give it a primary button; the page's primary
+- [x] **Surface.** `ds-bg-2`, a `ds-border-subtle` edge, `ds-radius-md`, no shadow.
+- [x] **Don'ts.** Don't nest a Pane in a Pane. Don't give it a primary button; the page's primary
   action lives in `PageHeader`.
 
 ### 7. Timeline
 
+Done in 0.4.0.
+
 An audit or activity history, on a detail page and on a dashboard.
 
-- [ ] **Entry.** Actor, verb, object ("A. Rivera assigned R-00412 to M. Lund"),
+- [x] **Entry.** Actor, verb, object ("A. Rivera assigned R-00412 to M. Lund"),
   then an optional detail line in 13px `ds-text-3`. Identifiers inside the sentence in mono. A
   system actor (a sync job, an import) shows a `SourceBadge` instead of a person.
-- [ ] **Time.** Relative ("6 min ago") on the right, with the exact time in a tooltip, following
+- [x] **Time.** Relative ("6 min ago") on the right, with the exact time in a tooltip, following
   the dates-and-times content rule.
-- [ ] **Batching.** Consecutive entries with the same actor, action and request collapse into one
-  ("set 55 primary computers"), expandable to the individual entries.
-- [ ] **Length.** Shows a recent slice with a "Show all" link to the full history; never an
+- [x] **Batching.** Consecutive entries with the same actor, action and request collapse into one
+  ("set 55 records to Ready"), expandable to the individual entries.
+- [x] **Length.** Shows a recent slice with a "Show all" link to the full history; never an
   unbounded list.
-- [ ] **Consumer provides:** `entries` (`{ id, at, actor, source?, verb, object, detail?,
+- [x] **Consumer provides:** `entries` (`{ id, at, actor, source?, verb, object, detail?,
   batchKey? }`), `limit`, `allHref`, an `entry` snippet for custom rendering.
 
 ### 8. Meter
 
+Done in 0.4.0.
+
 A determinate proportion bar. `Spinner` and `SkeletonLoader` cover indeterminate loading only.
 
-- [ ] **Shape.** 6px tall, `ds-bg-4` track, rounded ends, up to three segments, and an optional
+- [x] **Shape.** 6px tall, `ds-bg-4` track, rounded ends, up to three segments, and an optional
   legend underneath (an 8px swatch plus label and count per segment, 12px).
-- [ ] **Color.** Segments take the categorical palette (Tokens, below) by default, or a semantic
+- [x] **Color.** Segments take the categorical palette (Tokens, below) by default, or a semantic
   tone when the segment means one (success for "done" in a progress meter).
-- [ ] **Accessibility.** `role="meter"` (or `progressbar` for progress) with `aria-valuenow`,
+- [x] **Accessibility.** `role="meter"` (or `progressbar` for progress) with `aria-valuenow`,
   `aria-valuemax` and a text alternative that states each segment.
-- [ ] **Don'ts.** Don't use it for loading. Don't exceed three segments; that is a chart.
+- [x] **Don'ts.** Don't use it for loading. Don't exceed three segments; that is a chart.
 
 ### 9. FilterRail
+
+Done in 0.4.0, with `ActiveFilters`. URL state is the documented default through
+`filtersToParams` / `filtersFromParams`; a library component cannot own the router.
 
 [`layout.md`](docs/layout.md) specifies it (240 to 280px, its own scroll, collapses rather than
 shrinks, a `Sheet` on phones) but there is no card.
 
-- [ ] **Card and implementation** for the rail as specified, with grouped filter sections, a
+- [x] **Card and implementation** for the rail as specified, with grouped filter sections, a
   count of active filters on its collapse toggle, and a "Clear all" in its header.
-- [ ] **Active filters** also render as removable `Chip`s above the results, so a collapsed rail
+- [x] **Active filters** also render as removable `Chip`s above the results, so a collapsed rail
   never hides what is applied.
-- [ ] **State in the URL** by default, so a filtered view can be linked and survives a reload.
+- [x] **State in the URL** by default, so a filtered view can be linked and survives a reload.
 
 ### 10. Banner
+
+Done in 0.4.0.
 
 The stacking table reserves z-index 80 for a "full-width announcement bar", but there is no card.
 It is the missing home for a system-level condition the user must know about but that belongs to
 no field: "The nightly sync has failed for 3 hours", "Read-only maintenance from 18:00".
 
-- [ ] **Placement.** Full width above the `TopBar`, inside the shell, pushing content down rather
+- [x] **Placement.** Full width above the `TopBar`, inside the shell, pushing content down rather
   than overlaying it.
-- [ ] **Tones.** `info`, `warning`, `danger`, each with an icon and a message of one sentence, plus
+- [x] **Tones.** `info`, `warning`, `danger`, each with an icon and a message of one sentence, plus
   at most one action (a link or a button).
-- [ ] **Dismissal.** Optional, and remembered per viewer per banner id. A `danger` banner is not
+- [x] **Dismissal.** Optional, and remembered per viewer per banner id. A `danger` banner is not
   dismissible while its condition holds.
-- [ ] **Accessibility.** `role="status"` for info and warning, `role="alert"` for danger.
+- [x] **Accessibility.** `role="status"` for info and warning, `role="alert"` for danger.
 
 ### 11. Pagination or "load more"
 
@@ -267,7 +282,8 @@ loading, but neither the trigger nor how it combines with selection is written d
 
 ## Content rules
 
-- [ ] **Dates and times.** When to show relative ("6 min ago") and when absolute ("14 Oct, 14:51"),
+- [x] **Dates and times.** Decided in 0.4.0 (README, Content fundamentals; `formatRelative`,
+  `formatExact`). Was: When to show relative ("6 min ago") and when absolute ("14 Oct, 14:51"),
   which time zone is shown and how it is labeled, the exact value in a tooltip, and the date order.
   Every operator screen shows timestamps, and none of the docs say how.
 - [x] **Missing values.** Decided in 0.2.0: an em dash in `ds-text-3`, announced as "No value"
@@ -280,7 +296,7 @@ loading, but neither the trigger nor how it combines with selection is written d
 
 ## Tokens
 
-- [ ] **A categorical palette.** Meters and charts need four to six colors that are neither the
+- [x] **A categorical palette.** Done in 0.4.0: `ds-cat-1`…`ds-cat-5`. Was: Meters and charts need four to six colors that are neither the
   accent nor semantic nor severity, with a light-theme set and contrast against `ds-bg-2`. Today
   the only choices would break one of those reservations.
 
@@ -288,6 +304,7 @@ loading, but neither the trigger nor how it combines with selection is written d
 
 - [ ] **Svelte 5 implementations of the existing primitives** as well as the new ones, in the
   package (see "How to deliver a primitive").
-- [ ] **A Svelte package with versioned releases, managed by stratt.** A product that cannot fetch a private repo at build time vendors
+- [x] **A Svelte package with versioned releases, managed by stratt.** Done since 0.1.0: products
+  install a pinned tag. Was: A product that cannot fetch a private repo at build time vendors
   `tokens.css` and the components. Tags and a short changelog would let it record which version it
   copied and see what changed since.

@@ -24,10 +24,17 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A setting that applies at once | `Switch` | No Save. The state is written beside the track. |
 | Actions on one thing | `Menu` | A detail page's Actions, a row's overflow. A danger item opens a `Dialog`; a disabled one keeps its reason. |
 | Reference info beside the work | `Popover` | A hotkey legend, saved views, the account menu. Non-modal; Esc closes; becomes a Sheet on phones. |
+| Filters beside a list | `FilterRail` + `ActiveFilters` | Collapses rather than shrinks; a Sheet on phones; state in the URL. |
+| A system-wide condition | `Banner` | Above the TopBar, pushing content down. Danger is never dismissible. |
 | Filters, sort, any choice on touch | `Sheet` + `SheetItem` | Replaces Popover and Dialog under 768px. 44px rows. |
 | Edit a record | `Sheet side="right"` | A drawer at ≥768px, a bottom sheet below. Footer: Cancel (secondary) then Save (primary), right-aligned. |
 | Confirm after the fact | `toasts.push({ action })` | Brief; an action toast shows an m:ss countdown. Never more than two. A long-lived undo is not a toast. |
 | Sections of one thing | `Tabs` | Counts inline; links mode for route sections. |
+| A headline number | `Stat` in a `StatRow` | One value, one meta line. `severity` is the only color. |
+| A proportion | `Meter` | Up to three segments, categorical colors, a legend. Not for loading. |
+| A history of changes | `Timeline` | Sentences, relative times, batches, a recent slice with "Show all". |
+| A static state | `StatusBadge` | Lifecycle, holds, markers. Never severity colors; never clickable. |
+| A titled block on a content page | `Pane` | Unpadded so a Table sits flush. No primary button. |
 | Rows and columns of records | `Table` | Sort, selection, row links, priority columns. Long lists end in "Load more". |
 | A piece of media | `Card` in a `Grid` | No card chrome — the thumbnail **is** the card. |
 | Images at their own aspect ratio | `JustifiedGrid` | Rows that fill the width, no crop. |
