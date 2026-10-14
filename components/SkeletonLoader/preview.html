@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · SkeletonLoader</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1)}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(180px,100%),1fr));gap:18px 14px}
+.blk{display:block;border-radius:3px;background:var(--ds-bg-3);animation:ds-pulse 1.6s ease-in-out infinite}
+@keyframes ds-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.blk{animation:none}}
+.ln{height:12px}
+.card{display:flex;flex-direction:column;gap:6px;min-width:0}
+.thumb{aspect-ratio:16/9;border-radius:var(--ds-radius-sm)}
+.entity{display:flex;align-items:center;gap:12px;padding:10px;border-radius:var(--ds-radius-md);border:1px solid var(--ds-border-subtle);background:var(--ds-bg-2)}
+.av{width:56px;height:56px;border-radius:var(--ds-radius-sm);flex:none}
+.colx{flex:1;display:flex;flex-direction:column;gap:8px}
+</style>
+<div class="demo">
+  <div class="grid">
+    <div class="card"><span class="blk thumb"></span><span class="blk ln" style="width:80%"></span><span class="blk ln" style="width:55%"></span></div>
+    <div class="card"><span class="blk thumb"></span><span class="blk ln" style="width:80%"></span><span class="blk ln" style="width:55%"></span></div>
+    <div class="card"><span class="blk thumb"></span><span class="blk ln" style="width:80%"></span><span class="blk ln" style="width:55%"></span></div>
+  </div>
+  <div class="cap">variant="card" grid count={3} — exactly the geometry of a Card in a Grid, so nothing jumps when the real cards arrive</div>
+  <div class="entity"><span class="blk av"></span><span class="colx"><span class="blk ln" style="width:60%"></span><span class="blk ln" style="width:40%"></span></span></div>
+  <div class="cap">variant="entity" — an EntityCard row. A 1.6s pulse, static under prefers-reduced-motion.</div>
+</div>
+</body>
+</html>

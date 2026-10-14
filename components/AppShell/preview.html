@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · AppShell</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:10px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1)}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.frame{display:grid;grid-template-columns:auto 1fr;grid-template-rows:minmax(0,1fr);height:252px;border-radius:var(--ds-radius-md);overflow:hidden;box-shadow:var(--ds-elev-1)}
+.rail{width:56px;background:var(--ds-bg-0);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0}
+.rail .mark{width:26px;height:26px;border-radius:var(--ds-radius-sm);background:var(--ds-bg-4);margin-bottom:6px}
+.rail i{position:relative;display:block;width:40px;height:36px;border-radius:var(--ds-radius-sm);background:var(--ds-bg-2)}
+.rail i.on{background:var(--ds-bg-4)}
+.rail i.on::before{content:'';position:absolute;left:-8px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--ds-accent)}
+.rail .sp{flex:1}
+.col{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--ds-bg-1)}
+.topbar{flex:none;height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--ds-bg-2);border-bottom:1px solid var(--ds-border-subtle)}
+.search{flex:1;max-width:280px;height:26px;border-radius:var(--ds-radius-sm);background:var(--ds-bg-3);border:1px solid var(--ds-border)}
+.hdr{flex:none;height:44px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--ds-border-subtle)}
+.hdr b{font-size:var(--ds-text-lg);font-weight:500}
+.hdr .count{font-size:var(--ds-text-xs);color:var(--ds-text-3)}
+.hdr .sp{flex:1}
+.hdr .btn{height:24px;padding:0 10px;border-radius:var(--ds-radius-sm);background:var(--ds-bg-4);border:1px solid var(--ds-border-strong);font-size:var(--ds-text-xs);display:inline-flex;align-items:center}
+.main{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:150px 1fr}
+.side{border-right:1px solid var(--ds-border-subtle);background:var(--ds-bg-2);padding:10px;display:flex;flex-direction:column;gap:6px}
+.side s{display:block;height:11px;border-radius:3px;background:var(--ds-bg-3)}
+.body{padding:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+.tile{aspect-ratio:16/9;border-radius:var(--ds-radius-sm);background:var(--ds-bg-3)}
+.bar{flex:none;height:40px;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:0 12px;background:var(--ds-bg-2);border-top:1px solid var(--ds-border)}
+.bar .b{height:24px;padding:0 10px;border-radius:var(--ds-radius-sm);font-size:var(--ds-text-xs);display:inline-flex;align-items:center;background:var(--ds-bg-4);border:1px solid var(--ds-border-strong)}
+.bar .b.p{background:var(--ds-accent);color:var(--ds-accent-contrast);border-color:transparent;font-weight:500}
+.lbl{position:absolute;font-size:10px;color:var(--ds-text-3)}
+</style>
+<div class="demo">
+  <div class="frame">
+    <div class="rail">
+      <span class="mark"></span>
+      <i class="on"></i><i></i><i></i>
+      <span class="sp"></span>
+      <i></i>
+    </div>
+    <div class="col">
+      <div class="topbar"><span class="search"></span></div>
+      <div class="hdr"><b>Records</b><span class="count">12,408</span><span class="sp"></span><span class="btn">Filters</span></div>
+      <div class="main">
+        <div class="side"><s style="width:70%"></s><s style="width:90%"></s><s style="width:55%"></s><s style="width:80%"></s></div>
+        <div class="body"><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span></div>
+      </div>
+      <div class="bar"><span class="b">Skip</span><span class="b p">Save</span></div>
+    </div>
+  </div>
+  <div class="cap">rail (bg-0, 56px, active item on bg-4 with a 2px accent bar) · content column: TopBar, flush PageHeader, a work view owning its own panes, ActionBar last. The column has no maximum width — panes grow and grids add columns.</div>
+</div>
+</body>
+</html>

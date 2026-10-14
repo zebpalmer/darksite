@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite</title>
+<link rel="stylesheet" href="../src/lib/tokens.css">
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+<style>
+html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans);font-size:var(--ds-text-md);line-height:var(--ds-lh-md)}
+main{max-width:960px;margin:0 auto;padding:var(--ds-space-8) var(--ds-space-6)}
+.cover{display:block;width:100%;height:300px;border:0;border-radius:var(--ds-radius-md);box-shadow:var(--ds-elev-1);margin-bottom:var(--ds-space-8)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:var(--ds-space-6)}
+h2{margin:0 0 var(--ds-space-2);font-size:var(--ds-text-sm);line-height:var(--ds-lh-sm);font-weight:500;color:var(--ds-text-3)}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--ds-space-1)}
+a{color:var(--ds-accent-text);text-decoration:none} a:hover{text-decoration:underline}
+li{color:var(--ds-text-3);font-size:var(--ds-text-sm)} li a:first-child{font-size:var(--ds-text-md)}
+:focus-visible{outline:2px solid var(--ds-focus);outline-offset:2px}
+</style>
+</head>
+<body>
+  <main>
+    <iframe class="cover" src="Cover/preview.html" title="darksite cover"></iframe>
+    <div class="grid">
+    <section>
+      <h2>Actions</h2>
+      <ul>
+      <li><a href="Button/preview.html">Button</a> · <a href="Button/README.md">guide</a></li>
+      <li><a href="KeyCap/preview.html">KeyCap</a> · <a href="KeyCap/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Selection</h2>
+      <ul>
+      <li><a href="Chip/preview.html">Chip</a> · <a href="Chip/README.md">guide</a></li>
+      <li><a href="SegmentedControl/preview.html">SegmentedControl</a> · <a href="SegmentedControl/README.md">guide</a></li>
+      <li><a href="Tabs/preview.html">Tabs</a> · <a href="Tabs/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Severity</h2>
+      <ul>
+      <li><a href="SeverityBadge/preview.html">SeverityBadge</a> · <a href="SeverityBadge/README.md">guide</a></li>
+      <li><a href="SeverityPicker/preview.html">SeverityPicker</a> · <a href="SeverityPicker/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Forms</h2>
+      <ul>
+      <li><a href="Combobox/preview.html">Combobox</a> · <a href="Combobox/README.md">guide</a></li>
+      <li><a href="Field/preview.html">Field</a> · <a href="Field/README.md">guide</a></li>
+      <li><a href="Input/preview.html">Input</a> · <a href="Input/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Overlays</h2>
+      <ul>
+      <li><a href="Dialog/preview.html">Dialog</a> · <a href="Dialog/README.md">guide</a></li>
+      <li><a href="Popover/preview.html">Popover</a> · <a href="Popover/README.md">guide</a></li>
+      <li><a href="Sheet/preview.html">Sheet</a> · <a href="Sheet/README.md">guide</a></li>
+      <li><a href="SheetItem/preview.html">SheetItem</a> · <a href="SheetItem/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Feedback</h2>
+      <ul>
+      <li><a href="EmptyState/preview.html">EmptyState</a> · <a href="EmptyState/README.md">guide</a></li>
+      <li><a href="HelpTip/preview.html">HelpTip</a> · <a href="HelpTip/README.md">guide</a></li>
+      <li><a href="NewBadge/preview.html">NewBadge</a> · <a href="NewBadge/README.md">guide</a></li>
+      <li><a href="SkeletonLoader/preview.html">SkeletonLoader</a> · <a href="SkeletonLoader/README.md">guide</a></li>
+      <li><a href="SourceBadge/preview.html">SourceBadge</a> · <a href="SourceBadge/README.md">guide</a></li>
+      <li><a href="Spinner/preview.html">Spinner</a> · <a href="Spinner/README.md">guide</a></li>
+      <li><a href="Toaster/preview.html">Toaster</a> · <a href="Toaster/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Content</h2>
+      <ul>
+      <li><a href="Avatar/preview.html">Avatar</a> · <a href="Avatar/README.md">guide</a></li>
+      <li><a href="Card/preview.html">Card</a> · <a href="Card/README.md">guide</a></li>
+      <li><a href="EntityCard/preview.html">EntityCard</a> · <a href="EntityCard/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Layout</h2>
+      <ul>
+      <li><a href="ActionBar/preview.html">ActionBar</a> · <a href="ActionBar/README.md">guide</a></li>
+      <li><a href="Grid/preview.html">Grid</a> · <a href="Grid/README.md">guide</a></li>
+      <li><a href="JustifiedGrid/preview.html">JustifiedGrid</a> · <a href="JustifiedGrid/README.md">guide</a></li>
+      <li><a href="PageHeader/preview.html">PageHeader</a> · <a href="PageHeader/README.md">guide</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Shell</h2>
+      <ul>
+      <li><a href="AppShell/preview.html">AppShell</a> · <a href="AppShell/README.md">guide</a></li>
+      <li><a href="NavRail/preview.html">NavRail</a> · <a href="NavRail/README.md">guide</a></li>
+      <li><a href="SideNav/preview.html">SideNav</a> · <a href="SideNav/README.md">guide</a></li>
+      <li><a href="TabBar/preview.html">TabBar</a> · <a href="TabBar/README.md">guide</a></li>
+      <li><a href="TopBar/preview.html">TopBar</a> · <a href="TopBar/README.md">guide</a></li>
+      </ul>
+    </section>
+    </div>
+  </main>
+</body>
+</html>

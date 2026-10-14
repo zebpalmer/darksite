@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · Chip</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1)}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.c{display:inline-flex;align-items:center;gap:6px;flex:none;height:var(--ds-h-dense);padding:0 8px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-sm);background:var(--ds-bg-3);color:var(--ds-text-2);font-size:var(--ds-text-sm);line-height:var(--ds-lh-sm);white-space:nowrap}
+.c.on{background:var(--ds-accent-tint);border-color:var(--ds-accent);color:var(--ds-text-1)}
+.c.mixed{border-color:var(--color-primary-700);color:var(--ds-text-1)}
+.c.sug{border-style:dashed;border-color:var(--ds-border-strong);background:transparent}
+.c.sug.new{border-color:var(--ds-accent)}
+.c.token{background:var(--ds-bg-5);border-color:transparent;color:var(--ds-text-1)}
+.c.warn{background:var(--ds-warning-tint);border-color:var(--ds-warning);color:var(--ds-warning-text)}
+.c.hover{background:var(--ds-bg-4);border-color:var(--ds-border-strong);color:var(--ds-text-1)}
+.c.off{opacity:.45}
+.count{font-size:var(--ds-text-xs);color:var(--ds-text-3);font-variant-numeric:tabular-nums}
+.c.warn .count{color:var(--ds-warning-text)}
+.x{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;margin-right:-4px;border-radius:var(--ds-radius-xs);color:var(--ds-text-3)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:1px solid var(--ds-border-strong);border-bottom-width:2px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-2);color:var(--ds-text-2);font-family:var(--font-mono);font-size:var(--ds-text-xs);line-height:1}
+.src{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 6px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-4);color:var(--ds-text-2);font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs)}
+.new-pill{display:inline-flex;align-items:center;height:16px;padding:0 5px;border:1px solid var(--ds-accent);border-radius:var(--ds-radius-xs);color:var(--ds-accent-text);font-size:var(--ds-text-xs);line-height:1}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="row">
+    <span class="c">Archived</span>
+    <span class="c hover">Urgent</span>
+    <span class="c on">Internal</span>
+    <span class="c mixed">External</span>
+    <span class="c off">Expired</span>
+  </div>
+  <div class="cap">toggle: off · hover · on · mixed (bulk partial) · disabled</div>
+  <div class="row">
+    <span class="c"><kbd>q</kbd>Archived</span>
+    <span class="c on"><kbd>w</kbd>Urgent</span>
+    <span class="c">Shared<span class="count">248</span></span>
+    <span class="c warn">Urgent<span class="count">3</span></span>
+  </div>
+  <div class="cap">keycap (a keyboard-driven view) · count (filters) · tone="warning" (a rule on this tag is unmet)</div>
+  <div class="row">
+    <span class="c token">Archived<span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+    <span class="c">Field team<span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+    <span class="c sug"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Urgent<span class="src">Registry&nbsp;96%</span></span>
+    <span class="c sug new"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Half-light<span class="new-pill">new</span></span>
+  </div>
+  <div class="cap">variant="token" (applied) · removable filter · suggestion + source · suggestion + isNew — dashed always means "not applied"</div>
+</div>
+</body>
+</html>

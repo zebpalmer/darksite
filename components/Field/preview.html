@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · Field</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:18px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1);max-width:520px}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f.row{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:12px;align-items:start}
+.f.row .head{min-height:var(--ds-h-default);align-items:center}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.lab{display:inline-flex;align-items:center;gap:4px;font-size:var(--ds-text-sm);line-height:var(--ds-lh-sm);color:var(--ds-text-2)}
+.req{color:var(--ds-danger-text)}
+.tip{display:inline-flex;color:var(--ds-text-3)}
+.body{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl{display:block;width:100%;height:var(--ds-h-default);padding:0 10px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-sm);background:var(--ds-bg-3);color:var(--ds-text-1);font-family:var(--font-sans);font-size:var(--ds-text-md);line-height:var(--ds-h-default)}
+.ctl.bad{border-color:var(--ds-danger)}
+.ctl.ph{color:var(--ds-text-3)}
+.msg{margin:0;display:flex;align-items:center;gap:6px;font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.msg.error{color:var(--ds-danger-text)}
+.under{display:flex;flex-wrap:wrap;gap:6px}
+.c{display:inline-flex;align-items:center;gap:6px;height:var(--ds-h-dense);padding:0 8px;border:1px dashed var(--ds-border-strong);border-radius:var(--ds-radius-sm);color:var(--ds-text-2);font-size:var(--ds-text-sm)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:1px solid var(--ds-border-strong);border-bottom-width:2px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-2);color:var(--ds-text-2);font-family:var(--font-mono);font-size:var(--ds-text-xs);line-height:1}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="f">
+    <div class="head"><span class="lab">Title<span class="req"> *</span></span><span class="lab"><kbd>t</kbd></span></div>
+    <div class="body"><span class="ctl">Site walkthrough, north wing</span><p class="msg">Taken from the source file when the record has none.</p></div>
+  </div>
+  <div class="f">
+    <div class="head"><span class="lab">Owner<span class="tip" title="Where this record came from. An owner default can set the severity and tags."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span></div>
+    <div class="body"><span class="ctl bad ph">Pick an owner…</span><p class="msg error"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>An owner is required before this can be published.</p></div>
+  </div>
+  <div class="cap">tip (a HelpTip beside the label, never a sentence under the control) · error replaces help and sets the control's invalid state</div>
+  <div class="f row">
+    <div class="head"><span class="lab">Assignees</span></div>
+    <div class="body">
+      <span class="ctl ph">Add a person…</span>
+      <div class="under"><span class="c">+ A. Rivera</span><span class="c">+ M. Lund</span></div>
+    </div>
+  </div>
+  <div class="cap">layout="row": a 96px label column, with suggestion chips in the `under` snippet. Stacks on phones and touch.</div>
+</div>
+</body>
+</html>

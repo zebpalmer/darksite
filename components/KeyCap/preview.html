@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · KeyCap</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1)}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:1px solid var(--ds-border-strong);border-bottom-width:2px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-2);color:var(--ds-text-2);font-family:var(--font-mono);font-size:var(--ds-text-xs);line-height:1;white-space:nowrap}
+kbd.primary{background:var(--ds-accent-key);border-color:var(--ds-accent-key-edge);color:var(--ds-accent-contrast)}
+.onprimary{display:inline-flex;align-items:center;gap:8px;height:var(--ds-h-default);padding:0 12px;border-radius:var(--ds-radius-sm);background:var(--ds-accent);color:var(--ds-accent-contrast);font-size:var(--ds-text-sm);font-weight:500}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:var(--ds-text-sm);color:var(--ds-text-2)}
+</style>
+<div class="demo">
+  <div class="row">
+    <kbd>1</kbd><kbd>g</kbd><kbd>Space</kbd><kbd>⇧Enter</kbd><kbd>Esc</kbd><kbd>/</kbd>
+    <span class="onprimary">Save <kbd class="primary">Enter</kbd></span>
+  </div>
+  <div class="cap">tone default · tone primary (on a filled accent)</div>
+  <div class="legend">
+    <kbd>Space</kbd><span>Play</span>
+    <kbd>1</kbd><span>Set severity to Info</span>
+    <kbd>⇧Enter</kbd><span>Create and apply</span>
+  </div>
+  <div class="cap">hint={false}: a legend cap is the content, so it stays visible with hints off</div>
+</div>
+</body>
+</html>

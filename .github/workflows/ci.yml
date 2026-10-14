@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # attestations: read lets setup-stratt verify the stratt binary's provenance.
+    permissions:
+      contents: read
+      attestations: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install stratt
+        uses: stratt-sh/setup-stratt@v0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Resolved command map
+        run: stratt doctor
+
+      - name: Sync dependencies
+        run: stratt sync
+
+      - name: Lint
+        run: stratt lint --check
+
+      - name: Test
+        run: stratt test
+
+      - name: Build and package
+        run: stratt build

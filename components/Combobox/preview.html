@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · Combobox</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:10px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1);max-width:420px}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.w{position:relative;width:100%}
+.ctl{display:block;width:100%;height:var(--ds-h-default);padding:0 30px 0 10px;border:1px solid var(--ds-accent);border-radius:var(--ds-radius-sm);background:var(--ds-bg-3);color:var(--ds-text-1);font-size:var(--ds-text-md);line-height:var(--ds-h-default)}
+.chev{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:inline-flex;color:var(--ds-text-3)}
+.list{margin:4px 0 0;padding:4px;list-style:none;display:flex;flex-direction:column;gap:1px;border-radius:var(--ds-radius-md);background:var(--ds-bg-3);box-shadow:var(--ds-elev-2)}
+.list li{display:flex;align-items:center;gap:8px;min-height:var(--ds-h-default);padding:0 8px;border-radius:var(--ds-radius-xs);font-size:var(--ds-text-md);color:var(--ds-text-1)}
+.list li.active{background:var(--ds-bg-5)}
+.list li.off{opacity:.45}
+.list li.create{color:var(--ds-accent-text);border-top:1px solid var(--ds-border-subtle);border-radius:0 0 var(--ds-radius-xs) var(--ds-radius-xs);margin-top:3px;padding-top:3px}
+.list li.status{color:var(--ds-text-3);font-size:var(--ds-text-sm)}
+.text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{font-size:var(--ds-text-xs);color:var(--ds-text-3)}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="w">
+    <span class="ctl">urg</span>
+    <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></span>
+  </div>
+  <ul class="list">
+    <li class="active"><span class="text">Urgent</span><span class="meta">Tag · 312</span></li>
+    <li><span class="text">Urgent review</span><span class="meta">Tag · 24</span></li>
+    <li><span class="text">Escalations</span><span class="meta">Category</span></li>
+    <li class="off"><span class="text">Urgent (blocked)</span><span class="meta">blocked</span></li>
+    <li class="create"><span class="text">Create “urg”</span><span class="meta">⇧Enter</span></li>
+  </ul>
+  <div class="cap">the open list: the active row is bg-5 (aria-activedescendant), meta is muted, and the create row is always last, under a separator, on ⇧Enter</div>
+  <ul class="list"><li class="status">Searching…</li></ul>
+  <div class="cap">server search: oninput + filter={false} + loading. The input border turns accent while expanded.</div>
+</div>
+</body>
+</html>

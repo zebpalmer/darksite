@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · HelpTip</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1);max-width:440px}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:var(--ds-text-sm);color:var(--ds-text-2)}
+.h{display:inline-flex;align-items:center;justify-content:center;flex:none;color:var(--ds-text-3);border-radius:var(--ds-radius-xs);cursor:help;vertical-align:middle}
+.h.warn{color:var(--ds-warning-text)}
+.h.focus{outline:2px solid var(--ds-focus);outline-offset:1px}
+.tt{display:inline-flex;align-items:center;padding:4px 8px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-4);box-shadow:var(--ds-elev-2);font-size:var(--ds-text-xs);color:var(--ds-text-1)}
+.lab{display:inline-flex;align-items:center;gap:4px;font-size:var(--ds-text-sm);color:var(--ds-text-2)}
+.ctl{display:block;width:100%;height:var(--ds-h-default);padding:0 10px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-sm);background:var(--ds-bg-3);color:var(--ds-text-1);font-size:var(--ds-text-md);line-height:var(--ds-h-default)}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="row">
+    <span class="h" title="Where this came from."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+    <span class="h focus" title="Inherited from Escalations."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 9 9 4 4 9"/><path d="M9 4v11a4 4 0 0 0 4 4h7"/></svg></span>
+    <span class="h warn" title="The rule on this tag is not met."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+    <span class="tt">Inherited from Escalations.</span>
+  </div>
+  <div class="cap">Info (default) · CornerLeftUp for "inherited from" · tone="warning". The note is the title and the accessible name; the icon is a tab stop.</div>
+  <div>
+    <div class="lab">Minimum severity<span class="h" title="The lowest severity this tag can be assigned."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></div>
+    <div style="margin-top:6px"><span class="ctl">High</span></div>
+  </div>
+  <div class="cap">as Field tip: beside the label, not a sentence under the control</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# stratt.toml — project configuration for stratt. Docs: https://stratt.sh
+#
+# darksite is a Svelte 5 component package. stratt detects the Node stack and runs the npm
+# scripts: `stratt test` = vitest, `stratt lint` = tokens check + prettier --check + svelte-check,
+# `stratt format` = prettier, `stratt build` = the gallery build plus svelte-package and publint.
+
+[bump]
+current_version = "0.1.0"
+# v-prefixed tags: products pin `github:zebpalmer/darksite#v0.1.0`.
+tag_name = "v{new_version}"
+
+[[bump.files]]
+filename = "package.json"
+search = '"version": "{current_version}"'
+replace = '"version": "{new_version}"'
+
+# CHANGELOG: the released bullets get their version heading under a fresh [Unreleased]
+# (Keep a Changelog). stratt has no date placeholder, so the date is appended to the heading
+# before the tag is pushed.
+[[bump.files]]
+filename = "CHANGELOG.md"
+search = "## [Unreleased]"
+replace = '''## [Unreleased]
+
+## [{new_version}]'''

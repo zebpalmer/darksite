@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · EmptyState</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{display:flex;gap:16px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1);flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:8px;flex:1;min-width:260px}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.e{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:28px 20px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-md)}
+.e.center{align-items:center;text-align:center}
+.e .ic{color:var(--ds-text-3)}
+.t{margin:0;font-size:var(--ds-text-lg);line-height:var(--ds-lh-lg);font-weight:500;color:var(--ds-text-1)}
+.m{margin:0;max-width:60ch;font-size:var(--ds-text-sm);line-height:var(--ds-lh-sm);color:var(--ds-text-2)}
+.b{display:inline-flex;align-items:center;height:var(--ds-h-default);padding:0 12px;margin-top:4px;border:1px solid var(--ds-border-strong);border-radius:var(--ds-radius-sm);background:var(--ds-bg-4);font-size:var(--ds-text-sm);color:var(--ds-text-1)}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="col">
+    <div class="e">
+      <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
+      <p class="t">Nothing in the queue</p>
+      <p class="m">New items appear here within a minute of arriving.</p>
+      <span class="b">Re-check now</span>
+    </div>
+    <div class="cap">align="start" (the default): one sentence, one action</div>
+  </div>
+  <div class="col">
+    <div class="e center">
+      <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <p class="t">All clear</p>
+      <p class="m">Nothing needs attention right now.</p>
+    </div>
+    <div class="cap">align="center" for a lone full-page state, and no action when there is genuinely nothing to do</div>
+  </div>
+</div>
+</body>
+</html>

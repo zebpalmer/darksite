@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · Toaster</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:10px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1);align-items:flex-end}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3);align-self:flex-start}
+.stack{display:flex;flex-direction:column;gap:8px;width:min(380px,100%)}
+.t{overflow:hidden;border-radius:var(--ds-radius-md);background:var(--ds-bg-4);box-shadow:var(--ds-elev-2);color:var(--ds-text-1)}
+.row{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 6px 6px 12px}
+.ic{display:inline-flex;flex:none}
+.ic.ok{color:var(--ds-success-text)}
+.ic.bad{color:var(--ds-danger-text)}
+.msg{flex:1;min-width:0;font-size:var(--ds-text-sm);line-height:var(--ds-lh-sm)}
+.cd{flex:none;font-family:var(--font-mono);font-size:var(--ds-text-xs);color:var(--ds-text-2);font-variant-numeric:tabular-nums}
+.act{flex:none;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 8px;border:1px solid var(--ds-border-strong);border-radius:var(--ds-radius-sm);font-size:var(--ds-text-sm)}
+.close{flex:none;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:var(--ds-radius-sm);color:var(--ds-text-3)}
+.track{height:2px;background:var(--ds-bg-5)}
+.bar{height:2px;background:var(--ds-accent)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:1px solid var(--ds-border-strong);border-bottom-width:2px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-2);color:var(--ds-text-2);font-family:var(--font-mono);font-size:var(--ds-text-xs);line-height:1}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="cap">bottom-right, 380px, lifted above the tab bar and any ActionBar. Never more than two stacked.</div>
+  <div class="stack">
+    <div class="t" role="status">
+      <div class="row">
+        <span class="ic ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg></span>
+        <span class="msg">Removed Urgent</span>
+        <span class="cd" aria-hidden="true">9:41</span>
+        <span class="act">Undo <kbd>z</kbd></span>
+        <span class="close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+      </div>
+      <div class="track"><div class="bar" style="width:86%"></div></div>
+    </div>
+    <div class="t" role="alert">
+      <div class="row">
+        <span class="ic bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span>
+        <span class="msg">Could not reach the worker — retried 3 times</span>
+        <span class="close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+      </div>
+    </div>
+  </div>
+  <div class="cap" style="align-self:flex-start">an action toast: key cap, m:ss countdown in mono, and a 2px accent bar draining over its life. A plain toast has neither.</div>
+</div>
+</body>
+</html>

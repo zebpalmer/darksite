@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · SheetItem</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--ds-bg-3);font-family:var(--font-sans);color:var(--ds-text-1);max-width:400px}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.list{display:flex;flex-direction:column;gap:2px}
+.i{display:flex;align-items:center;gap:12px;width:100%;min-height:var(--ds-h-touch);padding:0 8px;border-radius:var(--ds-radius-sm);color:var(--ds-text-1);font-size:var(--ds-text-md);text-align:left}
+.i .ic{color:var(--ds-text-3);display:inline-flex;flex:none}
+.i.cur .ic{color:var(--ds-accent)}
+.i.hover{background:var(--ds-bg-4)}
+.i.danger,.i.danger .ic{color:var(--ds-danger-text)}
+.l{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tr{font-size:var(--ds-text-xs);color:var(--ds-text-3)}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="list">
+    <span class="i cur"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/></svg></span><span class="l">All records</span><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+    <span class="i hover"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v8M8 12h8"/><circle cx="12" cy="12" r="10"/></svg></span><span class="l">Assigned to me</span><span class="tr">24</span></span>
+    <span class="i"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><span class="l">Rename…</span></span>
+    <span class="i danger"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></span><span class="l">Delete view…</span></span>
+  </div>
+  <div class="cap">current (accent icon + check + aria-current) · hover bg-4 · a trailing count · tone="danger". 44px rows, always.</div>
+</div>
+</body>
+</html>

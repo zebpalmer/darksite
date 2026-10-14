@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · Popover</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+.demo{display:flex;gap:18px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1);align-items:flex-start;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3);max-width:300px}
+.b{display:inline-flex;align-items:center;gap:8px;height:var(--ds-h-default);padding:0 12px;border:1px solid var(--ds-border-strong);border-radius:var(--ds-radius-sm);background:var(--ds-bg-4);font-size:var(--ds-text-sm);color:var(--ds-text-1)}
+.pop{display:flex;flex-direction:column;gap:6px;width:280px;padding:12px;border-radius:var(--ds-radius-md);background:var(--ds-bg-3);box-shadow:var(--ds-elev-3);color:var(--ds-text-1);font-size:var(--ds-text-sm)}
+.pt{margin:0 0 2px;font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;color:var(--ds-text-2)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:1px solid var(--ds-border-strong);border-bottom-width:2px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-2);color:var(--ds-text-2);font-family:var(--font-mono);font-size:var(--ds-text-xs);line-height:1}
+.row{display:flex;align-items:center;gap:8px;min-height:28px;padding:0 6px;border-radius:var(--ds-radius-xs)}
+.row.on{background:var(--ds-bg-5)}
+.row .l{flex:1}
+.row .m{font-size:var(--ds-text-xs);color:var(--ds-text-3)}
+</style>
+<div class="demo">
+  <div class="col">
+    <span class="b">Legend <kbd>?</kbd></span>
+    <div class="pop">
+      <p class="pt">Hotkeys</p>
+      <div class="legend">
+        <kbd>Space</kbd><span>Play</span>
+        <kbd>1</kbd><span>Info</span>
+        <kbd>5</kbd><span>Critical</span>
+        <kbd>Enter</kbd><span>Save</span>
+        <kbd>Esc</kbd><span>Close</span>
+      </div>
+    </div>
+    <div class="cap">non-modal, so the page keeps its keys; closeOnOutside={false} keeps the legend open while the operator works</div>
+  </div>
+  <div class="col">
+    <span class="b">Views</span>
+    <div class="pop">
+      <p class="pt">Saved views</p>
+      <span class="row on"><span class="l">Needs severity</span><span class="m">7</span></span>
+      <span class="row"><span class="l">Open, unassigned</span><span class="m">142</span></span>
+      <span class="row"><span class="l">Added this week</span><span class="m">38</span></span>
+    </div>
+    <div class="cap">bg-3, radius-md, elev-3, 320px by default; a sentence-case 12px text-3 title. Becomes a Sheet under 768px.</div>
+  </div>
+</div>
+</body>
+</html>

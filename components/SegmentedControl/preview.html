@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · SegmentedControl</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1)}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.seg{display:inline-flex;gap:2px;padding:2px;border-radius:var(--ds-radius-md);border:1px solid var(--ds-border-subtle);background:var(--ds-bg-2);max-width:100%}
+.seg.full{display:flex;width:100%}
+.seg.full s{flex:1}
+.seg s{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none;height:26px;padding:0 10px;border-radius:var(--ds-radius-sm);color:var(--ds-text-3);font-size:var(--ds-text-sm);line-height:var(--ds-lh-sm);text-decoration:none;white-space:nowrap}
+.seg.dense s{height:22px;padding:0 8px}
+.seg s.on{background:var(--ds-bg-4);color:var(--ds-text-1)}
+.seg s.inc{background:var(--ds-accent-tint);color:var(--ds-accent-text)}
+.seg s.exc{background:var(--ds-danger-tint);color:var(--ds-danger-text)}
+.seg s.off{opacity:.45}
+.count{font-size:var(--ds-text-xs);color:var(--ds-text-3)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:1px solid var(--ds-border-strong);border-bottom-width:2px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-2);color:var(--ds-text-2);font-family:var(--font-mono);font-size:var(--ds-text-xs);line-height:1}
+.lbl{font-size:var(--ds-text-sm);color:var(--ds-text-2);min-width:72px}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="row">
+    <span class="seg"><s class="on">S</s><s>M</s><s>L</s></span>
+    <span class="seg"><s>Card</s><s class="on">Bulk<span class="count">12</span></s></span>
+    <span class="seg dense"><s class="on">All</s><s>Starred</s><s>Done</s></span>
+  </div>
+  <div class="cap">default 26 · with a count · size="dense" 22 — the strip scrolls sideways rather than overprinting</div>
+  <div class="row">
+    <span class="seg"><s class="on" title="Grid"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></s><s title="List"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></s></span>
+    <span class="seg"><s class="on">On<kbd>v</kbd></s><s>Off</s></span>
+    <span class="seg"><s class="on">Now</s><s class="off">Scheduled</s></span>
+  </div>
+  <div class="cap">iconOnly (label still required) · keycap · a disabled option</div>
+  <div class="row" style="align-items:center">
+    <span class="lbl">Scope</span>
+    <span class="seg full"><s class="inc">Include</s><s>Don't care</s><s class="exc">Exclude</s></span>
+  </div>
+  <div class="cap">full: the three-way row — Include is accent-tint, Exclude danger-tint, Don't care neutral</div>
+</div>
+</body>
+</html>

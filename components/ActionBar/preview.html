@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · ActionBar</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:10px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1)}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.pane{display:flex;flex-direction:column;height:168px;border-radius:var(--ds-radius-md);overflow:hidden;box-shadow:var(--ds-elev-1)}
+.content{flex:1;min-height:0;overflow:auto;padding:12px;background:var(--ds-bg-1);color:var(--ds-text-3);font-size:var(--ds-text-sm);display:flex;flex-direction:column;gap:8px}
+.ph{height:14px;border-radius:3px;background:var(--ds-bg-3)}
+.bar{flex:none;display:flex;align-items:center;gap:8px;min-width:0;height:56px;padding:0 12px;background:var(--ds-bg-2);border-top:1px solid var(--ds-border)}
+.grow{flex:1}
+.divider{width:1px;height:24px;background:var(--ds-border)}
+.b{display:inline-flex;align-items:center;gap:8px;height:var(--ds-h-default);padding:0 12px;border:1px solid transparent;border-radius:var(--ds-radius-sm);font-size:var(--ds-text-sm);color:var(--ds-text-2)}
+.b.sec{background:var(--ds-bg-4);border-color:var(--ds-border-strong);color:var(--ds-text-1)}
+.b.primary{background:var(--ds-accent);color:var(--ds-accent-contrast);font-weight:500}
+.b.danger{color:var(--ds-danger-text)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:1px solid var(--ds-border-strong);border-bottom-width:2px;border-radius:var(--ds-radius-xs);background:var(--ds-bg-2);color:var(--ds-text-2);font-family:var(--font-mono);font-size:var(--ds-text-xs);line-height:1}
+.b.primary kbd{background:var(--ds-accent-key);border-color:var(--ds-accent-key-edge);color:var(--ds-accent-contrast)}
+</style>
+<div class="demo">
+  <div class="pane">
+    <div class="content"><span class="ph" style="width:70%"></span><span class="ph" style="width:92%"></span><span class="ph" style="width:55%"></span><span class="ph" style="width:80%"></span><span class="ph" style="width:40%"></span></div>
+    <div class="bar">
+      <span class="b">Undo <kbd>z</kbd></span>
+      <span class="divider"></span>
+      <span class="b danger">Delete</span>
+      <span class="grow"></span>
+      <span class="b sec">Skip <kbd>s</kbd></span>
+      <span class="b primary">Save <kbd>Enter</kbd></span>
+    </div>
+  </div>
+  <div class="cap">the pane's last, non-scrolling child — the content above scrolls, the bar never overlaps it. A grow spacer splits the groups, a divider separates clusters, the primary is right-most, and the long-lived undo lives here rather than in a toast.</div>
+</div>
+</body>
+</html>

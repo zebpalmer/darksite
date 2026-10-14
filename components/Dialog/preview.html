@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · Dialog</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{position:relative;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1);display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.scrim{position:absolute;inset:0;background:var(--ds-scrim)}
+.cap{position:relative;font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.d{position:relative;width:min(400px,100%);display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--ds-radius-lg);background:var(--ds-bg-3);box-shadow:var(--ds-elev-3);color:var(--ds-text-1)}
+.t{margin:0;font-size:var(--ds-text-lg);line-height:var(--ds-lh-lg);font-weight:500}
+.p{margin:0;font-size:var(--ds-text-sm);line-height:19px;color:var(--ds-text-2)}
+.acts{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--ds-h-default);padding:0 12px;border:1px solid transparent;border-radius:var(--ds-radius-sm);font-size:var(--ds-text-sm);line-height:var(--ds-lh-sm);color:var(--ds-text-1)}
+.b.secondary{background:var(--ds-bg-4);border-color:var(--ds-border-strong)}
+.b.secondary.focus{outline:2px solid var(--ds-focus);outline-offset:2px}
+.b.dangersolid{background:var(--ds-danger);color:var(--ds-danger-contrast);font-weight:500}
+.b.primary{background:var(--ds-accent);color:var(--ds-accent-contrast);font-weight:500}
+.ctl{display:block;width:100%;height:var(--ds-h-default);padding:0 10px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-sm);background:var(--ds-bg-2);color:var(--ds-text-3);font-size:var(--ds-text-md);line-height:var(--ds-h-default)}
+.b.off{opacity:.45}
+</style>
+<div class="demo">
+  <div class="scrim"></div>
+  <div class="d">
+    <p class="t">Delete 12 records?</p>
+    <p class="p">They move to the archive and stop appearing in lists. Nothing is destroyed, and you can restore them.</p>
+    <span class="ctl">Type confirm</span>
+    <div class="acts"><span class="b secondary focus">Cancel</span><span class="b dangersolid off">Delete 12 records</span></div>
+  </div>
+  <div class="cap">tone="danger" over the scrim: 400px, bg-3, radius-lg, elev-3. initialFocus="cancel"; confirmDisabled until the body says otherwise.</div>
+  <div class="d" style="width:min(340px,100%)">
+    <p class="t">Remove both?</p>
+    <p class="p">Urgent is inherited from Escalations. Removing it here removes the parent too.</p>
+    <div class="acts"><span class="b secondary">Keep</span><span class="b primary focus">Remove both</span></div>
+  </div>
+  <div class="cap">tone="default" with initialFocus="confirm" — a confirm the user just asked for, where Enter should do what they meant</div>
+</div>
+</body>
+</html>

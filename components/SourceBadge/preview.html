@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>darksite · SourceBadge</title>
+<link rel="stylesheet" href="../../src/lib/tokens.css">
+<style>html,body{margin:0;background:var(--ds-bg-1);color:var(--ds-text-1);font-family:var(--font-sans)}</style>
+<script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.dataset.theme='light'</script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+.demo{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--ds-bg-1);font-family:var(--font-sans);color:var(--ds-text-1)}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cap{font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);color:var(--ds-text-3)}
+.s{display:inline-flex;align-items:center;gap:5px;flex:none;height:20px;padding:0 6px;border-radius:var(--ds-radius-xs);font-size:var(--ds-text-xs);line-height:var(--ds-lh-xs);white-space:nowrap}
+.s.applied{height:22px;background:var(--ds-accent-tint);color:var(--ds-accent-text)}
+.s.sug{background:var(--ds-bg-4);color:var(--ds-text-2)}
+.dot{width:6px;height:6px;border-radius:var(--ds-radius-full);background:var(--ds-accent)}
+.w{position:relative;width:min(340px,100%)}
+.ctl{display:block;width:100%;height:var(--ds-h-default);padding:0 130px 0 10px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-sm);background:var(--ds-bg-3);color:var(--ds-text-1);font-size:var(--ds-text-md);line-height:var(--ds-h-default)}
+.trail{position:absolute;right:6px;top:50%;transform:translateY(-50%)}
+.c{display:inline-flex;align-items:center;gap:6px;height:var(--ds-h-dense);padding:0 8px;border:1px dashed var(--ds-border-strong);border-radius:var(--ds-radius-sm);color:var(--ds-text-2);font-size:var(--ds-text-sm)}
+svg{flex:none}
+</style>
+<div class="demo">
+  <div class="row">
+    <span class="s applied"><span class="dot"></span>Registry&nbsp;96%</span>
+    <span class="s applied"><span class="dot"></span>File</span>
+    <span class="s sug">Model&nbsp;80%</span>
+    <span class="s sug">Owner default</span>
+  </div>
+  <div class="cap">variant="applied" (accent tint + dot: the value is in the field) · variant="suggestion" (neutral: not applied). No number when the source gave none.</div>
+  <div class="w"><span class="ctl">Field team</span><span class="trail"><span class="s applied"><span class="dot"></span>Registry&nbsp;96%</span></span></div>
+  <div class="row">
+    <span class="c" title="Sources: File 20% · Model 80%"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Urgent<span class="s sug">Model&nbsp;80%</span></span>
+  </div>
+  <div class="cap">inlaid in an Input (applied) or inside a dashed suggestion Chip. One source per badge — the rest go in the title.</div>
+</div>
+</body>
+</html>

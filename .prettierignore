@@ -1,0 +1,10 @@
+# Prose, specs and generated files keep their own formatting.
+*.md
+components/
+tokens.json
+src/lib/tokens.css
+package-lock.json
+.svelte-kit/
+build/
+dist/
+node_modules/
