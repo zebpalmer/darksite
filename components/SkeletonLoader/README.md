@@ -8,18 +8,19 @@ skeletons occupies exactly the space the cards will, so nothing jumps when they 
 
 ## Variants
 
+- **`line`** (default) — one 12px text line; `width` and `height` size it.
+- **`block`** — a sized box, 120px tall by default.
 - **`card`** — a media `Card`: a 16:9 `ds-radius-sm` thumbnail block, then two 12px lines at 80%
   and 55%.
 - **`entity`** — an `EntityCard` row: a 56px avatar block in a bordered `ds-bg-2` row with two
   lines.
-- **`line`** — one 12px text line; `width` and `height` size it.
-- **`block`** — a sized box, 120px tall by default.
 
 ## What the consumer provides
 
-`variant`, `count` (repeat), `width` / `height` (for `line` and `block`), `grid` (wrap the repeats
-in a `Grid`, for a loading page of cards), `label` (screen-reader status, "Loading" by default),
-`class`. The wrapper is `display: contents`, so it never disturbs the grid it sits in.
+`variant`, `count` (repeat), `width` / `height` (for `line` and `block`), `label` (a screen-reader
+status, "Loading" by default — pass `null` when an ancestor already announces loading, as a
+`Table` does with `aria-busy`), `class`. The wrapper is `display: contents`, so it never disturbs
+the grid or cell it sits in.
 
 ## Don't
 

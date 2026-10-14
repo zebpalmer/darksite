@@ -6,6 +6,17 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-10-14
+
+### Added
+
+- `Table`: sortable headers with `aria-sort`, checkbox selection with shift-click ranges, whole-row
+  links, arrow-key row focus, columns that drop by priority on the table's own width, skeleton and
+  empty states, and the missing-value mark.
+- `Checkbox` (with a mixed state), `Radio` and `Switch`, on native inputs.
+- `EmptyState` and `SkeletonLoader`.
+- Content rule: a missing value is an em dash, announced as "No value".
+
 ## [0.1.0] — 2026-10-14
 
 ### Added

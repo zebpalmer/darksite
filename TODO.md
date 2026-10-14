@@ -26,61 +26,66 @@ Ordered by what adopters are blocked on first.
 
 ### 1. Table
 
+Done in 0.2.0 (`src/lib/components/Table.svelte`). The header sticks in a work view only: a
+horizontal scroll container cannot pass a sticky header up to the document (see the card).
+
 The biggest gap. `Grid` is for card grids, and most operator screens are rows and columns.
 
-- [ ] **Geometry.** Header row 34px, body rows 40px at desktop density, 32px with `density="dense"`,
+- [x] **Geometry.** Header row 34px, body rows 40px at desktop density, 32px with `density="dense"`,
   44px under `(pointer: coarse)` whatever density was passed. 12px horizontal cell padding, with
   the first and last columns aligned to the pane's own inset so a table sits flush in a pane. Row
   dividers `ds-border-subtle`, header divider `ds-border`, header text 12/500 `ds-text-3`.
-- [ ] **Scroll.** The table owns its horizontal scroll inside its container, so a wide table never
+- [x] **Scroll.** The table owns its horizontal scroll inside its container, so a wide table never
   widens the page. The header is sticky to the top of whichever element owns the vertical scroll
   (the pane in a work view, the document in a content page).
-- [ ] **Columns.** Each column declares `key`, `label`, `align` (`start` | `end`, numbers end),
+- [x] **Columns.** Each column declares `key`, `label`, `align` (`start` | `end`, numbers end),
   `width` (optional), `priority` (1 = never hidden … 3 = first to drop) and `mono` (serials,
   hashes, paths, in `mono-control` with tabular figures). Low-priority columns drop by **container
   query** as the table narrows, never by viewport breakpoint. Cells are single-line with an
   ellipsis and a `title` holding the full value, and no long string sets a column's width.
-- [ ] **Sorting.** A sortable header is a button with `aria-sort`, a 16px Lucide sort icon, and a
+- [x] **Sorting.** A sortable header is a button with `aria-sort`, a 16px Lucide sort icon, and a
   keyboard path (Enter or Space). One sort key at a time; the consumer owns the data and receives
   `onsort({ key, direction })`.
-- [ ] **Selection.** Optional. A leading checkbox column using the new `Checkbox` (item 2); the
+- [x] **Selection.** Optional. A leading checkbox column using the new `Checkbox` (item 2); the
   header checkbox goes mixed when some rows are selected. Shift-click selects a range. A selected
   row takes `ds-accent-tint`. The selection count and the bulk actions live in the pane's
   `ActionBar`, never in a floating toolbar ("same zones, different density").
-- [ ] **Row link.** Optional `href(row)` makes the whole row navigable: pointer click, and Enter
+- [x] **Row link.** Optional `href(row)` makes the whole row navigable: pointer click, and Enter
   when the row has keyboard focus. Interactive controls inside a row (a checkbox, a button) do not
   trigger the row link.
-- [ ] **Keyboard.** Arrow up and down move a row focus; Space toggles selection; Enter opens the
+- [x] **Keyboard.** Arrow up and down move a row focus; Space toggles selection; Enter opens the
   row. Visible focus on the focused row. Page hotkeys keep the rules in
   [`focus-and-hotkeys.md`](docs/focus-and-hotkeys.md).
-- [ ] **States.** Loading uses `SkeletonLoader` rows of the real geometry. Empty uses
+- [x] **States.** Loading uses `SkeletonLoader` rows of the real geometry. Empty uses
   `EmptyState` inside the table's frame. A cell with no value follows the missing-value rule
   (content rules, below).
-- [ ] **Consumer provides:** `rows`, `columns`, `rowKey`, `density`, `selectable`,
+- [x] **Consumer provides:** `rows`, `columns`, `rowKey`, `density`, `selectable`,
   `selected` (bindable set of keys), `sort` (bindable `{ key, direction }`), `onsort`, `href`,
   a `cell` snippet for custom cells (a `StatusBadge`, a `SourceBadge`, a person), `empty` snippet,
   `loading`, `label` (the table's accessible name), `class`.
-- [ ] **Don'ts.** Don't paginate inside the table (item 11). Don't let a cell wrap to a second line.
+- [x] **Don'ts.** Don't paginate inside the table (item 11). Don't let a cell wrap to a second line.
   Don't hide a priority-1 column. Don't use a Table for media (`Grid` + `Card`).
 
 ### 2. Checkbox, Radio and Switch
 
+Done in 0.2.0.
+
 `Field` says "a native control", but there is no card for their look, touch target or the
 indeterminate state that `Table` selection and `Chip`'s `'mixed'` already imply.
 
-- [ ] **Checkbox.** 16px box at `ds-radius-xs`, `ds-bg-3` with a `ds-border-strong` edge; checked
+- [x] **Checkbox.** 16px box at `ds-radius-xs`, `ds-bg-3` with a `ds-border-strong` edge; checked
   and mixed fill with `ds-accent` and draw the tick or dash in `ds-accent-contrast`. The hit area
   is 32px on desktop and 44px on touch even though the box stays 16px. Built on a native
   `<input type="checkbox">` so forms and screen readers work; `indeterminate` set from a
   `checked="mixed"` prop.
-- [ ] **Radio.** The same geometry, round, for a choice inside a form where a `SegmentedControl`
+- [x] **Radio.** The same geometry, round, for a choice inside a form where a `SegmentedControl`
   would not fit (more than seven options or long labels).
-- [ ] **Switch.** For a setting that takes effect immediately with no Save. 32×18 track, `ds-bg-5`
+- [x] **Switch.** For a setting that takes effect immediately with no Save. 32×18 track, `ds-bg-5`
   off and `ds-accent` on, with the state also written as a label ("On" / "Off") or carried by the
   field label so color is not the only signal. `role="switch"` with `aria-checked`.
-- [ ] **All three** sit in a `Field` (label beside the control, `layout="row"` style) and support
+- [x] **All three** sit in a `Field` (label beside the control, `layout="row"` style) and support
   `disabled` at 45% and `invalid`.
-- [ ] **Don'ts.** Don't use a Switch for something that needs Save; that is a Checkbox. Don't style
+- [x] **Don'ts.** Don't use a Switch for something that needs Save; that is a Checkbox. Don't style
   a bare global `input` and hope checkboxes survive it.
 
 ### 3. Menu
@@ -261,7 +266,8 @@ loading, but neither the trigger nor how it combines with selection is written d
 - [ ] **Dates and times.** When to show relative ("6 min ago") and when absolute ("14 Oct, 14:51"),
   which time zone is shown and how it is labeled, the exact value in a tooltip, and the date order.
   Every operator screen shows timestamps, and none of the docs say how.
-- [ ] **Missing values.** One rule for an empty cell or field: an em dash, "Unknown", or blank.
+- [x] **Missing values.** Decided in 0.2.0: an em dash in `ds-text-3`, announced as "No value"
+  (the Table card). Was: One rule for an empty cell or field: an em dash, "Unknown", or blank.
   This matters most in tables, where a blank reads as still loading.
 - [ ] **Numbers and money.** `PageHeader` says counts are localized. Extend that to thousands
   separators, currency, and when to abbreviate (12.4k).

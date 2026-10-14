@@ -1,11 +1,22 @@
 <script lang="ts">
 	// Components with a live page here; everything else is specified by its card in components/.
-	const live = new Set(['Button', 'KeyCap', 'Spinner']);
+	const live = new Set([
+		'Button',
+		'Checkbox',
+		'EmptyState',
+		'KeyCap',
+		'Radio',
+		'SkeletonLoader',
+		'Spinner',
+		'Switch',
+		'Table'
+	]);
 	const groups: Record<string, string[]> = {
 		Actions: ['Button', 'KeyCap'],
 		Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 		Severity: ['SeverityBadge', 'SeverityPicker'],
-		Forms: ['Combobox', 'Field', 'Input'],
+		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch'],
+		Data: ['Table'],
 		Overlays: ['Dialog', 'Popover', 'Sheet', 'SheetItem'],
 		Feedback: [
 			'EmptyState',
