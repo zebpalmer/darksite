@@ -50,6 +50,15 @@ then `docs/which-primitive.md`. Open requirements live in `TODO.md`.
 
 ## This repository is public-bound
 
+**Never put project-specific information in this repository.** darksite is general-purpose, and
+nothing in it may identify or describe a product that uses it: not its name, its domain or
+industry, its data, its users, its vendors or integrations, or which project asked for a feature.
+That holds for code, tests, docs, examples, `TODO.md`, commit messages and tag messages alike.
+
+A need found while adopting darksite in a project is written here as a **general need of operator
+software**, with neutral examples. If a requirement only makes sense for one project, it belongs in
+that project, not here.
+
 Never name a product, employer, client, vendor or real person, and never use realistic data copied
 from a real system — not in code, tests, docs, commit messages or `TODO.md`. Use neutral
 placeholders ("Field team", "R-00412", "A. Rivera").
