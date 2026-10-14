@@ -6,6 +6,14 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-10-14
+
+### Added
+
+- `Menu`: menu semantics, full keyboard support with typeahead, groups and separators, danger and
+  disabled-with-reason items, a note-required marker, the top layer for clipping-proof placement,
+  and a bottom-sheet presentation on phones. New dependency: `@floating-ui/dom`.
+
 ## [0.2.0] — 2026-10-14
 
 ### Added

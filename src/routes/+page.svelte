@@ -17,7 +17,7 @@
 		Severity: ['SeverityBadge', 'SeverityPicker'],
 		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch'],
 		Data: ['Table'],
-		Overlays: ['Dialog', 'Popover', 'Sheet', 'SheetItem'],
+		Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
 		Feedback: [
 			'EmptyState',
 			'HelpTip',

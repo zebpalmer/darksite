@@ -22,6 +22,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A yes/no choice in a form | `Checkbox` | Also a table's selection column. A setting that applies at once is a `Switch`. |
 | One of many in a form, when segments won't fit | `Radio` | More than seven options, or long labels. In a `<fieldset>`. |
 | A setting that applies at once | `Switch` | No Save. The state is written beside the track. |
+| Actions on one thing | `Menu` | A detail page's Actions, a row's overflow. A danger item opens a `Dialog`; a disabled one keeps its reason. |
 | Reference info beside the work | `Popover` | A hotkey legend, saved views, the account menu. Non-modal; Esc closes; becomes a Sheet on phones. |
 | Filters, sort, any choice on touch | `Sheet` + `SheetItem` | Replaces Popover and Dialog under 768px. 44px rows. |
 | Edit a record | `Sheet side="right"` | A drawer at ≥768px, a bottom sheet below. Footer: Cancel (secondary) then Save (primary), right-aligned. |

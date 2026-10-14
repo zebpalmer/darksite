@@ -1,6 +1,7 @@
 # Popover
 
-Reference info or a small menu beside the work: the hotkey legend, saved views, the account menu.
+Reference info beside the work: the hotkey legend, saved views, the account panel. A list of
+actions is a `Menu`, which has menu semantics; a Popover does not.
 
 **Non-modal** — the page behind keeps its keys and its pointer, which is the point: an
 operator can read the legend while still using the page's hotkeys. Esc or an outside click closes it.

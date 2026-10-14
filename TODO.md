@@ -90,23 +90,27 @@ indeterminate state that `Table` selection and `Chip`'s `'mixed'` already imply.
 
 ### 3. Menu
 
+Done in 0.3.0. It uses the native `popover` top layer where supported and `@floating-ui/dom` to
+position beside its trigger; under 768px it presents as a bottom sheet itself, until `Sheet` is
+built.
+
 `Popover` mentions "a small menu", but nothing provides menu semantics. Detail pages need one
 Actions menu, and every product will otherwise hand-roll it.
 
-- [ ] **Behavior.** `role="menu"` with `menuitem` children; opens from a `Button` trigger; arrow
+- [x] **Behavior.** `role="menu"` with `menuitem` children; opens from a `Button` trigger; arrow
   keys move, Home and End jump, typeahead on the first letter, Enter or Space activates, Esc closes
   and returns focus to the trigger. Non-modal, like `Popover`. A `Sheet` with `SheetItem` rows on
   phones.
-- [ ] **Items.** 32px rows (44 on touch), a 16px leading icon, the label, and an optional trailing
+- [x] **Items.** 32px rows (44 on touch), a 16px leading icon, the label, and an optional trailing
   `KeyCap`. Separators and optional group titles. A **danger** item in `ds-danger-text`, whose
   activation opens the `Dialog` rather than acting. A **disabled** item that stays visible and
   carries its reason in a tooltip, because in an actions menu the reason is the useful part.
-- [ ] **Note-required marker.** An item can declare that it will ask for a note, shown as a small
+- [x] **Note-required marker.** An item can declare that it will ask for a note, shown as a small
   trailing icon with a tooltip, so the operator knows before choosing it.
-- [ ] **Consumer provides:** `trigger` snippet (attributes to spread, as `Popover` does),
+- [x] **Consumer provides:** `trigger` snippet (attributes to spread, as `Popover` does),
   `items` (`{ id, label, icon?, keycap?, tone?: 'danger', disabled?, reason?, needsNote?,
   onselect }` plus `{ separator: true }` and `{ group }`), `open` (bindable), `placement`, `label`.
-- [ ] **Don'ts.** Don't remove an item a role cannot use from an actions menu without saying why
+- [x] **Don'ts.** Don't remove an item a role cannot use from an actions menu without saying why
   elsewhere; disable it with its reason. (Navigation is different: there, remove it.) Don't nest
   submenus.
 

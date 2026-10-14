@@ -8,8 +8,8 @@
 - **Don't flood a surface with accent or severity color.** They are for marks, borders and small
   tinted grounds.
 - **Don't use emoji as icons.** Icons are Lucide, imported one at a time.
-- **Don't hand-roll a dialog, popover, typeahead or toast.** Use `Dialog` / `Sheet` / `Popover` /
-  `Combobox` / `toasts`.
+- **Don't hand-roll a dialog, popover, menu, typeahead or toast.** Use `Dialog` / `Sheet` /
+  `Popover` / `Menu` / `Combobox` / `toasts`.
 - **Don't size a grid from viewport breakpoints** (`lg:grid-cols-5`). Use `Grid`, which is
   container-driven.
 - **Don't cap the page width.** Panes grow, grids add columns. A max width is for prose and forms
