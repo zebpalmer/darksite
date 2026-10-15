@@ -1,29 +1,6 @@
 <script lang="ts">
 	import { PageHeader } from '#lib';
-
-	const route: Record<string, string> = { ActiveFilters: 'filterrail', SheetItem: 'sheet' };
-	const groups: Record<string, string[]> = {
-		Actions: ['Button', 'KeyCap', 'KeyLegend'],
-		Selection: ['Chip', 'SegmentedControl', 'Tabs'],
-		Filtering: ['ActiveFilters', 'FilterRail'],
-		Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
-		Forms: ['Checkbox', 'Combobox', 'Field', 'FileInput', 'Input', 'Radio', 'Switch', 'Rating', 'Stepper'],
-		Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow', 'FactList', 'Missing'],
-		Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
-		Feedback: [
-			'EmptyState',
-			'HelpTip',
-			'NewBadge',
-			'SkeletonLoader',
-			'SourceBadge',
-			'Spinner',
-			'Toaster',
-			'ErrorPage'
-		],
-		Content: ['Avatar', 'Card', 'EntityCard', 'Carousel', 'Lightbox'],
-		Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader', 'Pane', 'WorkView'],
-		Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar']
-	};
+	import { componentHref, groups } from './catalog.js';
 </script>
 
 <svelte:head><title>darksite</title></svelte:head>
@@ -41,7 +18,7 @@
 			<ul>
 				{#each names as name (name)}
 					<li>
-						<a href="/{route[name] ?? name.toLowerCase()}">{name}</a>
+						<a href={componentHref(name)}>{name}</a>
 					</li>
 				{/each}
 			</ul>

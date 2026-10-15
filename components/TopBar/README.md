@@ -20,7 +20,11 @@ directly below it. The shell publishes its height as `--ds-topbar-h` for panes s
 
 Search focuses on `/`, except while the user is typing or where the page has already claimed that
 key — a page that owns `/` wins, because its search is the nearer one. It wins by handling the key
-first (`preventDefault`), or by passing `searchKey={null}`.
+first (`preventDefault`), or by passing `searchKey={null}`. The key is the `focusShortcut`
+attachment, which any other container can use.
+
+A search that should share the line with each page's title, rather than take a row of its own, is
+`AppShell`'s `headerActions` instead.
 
 ## What the consumer provides
 

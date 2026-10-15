@@ -28,7 +28,14 @@ heading level, default 1), `mono` (the title is an identifier — a serial, a ha
 record number — and is set in mono with tabular figures, as identifiers are everywhere else),
 `actions` snippet (search, Views, Sort, density, Filters), `sticky`
 (sticks to the top of the scrolling pane at `--ds-z-sticky`), `class`, children (inline after the
-title).
+title), `shellActions` (default true).
+
+## The shell's header actions
+
+Inside an `AppShell` with `headerActions`, a level-1 header renders those shell-wide controls ahead
+of its own `actions` — the page's primary button stays right-most — and on phones swaps them for
+an icon button that opens a full-width row under the bar (see the `AppShell` card). The page writes
+nothing for this. `shellActions={false}` leaves them out of one page's header.
 
 ## Don't
 

@@ -58,6 +58,17 @@ All notable changes to darksite are recorded here. The format follows
   `onsearch` / `loading` for server search). Sections also take `placeholder`, `labelFor` and
   `strict`.
 - `filterLabel(section, value)` and `unlistedValues(section, value)`.
+- `AppShell` `headerActions` snippet: shell-wide controls (usually a global search) rendered by
+  every level-1 `PageHeader` on its own line, right-aligned, ahead of the page's `actions`. Pages
+  need no changes; a page without a `PageHeader` shows none. `headerActionsKey` (default `/`)
+  focuses its first field. On phones it collapses to an icon button (`headerActionsIcon`,
+  `headerActionsLabel`, default a search icon and "Search") that opens a full-width row under the
+  header; Esc from inside the row, or a navigation, closes it.
+- `PageHeader` `shellActions` (default true): `false` leaves the shell's header actions out of one
+  page.
+- `focusShortcut(key = '/')` attachment: a key that focuses the first field inside an element,
+  standing aside while the user types or when the press was already handled. `TopBar` now uses it,
+  with no change in behavior.
 
 ### Changed
 

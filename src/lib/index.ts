@@ -150,6 +150,7 @@ export { COARSE_QUERY, media, MediaFlag, PHONE_QUERY } from './media.svelte.js';
 export {
 	bindingKeys,
 	buildHotkeyMap,
+	focusShortcut,
 	groupBindings,
 	hotkeys,
 	installHotkeys,

@@ -18,6 +18,12 @@ in place.
   `badge` slots and `pinned`; `railExpanded` (bindable).
 - `banner`, `topBar` snippets; `padded` (default true — false hands the column to a work view
   that lays out its own panes); `toaster` (default true); children (the page).
+- `headerActions` snippet — shell-wide controls (usually a global search) on the same line as every
+  page's PageHeader, right-aligned, ahead of the page's own actions. It renders inside PageHeader,
+  so a page with no PageHeader shows none. `headerActionsKey` (default `/`) focuses its first
+  field; `null` turns that off. On phones it collapses to an icon button (`headerActionsIcon`,
+  default a search icon; `headerActionsLabel`, default "Search") that opens a full-width row under
+  the header; Esc inside the row, or a change of `current`, closes it.
 
 A page that renders a `WorkView` gets the work-view frame without touching `padded`: while one is
 mounted the column's padding is zero, and from 768px the shell locks to the viewport so the work
@@ -25,11 +31,15 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import Search from '@lucide/svelte/icons/search';
 
 	import NavRail, { type RailSlotArgs } from './NavRail.svelte';
 	import TabBar from './TabBar.svelte';
 	import Toaster from './Toaster.svelte';
 	import type { NavGroup, NavItem } from '../nav.js';
+	import { media } from '../media.svelte.js';
+	import { setHeaderActions } from '../shell-context.js';
+	import type { IconComponent } from '../types.js';
 
 	interface Props {
 		items: readonly NavItem[];
@@ -43,6 +53,10 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		primaryTabs?: readonly string[];
 		banner?: Snippet;
 		topBar?: Snippet;
+		headerActions?: Snippet;
+		headerActionsIcon?: IconComponent;
+		headerActionsLabel?: string;
+		headerActionsKey?: string | null;
 		padded?: boolean;
 		toaster?: boolean;
 		railExpanded?: boolean;
@@ -66,6 +80,10 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		primaryTabs,
 		banner,
 		topBar,
+		headerActions,
+		headerActionsIcon = Search,
+		headerActionsLabel = 'Search',
+		headerActionsKey = '/',
 		padded = true,
 		toaster = true,
 		railExpanded = $bindable(),
@@ -76,6 +94,27 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		class: className = '',
 		children
 	}: Props = $props();
+
+	setHeaderActions({
+		get snippet() {
+			return headerActions;
+		},
+		get icon() {
+			return headerActionsIcon;
+		},
+		get label() {
+			return headerActionsLabel;
+		},
+		get key() {
+			return headerActionsKey;
+		},
+		get phone() {
+			return media.phone;
+		},
+		get current() {
+			return current;
+		}
+	});
 </script>
 
 {#snippet railFooter({ expanded }: { expanded: boolean })}

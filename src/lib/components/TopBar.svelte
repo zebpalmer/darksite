@@ -8,13 +8,13 @@ its flush geometry underneath, and publishes its height as `--ds-topbar-h`.
 - `start` snippet (a scope selector), `search` snippet (usually an Input with a `/` key cap),
   `actions` snippet, `variant`, `sticky`, `label`, `searchKey` (default `/`: focuses the first
   field in `search`, unless the user is typing or the page already handled the key; `null` hands
-  the key to the page).
+  the key to the page). The key is the `focusShortcut` attachment, exported for other containers.
 
 If a control is not relevant on every page of the section, it belongs in that page's PageHeader.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { isTypingTarget, matchesKey } from '../keycap.js';
+	import { focusShortcut } from '../hotkeys.js';
 
 	interface Props {
 		start?: Snippet;
@@ -31,16 +31,6 @@ If a control is not relevant on every page of the section, it belongs in that pa
 		$props();
 
 	let el: HTMLElement | undefined = $state();
-	let searchEl: HTMLElement | undefined = $state();
-
-	function onkeydown(event: KeyboardEvent) {
-		if (!searchKey || event.defaultPrevented || isTypingTarget(event.target)) return;
-		if (!matchesKey(event, searchKey)) return;
-		const field = searchEl?.querySelector<HTMLElement>('input, select, textarea, [contenteditable="true"]');
-		if (!field) return;
-		event.preventDefault();
-		field.focus();
-	}
 
 	$effect(() => {
 		if (!el) return;
@@ -56,11 +46,9 @@ If a control is not relevant on every page of the section, it belongs in that pa
 	});
 </script>
 
-<svelte:window {onkeydown} />
-
 <div bind:this={el} class="ds-topbar {className}" data-variant={variant} class:sticky role="region" aria-label={label}>
 	{#if start}<div class="start">{@render start()}</div>{/if}
-	{#if search}<div class="search" bind:this={searchEl}>{@render search()}</div>{/if}
+	{#if search}<div class="search" {@attach focusShortcut(searchKey)}>{@render search()}</div>{/if}
 	<span class="grow"></span>
 	{#if actions}<div class="actions">{@render actions()}</div>{/if}
 </div>

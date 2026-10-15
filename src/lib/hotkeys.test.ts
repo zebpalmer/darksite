@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/svelte';
 import {
 	buildHotkeyMap,
 	groupBindings,
@@ -7,6 +8,7 @@ import {
 	type HotkeyBinding
 } from './hotkeys.js';
 import { matchesKey, normalizeKey } from './keycap.js';
+import ShortcutHarness from '../tests/ShortcutHarness.svelte';
 
 type Action = 'next' | 'prev' | 'edit' | 'archive' | 'legend' | 'leave' | 'search';
 
@@ -157,5 +159,52 @@ describe('installHotkeys', () => {
 		pane.dispatchEvent(ev('j'));
 		expect(run).toHaveBeenCalledTimes(1);
 		pane.remove();
+	});
+});
+
+describe('focusShortcut', () => {
+	const press = (key: string, target: EventTarget = window) => {
+		const event = new KeyboardEvent('keydown', { key, cancelable: true, bubbles: true });
+		target.dispatchEvent(event);
+		return event;
+	};
+
+	it('focuses the first field in its element and takes the key', () => {
+		render(ShortcutHarness);
+		const event = press('/');
+		expect(event.defaultPrevented).toBe(true);
+		expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Find' }));
+	});
+
+	it('stands aside while typing and when the press was already handled', () => {
+		render(ShortcutHarness);
+		const elsewhere = screen.getByRole('textbox', { name: 'Elsewhere' });
+		elsewhere.focus();
+		expect(press('/', elsewhere).defaultPrevented).toBe(false);
+		expect(document.activeElement).toBe(elsewhere);
+		elsewhere.blur();
+		const handled = new KeyboardEvent('keydown', { key: '/', cancelable: true });
+		handled.preventDefault();
+		window.dispatchEvent(handled);
+		expect(document.activeElement).not.toBe(screen.getByRole('textbox', { name: 'Find' }));
+	});
+
+	it('leaves the key alone with no field, with null, and after unmount', () => {
+		const { unmount } = render(ShortcutHarness, { field: false });
+		expect(press('/').defaultPrevented).toBe(false);
+		unmount();
+		const off = render(ShortcutHarness, { shortcut: null });
+		expect(press('/').defaultPrevented).toBe(false);
+		off.unmount();
+		expect(press('/').defaultPrevented).toBe(false);
+	});
+
+	it('takes any key token', () => {
+		render(ShortcutHarness, { shortcut: 'ctrl+k' });
+		expect(press('/').defaultPrevented).toBe(false);
+		const event = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, cancelable: true });
+		window.dispatchEvent(event);
+		expect(event.defaultPrevented).toBe(true);
+		expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Find' }));
 	});
 });
