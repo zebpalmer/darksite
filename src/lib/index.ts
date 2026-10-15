@@ -52,11 +52,14 @@ export { default as Toaster } from './components/Toaster.svelte';
 export { default as TopBar } from './components/TopBar.svelte';
 export { default as ScaleBadge } from './components/ScaleBadge.svelte';
 export { default as ScalePicker } from './components/ScalePicker.svelte';
+export { default as Carousel } from './components/Carousel.svelte';
+export { default as Lightbox } from './components/Lightbox.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
 export type { TableColumn, TableSort } from './components/Table.svelte';
 export type { TimelineEntry, TimelinePart } from './components/Timeline.svelte';
+export type { LightboxItem } from './components/Lightbox.svelte';
 
 export {
 	countActive,

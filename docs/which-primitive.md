@@ -45,6 +45,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Loading content of known shape | `SkeletonLoader` | The same geometry as the real thing. `Spinner` is only for "Loading more…". |
 | Show a stop on an app's own ordered scale | `ScaleBadge` + `defineScale` | Priority, confidence, a level. Its own colors, never severity's; unknown is dashed. |
 | Pick a stop on an app's own ordered scale | `ScalePicker` + `defineScale` | Up to nine stops plus unknown; folds to balanced rows. |
+| A preview row of media, several to a page | `Carousel` | One tab stop, ← / → between tiles; tile width follows Grid density. Link "See all" to a `Grid` page. |
+| View images full screen | `Lightbox` | From a `JustifiedGrid` or `Grid`. ← / →, zoom, swipe; focus returns to the thumbnail. |
 
 ## The frame
 

@@ -19,7 +19,7 @@
 			'Spinner',
 			'Toaster'
 		],
-		Content: ['Avatar', 'Card', 'EntityCard'],
+		Content: ['Avatar', 'Card', 'EntityCard', 'Carousel', 'Lightbox'],
 		Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader', 'Pane'],
 		Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar']
 	};
