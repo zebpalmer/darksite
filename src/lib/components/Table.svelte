@@ -9,7 +9,7 @@
 		align?: 'start' | 'end';
 		/** A CSS width, e.g. `'120px'` or `'20%'`. */
 		width?: string;
-		/** 1 = never hidden, 2 = hidden below a 480px table, 3 = hidden below 720px. */
+		/** 1 = never hidden, 2 = hidden below a 480px table, 3 = below 720px (see `hideBelow`). */
 		priority?: 1 | 2 | 3;
 		/** Serials, hashes, paths: mono with tabular figures. */
 		mono?: boolean;
@@ -23,6 +23,31 @@
 		key: string;
 		direction: 'asc' | 'desc';
 	}
+
+	/** One group of rows under its header row, in the order the groups first appear. */
+	export interface TableGroup<T> {
+		key: string;
+		label: string;
+		rows: T[];
+		count: number;
+	}
+
+	/** A semantic row mark. A severity is `rowSeverity`, never one of these. */
+	export type TableRowTone = 'accent' | 'success' | 'warning' | 'danger';
+
+	/** The table widths below which priority 2 and 3 columns are hidden. */
+	export interface TablePriorityWidths {
+		2?: number;
+		3?: number;
+	}
+
+	export const DEFAULT_PRIORITY_WIDTHS = { 2: 480, 3: 720 } as const;
+
+	/** The column priorities hidden at a table width. */
+	export function hiddenPriorities(width: number, hideBelow: TablePriorityWidths = {}): (2 | 3)[] {
+		const at = { ...DEFAULT_PRIORITY_WIDTHS, ...hideBelow };
+		return ([2, 3] as const).filter((p) => width < at[p]);
+	}
 </script>
 
 <!--
@@ -32,8 +57,13 @@ Table — rows and columns. `Grid` is for cards; this is for everything else.
 Header 34px; rows 40px, 32 with `density="dense"`, 44 under a coarse pointer whatever was passed.
 The table owns its scrolling: in a work view give it a bounded height (it is the pane's scrolling
 body) and the header sticks; in a content page the document scrolls and the header does not stick.
-Low-priority columns drop as the table narrows (container width, never the viewport). Cells are one
-line with an ellipsis and the full value in `title`. Empty values render the missing-value mark.
+Low-priority columns drop as the table narrows (container width, never the viewport; `hideBelow`
+moves the thresholds). Cells are one line with an ellipsis and the full value in `title`. Empty
+values render the missing-value mark.
+
+`groupBy` puts rows under group header rows inside the one table (`group` snippet for a custom
+header). `rowTone` / `rowSeverity` mark a row with a 3px leading stripe; the row must also say it
+in words (a StatusBadge or SeverityBadge in a cell).
 
 The consumer owns the data: sorting calls `onsort`, selection is a bindable set of row keys, and
 paging is "Load more" below the table (docs/layout.md, "Long lists"). Bulk actions for a selection
@@ -45,6 +75,7 @@ belong in the pane's ActionBar.
 	import ArrowUpDown from '@lucide/svelte/icons/arrow-up-down';
 
 	import Checkbox from './Checkbox.svelte';
+	import { severityVars, type Severity } from '../severity.js';
 	import EmptyState from './EmptyState.svelte';
 	import SkeletonLoader from './SkeletonLoader.svelte';
 
@@ -70,6 +101,18 @@ belong in the pane's ActionBar.
 		missing?: string;
 		/** A minimum width; below it the table scrolls sideways inside its container. */
 		minWidth?: string;
+		/** Group rows under header rows by this key; groups keep the order they first appear in. */
+		groupBy?: (row: T) => string;
+		/** The group header's text; defaults to the key. */
+		groupLabel?: (key: string) => string;
+		/** A custom group header. */
+		group?: Snippet<[TableGroup<T>]>;
+		/** A semantic mark for a row: a 3px leading stripe. */
+		rowTone?: (row: T) => TableRowTone | null | undefined;
+		/** A severity mark for a row (wins over `rowTone`). */
+		rowSeverity?: (row: T) => Severity | null | undefined;
+		/** Table widths below which priority 2 / 3 columns hide (default 480 / 720). */
+		hideBelow?: TablePriorityWidths;
 		class?: string;
 	}
 
@@ -90,6 +133,12 @@ belong in the pane's ActionBar.
 		loadingRows = 5,
 		missing = '—',
 		minWidth,
+		groupBy,
+		groupLabel,
+		group,
+		rowTone,
+		rowSeverity,
+		hideBelow,
 		class: className = ''
 	}: Props = $props();
 
@@ -98,7 +147,46 @@ belong in the pane's ActionBar.
 	const rowEls: HTMLTableRowElement[] = $state([]);
 
 	const span = $derived(columns.length + (selectable ? 1 : 0));
-	const keys = $derived(rows.map(rowKey));
+	const groups = $derived(groupBy ? groupRows(rows, groupBy) : null);
+	// The rows in display order: grouped rows are shown group by group.
+	const view = $derived(groups ? groups.flatMap((g) => g.rows) : rows);
+	const keys = $derived(view.map(rowKey));
+
+	let root: HTMLDivElement | undefined = $state();
+	let width = $state<number | null>(null);
+	const hidden = $derived(hideBelow && width !== null ? hiddenPriorities(width, hideBelow) : []);
+
+	$effect(() => {
+		if (!hideBelow || !root || typeof ResizeObserver === 'undefined') return;
+		const el = root;
+		width = el.clientWidth;
+		const ro = new ResizeObserver(() => (width = el.clientWidth));
+		ro.observe(el);
+		return () => ro.disconnect();
+	});
+
+	function groupRows(list: readonly T[], by: (row: T) => string) {
+		const map = new Map<string, T[]>();
+		for (const row of list) {
+			const key = by(row);
+			const bucket = map.get(key);
+			if (bucket) bucket.push(row);
+			else map.set(key, [row]);
+		}
+		let start = 0;
+		return [...map].map(([key, groupRows]) => {
+			const g = { key, label: groupLabel?.(key) ?? key, rows: groupRows, count: groupRows.length, start };
+			start += groupRows.length;
+			return g;
+		});
+	}
+
+	function markOf(row: T): string | undefined {
+		const severity = rowSeverity?.(row);
+		if (severity) return severityVars(severity).mark;
+		const tone = rowTone?.(row);
+		return tone ? `var(--ds-${tone})` : undefined;
+	}
 	const selectedCount = $derived(keys.filter((k) => selected.has(k)).length);
 	const headerChecked = $derived<boolean | 'mixed'>(
 		selectedCount === 0 ? false : selectedCount === keys.length ? true : 'mixed'
@@ -163,7 +251,7 @@ belong in the pane's ActionBar.
 	}
 
 	function focusRow(index: number) {
-		const i = Math.max(0, Math.min(rows.length - 1, index));
+		const i = Math.max(0, Math.min(view.length - 1, index));
 		focusIndex = i;
 		rowEls[i]?.focus();
 	}
@@ -185,7 +273,7 @@ belong in the pane's ActionBar.
 				break;
 			case 'End':
 				event.preventDefault();
-				focusRow(rows.length - 1);
+				focusRow(view.length - 1);
 				break;
 			case ' ':
 				if (!selectable) return;
@@ -214,7 +302,61 @@ belong in the pane's ActionBar.
 	{/if}
 {/snippet}
 
-<div class="ds-table {className}" data-density={density} style:--ds-table-min={minWidth}>
+{#snippet bodyRow(row: T, index: number)}
+	{@const link = href?.(row)}
+	{@const mark = markOf(row)}
+	<tr
+		bind:this={rowEls[index]}
+		tabindex={index === focusIndex ? 0 : -1}
+		data-selected={selectable && selected.has(keys[index]) ? '' : undefined}
+		data-link={link ? '' : undefined}
+		data-mark={mark ? '' : undefined}
+		data-tone={rowSeverity?.(row) ?? rowTone?.(row) ?? undefined}
+		style:--row-mark={mark}
+		onclick={(event) => onRowClick(event, index)}
+		onkeydown={(event) => onRowKeydown(event, index)}
+		onfocus={() => (focusIndex = index)}
+	>
+		{#if selectable}
+			<td class="sel">
+				<Checkbox
+					hideLabel
+					label="Select row"
+					checked={selected.has(keys[index])}
+					onclick={(event) => clickRowCheckbox(event, index)}
+				/>
+			</td>
+		{/if}
+		{#each columns as column, ci (column.key)}
+			{@const value = valueOf(row, column)}
+			<td
+				data-align={column.align ?? 'start'}
+				data-priority={column.priority ?? 1}
+				data-mono={column.mono ? '' : undefined}
+			>
+				<div
+					class="cell"
+					title={!column.cell && !cell && !isMissing(value) ? String(value) : undefined}
+				>
+					{#if ci === 0 && link}
+						<a class="row-link" href={link} tabindex="-1">{@render content(row, column, value)}</a>
+					{:else}
+						{@render content(row, column, value)}
+					{/if}
+				</div>
+			</td>
+		{/each}
+	</tr>
+{/snippet}
+
+<div
+	bind:this={root}
+	class="ds-table {className}"
+	data-density={density}
+	data-priority-at={hideBelow ? '' : undefined}
+	data-hide={hidden.length ? hidden.join(' ') : undefined}
+	style:--ds-table-min={minWidth}
+>
 	<table aria-label={label} aria-busy={loading ? 'true' : undefined}>
 		<thead>
 			<tr>
@@ -256,69 +398,50 @@ belong in the pane's ActionBar.
 				{/each}
 			</tr>
 		</thead>
-		<tbody>
-			{#if loading}
-				{#each Array.from({ length: loadingRows }, (_, i) => i) as i (i)}
-					<tr class="skeleton">
-						{#if selectable}<td class="sel"></td>{/if}
-						{#each columns as column (column.key)}
-							<td data-priority={column.priority ?? 1}>
-								<SkeletonLoader label={null} width={i % 2 ? '45%' : '65%'} />
-							</td>
-						{/each}
+		{#if loading || view.length === 0 || !groups}
+			<tbody>
+				{#if loading}
+					{#each Array.from({ length: loadingRows }, (_, i) => i) as i (i)}
+						<tr class="skeleton">
+							{#if selectable}<td class="sel"></td>{/if}
+							{#each columns as column (column.key)}
+								<td data-priority={column.priority ?? 1}>
+									<SkeletonLoader label={null} width={i % 2 ? '45%' : '65%'} />
+								</td>
+							{/each}
+						</tr>
+					{/each}
+				{:else if view.length === 0}
+					<tr class="empty">
+						<td colspan={span}>
+							{#if empty}{@render empty()}{:else}<EmptyState title="Nothing to show" />{/if}
+						</td>
 					</tr>
-				{/each}
-			{:else if rows.length === 0}
-				<tr class="empty">
-					<td colspan={span}>
-						{#if empty}{@render empty()}{:else}<EmptyState title="Nothing to show" />{/if}
-					</td>
-				</tr>
-			{:else}
-				{#each rows as row, index (keys[index])}
-					{@const link = href?.(row)}
-					<tr
-						bind:this={rowEls[index]}
-						tabindex={index === focusIndex ? 0 : -1}
-						data-selected={selectable && selected.has(keys[index]) ? '' : undefined}
-						data-link={link ? '' : undefined}
-						onclick={(event) => onRowClick(event, index)}
-						onkeydown={(event) => onRowKeydown(event, index)}
-						onfocus={() => (focusIndex = index)}
-					>
-						{#if selectable}
-							<td class="sel">
-								<Checkbox
-									hideLabel
-									label="Select row"
-									checked={selected.has(keys[index])}
-									onclick={(event) => clickRowCheckbox(event, index)}
-								/>
-							</td>
-						{/if}
-						{#each columns as column, ci (column.key)}
-							{@const value = valueOf(row, column)}
-							<td
-								data-align={column.align ?? 'start'}
-								data-priority={column.priority ?? 1}
-								data-mono={column.mono ? '' : undefined}
-							>
-								<div
-									class="cell"
-									title={!column.cell && !cell && !isMissing(value) ? String(value) : undefined}
-								>
-									{#if ci === 0 && link}
-										<a class="row-link" href={link} tabindex="-1">{@render content(row, column, value)}</a>
-									{:else}
-										{@render content(row, column, value)}
-									{/if}
-								</div>
-							</td>
-						{/each}
+				{:else}
+					{#each view as row, index (keys[index])}
+						{@render bodyRow(row, index)}
+					{/each}
+				{/if}
+			</tbody>
+		{:else}
+			{#each groups as g (g.key)}
+				<tbody>
+					<tr class="group-row">
+						<th class="group" scope="rowgroup" colspan={span}>
+							{#if group}
+								{@render group({ key: g.key, label: g.label, rows: g.rows, count: g.count })}
+							{:else}
+								<span class="group-label">{g.label}</span>
+								<span class="group-count">{g.count.toLocaleString()}</span>
+							{/if}
+						</th>
 					</tr>
-				{/each}
-			{/if}
-		</tbody>
+					{#each g.rows as row, i (keys[g.start + i])}
+						{@render bodyRow(row, g.start + i)}
+					{/each}
+				</tbody>
+			{/each}
+		{/if}
 	</table>
 </div>
 
@@ -450,6 +573,30 @@ belong in the pane's ActionBar.
 	tbody tr[data-selected]:hover td {
 		background: var(--ds-accent-tint-hover);
 	}
+	/* A row mark: a 3px leading stripe, drawn inside the first cell so it never shifts a column. */
+	tbody tr[data-mark] > :first-child {
+		box-shadow: inset 3px 0 0 var(--row-mark);
+	}
+	th.group {
+		top: 34px;
+		height: 32px;
+		border-bottom: 1px solid var(--ds-border-subtle);
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-xs);
+		text-align: start;
+	}
+	tbody:not(:first-of-type) th.group {
+		border-top: 1px solid var(--ds-border-subtle);
+	}
+	.group-label {
+		font-weight: 500;
+	}
+	.group-count {
+		margin-inline-start: 6px;
+		color: var(--ds-text-3);
+		font-weight: 400;
+		font-variant-numeric: tabular-nums;
+	}
 	.row-link {
 		color: inherit;
 		text-decoration: none;
@@ -460,13 +607,17 @@ belong in the pane's ActionBar.
 		border-bottom: 0;
 	}
 	@container (max-width: 720px) {
-		[data-priority='3'] {
+		.ds-table:not([data-priority-at]) [data-priority='3'] {
 			display: none;
 		}
 	}
 	@container (max-width: 480px) {
-		[data-priority='2'] {
+		.ds-table:not([data-priority-at]) [data-priority='2'] {
 			display: none;
 		}
+	}
+	.ds-table[data-hide~='2'] [data-priority='2'],
+	.ds-table[data-hide~='3'] [data-priority='3'] {
+		display: none;
 	}
 </style>

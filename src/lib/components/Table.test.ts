@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createRawSnippet } from 'svelte';
 import { fireEvent, render, screen, within } from '@testing-library/svelte';
-import TableComponent from './Table.svelte';
+import TableComponent, { hiddenPriorities } from './Table.svelte';
 import type { TableColumn } from './Table.svelte';
 
 interface Row {
@@ -105,5 +106,100 @@ describe('Table', () => {
 		unmount();
 		render(Table, { ...base, rows: [] });
 		expect(screen.getByText('Nothing to show')).toBeTruthy();
+	});
+
+	it('groups rows under header rows with a count, in the order groups first appear', async () => {
+		const grouped = [
+			{ id: 'a', name: 'Alpha', count: 1, queue: 'Open' },
+			{ id: 'b', name: 'Bravo', count: 2, queue: 'Closed' },
+			{ id: 'c', name: 'Charlie', count: 3, queue: 'Open' }
+		];
+		type G = (typeof grouped)[number];
+		const GTable = TableComponent<G>;
+		render(GTable, {
+			rows: grouped,
+			columns: [{ key: 'name', label: 'Name' }],
+			rowKey: (r: G) => r.id,
+			label: 'Records',
+			groupBy: (r: G) => r.queue,
+			groupLabel: (k: string) => `${k} queue`
+		});
+		const table = screen.getByRole('table', { name: 'Records' });
+		const headers = within(table).getAllByRole('rowheader');
+		expect(headers.map((h) => h.textContent?.replace(/\s+/g, ' ').trim())).toEqual([
+			'Open queue 2',
+			'Closed queue 1'
+		]);
+		expect(headers[0].getAttribute('scope')).toBe('rowgroup');
+		expect(headers[0].getAttribute('colspan')).toBe('1');
+		expect(table.querySelectorAll('tbody')).toHaveLength(2);
+		// Rows show group by group, and the arrow keys follow that order across groups.
+		const dataRows = [...table.querySelectorAll('tbody tr:not(.group-row)')] as HTMLElement[];
+		expect(dataRows.map((r) => r.textContent?.trim())).toEqual(['Alpha', 'Charlie', 'Bravo']);
+		dataRows[1].focus();
+		await fireEvent.keyDown(dataRows[1], { key: 'ArrowDown' });
+		expect(document.activeElement).toBe(dataRows[2]);
+	});
+
+	it('renders a custom group header', () => {
+		const group = createRawSnippet((g: () => { label: string; count: number }) => ({
+			render: () => `<span class="custom">${g().label} (${g().count})</span>`
+		}));
+		render(Table, { ...base, groupBy: (r: Row) => (r.count === null ? 'Unknown' : 'Known'), group });
+		expect(screen.getByText('Known (2)')).toBeTruthy();
+		expect(screen.getByText('Unknown (1)')).toBeTruthy();
+	});
+
+	it('marks a row with a tone or a severity stripe', () => {
+		render(Table, {
+			...base,
+			rowTone: (r: Row) => (r.count === null ? 'warning' : null),
+			rowSeverity: (r: Row) => (r.id === 'r3' ? 'high' : null)
+		});
+		const r = bodyRows();
+		expect(r[0].hasAttribute('data-mark')).toBe(false);
+		expect(r[1].dataset.tone).toBe('warning');
+		expect(r[1].style.getPropertyValue('--row-mark')).toBe('var(--ds-warning)');
+		expect(r[2].dataset.tone).toBe('high');
+		expect(r[2].style.getPropertyValue('--row-mark')).toBe('var(--ds-sev-high)');
+	});
+});
+
+describe('Table column priority widths', () => {
+	afterEach(() => vi.unstubAllGlobals());
+
+	it('hides priorities below the default or the given widths', () => {
+		expect(hiddenPriorities(800)).toEqual([]);
+		expect(hiddenPriorities(600)).toEqual([3]);
+		expect(hiddenPriorities(400)).toEqual([2, 3]);
+		expect(hiddenPriorities(900, { 3: 960 })).toEqual([3]);
+		expect(hiddenPriorities(600, { 2: 640, 3: 960 })).toEqual([2, 3]);
+	});
+
+	it('measures its own width when hideBelow is set', async () => {
+		let notify = () => {};
+		vi.stubGlobal(
+			'ResizeObserver',
+			class {
+				constructor(cb: () => void) {
+					notify = cb;
+				}
+				observe() {}
+				disconnect() {}
+			}
+		);
+		const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
+		const { container } = render(Table, {
+			...base,
+			columns: [...columns, { key: 'id', label: 'Id', priority: 3 }],
+			hideBelow: { 3: 960 }
+		});
+		const root = container.querySelector('.ds-table') as HTMLElement;
+		expect(root.hasAttribute('data-priority-at')).toBe(true);
+		await vi.waitFor(() => expect(root.dataset.hide).toBe('3'));
+		width.mockReturnValue(1200);
+		notify();
+		await vi.waitFor(() => expect(root.dataset.hide).toBeUndefined());
+		width.mockRestore();
 	});
 });

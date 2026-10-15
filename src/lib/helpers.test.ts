@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { countActive, filtersFromParams, filtersToParams, type FilterSection } from './filters.js';
 import { SEVERITIES, severityLabel, severityRank } from './severity.js';
-import { formatAge, formatRelative } from './time.js';
+import { daysUntil, formatAge, formatDue, formatRelative } from './time.js';
 
 const now = new Date('2026-10-14T12:00:00Z');
 const ago = (ms: number) => new Date(now.getTime() - ms);
@@ -75,5 +75,18 @@ describe('filters', () => {
 	it('counts active filters', () => {
 		expect(countActive({ status: ['ready', 'hold'], owner: ['a'] })).toBe(3);
 		expect(countActive({})).toBe(0);
+	});
+});
+
+describe('due dates', () => {
+	it('counts whole local days to a due date, a bare date being that day', () => {
+		const now = new Date(2026, 9, 14, 23, 30);
+		expect(daysUntil('2026-10-14', now)).toBe(0);
+		expect(daysUntil('2026-10-15', now)).toBe(1);
+		expect(daysUntil(new Date(2026, 9, 15, 0, 10), now)).toBe(1);
+		expect(daysUntil('2026-10-11', now)).toBe(-3);
+		expect(formatDue('2026-10-20', now)).toBe('in 6 days');
+		expect(formatDue('2026-10-14', now)).toBe('due today');
+		expect(formatDue('2026-10-13', now)).toBe('1 day overdue');
 	});
 });

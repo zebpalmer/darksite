@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Table, type TableColumn, type TableSort } from '#lib';
+	import { Button, Pane, StatusBadge, Table, type TableColumn, type TableSort } from '#lib';
 
 	interface Item {
 		id: string;
@@ -27,7 +27,7 @@
 		{ key: 'name', label: 'Name', sortable: true },
 		{ key: 'serial', label: 'Serial', mono: true, width: '110px', priority: 2 },
 		{ key: 'owner', label: 'Owner', sortable: true, priority: 2 },
-		{ key: 'status', label: 'Status', width: '120px', priority: 3 },
+		{ key: 'status', label: 'Status', width: '120px', priority: 3, cell: statusCell },
 		{ key: 'updated', label: 'Updated', width: '100px', priority: 3 },
 		{ key: 'count', label: 'Items', align: 'end', width: '96px', sortable: true }
 	];
@@ -36,6 +36,8 @@
 	let selected = $state(new Set<string>());
 	let dense = $state(false);
 	let loading = $state(false);
+	let grouped = $state(false);
+	let marked = $state(false);
 
 	const rows = $derived(
 		[...all].sort((a, b) => {
@@ -48,11 +50,22 @@
 	);
 </script>
 
+{#snippet statusCell(row: Item)}
+	<StatusBadge
+		label={row.status}
+		tone={row.status === 'Ready' ? 'success' : row.status === 'On hold' ? 'warning' : 'neutral'}
+	/>
+{/snippet}
+
 <svelte:head><title>Table · darksite</title></svelte:head>
 <h1>Table</h1>
 <div class="bar">
 	<Button size="dense" pressed={dense} onclick={() => (dense = !dense)}>Dense</Button>
 	<Button size="dense" pressed={loading} onclick={() => (loading = !loading)}>Loading</Button>
+	<Button size="dense" pressed={grouped} onclick={() => (grouped = !grouped)}
+		>Group by status</Button
+	>
+	<Button size="dense" pressed={marked} onclick={() => (marked = !marked)}>Row marks</Button>
 	<span class="meta">{selected.size} selected</span>
 </div>
 <div class="pane">
@@ -67,12 +80,28 @@
 		href={(r) => `#${r.id}`}
 		density={dense ? 'dense' : 'default'}
 		{loading}
+		groupBy={grouped ? (r) => r.status : undefined}
+		rowTone={marked
+			? (r) => (r.status === 'On hold' ? 'warning' : r.status === 'Ready' ? 'success' : null)
+			: undefined}
 	/>
 </div>
 <p>
 	A work view: the table is the pane's scrolling body, so its header sticks. Narrow the window and
 	the priority 3, then priority 2, columns drop.
 </p>
+
+<div class="wide">
+	<Pane title="Wide table, earlier drops" meta="hideBelow 3: 960 · 2: 640">
+		<Table
+			{rows}
+			{columns}
+			rowKey={(r) => r.id}
+			label="Records, earlier drops"
+			hideBelow={{ 2: 640, 3: 960 }}
+		/>
+	</Pane>
+</div>
 
 <style>
 	h1 {
@@ -106,5 +135,8 @@
 	p {
 		color: var(--ds-text-3);
 		font-size: var(--ds-text-xs);
+	}
+	.wide {
+		margin-top: var(--ds-space-6);
 	}
 </style>

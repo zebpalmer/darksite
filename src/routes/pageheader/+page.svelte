@@ -11,6 +11,7 @@
 	{/snippet}
 </PageHeader>
 <p>Scroll: the header sticks, flush with the column's edges.</p>
+<PageHeader title="R-00412" level={2} mono count="Identifier title" />
 {#each { length: 40 } as _, i (i)}
 	<div class="line">Record {i + 1}</div>
 {/each}

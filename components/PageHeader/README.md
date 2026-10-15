@@ -24,7 +24,9 @@ narrow header.
 ## What the consumer provides
 
 `title`, `count` (a number, localized — or preformatted text like "38 this week"), `level` (the
-heading level, default 1), `actions` snippet (search, Views, Sort, density, Filters), `sticky`
+heading level, default 1), `mono` (the title is an identifier — a serial, a hash, a path, a
+record number — and is set in mono with tabular figures, as identifiers are everywhere else),
+`actions` snippet (search, Views, Sort, density, Filters), `sticky`
 (sticks to the top of the scrolling pane at `--ds-z-sticky`), `class`, children (inline after the
 title).
 

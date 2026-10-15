@@ -2,6 +2,7 @@
 	import Star from '@lucide/svelte/icons/star';
 	import { StatusBadge } from '#lib';
 	const twelveDaysAgo = new Date(Date.now() - 12 * 86_400_000);
+	const day = (offset: number) => new Date(Date.now() + offset * 86_400_000);
 </script>
 
 <svelte:head><title>StatusBadge · darksite</title></svelte:head>
@@ -13,6 +14,11 @@
 	<StatusBadge label="On hold" tone="warning" since={twelveDaysAgo} />
 	<StatusBadge label="Failed" tone="danger" />
 	<StatusBadge label="Retired" tone="muted" />
+</div>
+<div class="row">
+	<StatusBadge label="Review" until={day(3)} />
+	<StatusBadge label="Review" until={day(0)} />
+	<StatusBadge label="Review" until={day(-2)} />
 </div>
 <p>Static and non-interactive: a clickable state is a Chip, an ordered scale is a SeverityBadge.</p>
 

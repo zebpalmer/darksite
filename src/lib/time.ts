@@ -82,3 +82,39 @@ export function formatCountdown(remainingMs: number | null | undefined): string 
 			: Math.max(0, remainingMs);
 	return formatDuration(Math.ceil(ms / 1000));
 }
+
+/** A day as local midnight; a bare `YYYY-MM-DD` is that day, never UTC midnight. */
+function localDay(value: DateInput): Date {
+	if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.trim())) {
+		const [y, m, d] = value.trim().split('-').map(Number);
+		return new Date(y, m - 1, d);
+	}
+	return toDate(value);
+}
+
+/**
+ * Whole calendar days from `now` to `due`, in the viewer's time zone: `0` on the day, `3` three
+ * days ahead, `-2` two days past. A bare `YYYY-MM-DD` counts as that day.
+ */
+export function daysUntil(due: DateInput, now: DateInput = Date.now()): number {
+	const day = (value: DateInput) => {
+		const d = localDay(value);
+		return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+	};
+	return Math.round((day(due) - day(now)) / DAY);
+}
+
+/** Against a due date: `in 3 days`, `in 1 day`, `due today`, `1 day overdue`, `2 days overdue`. */
+export function formatDue(due: DateInput, now: DateInput = Date.now()): string {
+	const n = daysUntil(due, now);
+	const days = (k: number) => `${k} ${k === 1 ? 'day' : 'days'}`;
+	if (n === 0) return 'due today';
+	return n > 0 ? `in ${days(n)}` : `${days(-n)} overdue`;
+}
+
+/** The exact due date for a tooltip: a bare date is the date alone, a timestamp `formatExact`. */
+export function formatDueExact(due: DateInput, locale?: string): string {
+	return typeof due === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(due.trim())
+		? new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(localDay(due))
+		: formatExact(due, locale);
+}
