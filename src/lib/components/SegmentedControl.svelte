@@ -196,4 +196,7 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 	.seg:focus-visible {
 		outline-offset: 0;
 	}
+	.seg[aria-checked='true'] .count {
+		color: var(--ds-text-2);
+	}
 </style>

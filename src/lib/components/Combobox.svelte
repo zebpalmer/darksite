@@ -415,4 +415,7 @@ the list is open.
 			right: 0;
 		}
 	}
+	.option[aria-selected='true'] .meta {
+		color: var(--ds-text-2);
+	}
 </style>

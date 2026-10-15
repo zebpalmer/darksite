@@ -228,4 +228,7 @@ a title, a meta line and trailing controls. 40px by default, 32px `dense`, 44px 
 		font-size: var(--ds-text-sm);
 		font-variant-numeric: tabular-nums;
 	}
+	[data-current] .trail {
+		color: var(--ds-text-2);
+	}
 </style>

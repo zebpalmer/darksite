@@ -551,7 +551,7 @@ belong in the pane's ActionBar.
 		text-overflow: ellipsis;
 	}
 	.sort :global(.idle) {
-		opacity: 0.5;
+		color: var(--ds-text-3);
 	}
 	[data-align='end'] .sort {
 		flex-direction: row-reverse;

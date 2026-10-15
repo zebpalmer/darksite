@@ -302,6 +302,5 @@ truncating names.
 	.count {
 		font-size: var(--ds-text-xs);
 		font-variant-numeric: tabular-nums;
-		opacity: 0.8;
 	}
 </style>

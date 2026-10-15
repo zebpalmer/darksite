@@ -19,8 +19,26 @@ function resolve(name, theme, depth = 0) {
 	const alias = /^\{(.+)\}$/.exec(raw);
 	return alias && depth < 16 ? resolve(alias[1], theme, depth + 1) : raw;
 }
-function luminance(hex) {
-	const h = hex.replace('#', '');
+// A color as [r, g, b, a] with channels 0–255: #rrggbb or rgba(r, g, b, a).
+function rgba(raw) {
+	const m = /^rgba?\(([^)]+)\)$/.exec(raw.trim());
+	if (m) {
+		const [r, g, b, a = 1] = m[1].split(',').map(Number);
+		return [r, g, b, a];
+	}
+	const h = raw.replace('#', '');
+	return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)).concat(1);
+}
+const hex = ([r, g, b]) =>
+	'#' + [r, g, b].map((c) => Math.round(c).toString(16).padStart(2, '0')).join('');
+// A translucent ground over whatever is behind it: checked over white and over black, worst case.
+function grounds(raw) {
+	const [r, g, b, a] = rgba(raw);
+	if (a >= 1) return [hex([r, g, b])];
+	return [255, 0].map((k) => hex([r, g, b].map((c) => c * a + k * (1 - a))));
+}
+function luminance(color) {
+	const h = color.replace('#', '');
 	const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 	const f = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 	return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
@@ -85,6 +103,8 @@ add('ds-border-subtle', bgs(1, 2), MARK, 'hairline');
 add('ds-border', bgs(1, 3), MARK, 'control edge');
 add('ds-border-strong', bgs(4), MARK, 'secondary button edge');
 add('ds-accent-mixed', bgs(3), MARK, 'mixed chip edge');
+add('ds-text-2', bgs(5), TEXT, 'secondary text on the brightest ground (hover and active states)');
+add('ds-on-media', ['ds-media-scrim'], TEXT, 'text over an image, on its scrim');
 
 // Documented in the README's Accessibility section. Each must still fail, or it should be removed.
 const SHORTFALLS = new Set([
@@ -110,7 +130,9 @@ const notes = [];
 const stale = new Set(SHORTFALLS);
 for (const theme of themes) {
 	for (const { fg, bg, target, why } of pairs) {
-		const r = ratio(resolve(fg, theme), resolve(bg, theme));
+		const r = Math.min(
+			...grounds(resolve(bg, theme)).map((g) => ratio(hex(rgba(resolve(fg, theme))), g))
+		);
 		const need = target[theme] ?? target[first];
 		const key = `${fg}|${bg}|${theme}`;
 		const ok = r >= need;

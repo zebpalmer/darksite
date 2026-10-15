@@ -259,4 +259,10 @@ rule), `bodyProps` (spread onto the label button, so it can trigger a Popover or
 			height: 32px;
 		}
 	}
+	/* Muted parts step up to ds-text-2 on the brighter grounds (ds-text-3 stops at ds-bg-3). */
+	button.ds-chip:not(:disabled):hover .count,
+	.ds-chip[data-variant='token'] .count,
+	.ds-chip[data-variant='token'] .remove {
+		color: var(--ds-text-2);
+	}
 </style>

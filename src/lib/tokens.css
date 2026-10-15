@@ -96,6 +96,8 @@
   --ds-danger-contrast: #10111b;
   --ds-danger-strong: var(--color-error-400);
   --ds-scrim: rgba(8, 9, 15, 0.72);
+  --ds-media-scrim: rgba(8, 9, 15, 0.72);
+  --ds-on-media: #ffffff;
   --ds-focus: var(--color-primary-300);
   --ds-sev-info: #7d8fb3;
   --ds-sev-info-bg: #232838;

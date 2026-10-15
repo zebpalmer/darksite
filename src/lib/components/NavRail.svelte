@@ -381,7 +381,7 @@ that list, not disabled.
 	.version {
 		padding: 0 4px;
 		color: var(--ds-text-3);
-		font-size: 11px;
+		font-size: var(--ds-text-xs);
 		font-variant-numeric: tabular-nums;
 	}
 	.tip {
@@ -410,5 +410,8 @@ that list, not disabled.
 			width: 44px;
 			height: 44px;
 		}
+	}
+	.item[aria-current='page'] .badge {
+		color: var(--ds-text-2);
 	}
 </style>

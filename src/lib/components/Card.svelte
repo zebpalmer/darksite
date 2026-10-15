@@ -144,8 +144,8 @@ as ★ n, display only.
 		gap: 4px;
 		padding: 1px 6px;
 		border-radius: var(--ds-radius-sm);
-		background: var(--ds-scrim);
-		color: #fff;
+		background: var(--ds-media-scrim);
+		color: var(--ds-on-media);
 		font-size: var(--ds-text-xs);
 		line-height: var(--ds-lh-xs);
 		font-variant-numeric: tabular-nums;
@@ -163,8 +163,8 @@ as ★ n, display only.
 		width: 24px;
 		height: 24px;
 		border-radius: 50%;
-		background: var(--ds-scrim);
-		color: #fff;
+		background: var(--ds-media-scrim);
+		color: var(--ds-on-media);
 	}
 	.progress {
 		position: absolute;
