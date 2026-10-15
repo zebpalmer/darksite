@@ -46,6 +46,34 @@
 		text-decoration-thickness: 2px;
 	}
 
+	/* The `tooltip` attachment's bubble, which lives outside any component. */
+	.ds-tooltip {
+		position: fixed;
+		inset: auto;
+		top: 0;
+		left: 0;
+		z-index: var(--ds-z-tooltip);
+		width: max-content;
+		max-width: min(280px, calc(100vw - 16px));
+		margin: 0;
+		padding: 4px 8px;
+		overflow: visible;
+		border: 0;
+		border-radius: var(--ds-radius-xs);
+		background: var(--ds-bg-4);
+		box-shadow: var(--ds-elev-2);
+		color: var(--ds-text-1);
+		font-family: var(--font-sans);
+		font-size: var(--ds-text-xs);
+		line-height: var(--ds-lh-xs);
+		font-weight: 400;
+		pointer-events: none;
+		animation: ds-fade var(--ds-dur-fast) var(--ds-ease-out);
+	}
+	.ds-tooltip[hidden] {
+		display: none;
+	}
+
 	::selection {
 		background-color: var(--ds-accent-tint-hover);
 		color: var(--ds-text-1);

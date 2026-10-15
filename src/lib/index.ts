@@ -63,6 +63,9 @@ export { default as Stepper } from './components/Stepper.svelte';
 export { default as ErrorPage } from './components/ErrorPage.svelte';
 export { default as FactList } from './components/FactList.svelte';
 export { default as Missing } from './components/Missing.svelte';
+export { default as LoadMore } from './components/LoadMore.svelte';
+export { default as Select } from './components/Select.svelte';
+export { default as Textarea } from './components/Textarea.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
@@ -182,3 +185,5 @@ export { initials } from './labels.js';
 export { errorCopy, type ErrorCopy } from './components/ErrorPage.svelte';
 export type { RailSlotArgs, TipHandlers } from './components/NavRail.svelte';
 export { resetStrings, setStrings, strings, type Strings } from './strings.svelte.js';
+export type { SelectOption } from './components/Select.svelte';
+export { tooltip, type TooltipOptions } from './tooltip.js';

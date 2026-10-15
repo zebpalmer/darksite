@@ -8,13 +8,14 @@ Variants:
 - `ghost` — transparent, ds-text-2. A frequent low-risk toolbar action.
 - `danger` — ghost in ds-danger-text. Irreversible, and always confirmed by a Dialog.
 - `danger-solid` — filled ds-danger. Only the confirm button inside that Dialog.
-- `icon` — square ghost; `label` is required (it becomes the aria-label and the title).
+- `icon` — square ghost; `label` is required (it becomes the aria-label and the tooltip).
 
 Sizes: `dense` 28 · `default` 32 · `comfy` 36 · `touch` 44. A coarse pointer always gets 44.
 
 Props: `variant`, `size`, `icon` / `iconEnd`, `label`, `loading` + `loadingLabel`, `keycap` (also
 sets `aria-keyshortcuts`), `href` (renders an `<a>`), `type` (default `button`), `disabled`,
-`pressed` (`aria-pressed`), `full`, `class`, children, and any other attribute or handler — every
+`pressed` (`aria-pressed`), `full`, `title` (shown as an accessible `tooltip`, not the browser's
+native one), `class`, children, and any other attribute or handler — every
 native `<button>` and `<a>` attribute passes through (`form` to submit a form elsewhere in the
 page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 -->
@@ -24,6 +25,7 @@ page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 
 	import KeyCap from './KeyCap.svelte';
 	import Spinner from './Spinner.svelte';
+	import { tooltip } from '../tooltip.js';
 	import type { ControlSize, IconComponent } from '../types.js';
 
 	type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'danger-solid' | 'icon';
@@ -68,6 +70,7 @@ page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 		pressed,
 		full = false,
 		class: className = '',
+		title,
 		children,
 		...rest
 	}: Props = $props();
@@ -91,7 +94,7 @@ page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 	aria-pressed={pressed === undefined ? undefined : pressed ? 'true' : 'false'}
 	aria-label={variant === 'icon' ? (label ?? rest['aria-label']) : rest['aria-label']}
 	aria-keyshortcuts={shortcut}
-	title={rest.title ?? (variant === 'icon' ? label : undefined)}
+	{@attach tooltip(title ?? (variant === 'icon' ? label : undefined))}
 	class="ds-btn {className}"
 	class:full
 	data-variant={variant}

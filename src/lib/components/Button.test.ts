@@ -14,8 +14,21 @@ describe('Button', () => {
 	it('names an icon button by its label and shows it as a tooltip, with no visible text', () => {
 		render(Button, { variant: 'icon', label: 'Close' });
 		const button = screen.getByRole('button', { name: 'Close' });
-		expect(button.getAttribute('title')).toBe('Close');
+		expect(button.hasAttribute('title')).toBe(false);
 		expect(button.textContent?.trim()).toBe('');
+		// The tooltip repeats the name, so it is hidden from assistive technology, not a description.
+		const tip = document.querySelector('.ds-tooltip')!;
+		expect(tip.textContent).toBe('Close');
+		expect(tip.getAttribute('aria-hidden')).toBe('true');
+		expect(button.hasAttribute('aria-describedby')).toBe(false);
+	});
+
+	it('turns a title into a tooltip that describes the button', () => {
+		render(Button, { label: 'Export', title: 'Exports the filtered rows' });
+		const button = screen.getByRole('button', { name: 'Export' });
+		const tip = document.getElementById(button.getAttribute('aria-describedby')!)!;
+		expect(tip.getAttribute('role')).toBe('tooltip');
+		expect(tip.textContent).toBe('Exports the filtered rows');
 	});
 
 	it('renders a link when given an href', () => {

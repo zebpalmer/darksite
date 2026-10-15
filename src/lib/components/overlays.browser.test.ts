@@ -8,6 +8,7 @@ import { render, screen } from '@testing-library/svelte';
 import OverlayHarness from '../../tests/browser/OverlayHarness.svelte';
 import TableHarness from '../../tests/browser/TableHarness.svelte';
 import JustifiedHarness from '../../tests/browser/JustifiedHarness.svelte';
+import TooltipHarness from '../../tests/browser/TooltipHarness.svelte';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
@@ -139,5 +140,21 @@ describe('JustifiedGrid in a browser', () => {
 			const used = tiles.reduce((w, t) => w + t.getBoundingClientRect().width, 0) + 6 * (tiles.length - 1);
 			expect(Math.abs(used - width)).toBeLessThan(2);
 		}
+	});
+});
+
+describe('tooltip in a browser', () => {
+	it('shows on keyboard focus, describes the element, and hides on Esc', async () => {
+		render(TooltipHarness);
+		const button = screen.getByRole('button', { name: 'Export' });
+		await userEvent.keyboard('{Tab}');
+		expect(document.activeElement).toBe(button);
+		await settle();
+		const tip = document.getElementById(button.getAttribute('aria-describedby')!)!;
+		expect(tip.textContent).toBe('Exports the filtered rows');
+		expect(tip.hidden).toBe(false);
+		expect(tip.matches(':popover-open')).toBe(true);
+		await userEvent.keyboard('{Escape}');
+		expect(tip.hidden).toBe(true);
 	});
 });

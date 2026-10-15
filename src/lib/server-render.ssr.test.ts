@@ -26,9 +26,11 @@ const props: Record<string, Record<string, unknown>> = {
 	HelpTip: { text: 'A note' },
 	Input: { value: 'x' },
 	KeyCap: { keys: 'shift+enter' },
+	LoadMore: { shown: 50, total: 295, onLoadMore: () => {} },
 	Meter: { segments: [{ value: 1, label: 'Done' }], max: 2, label: 'Progress' },
 	NavRail: { items: [{ id: 'a', label: 'Home', href: '/' }], rememberAs: 'main' },
 	PageHeader: { title: 'Records', count: 12 },
+	Select: { options: [{ value: 'a', label: 'Open' }] },
 	SegmentedControl: { options: [{ value: 'a', label: 'A' }], value: 'a', label: 'Mode' },
 	SeverityBadge: { severity: 'high' },
 	SeverityPicker: { value: null },
@@ -43,6 +45,7 @@ const props: Record<string, Record<string, unknown>> = {
 		label: 'Records'
 	},
 	Tabs: { tabs: [{ value: 'a', label: 'Queue', count: 3 }], value: 'a', label: 'Lanes' },
+	Textarea: { value: 'Note' },
 	Toaster: {},
 	TopBar: {}
 };

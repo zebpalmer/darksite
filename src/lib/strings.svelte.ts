@@ -58,6 +58,12 @@ const DEFAULTS = {
 	optionCount: (n: number) => plural(n, 'option', 'options'),
 	create: (text: string) => `Create "${text}"`,
 
+	// Long lists
+	loadMore: 'Load more',
+	showing: (shown: number, total: number) =>
+		`Showing ${shown.toLocaleString()} of ${total.toLocaleString()}`,
+	chooseOption: 'Choose…',
+
 	// Table
 	selectRow: 'Select row',
 	selectAllRows: 'Select all rows',
