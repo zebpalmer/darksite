@@ -89,7 +89,9 @@ belong in the pane's ActionBar.
 		label: string;
 		density?: 'default' | 'dense';
 		selectable?: boolean;
+		/** Bindable. `undefined` is no selection, so it can be bound to a map entry not yet set. */
 		selected?: Set<string>;
+		/** Bindable. `undefined` is unsorted, so it can be bound to a map entry not yet set. */
 		sort?: TableSort | null;
 		onsort?: (sort: TableSort) => void;
 		/** Makes the whole row a link: pointer click, and Enter on a focused row. */
@@ -125,8 +127,10 @@ belong in the pane's ActionBar.
 		label,
 		density = 'default',
 		selectable = false,
-		selected = $bindable(new Set<string>()),
-		sort = $bindable(null),
+		// No fallbacks: a bindable prop with one rejects `bind:sort={map[key]}` while the entry is
+		// undefined. `undefined` reads as no selection and no sort.
+		selected = $bindable(),
+		sort = $bindable(),
 		onsort,
 		href,
 		cell,
@@ -148,7 +152,6 @@ belong in the pane's ActionBar.
 	let lastClicked: number | null = null;
 	const rowEls: HTMLTableRowElement[] = $state([]);
 
-	const span = $derived(columns.length + (selectable ? 1 : 0));
 	const groups = $derived(groupBy ? groupRows(rows, groupBy) : null);
 	// The rows in display order: grouped rows are shown group by group.
 	const view = $derived(groups ? groups.flatMap((g) => g.rows) : rows);
@@ -158,10 +161,18 @@ belong in the pane's ActionBar.
 
 	let root: HTMLDivElement | undefined = $state();
 	let width = $state<number | null>(null);
-	const hidden = $derived(hideBelow && width !== null ? hiddenPriorities(width, hideBelow) : []);
+	// Once measured, the table hides its columns itself; until then (server rendering, no
+	// ResizeObserver) the container queries do, at the default widths.
+	const hidden = $derived(width !== null ? hiddenPriorities(width, hideBelow) : []);
+	// A full-width row (a group header, the empty state) spans the visible columns only. Spanning a
+	// hidden one would add an empty track that takes the leftover width, and the rows would stop
+	// short of the table's edge.
+	const span = $derived(
+		columns.filter((c) => !hidden.includes((c.priority ?? 1) as 2 | 3)).length + (selectable ? 1 : 0)
+	);
 
 	$effect(() => {
-		if (!hideBelow || !root || typeof ResizeObserver === 'undefined') return;
+		if (!root || typeof ResizeObserver === 'undefined') return;
 		const el = root;
 		width = el.clientWidth;
 		const ro = new ResizeObserver(() => (width = el.clientWidth));
@@ -191,7 +202,8 @@ belong in the pane's ActionBar.
 		const tone = rowTone?.(row);
 		return tone ? `var(--ds-${tone})` : undefined;
 	}
-	const selectedCount = $derived(keys.filter((k) => selected.has(k)).length);
+	const chosen = $derived(selected ?? new Set<string>());
+	const selectedCount = $derived(keys.filter((k) => chosen.has(k)).length);
 	const headerChecked = $derived<boolean | 'mixed'>(
 		selectedCount === 0 ? false : selectedCount === keys.length ? true : 'mixed'
 	);
@@ -220,14 +232,14 @@ belong in the pane's ActionBar.
 	}
 
 	function toggleAll() {
-		const next = new Set(selected);
+		const next = new Set(chosen);
 		if (headerChecked === true) for (const k of keys) next.delete(k);
 		else for (const k of keys) next.add(k);
 		selected = next;
 	}
 
 	function setRange(from: number, to: number, on: boolean) {
-		const next = new Set(selected);
+		const next = new Set(chosen);
 		for (let i = Math.min(from, to); i <= Math.max(from, to); i++) {
 			if (on) next.add(keys[i]);
 			else next.delete(keys[i]);
@@ -236,7 +248,7 @@ belong in the pane's ActionBar.
 	}
 
 	function clickRowCheckbox(event: MouseEvent, index: number) {
-		const on = !selected.has(keys[index]);
+		const on = !chosen.has(keys[index]);
 		setRange(event.shiftKey && lastClicked !== null ? lastClicked : index, index, on);
 		lastClicked = index;
 	}
@@ -282,7 +294,7 @@ belong in the pane's ActionBar.
 			case ' ':
 				if (!selectable) return;
 				event.preventDefault();
-				setRange(index, index, !selected.has(keys[index]));
+				setRange(index, index, !chosen.has(keys[index]));
 				lastClicked = index;
 				break;
 			case 'Enter':
@@ -312,7 +324,7 @@ belong in the pane's ActionBar.
 	<tr
 		bind:this={rowEls[index]}
 		tabindex={index === stopIndex ? 0 : -1}
-		data-selected={selectable && selected.has(keys[index]) ? '' : undefined}
+		data-selected={selectable && chosen.has(keys[index]) ? '' : undefined}
 		data-link={link ? '' : undefined}
 		data-mark={mark ? '' : undefined}
 		data-tone={rowSeverity?.(row) ?? rowTone?.(row) ?? undefined}
@@ -326,7 +338,7 @@ belong in the pane's ActionBar.
 				<Checkbox
 					hideLabel
 					label={strings.selectRow}
-					checked={selected.has(keys[index])}
+					checked={chosen.has(keys[index])}
 					onclick={(event) => clickRowCheckbox(event, index)}
 				/>
 			</td>
@@ -357,7 +369,7 @@ belong in the pane's ActionBar.
 	bind:this={root}
 	class="ds-table {className}"
 	data-density={density}
-	data-priority-at={hideBelow ? '' : undefined}
+	data-priority-at={hideBelow || width !== null ? '' : undefined}
 	data-hide={hidden.length ? hidden.join(' ') : undefined}
 	style:--ds-table-min={minWidth}
 >
@@ -607,12 +619,12 @@ belong in the pane's ActionBar.
 		padding: 16px var(--ds-table-inset, 12px);
 		border-bottom: 0;
 	}
-	@container (max-width: 720px) {
+	@container (max-width: 719.98px) {
 		.ds-table:not([data-priority-at]) [data-priority='3'] {
 			display: none;
 		}
 	}
-	@container (max-width: 480px) {
+	@container (max-width: 479.98px) {
 		.ds-table:not([data-priority-at]) [data-priority='2'] {
 			display: none;
 		}

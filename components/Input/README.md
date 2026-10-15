@@ -16,7 +16,8 @@ top of that.
 ## What the consumer provides
 
 `value` (bindable), `type` (default `text`), `mono` (Geist Mono at 13px — paths, filenames,
-hashes), `invalid`, `size` (`dense` 28 | `default` 32; `dense` applies to fine pointers only, so
+hashes), `invalid`, `describedBy` (the ids that describe it; becomes `aria-describedby`), `size`
+(`dense` 28 | `default` 32; `dense` applies to fine pointers only, so
 touch keeps its 44px), `leading` (a Lucide icon inlaid at the left, which pads the text by 34px),
 `trailing` (a snippet inlaid at the right — a `SourceBadge`, a revert button, a `/` key cap; set
 `--trail-w` to reserve its width, default 120px), `element` (a bindable ref), `class`, and any

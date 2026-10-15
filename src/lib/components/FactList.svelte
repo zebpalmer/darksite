@@ -13,8 +13,8 @@
 		tip?: string;
 		/** Span both columns, for a long value such as a note or an address. */
 		wide?: boolean;
-		/** Custom rendering for this value: a StatusBadge, a link, a person. */
-		cell?: Snippet;
+		/** Custom rendering for this value: a StatusBadge, a link, a person. Receives `{ item, value }`. */
+		cell?: Snippet<[{ item: FactItem; value: unknown }]>;
 	}
 </script>
 
@@ -25,9 +25,13 @@ FactList — label–value pairs for a detail pane: a native description list (`
 more, one below it, and each label stacks above its value under 320px — all by the list's own
 width. A missing value renders the `Missing` mark.
 
-- `items` (`{ key?, label, value?, mono?, tip?, wide?, cell? }[]`), `columns` (`2` default | `1`),
-  `cell` (fallback rendering for items without their own; receives `{ item, value }`), `missing`
-  (the mark), `class`. Set `--ds-facts-label` to change the 128px label column.
+- `items` (`{ key?, label, value?, mono?, tip?, wide?, cell? }[]`; an item's `cell` receives
+  `{ item, value }`), `columns` (`2` default | `1`), `cell` (fallback rendering for items without
+  their own; receives `{ item, value }`), `missing` (the mark), `class`. Set `--ds-facts-label` to
+  change the 128px label column.
+- Inset: `--ds-facts-inset` (sides) and `--ds-facts-inset-block` (top and bottom), 0 by default.
+  An unpadded Pane sets them to 14px and 8px, so a FactList sits at the pane's inset with no
+  wrapper; a `padded` Pane sets them back to 0.
 -->
 <script lang="ts">
 	import HelpTip from './HelpTip.svelte';
@@ -58,7 +62,7 @@ width. A missing value renders the `Missing` mark.
 				</dt>
 				<dd data-mono={item.mono ? '' : undefined}>
 					{#if item.cell}
-						{@render item.cell()}
+						{@render item.cell({ item, value: item.value })}
 					{:else if cell}
 						{@render cell({ item, value: item.value })}
 					{:else if isMissing(item.value)}
@@ -76,6 +80,7 @@ width. A missing value renders the `Missing` mark.
 	.ds-facts {
 		container-type: inline-size;
 		min-width: 0;
+		padding: var(--ds-facts-inset-block, 0px) var(--ds-facts-inset, 0px);
 	}
 	dl {
 		display: grid;

@@ -3,31 +3,47 @@
 Stat — a headline number: a label, the value (24/500, tabular), an optional unit or "of N", and
 one meta line that breaks the number down. ds-bg-2 with a subtle edge; no shadow, no icon.
 
-- `label`, `value` (a number is localized), `unit`, `of` (renders "of N"), `meta` (text or a
+- `label`, `value` (a number is localized; `null`, `undefined` or `''` shows the Missing mark,
+  without the unit), `unit`, `of` (renders "of N"), `missing` (the mark), `meta` (text or a
   snippet — one line, never a sentence), `href` (the whole tile becomes a link), `severity` (a 3px
   leading stripe and a SeverityBadge in the meta line — the only way to color a Stat).
 
-Put several in a StatRow.
+Put several in a StatRow (`max={5}` for a row of five).
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import Missing from './Missing.svelte';
 	import SeverityBadge from './SeverityBadge.svelte';
 	import { severityVars, type Severity } from '../severity.js';
 
 	interface Props {
 		label: string;
-		value: number | string;
+		/** `null`, `undefined` or `''` shows the Missing mark. */
+		value: number | string | null | undefined;
 		unit?: string;
 		of?: number | string;
+		/** What a missing value shows. */
+		missing?: string;
 		meta?: string | Snippet;
 		href?: string;
 		severity?: Severity | null;
 		class?: string;
 	}
 
-	let { label, value, unit, of, meta, href, severity = null, class: className = '' }: Props = $props();
+	let {
+		label,
+		value,
+		unit,
+		of,
+		missing = '—',
+		meta,
+		href,
+		severity = null,
+		class: className = ''
+	}: Props = $props();
 
 	const fmt = (v: number | string) => (typeof v === 'number' ? v.toLocaleString() : v);
+	const absent = $derived(value === null || value === undefined || value === '');
 	const mark = $derived(severity ? severityVars(severity).mark : undefined);
 </script>
 
@@ -40,8 +56,10 @@ Put several in a StatRow.
 >
 	<span class="label">{label}</span>
 	<span class="figure">
-		<span class="value">{fmt(value)}</span>
-		{#if unit}<span class="unit">{unit}</span>{/if}
+		<span class="value"
+			>{#if absent}<Missing mark={missing} />{:else}{fmt(value as number | string)}{/if}</span
+		>
+		{#if unit && !absent}<span class="unit">{unit}</span>{/if}
 		{#if of !== undefined}<span class="unit">of {fmt(of)}</span>{/if}
 	</span>
 	{#if meta || severity}

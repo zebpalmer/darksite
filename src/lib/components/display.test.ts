@@ -90,6 +90,16 @@ describe('Pane', () => {
 		expect(screen.queryByRole('button')).toBeNull();
 		expect(screen.getByText('Body')).toBeTruthy();
 	});
+
+	it('names its tip button with tipLabel', () => {
+		const { unmount } = render(Pane, { title: 'Activity', tip: 'Newest first', children });
+		expect(screen.getByRole('button', { name: 'More information' })).toBeTruthy();
+		unmount();
+		render(Pane, { title: 'Activity', tip: 'Newest first', tipLabel: 'About activity', children });
+		const button = screen.getByRole('button', { name: 'About activity' });
+		expect(button.getAttribute('aria-describedby')).toBeTruthy();
+		expect(screen.getByRole('tooltip').textContent).toBe('Newest first');
+	});
 });
 
 describe('SeverityBadge', () => {
@@ -123,6 +133,20 @@ describe('Stat', () => {
 		const link = screen.getByRole('link');
 		expect(link.getAttribute('href')).toBe('/open');
 		expect(link.textContent).toContain('Critical');
+	});
+
+	it('shows the missing-value mark for an empty value, and zero as a value', () => {
+		for (const value of [null, undefined, '']) {
+			const { container, unmount } = render(Stat, { label: 'Median age', value, unit: 'days' });
+			const shown = container.querySelector('.value') as HTMLElement;
+			expect(shown.querySelector('.ds-missing')).toBeTruthy();
+			expect(shown.textContent).toContain('No value');
+			expect(container.textContent).not.toContain('days');
+			unmount();
+		}
+		const { container } = render(Stat, { label: 'Blocked', value: 0 });
+		expect(container.querySelector('.ds-missing')).toBeNull();
+		expect(container.querySelector('.value')?.textContent).toBe('0');
 	});
 });
 

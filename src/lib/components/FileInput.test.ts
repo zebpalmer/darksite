@@ -31,6 +31,14 @@ describe('FileInput', () => {
 		expect(screen.getByText('No file chosen')).toBeTruthy();
 	});
 
+	it('takes a Field\'s describedBy, like Input, Select and Textarea', () => {
+		const { container } = render(FileInput, { id: 'upload', describedBy: 'upload-help upload-error', invalid: true });
+		const input = native(container);
+		expect(input.getAttribute('aria-describedby')).toBe('upload-help upload-error');
+		expect(input.getAttribute('aria-invalid')).toBe('true');
+		expect(input.hasAttribute('describedby')).toBe(false);
+	});
+
 	it('opens the picker from the visible button', async () => {
 		const { container } = render(FileInput);
 		const input = native(container);

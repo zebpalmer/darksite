@@ -21,6 +21,12 @@ Put it **first** on the page. Something that must sit above it bleeds the same w
 The title keeps its width and truncates at the lead's edge; **the count is what gives way** on a
 narrow header.
 
+On a header **narrower than 560px** (a phone), when the title does not fit beside the actions —
+the shell's header-actions icon and the page's own — the actions move to a second line,
+right-aligned, and the title keeps the full first line. A title that fits keeps one line, and the
+count still gives way before anything wraps. A title longer than a phone's whole width still
+truncates; keep titles short.
+
 ## What the consumer provides
 
 `title`, `count` (a number, localized — or preformatted text like "38 this week"), `level` (the

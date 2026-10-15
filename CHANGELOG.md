@@ -6,6 +6,46 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `StatRow max={5}`: a row of five (four counts and their total) — 2 across below 560px, 3 below
+  960px, then 5, so the fifth never sits alone on a second line. The default stays 2 to 4.
+- `FilterSection.unsetLabel`: a single-choice section's own label for its unset choice, for a
+  section where no filter means a default rather than any value ("Default"). "Any" stays the
+  default.
+- `Pane tipLabel`: the accessible name of the header tip's button (HelpTip `label`).
+- `Stat` shows the `Missing` mark for a `null`, `undefined` or `''` value (and drops its unit);
+  `missing` changes the mark. Zero is still a value.
+- `FileInput` and `Input` take `describedBy`, completing the Field contract
+  (`{ id, describedBy, invalid }`) that `Select`, `Textarea` and `Combobox` already took.
+- `FactList`: an item's own `cell` snippet receives `{ item, value }`, as the list-wide `cell`
+  does, so one snippet can format several items. Snippets that take no arguments still work.
+- `FactList` inset: `--ds-facts-inset` and `--ds-facts-inset-block`. An unpadded `Pane` sets them
+  (14px and 8px) so a FactList sits at the pane's inset with no wrapper; a `padded` Pane sets them
+  back to 0. Outside a pane both are 0, as before.
+- The package ships `CHANGELOG.md`, `docs/` and the component cards, so they can be read in
+  `node_modules`.
+
+### Changed
+
+- `PageHeader` on a header narrower than 560px: when the title (with its count) does not fit
+  beside the actions, the actions wrap to a second line, right-aligned, instead of cutting the
+  title short. The count still gives way first, and a header that fits is unchanged.
+- `Table` measures its own width once it mounts (a `ResizeObserver`), whether or not `hideBelow`
+  is given; until then the container queries hide columns as before. The default thresholds are
+  now exactly "below 480px" and "below 720px", as documented (a 720px table shows its priority 3
+  columns).
+
+### Fixed
+
+- `Table`: a group header row or the empty state spanned the columns that priority had hidden,
+  which added empty tracks that took the leftover width — rows stopped short of the table's edge
+  and the visible columns, badges and all, were squeezed. Those rows now span only the visible
+  columns.
+- `Table`: `bind:sort` and `bind:selected` accept `undefined`, so binding to a map entry that does
+  not exist yet (`bind:sort={sorts[view]}`) no longer throws Svelte's `props_invalid_value`.
+  `undefined` reads as unsorted and as no selection.
+
 ## [0.8.0] — 2026-10-15
 
 ### Added

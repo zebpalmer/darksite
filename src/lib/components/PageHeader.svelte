@@ -6,7 +6,9 @@ breadcrumbs, no hero.
 
 Always flush: it cancels the shell's padded column (`--ds-pad-top` / `--ds-pad-x`) with negative
 margins, so every page gets the same bar, the same full-width edge and the same 20px title inset.
-Put it first on the page. The title keeps its width; the count gives way on a narrow header.
+Put it first on the page. The title keeps its width; the count gives way on a narrow header. Under
+560px of header, when the title and count do not fit beside the actions, the actions move to a
+second line, right-aligned, so the title is not cut short by them.
 
 - `title`, `count` (a number is localized; or text such as "38 this week"), `level` (default 1),
   `mono` (the title is an identifier — a serial, a hash, a path — set in mono with tabular
@@ -155,9 +157,12 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 
 <style>
 	.ds-pageheader {
+		container-type: inline-size;
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
-		gap: 12px;
+		column-gap: 12px;
+		row-gap: 0;
 		min-height: var(--ds-header-h);
 		margin: calc(-1 * var(--ds-pad-top, 0px)) calc(-1 * var(--ds-pad-x, 0px)) var(--ds-pad-top, 0px);
 		padding: 0 16px;
@@ -224,16 +229,32 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 	}
 	.actions {
 		flex: none;
+		margin-inline-start: auto;
+	}
+	/* A narrow header: the lead asks for its full width, so when the title and count do not fit
+	   beside the actions, the actions wrap to a second line instead of cutting the title short.
+	   The symmetric padding keeps them centered on one line and spaces them on two. */
+	@container (max-width: 559.98px) {
+		.lead {
+			flex: 1 1 auto;
+			min-height: var(--ds-header-h);
+		}
+		/* The count asks for no width of its own, so it never wraps the actions: it takes what the
+		   line leaves, up to its own width, and gives way first. */
+		.count {
+			flex: 1 1 0;
+			width: 0;
+			max-width: max-content;
+		}
+		.actions {
+			padding-block: 6px;
+		}
 	}
 	.actions :global(.ds-pageheader-toggle[aria-expanded='true']) {
 		background: var(--ds-bg-4);
 		color: var(--ds-text-1);
 	}
-	/* The phone row: the header wraps, the bar keeps its height, the row spans the full width. */
-	.wrap {
-		flex-wrap: wrap;
-		row-gap: 0;
-	}
+	/* The phone row: the bar keeps its height, the row spans the full width on its own line. */
 	.wrap > .lead {
 		min-height: var(--ds-header-h);
 	}

@@ -16,7 +16,12 @@
 <svelte:head><title>Pane · darksite</title></svelte:head>
 <h1>Pane</h1>
 <div class="col">
-	<Pane title="Recently changed" meta="3 records" tip="Records changed in the last 24 hours.">
+	<Pane
+		title="Recently changed"
+		meta="3 records"
+		tip="Records changed in the last 24 hours."
+		tipLabel="About recently changed"
+	>
 		{#snippet end()}<Button variant="ghost" size="dense" href="/table">View all</Button>{/snippet}
 		<Table {rows} {columns} rowKey={(r) => r.id} label="Recently changed" />
 		{#snippet footer()}Updated just now{/snippet}

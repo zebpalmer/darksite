@@ -9,10 +9,10 @@ the keyboard focus (the visible button draws the ring), a Field's label names it
 announces it as a file picker with its chosen file, and a `<form>` submits it by `name`. The
 visible button is for the pointer only.
 
-- `accept`, `multiple`, `disabled`, `invalid`, `required`, `name`, `id`, `label` (the button text;
-  default "Choose file" / "Choose files"), `size` (`dense` | `default`; 44 on touch), `files`
-  (bindable `File[]`), `onfiles(files)` (also called with `[]` on Clear), `element` (bindable ref
-  to the native input), and any other `<input>` attribute. Inside a Field, spread
+- `accept`, `multiple`, `disabled`, `invalid`, `required`, `name`, `id`, `describedBy`, `label`
+  (the button text; default "Choose file" / "Choose files"), `size` (`dense` | `default`; 44 on
+  touch), `files` (bindable `File[]`), `onfiles(files)` (also called with `[]` on Clear), `element`
+  (bindable ref to the native input), and any other `<input>` attribute. Inside a Field, spread
   `{ id, describedBy, invalid }` onto it.
 -->
 <script lang="ts">
@@ -31,6 +31,8 @@ visible button is for the pointer only.
 		multiple?: boolean;
 		disabled?: boolean;
 		invalid?: boolean;
+		/** A Field's `describedBy`: the ids of its help and error text. */
+		describedBy?: string;
 		label?: string;
 		size?: 'dense' | 'default';
 		files?: File[];
@@ -44,6 +46,7 @@ visible button is for the pointer only.
 		multiple = false,
 		disabled = false,
 		invalid = false,
+		describedBy,
 		label,
 		size = 'default',
 		files = $bindable([]),
@@ -96,6 +99,7 @@ visible button is for the pointer only.
 		aria-invalid={invalid ? 'true' : undefined}
 		onchange={update}
 		{...rest}
+		aria-describedby={describedBy ?? rest['aria-describedby']}
 	/>
 	<!-- Pointer only: the native input above is the keyboard and screen-reader control. -->
 	<Button

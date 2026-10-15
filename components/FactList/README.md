@@ -20,6 +20,20 @@ The list lays itself out from **its own width** (a container query, never the vi
 
 `columns={1}` keeps one column at any width.
 
+## In a Pane
+
+Put it straight in an **unpadded** `Pane`: the pane hands it its inset (`--ds-facts-inset: 14px`
+at the sides, `--ds-facts-inset-block: 8px` above and below, which with each pair's 6px puts the
+first label 14px under the header), the same way it hands a `Table` its inset. A `padded` Pane sets
+both back to 0, so a FactList among prose or a form lines up with them. Outside a pane both are 0;
+set them on a wrapper to inset the list elsewhere.
+
+```svelte
+<Pane title="Details">
+  <FactList {items} />
+</Pane>
+```
+
 ## Missing values
 
 A `null`, `undefined` or `''` value renders the `Missing` mark: an em dash in `ds-text-3`,
@@ -29,8 +43,21 @@ announced as "No value". Override the mark with `missing`.
 
 `items` — `{ key?, label, value?, mono?, tip?, wide?, cell? }[]`. `key` defaults to `label` and must be unique, so give repeated labels a `key`; `tip`
 puts a `HelpTip` beside the label; `cell` is a snippet for a value that is not text (a
-`StatusBadge`, a link, a person). Then `columns`, `cell` (a fallback snippet for every item without
-its own, receiving `{ item, value }`), `missing`, `class`.
+`StatusBadge`, a link, a person), receiving `{ item, value }` — so one snippet can format several
+items. Then `columns`, `cell` (a fallback snippet for every item without its own, receiving the
+same `{ item, value }`), `missing`, `class`.
+
+```svelte
+{#snippet date({ value })}{#if value}{formatDate(value)}{:else}<Missing />{/if}{/snippet}
+
+<FactList items={[
+  { label: 'Opened', value: record.opened, cell: date },
+  { label: 'Due', value: record.due, cell: date }
+]} />
+```
+
+An item's own `cell` runs even when its value is empty, so a snippet that formats a value should
+render `<Missing />` for an empty one.
 
 Format values before passing them: `formatDate` for a calendar date, `formatMoney`,
 `formatNumber`, a label map for stored codes.

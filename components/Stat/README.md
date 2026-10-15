@@ -12,13 +12,18 @@ icon, no sparkline.
 - **Attention** — `severity` adds that stop's 3px leading stripe and a `SeverityBadge` in the meta
   line. It is the only way to color a Stat.
 - **A row** — put several in a `StatRow`: two to four across by the row's own width (2 below 560px,
-  3 below 800px, then 4). Give it a `label` to name the group.
+  3 below 800px, then 4). Give it a `label` to name the group. For a row of five — four counts and
+  their total — set `max={5}`: 2 below 560px, 3 below 960px, then all five, so the fifth never
+  sits alone on a second line.
 
-A number `value` is localized (`12,408`); pass a string to format it yourself.
+A number `value` is localized (`12,408`); pass a string to format it yourself. A `null`,
+`undefined` or `''` value shows the `Missing` mark (an em dash, announced "No value") and drops the
+unit; `missing` changes the mark. Zero is a value, not a missing one.
 
 ## What the consumer provides
 
-`label`, `value`, `unit`, `of`, `meta` (text or a snippet), `href`, `severity`, `class`.
+`label`, `value`, `unit`, `of`, `missing`, `meta` (text or a snippet), `href`, `severity`,
+`class`. On `StatRow`: `label`, `max` (`4` default | `5`), `class`.
 
 ## Don't
 

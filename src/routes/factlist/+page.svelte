@@ -1,13 +1,24 @@
 <script lang="ts">
-	import { FactList, Pane, StatusBadge, formatDate, formatMoney, type FactItem } from '#lib';
+	import {
+		FactList,
+		Missing,
+		Pane,
+		StatusBadge,
+		formatDate,
+		formatMoney,
+		type FactItem
+	} from '#lib';
 </script>
 
 {#snippet state()}<StatusBadge label="Ready" tone="success" />{/snippet}
+{#snippet date({ value }: { item: FactItem; value: unknown })}
+	{#if typeof value === 'string' && value}{formatDate(value)}{:else}<Missing />{/if}
+{/snippet}
 
 <svelte:head><title>FactList · darksite</title></svelte:head>
 <h1>FactList</h1>
 <div class="col">
-	<Pane title="Details" padded>
+	<Pane title="Details" tip="Straight in an unpadded pane: it takes the pane's inset.">
 		<FactList
 			items={[
 				{ label: 'Identifier', value: 'R-00412', mono: true },
@@ -16,9 +27,12 @@
 				{ label: 'Queue', value: null },
 				{
 					label: 'Due',
-					value: formatDate('2026-11-02'),
+					value: '2026-11-02',
+					cell: date,
 					tip: 'A calendar date: the same day in every time zone.'
 				},
+				{ label: 'Opened', value: '2026-09-14', cell: date },
+				{ label: 'Closed', value: null, cell: date },
 				{ label: 'Cost', value: formatMoney(1240, 'USD', { maximumFractionDigits: 0 }) },
 				{
 					label: 'Note',
@@ -29,7 +43,7 @@
 		/>
 	</Pane>
 	<div class="narrow">
-		<Pane title="Narrow" padded>
+		<Pane title="Narrow">
 			<FactList
 				items={[
 					{ label: 'Identifier', value: 'R-00412', mono: true },
