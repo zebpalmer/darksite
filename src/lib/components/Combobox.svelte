@@ -332,7 +332,7 @@ the list is open.
 	.list {
 		position: fixed;
 		inset: auto;
-		z-index: 60;
+		z-index: var(--ds-z-popover);
 		max-height: 280px;
 		margin: 0;
 		padding: 4px;

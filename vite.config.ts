@@ -14,6 +14,8 @@ export default defineConfig({
 	],
 	test: {
 		include: ['src/**/*.test.ts'],
+		// Load the stylesheets, so tokens.test.ts can read them as text through `?raw`.
+		css: { include: [/src\/lib\/(tokens|base)\.css/] },
 		environment: 'jsdom'
 	}
 });

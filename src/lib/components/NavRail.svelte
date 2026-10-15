@@ -313,7 +313,7 @@ that list, not disabled.
 	}
 	.tip {
 		position: fixed;
-		z-index: 50;
+		z-index: var(--ds-z-tooltip);
 		transform: translateY(-50%);
 		padding: 4px 8px;
 		border-radius: var(--ds-radius-xs);

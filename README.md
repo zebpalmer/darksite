@@ -135,7 +135,7 @@ ground in both themes, the categorical palette on panels and meter tracks.
 **For strict conformance, use the high-contrast theme**: `data-theme="contrast"`. It is dark with
 every text role at 7:1 or more and every border and mark at 3:1 or more — no shortfalls. It also
 applies automatically when the viewer's system asks for more contrast (`prefers-contrast: more`)
-and they have not chosen light.
+and the app has not chosen light (see "Themes" below).
 
 What the components must guarantee: every interactive element is reachable by keyboard and shows
 the focus ring; a severity always carries its word and an error always carries an icon and a
@@ -179,10 +179,19 @@ that is not a severity.
 
 ## Using darksite
 
-darksite is a **Svelte 5** package. Install a pinned version from GitHub:
+darksite is a **Svelte 5** package (it needs Svelte 5.29 or later). Each release attaches a packed,
+built tarball to its GitHub release; install a pinned version from there, replacing `X.Y.Z`:
 
 ```sh
-npm install github:zebpalmer/darksite#v0.1.0
+npm install https://github.com/zebpalmer/darksite/releases/download/vX.Y.Z/darksite-X.Y.Z.tgz
+```
+
+The tarball needs no git on the installing machine and no build step. As a fallback, install the
+tag straight from the repository; npm then clones it and builds `dist/` itself through `prepare`,
+which needs git and the dev dependencies:
+
+```sh
+npm install github:zebpalmer/darksite#vX.Y.Z
 ```
 
 Load the two stylesheets once, in the root layout, then import components:
@@ -199,20 +208,147 @@ Load the two stylesheets once, in the root layout, then import components:
 
 `tokens.css` declares every token as a CSS custom property. `base.css` holds the global rules the
 components rely on: box sizing, the focus ring, reduced motion, the 16px touch font size, the
-`.ds-control` look and the shared keyframes. Dark is the default; set `data-theme="light"` on
-`<html>` for light. To re-theme a product, override `--ds-*` properties in its own stylesheet,
-after these two imports — no component changes.
+`.ds-control` look and the shared keyframes. To re-theme a product, override `--ds-*` properties in
+its own stylesheet, after these two imports — no component changes.
 
-A site upgrades by changing the tag it pins. For a genuine one-off divergence, copy that one
+A site upgrades by changing the version it pins. For a genuine one-off divergence, copy that one
 component into the site's own `lib` and own it there; never fork the package.
 
 Each card specifies its component's props, states and don'ts, and the gallery shows every component
 in use.
 
-If the project uses Tailwind, align it to these tokens rather than beside them: expose each `ds-*`
-color role as a utility color, map the type scale to `ds-text-*` / `ds-lh-*`, cap every weight
-utility at 500, and let the radius utilities land on 4 / 6 / 8 / 12. A utility and a token that
-disagree is the bug this alignment prevents.
+### Themes
+
+Dark is the default. A theme is chosen with an attribute, on `<html>` or on any subtree:
+
+```html
+<html data-theme="light">
+<html data-ds-theme="light">
+```
+
+Both attributes take `dark`, `light` or `contrast`. Use `data-ds-theme` when `data-theme` already
+belongs to another library: when both are set, `data-ds-theme` wins, and a `data-theme` value that
+is not a darksite theme is ignored.
+
+When `<html>` carries no theme attribute, darksite follows the viewer's system. The full order of
+precedence:
+
+1. **An explicit attribute** always wins — with one exception, below.
+2. **`prefers-contrast: more`** selects the high-contrast theme.
+3. **`prefers-color-scheme: light`** selects the light theme.
+4. **Dark**, otherwise.
+
+The exception: high contrast is the stronger form of dark, so an explicit `dark` still becomes
+`contrast` when the viewer asks for more contrast. An explicit `light` or `contrast` is never
+changed. Each theme also sets `color-scheme` (`contrast` is dark), so native scrollbars and form
+controls match it.
+
+The theme custom properties in `tokens.css` are deliberately **not** in a cascade layer: a custom
+property only competes with other declarations of the same property, so layering would add nothing
+except making a product's own `--ds-*` overrides harder to reason about. An unlayered override
+after `tokens.css` wins, as it always has.
+
+### Using darksite with Tailwind or another CSS framework
+
+The rules in `base.css` live in the cascade layer `ds.base`. Any **unlayered** CSS the app writes
+beats them, whatever its specificity. An app that uses layers — Tailwind 4 declares `theme`, `base`,
+`components` and `utilities` — puts darksite where it belongs with one order statement, at the top of
+the stylesheet that loads first:
+
+```css
+/* app.css */
+@layer theme, base, ds.base, components, utilities;
+@import 'tailwindcss';
+```
+
+Layer order is fixed by first appearance, so this statement must come before Tailwind's import and
+before `darksite/base.css` is loaded. `ds.base` sits after Tailwind's `base` (Preflight), so
+darksite's base rules win over the reset, and before `components` and `utilities`, so a utility
+still overrides a darksite base rule. The app's own base styles win over darksite by living in a
+layer listed after `ds.base`, or by staying unlayered:
+
+```css
+@layer theme, base, ds.base, app-base, components, utilities;
+
+@layer app-base {
+	body {
+		font-feature-settings: 'ss01';
+	}
+}
+```
+
+Three things in `base.css` are unlayered on purpose: the focus ring, the reduced-motion duration
+overrides, and the keyframes. The component styles themselves are scoped by Svelte and unlayered,
+so a utility class does not restyle a darksite component; use its props and variants instead.
+
+Then align Tailwind to these tokens rather than beside them: expose each `ds-*` color role as a
+utility color, map the type scale to `ds-text-*` / `ds-lh-*`, cap every weight utility at 500, and
+let the radius utilities land on 4 / 6 / 8 / 12. A utility and a token that disagree is the bug this
+alignment prevents. In Tailwind 4 that is a `@theme inline` block, which points each utility at
+the live custom property so it follows the active theme:
+
+```css
+@theme inline {
+	/* Colors: the roles only, never Tailwind's palette or darksite's raw ramps. */
+	--color-*: initial;
+	--color-bg-0: var(--ds-bg-0);
+	--color-bg-1: var(--ds-bg-1);
+	--color-bg-2: var(--ds-bg-2);
+	--color-bg-3: var(--ds-bg-3);
+	--color-bg-4: var(--ds-bg-4);
+	--color-bg-5: var(--ds-bg-5);
+	--color-text-1: var(--ds-text-1);
+	--color-text-2: var(--ds-text-2);
+	--color-text-3: var(--ds-text-3);
+	--color-border: var(--ds-border);
+	--color-border-subtle: var(--ds-border-subtle);
+	--color-border-strong: var(--ds-border-strong);
+	--color-accent: var(--ds-accent);
+	--color-accent-text: var(--ds-accent-text);
+	--color-success: var(--ds-success);
+	--color-warning: var(--ds-warning);
+	--color-danger: var(--ds-danger);
+	--color-danger-text: var(--ds-danger-text);
+
+	/* Type: the darksite scale, each size with its line height. */
+	--text-*: initial;
+	--text-xs: var(--ds-text-xs);
+	--text-xs--line-height: var(--ds-lh-xs);
+	--text-sm: var(--ds-text-sm);
+	--text-sm--line-height: var(--ds-lh-sm);
+	--text-md: var(--ds-text-md);
+	--text-md--line-height: var(--ds-lh-md);
+	--text-lg: var(--ds-text-lg);
+	--text-lg--line-height: var(--ds-lh-lg);
+	--text-xl: var(--ds-text-xl);
+	--text-xl--line-height: var(--ds-lh-xl);
+	--text-2xl: var(--ds-text-2xl);
+	--text-2xl--line-height: var(--ds-lh-2xl);
+	--text-3xl: var(--ds-text-3xl);
+	--text-3xl--line-height: var(--ds-lh-3xl);
+
+	/* Weight: 500 is the ceiling, so every heavier utility resolves to it. */
+	--font-weight-*: initial;
+	--font-weight-normal: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 500;
+	--font-weight-bold: 500;
+
+	/* Radius: 4 / 6 / 8 / 12, and a pill. */
+	--radius-*: initial;
+	--radius-xs: var(--ds-radius-xs);
+	--radius-sm: var(--ds-radius-sm);
+	--radius-md: var(--ds-radius-md);
+	--radius-lg: var(--ds-radius-lg);
+	--radius-full: var(--ds-radius-full);
+}
+```
+
+Add the other roles (tints, severities, the categorical palette) the same way as the app needs
+them. Leave `--font-sans` and `--font-mono` alone: darksite already declares both under the names
+Tailwind reads, unlayered, so they win over Tailwind's defaults. Another framework follows the same
+two steps: put `ds.base` after its reset in the layer order, and point its theme at the `--ds-*`
+properties instead of copying their values.
 
 To add a primitive, follow `AGENTS.md`, "Delivering a primitive".
 

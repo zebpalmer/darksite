@@ -39,3 +39,44 @@ jobs:
 
       - name: Build and package
         run: stratt build
+
+  # On a version tag, once verify has passed: pack the built package and attach the tarball to the
+  # tag's GitHub release, so products can install it without git or a build step.
+  release:
+    needs: verify
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # npm pack runs `prepare`, which builds dist/; package.json `files` keeps tests out.
+      - name: Pack
+        id: pack
+        run: |
+          tarball=$(npm pack --silent | tail -n 1)
+          test -f "$tarball"
+          tar -tzf "$tarball" | grep -q '^package/dist/index.js$'
+          echo "tarball=$tarball" >> "$GITHUB_OUTPUT"
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$TARBALL" --clobber
+          else
+            gh release create "$TAG" "$TARBALL" --title "$TAG" --verify-tag --notes "See CHANGELOG.md for what changed in $TAG."
+          fi

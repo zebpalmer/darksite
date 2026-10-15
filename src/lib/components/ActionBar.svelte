@@ -60,7 +60,7 @@ Primary action right-most; a `<span class="grow"></span>` splits the left and ri
 	.sticky {
 		position: sticky;
 		bottom: var(--ds-chrome-bottom);
-		z-index: 20;
+		z-index: var(--ds-z-sticky);
 	}
 	.ds-actionbar :global(.grow) {
 		flex: 1;

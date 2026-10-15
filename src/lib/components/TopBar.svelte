@@ -83,7 +83,7 @@ If a control is not relevant on every page of the section, it belongs in that pa
 	.sticky {
 		position: sticky;
 		top: 0;
-		z-index: 21;
+		z-index: var(--ds-z-topbar);
 	}
 	.start,
 	.actions {

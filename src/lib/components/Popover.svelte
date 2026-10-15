@@ -143,7 +143,7 @@ presents as a Sheet. A list of actions is a Menu instead.
 	.ds-popover {
 		position: fixed;
 		inset: auto;
-		z-index: 60;
+		z-index: var(--ds-z-popover);
 		max-width: calc(100vw - 16px);
 		max-height: min(70dvh, 640px);
 		margin: 0;

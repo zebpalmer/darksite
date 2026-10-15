@@ -134,7 +134,7 @@ in place.
 		position: fixed;
 		top: 8px;
 		left: 8px;
-		z-index: 90;
+		z-index: var(--ds-z-skip);
 		padding: 6px 12px;
 		border-radius: var(--ds-radius-sm);
 		background: var(--ds-accent);

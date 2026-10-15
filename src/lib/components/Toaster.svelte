@@ -92,7 +92,7 @@ shows, except while the user is typing.
 		position: fixed;
 		right: 16px;
 		bottom: calc(16px + var(--ds-chrome-bottom, 0px) + var(--ds-actionbar-space, 0px));
-		z-index: 70;
+		z-index: var(--ds-z-toast);
 		display: flex;
 		flex-direction: column;
 		gap: 8px;

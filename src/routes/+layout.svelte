@@ -33,6 +33,9 @@
 	$effect(() => {
 		const t = new URLSearchParams(location.search).get('theme');
 		if (t === 'light' || t === 'contrast') setTheme(t);
+		// With no theme chosen, tokens.css follows the viewer's system; show what it picked.
+		else if (matchMedia('(prefers-contrast: more)').matches) theme = 'contrast';
+		else if (matchMedia('(prefers-color-scheme: light)').matches) theme = 'light';
 	});
 
 	function setTheme(t: Theme) {
