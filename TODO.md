@@ -244,6 +244,26 @@ loading, but neither the trigger nor how it combines with selection is written d
 - [x] **Keyboard focus** stays on the last focused row when more rows arrive.
 - Decided: "Load more", written into [`layout.md`](docs/layout.md) under "Long lists".
 
+## Component changes
+
+### NavRail: a more flexible default
+
+The rail's defaults suit most products, but two of them are fixed in code, and adopting the rail
+in a product that already has its own rail resets each viewer's remembered choice.
+
+- [ ] **`expandAt` prop.** With nothing stored, the rail starts expanded at 1440px and collapsed
+  below; the 1440 is hard-coded in a `matchMedia` call. Take `expandAt` (a width in px, default
+  1440) so a product can pick its own breakpoint, with `false` meaning "start collapsed at any
+  width" (unlike `pinned`, the toggle stays). Mirror it on `AppShell` as `railExpandAt`.
+- [ ] **`storageKey` prop.** `rememberAs` always stores under `darksite:rail:<rememberAs>`. A full
+  `storageKey` (taking precedence over `rememberAs`) lets a product that already remembers this
+  choice keep its existing key, so viewers keep their setting through the switch. Mirror it on
+  `AppShell`.
+- [ ] **Document the width tokens as the override point.** The `NavRail` and `AppShell` cards name
+  `ds-rail-w` and `ds-rail-w-expanded` but never say a product may override them (for example a
+  240px expanded rail for longer labels). Say so in both cards and in [`shell.md`](docs/shell.md),
+  with the rule that the collapsed width stays at 56px so the 40×36 items still fit.
+
 ## Rules to amend
 
 - [x] **Section tabs for full-width data views.** `which-primitive.md` and the `SideNav` card say
