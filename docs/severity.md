@@ -47,3 +47,74 @@ its ≥4.5:1 ink, and its position in the order.
 Extend the ramp **past Critical** rather than subdividing the middle, and give every new stop its
 own three tokens. Adding a stop between Medium and High re-colors everything already rated, which
 is exactly the kind of silent change an ordered scale cannot survive.
+
+## Custom scales
+
+Severity is one instance of a general **ordinal scale**: ordered stops, each with a name and the
+same three color roles. An app that needs another ordered scale — a priority P1–P4, a confidence
+from Remote to Certain, a clearance level — defines it once with `defineScale` and draws it with
+`ScaleBadge` and `ScalePicker`. `SeverityBadge` and `SeverityPicker` are those two components over
+the built-in `severityScale`.
+
+```ts
+import { defineScale } from 'darksite';
+
+export const priority = defineScale({
+	name: 'Priority', // the picker's accessible label
+	stops: [
+		// lowest first; 2–9 stops
+		{ value: 'p4', label: 'P4', mark: 'var(--app-p4)', bg: 'var(--app-p4-bg)', ink: 'var(--app-p4-ink)' },
+		{ value: 'p3', label: 'P3', mark: 'var(--app-p3)', bg: 'var(--app-p3-bg)', ink: 'var(--app-p3-ink)' },
+		{ value: 'p2', label: 'P2', mark: 'var(--app-p2)', bg: 'var(--app-p2-bg)', ink: 'var(--app-p2-ink)' },
+		{ value: 'p1', label: 'P1', mark: 'var(--app-p1)', bg: 'var(--app-p1-bg)', ink: 'var(--app-p1-ink)' }
+	],
+	unknown: { value: 'untriaged', label: 'Untriaged' } // optional
+});
+```
+
+The scale object is the one module the order and names come from: `label(v)`, `rank(v)` (1-based;
+0 for unset and unknown), `vars(v)` (the three CSS values), `key(v)` and `fromKey(key, max)` (the
+1–9 key caps; unknown is `0`), `options(max)` (what a picker shows under a ceiling), `highest(list)`
+and `compare(a, b)`.
+
+**Rules**
+
+- **Extend past the end, never between stops.** A new stop goes above the highest (or below the
+  lowest) with its own three colors. A stop inserted between two others re-ranks everything
+  already rated.
+- **Never reuse severity colors** for a custom scale, and never the `ds-sev-*` tokens. Give it its
+  own colors (custom properties the app defines), ideally a hue severity does not use, so a
+  priority never reads as a severity at a glance. The unlit pip defaults to the neutral
+  `ds-border`.
+- **The words carry it**, as with severity: a badge and a segment always show the name, never the
+  index; key caps are the only digits.
+- **`null` is unset**: no badge, no "None" stop. Unset sorts below the lowest stop.
+- **Unknown is a stop, not unset.** It means "assessed, and cannot say". It is drawn with a
+  **dashed mark** — the badge's left edge, the segment's bottom stripe — and it sits after the
+  ordered stops. It has no rank: it is never under a `max` ceiling (the picker always offers it),
+  never the `highest`, and it lights no pips. Its colors default to neutral roles
+  (`ds-text-3`, `ds-bg-3`, `ds-text-2`). A dashed *border* on a segment still means suggested;
+  the two never look alike.
+- **At most nine ordered stops** (plus unknown). Beyond that it is not a scale people can read at
+  a glance; use a `Combobox`.
+
+**How the picker folds.** It answers to its own width, by the number of cells *n* it shows (the
+stops under the ceiling, plus unknown). Key caps hide below *n* × 104px. Below *n* × 80px the
+row folds to two balanced rows of ceil(*n*/2) columns: 4 + 4 for eight, 5 + 4 for nine, 3 + 2 for
+severity's five. With seven or more cells, when even two rows would leave a cell under 80px, it
+folds again to three rows of ceil(*n*/3) columns (3 + 3 + 3 for nine). Names never truncate.
+`columns` fixes the count instead.
+
+**Check your colors.** `scripts/check-contrast.mjs` checks the severity tokens in every theme;
+darksite cannot check colors it does not own. A custom scale needs the same pairs: each stop's
+ink on its ground at 4.5:1 (7:1 in the high-contrast theme), and each mark at 3:1 on `ds-bg-1`
+and `ds-bg-3`. `checkScaleContrast` checks exactly those, in the browser, once per theme:
+
+```ts
+import { checkScaleContrast } from 'darksite';
+
+const failing = checkScaleContrast(priority, { within: appRoot }).filter((r) => !r.ok);
+```
+
+In a test, pass `resolve` (a CSS value → a color, for example from your own theme map) instead
+of reading the document.

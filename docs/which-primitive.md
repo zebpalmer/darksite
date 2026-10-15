@@ -43,6 +43,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Actions belonging to a pane | `ActionBar` | The pane's last child; never an overlay. |
 | Nothing to show | `EmptyState` | One sentence, **one** action. |
 | Loading content of known shape | `SkeletonLoader` | The same geometry as the real thing. `Spinner` is only for "Loading more…". |
+| Show a stop on an app's own ordered scale | `ScaleBadge` + `defineScale` | Priority, confidence, a level. Its own colors, never severity's; unknown is dashed. |
+| Pick a stop on an app's own ordered scale | `ScalePicker` + `defineScale` | Up to nine stops plus unknown; folds to balanced rows. |
 
 ## The frame
 

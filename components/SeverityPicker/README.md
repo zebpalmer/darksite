@@ -1,7 +1,8 @@
 # SeverityPicker
 
 The severity variant of `SegmentedControl`: segments in scale order, each with a 3px bottom mark
-stripe, so the row itself reads as the ramp. A radio group (←/→ move and select).
+stripe, so the row itself reads as the ramp. A radio group (←/→ move and select). It is
+`ScalePicker` over the built-in `severityScale`.
 
 ## States
 
@@ -13,8 +14,9 @@ stripe, so the row itself reads as the ramp. A radio group (←/→ move and sel
 
 ## It responds to its own width, not the viewport
 
-A container query on the picker: below 520px the key caps hide, and below 400px it folds to a
-two-row grid rather than truncating the names. Key caps go before names do — a name the user
+A container query on the picker: with all five stops, below 520px the key caps hide, and below
+400px it folds to a two-row grid rather than truncating the names. Under a `max` ceiling the
+thresholds follow the number of stops shown (see `ScalePicker`). Key caps go before names do — a name the user
 cannot read is worse than a shortcut they have to hover for. The key stays in the button's `title`
 and in `aria-keyshortcuts` either way.
 

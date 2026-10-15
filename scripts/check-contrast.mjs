@@ -61,7 +61,15 @@ add(
 );
 for (const r of ['success', 'warning', 'danger'])
 	add(`ds-${r}-text`, ['ds-bg-1', 'ds-bg-3', `ds-${r}-tint`], TEXT, `${r} text`);
-for (const s of ['info', 'low', 'medium', 'high', 'critical']) {
+// The built-in severity scale (src/lib/severity.ts) is the one ordinal-scale instance whose colors
+// darksite owns: read its stops from the module, so a new stop cannot go unchecked. Apps check
+// their own scales with checkScaleContrast (docs/severity.md, "Custom scales").
+const severitySource = readFileSync(join(root, 'src/lib/severity.ts'), 'utf8');
+const severities = [
+	.../SEVERITIES = \[([^\]]+)\]/.exec(severitySource)[1].matchAll(/'([a-z]+)'/g)
+].map((m) => m[1]);
+if (!severities.length) throw new Error('no severity stops found in src/lib/severity.ts');
+for (const s of severities) {
 	add(`ds-sev-${s}-ink`, [`ds-sev-${s}-bg`], TEXT, `severity ${s} ink`);
 	add(`ds-sev-${s}`, bgs(1, 3), MARK, `severity ${s} mark`);
 }

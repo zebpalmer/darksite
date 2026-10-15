@@ -177,6 +177,10 @@ The one ordered scale — Info, Low, Medium, High, Critical — drawn identicall
 appears. Read [`severity.md`](docs/severity.md) before rendering one, and never use a severity color for anything
 that is not a severity.
 
+Severity is the built-in instance of a general ordinal scale. An app that needs its own ordered
+scale — a priority, a confidence, a clearance level — defines one with `defineScale` and its own
+colors, and draws it with `ScaleBadge` and `ScalePicker` (see "Custom scales" in `severity.md`).
+
 ## Using darksite
 
 darksite is a **Svelte 5** package. Install a pinned version from GitHub:

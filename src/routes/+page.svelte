@@ -6,7 +6,7 @@
 		Actions: ['Button', 'KeyCap'],
 		Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 		Filtering: ['ActiveFilters', 'FilterRail'],
-		Severity: ['SeverityBadge', 'SeverityPicker'],
+		Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
 		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch'],
 		Data: ['Meter', 'Stat', 'Table', 'Timeline'],
 		Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
