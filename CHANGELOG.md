@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-10-15
+
 ### Added
 
 - `StatRow max={5}`: a row of five (four counts and their total) — 2 across below 560px, 3 below
