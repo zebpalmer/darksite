@@ -5,7 +5,7 @@
 # `stratt format` = prettier, `stratt build` = the gallery build plus svelte-package and publint.
 
 [bump]
-current_version = "0.5.0"
+current_version = "0.6.0"
 # v-prefixed tags: products pin `github:zebpalmer/darksite#v0.1.0`.
 tag_name = "v{new_version}"
 

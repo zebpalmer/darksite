@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-10-14
+
 ### Added
 
 - Every remaining card is now a component: `Field`, `Input`, `Combobox`, `SegmentedControl`,
