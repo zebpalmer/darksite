@@ -14,7 +14,7 @@ Set `oncreate` and a `Create "…"` row appears **always last**, under a separat
 
 ## What the consumer provides
 
-- `items` — `{ value, label, meta?, disabled? }[]`. `meta` is the muted right-hand note (a count,
+- `items` — `{ value, label, meta?, disabled? }[]`, each `value` unique (it keys the rows). `meta` is the muted right-hand note (a count,
   a kind).
 - `value` (bindable input text), `onselect(item)`, `clearOnSelect` (default true — the text clears
   for the next pick, which is what a token picker wants; set false for a single value and the text

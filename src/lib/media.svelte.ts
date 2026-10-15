@@ -4,7 +4,8 @@
 
 import { createSubscriber } from 'svelte/reactivity';
 
-/** The phone layout: below `ds-bp-phone` (768px). */
+/** The phone layout: below `ds-bp-phone` (768px). Media queries cannot read a custom property,
+ *  so the number is written out, here and in the components' own media queries. */
 export const PHONE_QUERY = '(max-width: 767.98px)';
 /** A coarse pointer — touch. Controls grow to 44px. */
 export const COARSE_QUERY = '(pointer: coarse)';

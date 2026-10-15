@@ -27,7 +27,7 @@ announced as "No value". Override the mark with `missing`.
 
 ## What the consumer provides
 
-`items` — `{ key?, label, value?, mono?, tip?, wide?, cell? }[]`. `key` defaults to `label`; `tip`
+`items` — `{ key?, label, value?, mono?, tip?, wide?, cell? }[]`. `key` defaults to `label` and must be unique, so give repeated labels a `key`; `tip`
 puts a `HelpTip` beside the label; `cell` is a snippet for a value that is not text (a
 `StatusBadge`, a link, a person). Then `columns`, `cell` (a fallback snippet for every item without
 its own, receiving `{ item, value }`), `missing`, `class`.

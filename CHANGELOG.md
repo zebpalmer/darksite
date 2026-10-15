@@ -69,6 +69,27 @@ All notable changes to darksite are recorded here. The format follows
 - `focusShortcut(key = '/')` attachment: a key that focuses the first field inside an element,
   standing aside while the user types or when the press was already handled. `TopBar` now uses it,
   with no change in behavior.
+- `tooltip(text)` attachment: an accessible tooltip for any focusable element — hover, keyboard
+  focus and long press; it describes the element unless it is already its name; Esc hides it.
+  `Button` uses it for an icon button's label and for any `title`, instead of the browser's
+  native title.
+- `LoadMore`: the foot of a long list — "Showing 50 of 295" and a Load more button; a keyboard
+  press moves focus to the first new row through `focusRow(index)`.
+- `Textarea` and `Select`, taking the same `Field` contract as `Input`; `Select` is a native
+  select with a chevron, a "Choose…" prompt and option groups.
+- `setStrings` and `strings`: every word darksite shows or speaks on its own — labels,
+  announcements and the relative time words — in one table a product can translate.
+- `Banner dismissed` (bindable), so a dismissal the server knows (a cookie) never flashes.
+- `Dialog role`: `alertdialog` for a danger question, `dialog` for a default-tone confirmation or
+  one that asks for a note; it now follows `tone` by default.
+- Tokens `ds-media-scrim` and `ds-on-media`, for text and icons laid over an image.
+- `badgeSpoken`, `toDate`, `formatDueExact`, `DEFAULT_PRIORITY_WIDTHS` and `ParamsInput` are
+  exported, and `darksite/package.json` is importable.
+- `plus` and `minus` as key names (`keycap="plus"` shows `+`).
+- Prose links (`a` without a component's own styling) in `ds-accent-text`, underlined.
+- Tests in a real browser (Chromium) for the dialogs, menus, popovers, the combobox list, tooltips,
+  column priorities and the justified grid, and a server-render test of every component. Run
+  `npx playwright install chromium` once before `stratt test`.
 
 ### Changed
 
@@ -84,6 +105,28 @@ All notable changes to darksite are recorded here. The format follows
   labeled by `labelFor(value)` or the value itself; free text is quoted in its chip.
 - `FilterSection.options` is optional (a `text` section has none); code that reads
   `section.options` directly needs `?? []`.
+- `HelpTip` is a button described by its note: it shows on hover, on focus by keyboard or tap,
+  toggles on click or tap, and hides on Esc; its hit area is 24px (44 on touch) and its note stays
+  inside the viewport. It takes a `label` (default "More information").
+- `Toaster` announces through two live regions that exist before any toast and travel with the
+  queue into an open modal, so every toast is spoken, with its action and key.
+- Touch targets: NavRail and SideNav rows, underline `Tabs`, `Toaster` buttons and the `Combobox`
+  chevron are 44px under a coarse pointer.
+- Focus rings: `Tabs` inset (-2px), `SegmentedControl` at 0 and `Card` at 3px, so a scrolling strip
+  does not clip them.
+- `Carousel`: Tab walks every control in the current tile; a control added later joins the order.
+- Muted text steps up to `ds-text-2` on the brighter grounds (hover, active and token states in
+  `Combobox`, `Chip`, `NavRail`, `SegmentedControl` and `ListRow`); `ds-text-3` stops at
+  `ds-bg-3`, as documented.
+- `Card` overlays use the new media scrim: white text over an image holds 4.5:1 in every theme
+  (it was 3.3:1 in light).
+- `Grid label` names a group (it was a list without list items); `ActionBar` is a group, not a
+  toolbar.
+- Badges are read once: the visible count is hidden from assistive technology and a dot reads
+  "new".
+- The rail no longer animates its width as the page loads; only a toggle animates.
+- `humanize` keeps acronyms (`HTTPError` → "HTTP error") and lowercases shouted codes.
+- `npm run lint` (so `stratt all`) also builds the package and runs publint.
 
 ### Fixed
 
@@ -95,6 +138,17 @@ All notable changes to darksite are recorded here. The format follows
 - `formatMoney` with only `maximumFractionDigits` (such as `0` for whole units) or only
   `minimumFractionDigits` fits the other bound to it instead of throwing a `RangeError` against
   the currency's default; a contradictory pair is clamped.
+- `Stepper`: an arrow or page key after typing a value steps from the typed value.
+- `Table`: after the rows shrink, one row stays in the tab order.
+- Page hotkeys work while a checkbox, radio or button has focus; only text entry counts as typing.
+- `Dialog` and `Sheet` close on the scrim only for a press that starts and ends there, not a text
+  selection dragged out of the panel.
+- `Sheet` returns focus to its trigger when it closes.
+- `FilterRail` Clear all empties text typed into a filter but not yet applied.
+- `Timeline` ids are unique per instance, and a calendar date's `datetime` is the bare date.
+- `Menu` stacks above sticky headers where the popover top layer is unavailable.
+- The release job checks that the tag matches `package.json` before attaching the tarball, and
+  runs publint.
 
 ## [0.7.0] — 2026-10-14
 

@@ -60,3 +60,9 @@ Nor is a toast the place for an error the user must act on; that is a `Field err
 - Don't mount a second Toaster.
 - Don't stack three.
 - Don't use a toast to ask a question.
+
+## On the server
+
+`toasts` is one queue per JavaScript module instance. In the browser that is the app; on a server
+it would be shared by every request, so push toasts from the browser only — from event handlers and
+effects, never during server rendering or in a `load` function.
