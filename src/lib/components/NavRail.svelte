@@ -86,6 +86,8 @@ that list, not disabled.
 	const storageKey = $derived(rememberAs ? `darksite:rail:${rememberAs}` : null);
 
 	let listEl: HTMLElement | undefined = $state();
+	// The width animates only for a toggle, never for the first state the client settles on.
+	let ready = $state(false);
 	let tip = $state<{ text: string; top: number; left: number } | null>(null);
 	let tipTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -100,6 +102,7 @@ that list, not disabled.
 			expanded = stored !== null ? stored === '1' : (window.matchMedia?.('(min-width: 1440px)').matches ?? false);
 		}
 		listEl?.querySelector('[aria-current="page"]')?.scrollIntoView?.({ block: 'nearest' });
+		requestAnimationFrame(() => requestAnimationFrame(() => (ready = true)));
 	});
 
 	function toggle() {
@@ -137,7 +140,8 @@ that list, not disabled.
 	}
 </script>
 
-<nav class="ds-navrail {className}" data-expanded={open ? '' : undefined} aria-label={label}>
+<nav class="ds-navrail {className}" data-expanded={open ? '' : undefined}
+	data-ready={ready ? '' : undefined} aria-label={label}>
 	{#if mark || product}
 		<div class="brand">
 			{#if mark}<span class="mark">{@render mark()}</span>{/if}
@@ -204,6 +208,8 @@ that list, not disabled.
 		min-height: 0;
 		padding: 8px 0;
 		background: var(--ds-bg-0);
+	}
+	.ds-navrail[data-ready] {
 		transition: width var(--ds-dur-base) var(--ds-ease-in-out);
 	}
 	.ds-navrail[data-expanded] {

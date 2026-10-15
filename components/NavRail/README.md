@@ -19,6 +19,10 @@ The state is **remembered per viewer**. With nothing stored it starts expanded a
 collapsed below, so a laptop is tidy and a wide display is legible without anyone configuring
 either.
 
+The stored state is only known in the browser, so a server-rendered page paints the rail collapsed
+and settles after hydration — without animating, since only a toggle animates. To paint the right
+width from the start, keep the choice in a cookie as well and pass it as `expanded`.
+
 ### Keeping it collapsed
 
 `pinned` hides the toggle and holds the rail at `expanded`. For a rail that is **always

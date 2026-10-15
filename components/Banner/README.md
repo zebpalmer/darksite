@@ -41,7 +41,8 @@ Reload applies the update; when the page holds unsaved edits, ask first with a `
 ## What the consumer provides
 
 `id`, `tone`, `message` (or children — one sentence), `action` snippet (one link or Button),
-`dismissible`, `remember` (default true), `viewer`, `ondismiss`, `class`.
+`dismissible`, `remember` (default true), `viewer`, `dismissed` (bindable: pass what the server
+knows from a cookie, so a dismissed banner never shows before hydration), `ondismiss`, `class`.
 
 ## Don't
 

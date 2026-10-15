@@ -87,24 +87,27 @@ describe('Dialog and Sheet on the stack', () => {
 		const store = new ToastStore();
 		const { container, rerender } = render(ModalHarness, { store });
 		const queue = screen.getByRole('list', { name: 'Notifications' });
+		// The queue travels with its live regions, in one layer.
+		const layer = queue.parentElement!;
+		expect(layer.classList.contains('ds-toaster-layer')).toBe(true);
 		const home = container.querySelector('.ds-toaster-home');
-		expect(queue.parentElement).toBe(home);
+		expect(layer.parentElement).toBe(home);
 
 		await rerender({ store, sheet: true });
 		const sheet = container.querySelector('dialog.ds-sheet');
 		expect(modals.count).toBe(1);
-		expect(queue.parentElement).toBe(sheet);
+		expect(layer.parentElement).toBe(sheet);
 
 		await rerender({ store, sheet: true, dialog: true });
 		expect(modals.count).toBe(2);
-		expect(queue.parentElement).toBe(container.querySelector('dialog.ds-dialog'));
+		expect(layer.parentElement).toBe(container.querySelector('dialog.ds-dialog'));
 
 		await rerender({ store, sheet: true, dialog: false });
-		expect(queue.parentElement).toBe(sheet);
+		expect(layer.parentElement).toBe(sheet);
 
 		await rerender({ store, sheet: false, dialog: false });
 		expect(modals.open).toBe(false);
-		expect(queue.parentElement).toBe(home);
+		expect(layer.parentElement).toBe(home);
 	});
 
 	it('keeps toasts usable while the sheet is open', async () => {

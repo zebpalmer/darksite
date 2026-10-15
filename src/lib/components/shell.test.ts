@@ -113,6 +113,7 @@ describe('Toaster', () => {
 		store.error('Could not save');
 		store.info('Archived', { action: { label: 'Undo', keycap: 'z', onAction } });
 		await vi.waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Could not save'));
+		await vi.waitFor(() => expect(screen.getByRole('status').textContent).toContain('Archived. Undo: z'));
 		await fireEvent.keyDown(window, { key: 'z' });
 		expect(onAction).toHaveBeenCalledTimes(1);
 		expect(store.items.map((t) => t.message)).toEqual(['Could not save']);

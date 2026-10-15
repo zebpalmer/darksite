@@ -22,7 +22,7 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 	import X from '@lucide/svelte/icons/x';
 
 	import KeyCap from './KeyCap.svelte';
-	import { isTypingTarget, matchesKey } from '../keycap.js';
+	import { formatKey, isTypingTarget, matchesKey } from '../keycap.js';
 	import { topmost as toTopmost } from '../layers.svelte.js';
 	import { formatCountdown } from '../time.js';
 	import { toasts, type Toast, type ToastStore } from '../toast.svelte.js';
@@ -48,6 +48,31 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 	const share = (t: Toast) => (t.duration ? (left(t) / t.duration) * 100 : 0);
 	const icons = { info: Info, success: CircleCheck, warning: TriangleAlert, error: CircleAlert };
 
+	// Two live regions that exist before any toast does, so screen readers announce reliably: a
+	// polite one for results and an assertive one for failures. Each new or changed toast is spoken
+	// once; the region is cleared first so the same words twice are still announced twice.
+	let polite = $state('');
+	let assertive = $state('');
+	const spoken = new Set<string>();
+	$effect(() => {
+		for (const t of store.items) {
+			const key = `${t.id}\u0000${t.message}`;
+			if (spoken.has(key)) continue;
+			spoken.add(key);
+			const text = t.action?.keycap
+				? `${t.message}. ${t.action.label}: ${formatKey(t.action.keycap)}`
+				: t.message;
+			if (t.tone === 'error') {
+				assertive = '';
+				queueMicrotask(() => (assertive = text));
+			} else {
+				polite = '';
+				queueMicrotask(() => (polite = text));
+			}
+		}
+		if (spoken.size > 50) spoken.clear();
+	});
+
 	function run(t: Toast) {
 		t.action?.onAction();
 		store.dismiss(t.id);
@@ -67,13 +92,15 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 
 <!-- The queue travels into an open modal; this wrapper keeps its place in the page. -->
 <div class="ds-toaster-home">
-	<ol class="ds-toaster" aria-label="Notifications" {@attach topmost ? toTopmost : undefined}>
+	<div class="ds-toaster-layer" {@attach topmost ? toTopmost : undefined}>
+	<div class="ds-sr-only" role="status" aria-live="polite" aria-atomic="true">{polite}</div>
+	<div class="ds-sr-only" role="alert" aria-live="assertive" aria-atomic="true">{assertive}</div>
+	<ol class="ds-toaster" aria-label="Notifications">
 		{#each store.items as t (t.id)}
 			{@const Icon = icons[t.tone]}
 			<li
 				class="toast"
 				data-tone={t.tone}
-				role={t.tone === 'error' ? 'alert' : 'status'}
 				onmouseenter={() => store.pause(t.id)}
 				onmouseleave={() => store.resume(t.id)}
 				onfocusin={() => store.pause(t.id)}
@@ -99,6 +126,7 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 			</li>
 		{/each}
 	</ol>
+	</div>
 </div>
 
 <style>

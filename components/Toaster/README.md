@@ -38,8 +38,11 @@ published height. Full-width above the tab bar on phones.
 
 ## Announcing
 
-Each toast is its own live region, so a screen reader hears it and not just a sighted user:
-`role="status"` (polite) for results and information, `role="alert"` (assertive) for failures.
+A screen reader hears every toast, not just a sighted user: the Toaster keeps two live regions that
+exist before any toast does — `role="status"` (polite) for results and information, `role="alert"`
+(assertive) for failures — and speaks each new or changed toast into one of them once, with its
+action and key ("Archived 3 records. Undo: z"). They travel with the queue into an open modal, so
+a dialog does not silence them.
 The countdown is `aria-hidden` — announcing every tick would drown the message.
 
 ## What belongs in a toast

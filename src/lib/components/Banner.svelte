@@ -12,6 +12,8 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 - `remember` (default true): false dismisses for this page view only — the banner returns on the
   next load. For a notice that must come back while its condition holds, such as an update
   waiting to be loaded.
+- `dismissed` (bindable): pass what the server already knows (a cookie), so a dismissed banner
+  never shows before hydration.
 - `role="status"` for info and warning, `role="alert"` for danger.
 -->
 <script lang="ts">
@@ -28,6 +30,8 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 		tone?: 'info' | 'warning' | 'danger';
 		message?: string;
 		dismissible?: boolean;
+		/** Dismissed already, as the server knows it (a cookie): no flash before hydration. Bindable. */
+		dismissed?: boolean;
 		remember?: boolean;
 		viewer?: string;
 		ondismiss?: () => void;
@@ -41,6 +45,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 		tone = 'info',
 		message,
 		dismissible = false,
+		dismissed = $bindable(false),
 		remember = true,
 		viewer,
 		ondismiss,
@@ -51,10 +56,9 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 
 	const canDismiss = $derived(dismissible && tone !== 'danger');
 	const storageKey = $derived(`darksite:banner:${viewer ? `${viewer}:` : ''}${id}`);
-	let dismissed = $state(false);
 
 	onMount(() => {
-		if (!canDismiss || !remember) return;
+		if (!canDismiss || !remember || dismissed) return;
 		try {
 			dismissed = localStorage.getItem(storageKey) === '1';
 		} catch {
