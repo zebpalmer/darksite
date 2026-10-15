@@ -203,3 +203,15 @@ describe('Table column priority widths', () => {
 		width.mockRestore();
 	});
 });
+
+describe('Table keyboard stop', () => {
+	it('keeps one row in the tab order after the rows shrink', async () => {
+		const { rerender } = render(Table, base);
+		const rowsBefore = bodyRows();
+		await fireEvent.focus(rowsBefore[2]);
+		expect(rowsBefore[2].tabIndex).toBe(0);
+		await rerender({ ...base, rows: rows.slice(0, 1) });
+		const after = bodyRows();
+		expect(after.filter((r) => r.tabIndex === 0)).toHaveLength(1);
+	});
+});

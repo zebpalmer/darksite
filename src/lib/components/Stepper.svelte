@@ -81,14 +81,21 @@ value is clamped and snapped to the step when it is committed (Enter or leaving 
 	}
 
 	function onkeydown(event: KeyboardEvent) {
+		// A typed draft is committed first, so the step applies to what was typed.
+		const steps: Record<string, (v: number) => number | undefined> = {
+			ArrowUp: (v) => v + step,
+			ArrowDown: (v) => v - step,
+			PageUp: (v) => v + big,
+			PageDown: (v) => v - big,
+			Home: () => min,
+			End: () => max
+		};
 		let next: number | undefined;
-		if (event.key === 'ArrowUp') next = value + step;
-		else if (event.key === 'ArrowDown') next = value - step;
-		else if (event.key === 'PageUp') next = value + big;
-		else if (event.key === 'PageDown') next = value - big;
-		else if (event.key === 'Home' && min !== undefined) next = min;
-		else if (event.key === 'End' && max !== undefined) next = max;
-		else if (event.key === 'Enter') {
+		if (event.key in steps && steps[event.key](value) !== undefined) {
+			event.preventDefault();
+			commit();
+			next = steps[event.key](value);
+		} else if (event.key === 'Enter') {
 			commit();
 			return;
 		} else if (event.key === 'Escape' && draft !== null) {
@@ -96,10 +103,7 @@ value is clamped and snapped to the step when it is committed (Enter or leaving 
 			draft = null;
 			return;
 		}
-		if (next === undefined) return;
-		event.preventDefault();
-		commit();
-		set(next);
+		if (next !== undefined) set(next);
 	}
 </script>
 

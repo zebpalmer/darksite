@@ -119,12 +119,26 @@ export function normalizeKey(token: string): string {
 	return [...MOD_ORDER.filter((m) => mods.has(m)), key].join('+');
 }
 
-/** Page hotkeys stand aside while the user is typing. */
+const NOT_TYPING = new Set([
+	'checkbox',
+	'radio',
+	'button',
+	'submit',
+	'reset',
+	'range',
+	'file',
+	'color',
+	'image'
+]);
+
+/** Page hotkeys stand aside while the user is typing. A focused checkbox, radio or button is not
+ *  typing, so hotkeys keep working after Tab lands on a row's checkbox. */
 export function isTypingTarget(target: EventTarget | null): boolean {
 	if (!(target instanceof HTMLElement)) return false;
+	if (target instanceof HTMLInputElement) return !NOT_TYPING.has(target.type);
 	return (
 		target.isContentEditable ||
-		['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) ||
+		['TEXTAREA', 'SELECT'].includes(target.tagName) ||
 		target.closest('[contenteditable="true"]') !== null
 	);
 }

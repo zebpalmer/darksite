@@ -185,6 +185,22 @@ describe('Dialog', () => {
 	});
 });
 
+describe('Dialog scrim', () => {
+	it('closes on a press that starts and ends on the scrim, not on a drag out of the panel', async () => {
+		const oncancel = vi.fn();
+		render(Dialog, { open: true, title: 'Discard this draft?', oncancel });
+		const dialog = screen.getByRole('alertdialog');
+		const title = screen.getByRole('heading', { name: 'Discard this draft?' });
+		// A selection dragged from the title out onto the scrim: the click lands on the dialog.
+		await fireEvent.pointerDown(title);
+		await fireEvent.click(dialog);
+		expect(oncancel).not.toHaveBeenCalled();
+		await fireEvent.pointerDown(dialog);
+		await fireEvent.click(dialog);
+		expect(oncancel).toHaveBeenCalledTimes(1);
+	});
+});
+
 describe('Dialog with a note', () => {
 	it('starts in the field and waits for the note', async () => {
 		const onconfirm = vi.fn();

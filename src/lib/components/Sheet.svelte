@@ -47,6 +47,7 @@ behind does not scroll while it is open.
 		children
 	}: Props = $props();
 
+	let pressedScrim = false;
 	const uid = $props.id();
 
 	// `force`: the browser will close the dialog anyway (a repeated Esc is not cancelable), so the
@@ -87,8 +88,12 @@ behind does not scroll while it is open.
 			event.preventDefault();
 			close(!event.cancelable);
 		}}
+		onpointerdown={(event) => (pressedScrim = event.target === event.currentTarget)}
 		onclick={(event) => {
-			if (event.target === event.currentTarget) close();
+			// Only a press that starts and ends on the scrim closes: a text selection dragged out of
+			// the panel ends on the dialog element too.
+			if (pressedScrim && event.target === event.currentTarget) close();
+			pressedScrim = false;
 		}}
 	>
 		<div class="panel">

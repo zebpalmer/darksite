@@ -144,6 +144,8 @@ belong in the pane's ActionBar.
 	}: Props = $props();
 
 	let focusIndex = $state(0);
+	// After a filter shrinks the rows, the stop moves to the last row instead of vanishing.
+	const stopIndex = $derived(Math.max(0, Math.min(focusIndex, view.length - 1)));
 	let lastClicked: number | null = null;
 	const rowEls: HTMLTableRowElement[] = $state([]);
 
@@ -308,7 +310,7 @@ belong in the pane's ActionBar.
 	{@const mark = markOf(row)}
 	<tr
 		bind:this={rowEls[index]}
-		tabindex={index === focusIndex ? 0 : -1}
+		tabindex={index === stopIndex ? 0 : -1}
 		data-selected={selectable && selected.has(keys[index]) ? '' : undefined}
 		data-link={link ? '' : undefined}
 		data-mark={mark ? '' : undefined}

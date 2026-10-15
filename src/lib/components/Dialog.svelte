@@ -71,6 +71,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		children
 	}: Props = $props();
 
+	let pressedScrim = false;
 	const uid = $props.id();
 	let busy = $state(false);
 	let error = $state<string | null>(null);
@@ -152,7 +153,11 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 			e.preventDefault();
 			cancel(!e.cancelable);
 		}}
-		onclick={(e) => e.target === e.currentTarget && cancel()}
+		onpointerdown={(e) => (pressedScrim = e.target === e.currentTarget)}
+		onclick={(e) => {
+			if (pressedScrim && e.target === e.currentTarget) cancel();
+			pressedScrim = false;
+		}}
 		{@attach surface}
 	>
 		<form

@@ -66,3 +66,17 @@ describe('Stepper', () => {
 		expect((screen.getByRole('spinbutton') as HTMLInputElement).disabled).toBe(true);
 	});
 });
+
+describe('Stepper with a typed draft', () => {
+	it('steps from the typed value, not the one before it', async () => {
+		const onchange = vi.fn();
+		render(Stepper, { value: 0, min: 0, max: 500, label: 'Copies', onchange });
+		const field = screen.getByRole('spinbutton') as HTMLInputElement;
+		await fireEvent.input(field, { target: { value: '50' } });
+		await fireEvent.keyDown(field, { key: 'ArrowUp' });
+		expect(onchange).toHaveBeenLastCalledWith(51);
+		await fireEvent.input(field, { target: { value: '200' } });
+		await fireEvent.keyDown(field, { key: 'PageDown' });
+		expect(onchange.mock.lastCall?.[0]).toBeLessThan(200);
+	});
+});

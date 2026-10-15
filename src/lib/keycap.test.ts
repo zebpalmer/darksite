@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatKey, formatKeys } from './keycap.js';
+import { formatKey, formatKeys, isTypingTarget } from './keycap.js';
 
 describe('formatKey', () => {
 	it('renders modifiers as symbols and named keys as words', () => {
@@ -24,5 +24,23 @@ describe('formatKeys', () => {
 	it('joins alternatives', () => {
 		expect(formatKeys(['j', 'down'])).toBe('j / ↓');
 		expect(formatKeys('space', ' or ')).toBe('Space');
+	});
+});
+
+describe('isTypingTarget', () => {
+	it('counts text entry, not checkboxes, radios or buttons', () => {
+		const el = (html: string) => {
+			const host = document.createElement('div');
+			host.innerHTML = html;
+			return host.firstElementChild;
+		};
+		expect(isTypingTarget(el('<input type="text">'))).toBe(true);
+		expect(isTypingTarget(el('<input>'))).toBe(true);
+		expect(isTypingTarget(el('<input type="search">'))).toBe(true);
+		expect(isTypingTarget(el('<textarea></textarea>'))).toBe(true);
+		expect(isTypingTarget(el('<input type="checkbox">'))).toBe(false);
+		expect(isTypingTarget(el('<input type="radio">'))).toBe(false);
+		expect(isTypingTarget(el('<input type="range">'))).toBe(false);
+		expect(isTypingTarget(el('<button>Go</button>'))).toBe(false);
 	});
 });
