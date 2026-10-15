@@ -39,7 +39,7 @@
 		"prepare": "svelte-kit sync && svelte-package",
 		"tokens": "node scripts/build-tokens.mjs",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"lint": "node scripts/build-tokens.mjs --check && node scripts/check-contrast.mjs && prettier --check . && npm run check",
+		"lint": "node scripts/build-tokens.mjs --check && node scripts/check-contrast.mjs && prettier --check . && npm run check && npm run package",
 		"format": "prettier --write .",
 		"test": "vitest run",
 		"contrast": "node scripts/check-contrast.mjs -v"

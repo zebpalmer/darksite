@@ -21,7 +21,8 @@ on that ground, at least 4.5:1 in both themes). `ds-sev-off` is an unlit pip.
 
 ## Rules
 
-- **Always the name, never the index.** Digits appear only on the 1–5 key caps.
+- **Always the name, never the index.** Digits appear only on the 1–5 key caps, and the picker only
+  shows them: binding the keys is the page's job (`hotkeys`).
 - **Cards:** `SeverityBadge size="sm"`, with its 3px left mark. **Pickers:** `SeverityPicker`,
   segments in order with a 3px bottom mark. **Detail panels:** `SeverityBadge pips` — the badge
   plus the 5-pip position bar. **Table rows:** `rowSeverity` draws the stop's mark as a 3px leading

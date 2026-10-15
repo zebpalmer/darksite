@@ -164,7 +164,7 @@ The frame is built from `AppShell`, `NavRail`, `TabBar`, `SideNav` and `TopBar`.
 ## Iconography
 
 Lucide, imported one icon at a time. **16px** inside a control, **18px** in a `SheetItem` or a
-touch button, **20px** in the navigation, **24px** in an `EmptyState`. Icons inherit
+touch button, **20px** in the tab bar and the collapsed rail, **18px** in the expanded rail, **24px** in an `EmptyState`. Icons inherit
 `currentColor`, so they take the role color of the text beside them; set `svg { flex-shrink: 0 }`
 globally so an icon never collapses in a flex row. Never use an emoji where an icon belongs.
 
@@ -373,7 +373,9 @@ To add a primitive, follow `AGENTS.md`, "Delivering a primitive".
 | `docs/` | The rules: which primitive, layout, shell and navigation, density, focus and hotkeys, severity, don'ts. |
 | `CHANGELOG.md` | What changed in each release. |
 
-Development runs through stratt: `stratt all` verifies, `stratt release minor` versions and tags.
+Development runs through stratt: `stratt all` verifies (tokens, contrast, formatting, types, the
+package and publint, tests), `stratt build` also builds the gallery (CI runs both), and
+`stratt release minor` versions and tags.
 
 ## What's not included
 

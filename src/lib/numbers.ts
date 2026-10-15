@@ -14,7 +14,7 @@ export function formatNumber(value: number, options: NumberOptions = {}): string
 	}).format(value);
 }
 
-/** `12408` → `12K`, `12480` → `12.5K`, `1250000` → `1.3M`. For tight spaces only — never a table. */
+/** `12408` → `12.4K`, `12480` → `12.5K`, `1250000` → `1.3M`. For tight spaces only — never a table. */
 export function formatCompact(value: number, locale?: string): string {
 	return new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 }).format(
 		value

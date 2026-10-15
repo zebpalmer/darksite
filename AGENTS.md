@@ -59,9 +59,10 @@ A need found while adopting darksite in a project is written here as a **general
 software**, with neutral examples. If a requirement only makes sense for one project, it belongs in
 that project, not here.
 
-Never name a product, employer, client, vendor or real person, and never use realistic data copied
-from a real system — not in code, tests, docs, commit messages or `TODO.md`. Use neutral
-placeholders ("Field team", "R-00412", "A. Rivera").
+Never name a product, employer, client, vendor or living private person, and never use realistic
+data copied from a real system — not in code, tests, docs, commit messages or `TODO.md`. Use neutral
+placeholders ("Field team", "R-00412", "A. Rivera"). Well-known historical figures (Ada Lovelace,
+Grace Hopper) are fine as sample names.
 
 ## Releases
 
