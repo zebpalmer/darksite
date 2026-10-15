@@ -15,14 +15,26 @@ It is the one component allowed to ask about the viewport ([`layout.md`](../../d
   `0px`.
 - **`--ds-chrome-bottom`:** the height of fixed bottom chrome — the tab bar plus its safe-area
   inset on phones, `0px` on desktop. Pages pad by it; `Toaster` lifts above it.
-- **`--ds-topbar-h`:** the top bar's height, for panes sizing themselves against it.
+- **`--ds-topbar-h`:** the top bar's height (the `TopBar` publishes it), for panes sizing
+  themselves against it.
 - **One `Toaster`**, mounted here and nowhere else.
+- **A "Skip to content" link**, the first thing a keyboard reaches, onto the page's `<main>`.
 
 ## What the consumer provides
 
-`items` (the single navigation list — see [`shell.md`](../../docs/shell.md)), `current` (the active id), `user` (for the
-account block), `topBar` (a snippet, or omitted), `children` (the page), and `padded` (default
-true; false hands the whole column to a work view).
+```svelte
+<AppShell {items} {groups} {current} product="Acme" {mark} {account} rememberAs="main">
+  {#snippet topBar()}<TopBar {search} />{/snippet}
+  {@render children()}
+</AppShell>
+```
+
+`items` and `groups` (the single navigation list — see [`shell.md`](../../docs/shell.md)),
+`current` (the active id), `product` and `mark` (the brand), `account` snippet (the rail's footer
+and the More sheet's; receives `{ compact }`), `version`, `rememberAs` (remember the rail's state
+for this viewer), `primaryTabs` (the tab bar's four ids), `banner` and `topBar` snippets,
+`children` (the page), `padded` (default true; false hands the whole column to a work view),
+`toaster` (default true), `railExpanded` (bindable).
 
 ## Don't
 

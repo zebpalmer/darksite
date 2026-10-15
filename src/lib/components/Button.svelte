@@ -220,7 +220,7 @@ sets `aria-keyshortcuts`), `href` (renders an `<a>`), `type` (default `button`),
 	}
 
 	.ds-btn[data-variant='danger-solid'] {
-		background: var(--ds-danger);
+		background: var(--ds-danger-fill);
 		color: var(--ds-danger-contrast);
 		font-weight: 500;
 	}

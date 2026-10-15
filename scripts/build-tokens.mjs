@@ -46,6 +46,17 @@ for (const theme of rest) {
 	out.push('}', '');
 }
 
+// A theme with `media` also applies on its own when the viewer asks for it through that media
+// query and has not chosen another theme explicitly.
+for (const theme of t.color.themes.filter((x) => x.media)) {
+	out.push(`@media ${theme.media} {`, `  :root:not([data-theme]),`, `  [data-theme="${first}"] {`);
+	for (const tok of themed) {
+		const v = valueFor(tok, theme.id);
+		if (v !== undefined) out.push(`    --${tok.name}: ${ref(v)};`);
+	}
+	out.push('  }', '}', '');
+}
+
 out.push(':root {');
 for (const fam of plainFamilies)
 	for (const tok of t[fam]?.tokens ?? []) out.push(`  --${tok.name}: ${tok.value};`);

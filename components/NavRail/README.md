@@ -29,8 +29,17 @@ block — notifications, the account avatar, the collapse toggle, the build vers
 
 ## What the consumer provides
 
-`items`, `groups` (ordered ids and their labels), `current`, `expanded` (bindable),
-`onToggle`, `badge(item)`, `footer` snippet (the account block), `version`.
+```svelte
+<NavRail {items} {groups} {current} product="Acme" {mark} rememberAs="main" bind:expanded>
+  {#snippet footer({ expanded })}<AccountBlock compact={!expanded} />{/snippet}
+</NavRail>
+```
+
+`items` (`NavItem[]`: `{ id, label, href, icon?, group?, badge? }`, where `badge` is a count or
+`true` for a dot), `groups` (ordered `{ id, label }`), `current` (the active id), `expanded`
+(bindable), `rememberAs` (a key; the state is kept in this viewer's browser), `product` and `mark`
+(the brand at the top), `footer` snippet (receives `{ expanded }`), `version`, `label` (the
+`<nav>`'s name, default "Primary"). Inside `AppShell` you pass these to the shell instead.
 
 ## Don't
 

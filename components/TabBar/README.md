@@ -15,16 +15,21 @@ Each cell is an icon over a 12px label, both `ds-text-3`, turning `ds-text-1` wi
 `ds-accent` icon when current. There is no underline and no pill — the color change and the
 icon's weight are the whole signal at this size.
 
-## It publishes its own height
+## Its height is published
 
-While mounted it sets `--ds-chrome-bottom` to its height plus the safe-area inset, so pages pad
-their last element by it and `Toaster` lifts above it. Nothing else should hard-code 56px.
+Below `ds-bp-phone`, `AppShell` sets `--ds-chrome-bottom` to the bar's height plus the safe-area
+inset, so pages pad their last element by it and `Toaster` lifts above it. Nothing else should
+hard-code 56px.
+
+A badge on a destination behind More shows as a dot on More, and More is marked current when the
+current page is behind it.
 
 ## What the consumer provides
 
-`items` (the first four, from the one navigation list), `current`, `badge(item)` (a dot, or a
-count for small numbers), `moreGroups` (everything else, grouped), `footer` snippet for the
-sheet's account block.
+`items` and `groups` (the whole navigation list — the bar picks its cells, the sheet takes the
+rest), `current`, `primary` (the ids of the four cells; default the first four), `moreLabel`
+(default "More"), `footer` snippet (the sheet's account block), `label`. Inside `AppShell` you pass
+these to the shell instead (`primaryTabs`, `account`).
 
 ## Don't
 

@@ -1,7 +1,9 @@
 <script lang="ts">
 	// Components with a live page here; everything else is specified by its card in components/.
 	const live = new Set([
+		'ActionBar',
 		'ActiveFilters',
+		'AppShell',
 		'Banner',
 		'Button',
 		'Checkbox',
@@ -12,21 +14,28 @@
 		'KeyCap',
 		'Menu',
 		'Meter',
+		'NavRail',
 		'NewBadge',
+		'PageHeader',
 		'Pane',
 		'Radio',
 		'SeverityBadge',
 		'Sheet',
+		'SheetItem',
+		'SideNav',
 		'SkeletonLoader',
 		'SourceBadge',
 		'Spinner',
 		'Stat',
 		'StatusBadge',
 		'Switch',
+		'TabBar',
 		'Table',
-		'Timeline'
+		'Timeline',
+		'Toaster',
+		'TopBar'
 	]);
-	const route: Record<string, string> = { ActiveFilters: 'filterrail' };
+	const route: Record<string, string> = { ActiveFilters: 'filterrail', SheetItem: 'sheet' };
 	const groups: Record<string, string[]> = {
 		Actions: ['Button', 'KeyCap'],
 		Selection: ['Chip', 'SegmentedControl', 'Tabs'],

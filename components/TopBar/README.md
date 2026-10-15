@@ -18,13 +18,15 @@ knowing where it will be.
 So `PageHeader` keeps its flush geometry underneath, and a sticky page header still sticks
 directly below it. The shell publishes its height as `--ds-topbar-h` for panes sizing against it.
 
-Search focuses on `/`, except where the page has already claimed that key — a page that owns `/`
-wins, because its search is the nearer one.
+Search focuses on `/`, except while the user is typing or where the page has already claimed that
+key — a page that owns `/` wins, because its search is the nearer one. It wins by handling the key
+first (`preventDefault`), or by passing `searchKey={null}`.
 
 ## What the consumer provides
 
-`search` (a snippet, usually an `Input leading={Search}` with a `/` key cap), `actions` snippet
-(right side), `variant` (`default` 48 | `slim` 40), `sticky`, `label`.
+`start` snippet (a scope selector), `search` snippet (usually an `Input` with a `/` key cap),
+`actions` snippet (right side), `variant` (`default` 48 | `slim` 40), `sticky`, `label`,
+`searchKey` (default `/`; `null` hands the key to the page).
 
 ## Don't
 

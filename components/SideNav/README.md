@@ -25,8 +25,9 @@ handling, and secondary navigation is not worth a modal.
 
 ## What the consumer provides
 
-`items` (`{ id, label, href, group, badge? }[]`), `groups` (ordered ids and labels), `current`,
-`collapsible` (default false), `label` (the `aria-label` for the `<nav>`).
+`items` (`NavItem[]` with `group`), `groups` (ordered ids and labels), `current`, `label` (the
+`<nav>`'s name, required), `collapsible` (default false), `onnavigate(href)` (what the phone select
+does on change; default `location.assign` — pass your router's `goto`).
 
 ## Don't
 

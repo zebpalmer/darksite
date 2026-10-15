@@ -3,7 +3,9 @@
 //   import 'darksite/tokens.css';
 //   import 'darksite/base.css';
 
+export { default as ActionBar } from './components/ActionBar.svelte';
 export { default as ActiveFilters } from './components/ActiveFilters.svelte';
+export { default as AppShell } from './components/AppShell.svelte';
 export { default as Banner } from './components/Banner.svelte';
 export { default as Button } from './components/Button.svelte';
 export { default as Checkbox } from './components/Checkbox.svelte';
@@ -14,11 +16,15 @@ export { default as HelpTip } from './components/HelpTip.svelte';
 export { default as KeyCap } from './components/KeyCap.svelte';
 export { default as Menu } from './components/Menu.svelte';
 export { default as Meter } from './components/Meter.svelte';
+export { default as NavRail } from './components/NavRail.svelte';
 export { default as NewBadge } from './components/NewBadge.svelte';
+export { default as PageHeader } from './components/PageHeader.svelte';
 export { default as Pane } from './components/Pane.svelte';
 export { default as Radio } from './components/Radio.svelte';
 export { default as SeverityBadge } from './components/SeverityBadge.svelte';
 export { default as Sheet } from './components/Sheet.svelte';
+export { default as SheetItem } from './components/SheetItem.svelte';
+export { default as SideNav } from './components/SideNav.svelte';
 export { default as SkeletonLoader } from './components/SkeletonLoader.svelte';
 export { default as SourceBadge } from './components/SourceBadge.svelte';
 export { default as Spinner } from './components/Spinner.svelte';
@@ -26,8 +32,11 @@ export { default as Stat } from './components/Stat.svelte';
 export { default as StatRow } from './components/StatRow.svelte';
 export { default as StatusBadge } from './components/StatusBadge.svelte';
 export { default as Switch } from './components/Switch.svelte';
+export { default as TabBar } from './components/TabBar.svelte';
 export { default as Table } from './components/Table.svelte';
 export { default as Timeline } from './components/Timeline.svelte';
+export { default as Toaster } from './components/Toaster.svelte';
+export { default as TopBar } from './components/TopBar.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
@@ -42,7 +51,9 @@ export {
 	type FilterSection,
 	type FilterValue
 } from './filters.js';
-export { formatKey, formatKeys } from './keycap.js';
+export { formatKey, formatKeys, isTypingTarget, matchesKey } from './keycap.js';
+export { createLabels, humanize, type Labels } from './labels.js';
+export { formatCompact, formatMoney, formatNumber, type NumberOptions } from './numbers.js';
 export {
 	SEVERITIES,
 	severityLabel,
@@ -52,3 +63,12 @@ export {
 } from './severity.js';
 export { formatAge, formatExact, formatRelative, type DateInput } from './time.js';
 export type { ControlSize, IconComponent } from './types.js';
+export { badgeText, groupItems, type NavGroup, type NavItem, type NavSection } from './nav.js';
+export {
+	toasts,
+	ToastStore,
+	type Toast,
+	type ToastAction,
+	type ToastOptions,
+	type ToastTone
+} from './toast.svelte.js';

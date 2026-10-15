@@ -50,6 +50,13 @@ reason to improvise.
   implement it.
 - **Missing values** are an em dash in `ds-text-3`, announced as "No value" — never a blank, which
   reads as still loading.
+- **Numbers and money:** thousands separators and currency in the viewer's locale. Tables show exact
+  values; compact values ("12.4K") only where space is tight, with the exact value in a tooltip.
+  Money is stored and passed in major units — dollars, not cents. `formatNumber`, `formatCompact`
+  and `formatMoney` implement it.
+- **Stored codes are never shown raw.** A product keeps one label map (`createLabels`) and formats
+  every code through it; a code missing from the map reads as words ("Missing start date"), never
+  as `missing_start_date`.
 - **Sentence case everywhere** — no Title Case headings, no ALL CAPS except the 11px uppercase
   group titles in the navigation. Use American spelling throughout.
 - **No emoji, anywhere** — not in copy, not as an icon.
@@ -106,46 +113,34 @@ images, nothing decorative in the chrome.
 
 ## Accessibility
 
-The ratios below are computed (WCAG 2.1 relative luminance), not estimated. Recompute them
-whenever you change a color.
+Every ratio here is computed, and `scripts/check-contrast.mjs` re-checks every documented pair in
+every theme as part of `stratt lint`. A color change that breaks a pair fails the build.
 
-**Text meets 4.5:1 everywhere this system puts it.** `ds-text-1/2/3` on every ground they are
-documented for; `ds-accent-text`, `ds-success-text`, `ds-warning-text` and `ds-danger-text` on the
-page and on their own tints; every severity ink on its own ground (lowest: Low in light, 5.1:1);
-`ds-accent-contrast` on a filled accent (5.8:1); `ds-danger-contrast` on a filled danger (6.1:1).
-Two rules keep it that way: `ds-text-3` stops at `ds-bg-3` — use `ds-text-2` on `ds-bg-4` and
-above — and a solid danger button takes `ds-danger-contrast`, never `ds-text-inverse`.
+**Text meets 4.5:1 everywhere this system puts it** in dark and light — `ds-text-1/2/3` on the
+grounds they are documented for, every `-text` role on the page and on its own tint, every severity
+ink on its ground, and every label on a filled accent or danger ground at rest, hover and press.
+`ds-text-3` stops at `ds-bg-3`; use `ds-text-2` from `ds-bg-4` up.
 
-**The categorical palette** (`ds-cat-1`…`5`) holds at least 3.5:1 on `ds-bg-2` and 3.2:1 on a
-meter track in both themes.
+**Marks meet 3:1:** the focus ring on every ground, the success, warning and danger marks on every
+ground in both themes, the categorical palette on panels and meter tracks.
 
-**The focus ring meets 3:1 on every ground** — 6.9:1 at worst in dark, 3.6:1 at worst in light.
+**Two things fall short of 3:1 in dark and light, by design:**
 
-**Three things do not meet 3:1, and you should decide whether that is acceptable for your
-product:**
+- **Control edges.** `ds-border`, `ds-border-subtle` and `ds-border-strong` are 1.1–1.9:1 against
+  their grounds; WCAG 2.1 SC 1.4.11 asks 3:1 of a component's identifying boundary. These controls
+  are identified by their label, fill and position as much as their edge — but a strict audit will
+  flag them. (`ds-accent-mixed` is 2.4:1 in dark for the same reason.)
+- **The Critical mark** is 2.6–2.9:1 on dark grounds. The badge and picker always carry the word.
 
-- **Control borders.** `ds-border` is 1.3:1 against an input's `ds-bg-3` ground, and
-  `ds-border-strong` 1.7:1 against a secondary button. WCAG 2.1 SC 1.4.11 asks 3:1 of the visual
-  boundary that identifies a component. These controls are identified by their label, their
-  tinted fill and their position as much as their edge, which is the argument for the subtle
-  look — but a strict audit will flag them.
-- **The Critical mark on an idle ground**, 2.6:1 on `ds-bg-3` in dark. The badge and picker always
-  carry the word, so no meaning depends on the mark, but the stripe is quieter than its siblings.
-- **Semantic marks in light theme.** `ds-success`, `ds-warning` and `ds-danger` are tuned for the
-  dark grounds: on the light ones they fall to 1.9–3.0:1. That matters wherever a mark is the only
-  signal; an invalid input also has its error text and icon, so its border is not alone. The Low and
-  Medium severity marks sit at 2.9–3.0:1 on the light page ground and pass on `ds-bg-3`, where a
-  picker draws them. Every `-text` role still passes 4.5:1. A `Meter` segment with a semantic `tone` inherits
-  this in light theme.
-
-If you need strict conformance, **add a high-contrast theme** rather than re-tinting this one:
-borders at 3:1 against every ground they sit on, and text at 7:1. That keeps the default theme's
-character and gives people who need contrast a real choice.
+**For strict conformance, use the high-contrast theme**: `data-theme="contrast"`. It is dark with
+every text role at 7:1 or more and every border and mark at 3:1 or more — no shortfalls. It also
+applies automatically when the viewer's system asks for more contrast (`prefers-contrast: more`)
+and they have not chosen light.
 
 What the components must guarantee: every interactive element is reachable by keyboard and shows
 the focus ring; a severity always carries its word and an error always carries an icon and a
 message, so neither depends on color; every motion stops under `prefers-reduced-motion`; and touch
-targets are 44px, with the few exceptions [`density.md`](docs/density.md) lists — all of them above WCAG 2.2's 24px
+targets are 44px, with the few exceptions `density.md` lists — all of them above WCAG 2.2's 24px
 minimum.
 
 ## Layout and navigation

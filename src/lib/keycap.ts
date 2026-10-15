@@ -47,3 +47,56 @@ export function formatKey(token: string): string {
 export function formatKeys(keys: string | readonly string[], separator = ' / '): string {
 	return (typeof keys === 'string' ? [keys] : [...keys]).map(formatKey).join(separator);
 }
+
+const EVENT_KEYS: Record<string, string> = {
+	enter: 'Enter',
+	return: 'Enter',
+	space: ' ',
+	escape: 'Escape',
+	esc: 'Escape',
+	tab: 'Tab',
+	backspace: 'Backspace',
+	delete: 'Delete',
+	home: 'Home',
+	end: 'End',
+	pageup: 'PageUp',
+	pagedown: 'PageDown',
+	up: 'ArrowUp',
+	down: 'ArrowDown',
+	left: 'ArrowLeft',
+	right: 'ArrowRight',
+	arrowup: 'ArrowUp',
+	arrowdown: 'ArrowDown',
+	arrowleft: 'ArrowLeft',
+	arrowright: 'ArrowRight'
+};
+
+/** Whether a keyboard event is the hotkey a token names (`shift+enter`, `z`, `ctrl+k`). */
+export function matchesKey(event: KeyboardEvent, token: string): boolean {
+	const parts = token.trim().toLowerCase().split('+');
+	const key = parts.pop() ?? '';
+	const mods = new Set(
+		parts.map((m) => (m === 'control' ? 'ctrl' : m === 'option' ? 'alt' : m === 'cmd' ? 'meta' : m))
+	);
+	if (
+		event.ctrlKey !== mods.has('ctrl') ||
+		event.altKey !== mods.has('alt') ||
+		event.metaKey !== mods.has('meta')
+	)
+		return false;
+	const named = EVENT_KEYS[key];
+	if (named) return event.key === named && event.shiftKey === mods.has('shift');
+	// A single character: shift may be part of the character itself (`?` is shift+/).
+	if (mods.has('shift') && !event.shiftKey) return false;
+	return event.key.toLowerCase() === key;
+}
+
+/** Page hotkeys stand aside while the user is typing. */
+export function isTypingTarget(target: EventTarget | null): boolean {
+	if (!(target instanceof HTMLElement)) return false;
+	return (
+		target.isContentEditable ||
+		['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) ||
+		target.closest('[contenteditable="true"]') !== null
+	);
+}

@@ -11,6 +11,9 @@ lays out its own panes simply makes it the first child; in the shell's padded co
 that padding (the layout publishes it as `--ds-pad-top` / `--ds-pad-x`) with negative margins, so
 every page gets the same bar, the same full-width border and the same 20px title inset.
 
+It also leaves the column's gap below itself, so the page's content starts where it would have
+without a header.
+
 Put it **first** on the page. Something that must sit above it bleeds the same way and sets
 `--ds-pad-top: 0px` on the wrapper; a demo frame that must *not* bleed sets both variables to
 `0px`.

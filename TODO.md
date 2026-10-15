@@ -273,11 +273,13 @@ loading, but neither the trigger nor how it combines with selection is written d
 - [x] **Announce toasts.** Only `Spinner` mentions a live region. The `Toaster` card should
   specify `role="status"` (polite) for results and `role="alert"` for failures, so a screen reader
   hears "Saved as your default", not just a sighted user.
-- [ ] **Semantic marks in light theme are below 3:1.** `ds-success`, `ds-warning` and `ds-danger`
+- [x] **Semantic marks in light theme are below 3:1.** Fixed in 0.5.0: the light marks moved to the
+  -700 / error-600 stops (3.5:1 and up), and a solid danger button has its own `ds-danger-fill`. Was: `ds-success`, `ds-warning` and `ds-danger`
   measure 1.9–3.0:1 against the light grounds, and Low and Medium severity 2.9–3.0:1 on the light
   page ground. Text roles are fine. Needs a light-theme mark stop that holds 3:1 without moving
   `ds-danger`'s fill (see the README's Accessibility section).
-- [ ] **High-contrast theme.** The README recommends one for strict conformance (borders at 3:1,
+- [x] **High-contrast theme.** Added in 0.5.0: `data-theme="contrast"`, also applied under
+  `prefers-contrast: more`. `scripts/check-contrast.mjs` verifies it in lint. Was: The README recommends one for strict conformance (borders at 3:1,
   text at 7:1) but does not provide it.
 
 ## Content rules
@@ -289,9 +291,10 @@ loading, but neither the trigger nor how it combines with selection is written d
 - [x] **Missing values.** Decided in 0.2.0: an em dash in `ds-text-3`, announced as "No value"
   (the Table card). Was: One rule for an empty cell or field: an em dash, "Unknown", or blank.
   This matters most in tables, where a blank reads as still loading.
-- [ ] **Numbers and money.** `PageHeader` says counts are localized. Extend that to thousands
+- [x] **Numbers and money.** Decided in 0.5.0 (README; `formatNumber`, `formatCompact`,
+  `formatMoney`). Was: `PageHeader` says counts are localized. Extend that to thousands
   separators, currency, and when to abbreviate (12.4k).
-- [ ] **Code values to labels.** A rule that stored codes (`missing_start_date`, `in_progress`) are
+- [x] **Code values to labels.** Decided in 0.5.0 (README; `createLabels`). Was: A rule that stored codes (`missing_start_date`, `in_progress`) are
   never shown raw, and each product keeps one label map rather than formatting at each call site.
 
 ## Tokens

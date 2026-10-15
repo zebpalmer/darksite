@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { Button, Sheet } from '#lib';
+	import { Button, Sheet, SheetItem } from '#lib';
+	const sorts = ['Newest first', 'Longest first', 'Highest severity'];
+	let sort = $state('Newest first');
 	let bottom = $state(false);
 	let right = $state(false);
 </script>
@@ -11,9 +13,16 @@
 	<Button onclick={() => (right = true)}>Edit record</Button>
 </div>
 <Sheet bind:open={bottom} title="Sort">
-	<p style="color: var(--ds-text-2); font-size: var(--ds-text-md)">
-		Newest first · Longest first · Highest severity
-	</p>
+	{#each sorts as s (s)}
+		<SheetItem
+			label={s}
+			current={sort === s}
+			onclick={() => {
+				sort = s;
+				bottom = false;
+			}}
+		/>
+	{/each}
 </Sheet>
 <Sheet
 	bind:open={right}

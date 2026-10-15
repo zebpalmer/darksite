@@ -7,15 +7,14 @@ the same way everywhere, because an ordered scale is only readable if it never m
 | Stop | Mark token | Cut from |
 |---|---|---|
 | Info | `ds-sev-info` | a cool slate of its own, so the mildest stop is not a positive judgment |
-| Low | `ds-sev-low` | the success ramp |
-| Medium | `ds-sev-medium` | the warning ramp |
-| High | `ds-sev-high` | the error ramp: the same color as `ds-danger` in dark, one stop deeper in light |
+| Low | `ds-sev-low` | the success ramp — the same color as `ds-success` |
+| Medium | `ds-sev-medium` | the warning ramp — the same color as `ds-warning` |
+| High | `ds-sev-high` | the error ramp — the same color as `ds-danger` in both themes |
 | Critical | `ds-sev-critical` | a plum past the end of the error ramp: the one stop worse than danger |
 
-High and `ds-danger` part company in light on purpose. High's mark is a mark, so in light it takes
-`color-error-600` to hold 3:1 on the grounds (3.7:1 and up). `ds-danger` is also a *fill* — the
-solid danger button, under `ds-danger-contrast` text — and on `color-error-600` that text would drop
-to 4.4:1, so `ds-danger` stays on `color-error-500` in both themes.
+Low, Medium and High are the same colors as the `ds-success`, `ds-warning` and `ds-danger` marks in
+both themes. A solid danger button does not use the mark: its ground is `ds-danger-fill`, kept
+lighter so its label stays readable.
 
 Each stop has three tokens: `ds-sev-<stop>` (the mark), `-bg` (the tinted ground) and `-ink` (text
 on that ground, at least 4.5:1 in both themes). `ds-sev-off` is an unlit pip.

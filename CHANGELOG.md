@@ -6,6 +6,36 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The shell as components: `AppShell`, `NavRail`, `TabBar` (with its More sheet), `SideNav`,
+  `TopBar`, `PageHeader`, `ActionBar` and `SheetItem`, all reading one navigation list
+  (`NavItem`, `NavGroup`, `groupItems`, `badgeText`).
+- `Toaster` and the `toasts` store: at most two, paused on hover or focus, announced as status or
+  alert, with an action whose key cap works as a hotkey.
+- `matchesKey` and `isTypingTarget` for hotkeys; `TopBar` focuses its search on `/`.
+- A high-contrast theme (`data-theme="contrast"`, and automatically under
+  `prefers-contrast: more`): text at 7:1, edges and marks at 3:1.
+- `ds-danger-fill`, the ground of a solid danger button, split from the `ds-danger` mark.
+- `formatNumber`, `formatCompact` and `formatMoney` (major units, never cents), and `humanize` and
+  `createLabels` for showing stored codes as words, with the content rules for both.
+- `scripts/check-contrast.mjs`: every documented color pair is checked in every theme as part of
+  lint.
+
+### Changed
+
+- Light theme: the success, warning and danger marks and the Low and Medium severity marks move to
+  darker stops, so they meet 3:1 on every ground.
+- Light theme: `ds-accent-strong` is darker, so a primary button's label stays above 4.5:1 on
+  hover.
+- `PageHeader` leaves the column's gap below itself.
+- The gallery runs inside `AppShell`, with dark, light and high-contrast themes.
+
+### Removed
+
+- The static `preview.html` of every component that is now built; its card and the gallery cover
+  it.
+
 ## [0.4.0] — 2026-10-14
 
 ### Added
