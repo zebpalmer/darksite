@@ -34,6 +34,18 @@
 		text-size-adjust: 100%;
 	}
 
+	/* Links in running text. Components that are links (Button, Card, NavRail items) set their own
+	   color and drop the underline, and win because this rule sits in the layer. */
+	a {
+		color: var(--ds-accent-text);
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 2px;
+	}
+	a:hover {
+		text-decoration-thickness: 2px;
+	}
+
 	::selection {
 		background-color: var(--ds-accent-tint-hover);
 		color: var(--ds-text-1);

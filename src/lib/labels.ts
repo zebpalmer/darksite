@@ -1,13 +1,19 @@
 // Stored codes are never shown raw. Each product keeps one label map and formats through it;
 // a code missing from the map still reads as words rather than as `missing_start_date`.
 
-/** `missing_start_date` → `Missing start date`; `inProgress` → `In progress`. */
+/** `missing_start_date` → `Missing start date`; `inProgress` → `In progress`; `HTTPError` →
+ *  `HTTP error` (an acronym keeps its capitals); `IN_PROGRESS` → `In progress`. */
 export function humanize(code: string): string {
+	const shout = !/[a-z]/.test(code);
 	const words = code
 		.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+		.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
 		.replace(/[_\-.]+/g, ' ')
 		.trim()
-		.toLowerCase();
+		.split(/\s+/)
+		// An all-capitals code (`IN_PROGRESS`) is shouting, not acronyms.
+		.map((w) => (shout || !/^[A-Z]{2,}$/.test(w) ? w.toLowerCase() : w))
+		.join(' ');
 	return words ? words[0].toUpperCase() + words.slice(1) : '';
 }
 

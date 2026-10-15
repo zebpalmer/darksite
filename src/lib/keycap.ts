@@ -31,8 +31,14 @@ const NAMED: Record<string, string> = {
 	arrowup: '↑',
 	arrowdown: '↓',
 	arrowleft: '←',
-	arrowright: '→'
+	arrowright: '→',
+	// `+` joins the token grammar, so the plus and minus keys are spelled out.
+	plus: '+',
+	minus: '−'
 };
+
+/** Keys the token grammar spells as words that are single characters on the keyboard. */
+const CHARACTERS: Record<string, string> = { plus: '+', minus: '-' };
 
 /** `shift+enter` → `⇧Enter`, `space` → `Space`, `g` → `g`. */
 export function formatKey(token: string): string {
@@ -74,7 +80,8 @@ const EVENT_KEYS: Record<string, string> = {
 /** Whether a keyboard event is the hotkey a token names (`shift+enter`, `z`, `ctrl+k`). */
 export function matchesKey(event: KeyboardEvent, token: string): boolean {
 	const parts = token.trim().toLowerCase().split('+');
-	const key = parts.pop() ?? '';
+	const word = parts.pop() ?? '';
+	const key = CHARACTERS[word] ?? word;
 	const mods = new Set(
 		parts.map((m) => (m === 'control' ? 'ctrl' : m === 'option' ? 'alt' : m === 'cmd' ? 'meta' : m))
 	);

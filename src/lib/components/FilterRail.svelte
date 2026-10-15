@@ -103,8 +103,12 @@ linked and survives a reload.
 			}));
 	}
 
+	// Clear all also empties text a viewer typed but has not applied yet.
+	let cleared = $state(0);
+
 	function clearAll() {
 		set({});
+		cleared++;
 	}
 </script>
 
@@ -114,15 +118,17 @@ linked and survives a reload.
 		{#if section.type === 'text'}
 			<div class="section">
 				<label class="legend" for={fieldId}>{section.label}</label>
-				<Input
-					id={fieldId}
-					type="search"
-					value={value[section.key]?.[0] ?? ''}
-					placeholder={section.placeholder}
-					autocomplete="off"
-					onchange={(e) => setText(section, e.currentTarget.value)}
-					oninput={(e) => e.currentTarget.value === '' && setText(section, '')}
-				/>
+				{#key cleared}
+					<Input
+						id={fieldId}
+						type="search"
+						value={value[section.key]?.[0] ?? ''}
+						placeholder={section.placeholder}
+						autocomplete="off"
+						onchange={(e) => setText(section, e.currentTarget.value)}
+						oninput={(e) => e.currentTarget.value === '' && setText(section, '')}
+					/>
+				{/key}
 			</div>
 		{:else if section.type === 'search'}
 			<div class="section">

@@ -92,3 +92,12 @@ describe('initials', () => {
 		expect(initials(null)).toBe('');
 	});
 });
+
+describe('humanize, acronyms', () => {
+	it('keeps an acronym and lowercases a shouted code', () => {
+		expect(humanize('HTTPError')).toBe('HTTP error');
+		expect(humanize('userID')).toBe('User ID');
+		expect(humanize('IN_PROGRESS')).toBe('In progress');
+		expect(humanize('missing_start_date')).toBe('Missing start date');
+	});
+});

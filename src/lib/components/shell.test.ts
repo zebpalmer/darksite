@@ -38,6 +38,11 @@ describe('nav helpers', () => {
 });
 
 describe('matchesKey', () => {
+	it('matches the plus and minus keys by name', () => {
+		expect(matchesKey(new KeyboardEvent('keydown', { key: '+', shiftKey: true }), 'plus')).toBe(true);
+		expect(matchesKey(new KeyboardEvent('keydown', { key: '-' }), 'minus')).toBe(true);
+	});
+
 	const ev = (key: string, mods: Partial<KeyboardEventInit> = {}) => new KeyboardEvent('keydown', { key, ...mods });
 	it('matches plain, named and modified keys', () => {
 		expect(matchesKey(ev('z'), 'z')).toBe(true);

@@ -67,6 +67,7 @@ export { default as Missing } from './components/Missing.svelte';
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
 export {
+	DEFAULT_PRIORITY_WIDTHS,
 	hiddenPriorities,
 	type TableColumn,
 	type TableGroup,
@@ -86,6 +87,7 @@ export {
 	type FilterOption,
 	type FilterSection,
 	type FilterValue,
+	type ParamsInput,
 	unlistedValues
 } from './filters.js';
 export { formatKey, formatKeys, isTypingTarget, matchesKey } from './keycap.js';
@@ -116,10 +118,13 @@ export {
 export {
 	formatAge,
 	formatDate,
+	formatDue,
+	formatDueExact,
 	formatDuration,
 	formatExact,
 	formatRelative,
 	isCalendarDate,
+	toDate,
 	type DateInput,
 	type DateOptions
 } from './time.js';
@@ -171,7 +176,7 @@ export {
 	type ResolveOptions
 } from './hotkeys.js';
 export { normalizeKey } from './keycap.js';
-export { daysUntil, formatCountdown, formatDue } from './time.js';
+export { daysUntil, formatCountdown } from './time.js';
 export { formatConfidence } from './numbers.js';
 export { initials } from './labels.js';
 export { errorCopy, type ErrorCopy } from './components/ErrorPage.svelte';

@@ -22,7 +22,8 @@
 		},
 		"./tokens.css": "./dist/tokens.css",
 		"./base.css": "./dist/base.css",
-		"./tokens.json": "./tokens.json"
+		"./tokens.json": "./tokens.json",
+		"./package.json": "./package.json"
 	},
 	"files": [
 		"dist",
