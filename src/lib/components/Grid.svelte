@@ -39,7 +39,7 @@ is a row grid (EntityCard) and keeps its min, one per line.
 		data-rows={min !== undefined && min >= 260 ? '' : undefined}
 		style:--card-min={cardMin}
 		style:gap
-		role={label ? 'list' : undefined}
+		role={label ? 'group' : undefined}
 		aria-label={label}
 		{...rest}
 	>

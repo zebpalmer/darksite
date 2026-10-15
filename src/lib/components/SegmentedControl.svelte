@@ -192,4 +192,8 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 		font-size: var(--ds-text-xs);
 		font-variant-numeric: tabular-nums;
 	}
+	/* At 0 the ring fits the strip's 2px padding, which would clip it further out. */
+	.seg:focus-visible {
+		outline-offset: 0;
+	}
 </style>

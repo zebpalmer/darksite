@@ -124,7 +124,14 @@ export {
 	type DateOptions
 } from './time.js';
 export type { ControlSize, IconComponent } from './types.js';
-export { badgeText, groupItems, type NavGroup, type NavItem, type NavSection } from './nav.js';
+export {
+	badgeSpoken,
+	badgeText,
+	groupItems,
+	type NavGroup,
+	type NavItem,
+	type NavSection
+} from './nav.js';
 export {
 	toasts,
 	ToastStore,

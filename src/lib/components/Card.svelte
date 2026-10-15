@@ -207,4 +207,7 @@ as ★ n, display only.
 			transform: none;
 		}
 	}
+	.ds-card:focus-visible {
+		outline-offset: 3px;
+	}
 </style>

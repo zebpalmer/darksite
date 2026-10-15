@@ -37,7 +37,7 @@ and a "Show all" link to the full history; never an unbounded list.
 <script lang="ts">
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import SourceBadge from './SourceBadge.svelte';
-	import { formatExact, formatRelative, toDate } from '../time.js';
+	import { formatExact, formatRelative, isCalendarDate, toDate } from '../time.js';
 
 	interface Props {
 		entries: readonly TimelineEntry[];
@@ -60,6 +60,10 @@ and a "Show all" link to the full history; never an unbounded list.
 		label = 'History',
 		class: className = ''
 	}: Props = $props();
+
+	const uid = $props.id();
+	// A calendar date has no time or zone; its machine form is the bare date.
+	const machine = (at: DateInput) => (isCalendarDate(at) ? at.trim() : toDate(at).toISOString());
 
 	type Row = { key: string; first: TimelineEntry; items: TimelineEntry[] };
 
@@ -99,7 +103,7 @@ and a "Show all" link to the full history; never an unbounded list.
 {/snippet}
 
 {#snippet time(at: TimelineEntry['at'])}
-	<time class="time" datetime={toDate(at).toISOString()} title={formatExact(at)}>{formatRelative(at, now)}</time>
+	<time class="time" datetime={machine(at)} title={formatExact(at)}>{formatRelative(at, now)}</time>
 {/snippet}
 
 <div class="ds-timeline {className}">
@@ -125,14 +129,14 @@ and a "Show all" link to the full history; never an unbounded list.
 							type="button"
 							class="expand"
 							aria-expanded={expanded[row.key] ? 'true' : 'false'}
-							aria-controls="batch-{row.key}"
+							aria-controls="{uid}-batch-{row.key}"
 							onclick={() => (expanded[row.key] = !expanded[row.key])}
 						>
 							<ChevronRight size={14} aria-hidden="true" />
 							{expanded[row.key] ? 'Hide' : 'Show'} {row.items.length.toLocaleString()}
 						</button>
 						{#if expanded[row.key]}
-							<ol class="batch" id="batch-{row.key}">
+							<ol class="batch" id="{uid}-batch-{row.key}">
 								{#each row.items as item (item.id)}
 									<li class="line">
 										<p class="text">{@render sentence(item, parts(item.object))}</p>

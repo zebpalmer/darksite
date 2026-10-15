@@ -49,7 +49,7 @@ describe('FactList', () => {
 
 	it('puts a tip beside its label and lets a wide fact span both columns', () => {
 		const { container } = render(FactList, { items });
-		expect(screen.getByRole('img', { name: 'Free text from the last edit' })).toBeTruthy();
+		expect(screen.getByRole('tooltip').textContent).toBe('Free text from the last edit');
 		const facts = container.querySelectorAll('.fact');
 		expect(facts[3].hasAttribute('data-wide')).toBe(true);
 		expect(container.querySelector('.ds-facts')?.getAttribute('data-columns')).toBe('2');

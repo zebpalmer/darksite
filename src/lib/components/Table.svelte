@@ -144,8 +144,6 @@ belong in the pane's ActionBar.
 	}: Props = $props();
 
 	let focusIndex = $state(0);
-	// After a filter shrinks the rows, the stop moves to the last row instead of vanishing.
-	const stopIndex = $derived(Math.max(0, Math.min(focusIndex, view.length - 1)));
 	let lastClicked: number | null = null;
 	const rowEls: HTMLTableRowElement[] = $state([]);
 
@@ -154,6 +152,8 @@ belong in the pane's ActionBar.
 	// The rows in display order: grouped rows are shown group by group.
 	const view = $derived(groups ? groups.flatMap((g) => g.rows) : rows);
 	const keys = $derived(view.map(rowKey));
+	// After a filter shrinks the rows, the stop moves to the last row instead of vanishing.
+	const stopIndex = $derived(Math.max(0, Math.min(focusIndex, view.length - 1)));
 
 	let root: HTMLDivElement | undefined = $state();
 	let width = $state<number | null>(null);

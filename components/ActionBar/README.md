@@ -23,7 +23,7 @@ clusters. A long-lived undo lives here — not in a toast, which would expire.
 
 ## What the consumer provides
 
-`sticky`, `label` (the toolbar's `aria-label`, "Actions" by default), `class`, children.
+`sticky`, `label` (the group's `aria-label`, "Actions" by default), `class`, children.
 
 ## Don't
 

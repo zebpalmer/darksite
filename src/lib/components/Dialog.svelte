@@ -1,7 +1,8 @@
 <!--
 @component
 Dialog — confirmations only: a question that blocks the action the user just asked for. Not for
-forms (Sheet) or information (Popover). A native modal dialog with `role="alertdialog"`: focus is
+forms (Sheet) or information (Popover). A native modal dialog — `role="alertdialog"` for a danger question, `role="dialog"` for a
+default-tone one or one that asks for a note (`role` overrides): focus is
 trapped, Esc cancels, the page cannot scroll, and focus returns to the trigger. The content mounts
 only while open. On phones it presents as a bottom sheet.
 
@@ -30,6 +31,9 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	import { trackModal } from '../layers.svelte.js';
 
 	interface Props {
+		/** `alertdialog` interrupts with a danger question; `dialog` suits a default-tone confirmation or
+		 *  one that asks for a note. Default: follows `tone` and `initialFocus`. */
+		role?: 'alertdialog' | 'dialog';
 		open?: boolean;
 		title: string;
 		description?: string;
@@ -51,6 +55,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	}
 
 	let {
+		role,
 		open = $bindable(false),
 		title,
 		description,
@@ -72,6 +77,9 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	}: Props = $props();
 
 	let pressedScrim = false;
+	const dialogRole = $derived(
+		role ?? (tone === 'danger' && initialFocus !== 'field' ? 'alertdialog' : 'dialog')
+	);
 	const uid = $props.id();
 	let busy = $state(false);
 	let error = $state<string | null>(null);
@@ -144,7 +152,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	<dialog
 		class="ds-dialog {className}"
 		data-size={size}
-		role="alertdialog"
+		role={dialogRole}
 		aria-modal="true"
 		aria-labelledby="{uid}-title"
 		aria-describedby={description ? `${uid}-desc` : undefined}

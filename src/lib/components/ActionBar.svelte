@@ -8,7 +8,7 @@ Primary action right-most; a `<span class="grow"></span>` splits the left and ri
 `<span class="divider"></span>` separates clusters. While mounted it publishes its height as
 `--ds-actionbar-space`, so toasts stack above it.
 
-- `sticky`, `label` (the toolbar's name, default "Actions"), `class`, children.
+- `sticky`, `label` (the group's name, default "Actions"), `class`, children.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -36,7 +36,7 @@ Primary action right-most; a `<span class="grow"></span>` splits the left and ri
 	});
 </script>
 
-<div bind:this={el} class="ds-actionbar {className}" class:sticky role="toolbar" aria-label={label}>
+<div bind:this={el} class="ds-actionbar {className}" class:sticky role="group" aria-label={label}>
 	{@render children?.()}
 </div>
 

@@ -43,7 +43,7 @@ that list, not disabled.
 	import PanelLeftOpen from '@lucide/svelte/icons/panel-left-open';
 
 	import Button from './Button.svelte';
-	import { badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
+	import { badgeSpoken, badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
 
 	interface Props {
 		items: readonly NavItem[];
@@ -167,8 +167,8 @@ that list, not disabled.
 							{#if badgeSlot}
 								<span class="badge-slot">{@render badgeSlot({ item, expanded: open })}</span>
 							{:else if badge !== null}
-								<span class="badge" data-dot={badge === '' ? '' : undefined}>{badge}</span>
-								{#if badge}<span class="ds-sr-only">, {badge}</span>{/if}
+								<span class="badge" data-dot={badge === '' ? '' : undefined} aria-hidden="true">{badge}</span>
+								<span class="ds-sr-only">{badgeSpoken(badge)}</span>
 							{/if}
 						</a>
 					</li>
@@ -391,5 +391,18 @@ that list, not disabled.
 		line-height: var(--ds-lh-xs);
 		white-space: nowrap;
 		pointer-events: none;
+	}
+	/* Touch: 44px targets. The collapsed rail narrows its gutter to fit them in 56px. */
+	@media (pointer: coarse) {
+		.item {
+			height: 44px;
+		}
+		.ds-navrail:not([data-expanded]) ul {
+			padding: 0 6px;
+		}
+		.ds-navrail:not([data-expanded]) .item {
+			width: 44px;
+			height: 44px;
+		}
 	}
 </style>

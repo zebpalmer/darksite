@@ -259,6 +259,7 @@ Enter or Space activates, Esc closes and returns focus to the trigger, Tab close
 	.ds-menu {
 		position: fixed;
 		inset: auto;
+		z-index: var(--ds-z-popover);
 		margin: 0;
 		min-width: 200px;
 		max-width: min(320px, calc(100vw - 16px));

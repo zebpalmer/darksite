@@ -19,7 +19,7 @@ Pages must leave room for it: AppShell publishes its height as `--ds-chrome-bott
 
 	import Sheet from './Sheet.svelte';
 	import SheetItem from './SheetItem.svelte';
-	import { badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
+	import { badgeSpoken, badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
 
 	interface Props {
 		items: readonly NavItem[];
@@ -58,19 +58,22 @@ Pages must leave room for it: AppShell publishes its height as `--ds-chrome-bott
 		<a href={item.href} class="cell" aria-current={item.id === current ? 'page' : undefined}>
 			<span class="icon">
 				{#if item.icon}<item.icon size={20} aria-hidden="true" />{/if}
-				{#if badge !== null}<span class="badge" data-dot={badge === '' ? '' : undefined}>{badge}</span>{/if}
+				{#if badge !== null}<span class="badge" data-dot={badge === '' ? '' : undefined} aria-hidden="true"
+						>{badge}</span
+					>{/if}
 			</span>
 			<span class="label">{item.label}</span>
-			{#if badge}<span class="ds-sr-only">, {badge}</span>{/if}
+			{#if badge !== null}<span class="ds-sr-only">{badgeSpoken(badge)}</span>{/if}
 		</a>
 	{/each}
 	{#if rest.length}
 		<button type="button" class="cell" data-current={moreCurrent ? '' : undefined} aria-haspopup="dialog" onclick={() => (moreOpen = true)}>
 			<span class="icon">
 				<Ellipsis size={20} aria-hidden="true" />
-				{#if moreBadge}<span class="badge" data-dot=""></span>{/if}
+				{#if moreBadge}<span class="badge" data-dot="" aria-hidden="true"></span>{/if}
 			</span>
 			<span class="label">{moreLabel}</span>
+			{#if moreBadge}<span class="ds-sr-only">{badgeSpoken('')}</span>{/if}
 		</button>
 	{/if}
 </nav>

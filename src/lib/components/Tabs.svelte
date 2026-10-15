@@ -228,4 +228,13 @@ panel you render with `id={panelId(idPrefix, value)}` and
 		background: var(--ds-bg-4);
 		color: var(--ds-text-1);
 	}
+	/* Inset, so the scrolling tab strip cannot clip the ring. */
+	.tab:focus-visible {
+		outline-offset: -2px;
+	}
+	@media (pointer: coarse) {
+		[data-variant='underline'] .tab {
+			height: 44px;
+		}
+	}
 </style>

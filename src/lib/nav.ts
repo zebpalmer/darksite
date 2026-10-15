@@ -39,6 +39,13 @@ export function groupItems(
 	return sections;
 }
 
+/** What a screen reader hears after the label for a badge: `, 12`, or `, new` for a dot. The visible
+ *  badge is hidden from assistive technology so it is not read twice. */
+export function badgeSpoken(text: string | null, dotLabel = 'new'): string {
+	if (text === null) return '';
+	return `, ${text === '' ? dotLabel : text}`;
+}
+
 /** `12` → `12`, `140` → `99+`, `true` → a dot (empty string), `0`/`false`/`null` → nothing. */
 export function badgeText(badge: NavItem['badge']): string | null {
 	if (badge === true) return '';

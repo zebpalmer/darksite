@@ -5,8 +5,9 @@ Carousel — a titled horizontal row of tiles: a scroll-snap track with a headin
 l = 180 / 232 / 320px, or `--ds-grid-min`); a track narrower than 520px shows a little over two
 tiles, so the next one peeks in.
 
-Keyboard: the track is **one tab stop**. Tab lands on the current tile's first focusable element;
-← / → move between tiles, Home / End jump to the ends, and Tab leaves the row. The buttons are a
+Keyboard: the row is **one stop per tile**. Tab lands on the current tile's first control and walks
+that tile's other controls; ← / → move between tiles, Home / End jump to the ends, and Tab past the
+tile leaves the row. The buttons are a
 pointer affordance only: hidden at rest, shown on hover and while focus is in the row, and gone on
 touch screens, where swiping is native.
 
@@ -88,16 +89,17 @@ touch screens, where swiping is native.
 		return [...el.querySelectorAll<HTMLElement>(FOCUSABLE)];
 	}
 
-	/** Roving tabindex: only the current tile's first focusable element is in the tab order. */
+	/** Roving tabindex by tile: the current tile's controls are in the tab order, so Tab walks a
+	 *  tile with several controls; every other tile's controls are not. */
 	function sync() {
 		const all = tiles();
 		if (current > all.length - 1) current = Math.max(0, all.length - 1);
 		let any = false;
 		all.forEach((el, i) => {
-			focusables(el).forEach((f, j) => {
+			focusables(el).forEach((f) => {
 				any = true;
 				f.dataset.dsRoving = '';
-				f.tabIndex = i === current && j === 0 ? 0 : -1;
+				f.tabIndex = i === current ? 0 : -1;
 			});
 		});
 		// A track of static tiles still has to be reachable by keyboard to scroll it.
@@ -119,6 +121,14 @@ touch screens, where swiping is native.
 			sync();
 			measure();
 		});
+	});
+
+	// A control that appears in a tile later (a favorite button loading in) joins the roving set.
+	$effect(() => {
+		if (!track || typeof MutationObserver === 'undefined') return;
+		const mo = new MutationObserver(() => sync());
+		mo.observe(track, { childList: true, subtree: true });
+		return () => mo.disconnect();
 	});
 
 	$effect(() => {

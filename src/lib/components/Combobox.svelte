@@ -100,6 +100,15 @@ the list is open.
 	// Rows in order; the create row, when present, is always last.
 	const count = $derived(shown.length + (canCreate ? 1 : 0));
 	const optionId = (i: number) => `${uid}-opt-${i}`;
+	const announcement = $derived(
+		!open || loading
+			? ''
+			: shown.length
+				? `${shown.length} ${shown.length === 1 ? 'option' : 'options'}`
+				: canCreate
+					? createLabel(text)
+					: emptyText
+	);
 
 	function show() {
 		if (disabled) return;
@@ -204,7 +213,7 @@ the list is open.
 		autocomplete="off"
 		aria-autocomplete="list"
 		aria-expanded={open}
-		aria-controls={listId}
+		aria-controls={open ? listId : undefined}
 		aria-activedescendant={open && active >= 0 ? optionId(active) : undefined}
 		aria-label={label}
 		aria-describedby={describedBy}
@@ -242,6 +251,8 @@ the list is open.
 		</button>
 	</span>
 </div>
+<!-- Announces how many options match, or that none do, as the list changes. -->
+<span class="ds-sr-only" aria-live="polite">{announcement}</span>
 
 {#if open}
 	<ul
@@ -269,7 +280,7 @@ the list is open.
 			</li>
 		{/each}
 		{#if !shown.length && !canCreate}
-			<li class="empty" role="presentation">{loading ? 'Searching…' : emptyText}</li>
+			<li class="empty" role="presentation" aria-hidden="true">{loading ? 'Searching…' : emptyText}</li>
 		{/if}
 		{#if canCreate}
 			{#if shown.length}<li class="sep" role="presentation"></li>{/if}
@@ -317,8 +328,8 @@ the list is open.
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 24px;
-		height: 24px;
+		width: 28px;
+		height: 28px;
 		padding: 0;
 		border: 0;
 		border-radius: var(--ds-radius-sm);
@@ -390,5 +401,18 @@ the list is open.
 		padding: 8px;
 		color: var(--ds-text-3);
 		font-size: var(--ds-text-sm);
+	}
+	/* Touch: the chevron is the way to open the list without typing, so it gets a full target. */
+	@media (pointer: coarse) {
+		.ds-combobox input {
+			padding-right: 48px;
+		}
+		.chevron {
+			width: 44px;
+			height: 44px;
+		}
+		.end {
+			right: 0;
+		}
 	}
 </style>

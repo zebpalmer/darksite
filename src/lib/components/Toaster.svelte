@@ -208,8 +208,8 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 	@media (pointer: coarse) {
 		.action,
 		.close {
-			height: 36px;
-			min-width: 36px;
+			height: 44px;
+			min-width: 44px;
 		}
 	}
 	.track {

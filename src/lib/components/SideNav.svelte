@@ -15,7 +15,7 @@ A few sibling views of the same data that need the full width use Tabs instead (
 -->
 <script lang="ts">
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import { badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
+	import { badgeSpoken, badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
 
 	interface Props {
 		items: readonly NavItem[];
@@ -70,7 +70,8 @@ A few sibling views of the same data that need the full width use Tabs instead (
 					<li>
 						<a href={item.href} class="item" aria-current={item.id === current ? 'page' : undefined}>
 							<span class="label">{item.label}</span>
-							{#if badge}<span class="badge">{badge}</span>{/if}
+							{#if badge}<span class="badge" aria-hidden="true">{badge}</span>{/if}
+							{#if badge !== null}<span class="ds-sr-only">{badgeSpoken(badge)}</span>{/if}
 						</a>
 					</li>
 				{/each}
@@ -192,6 +193,11 @@ A few sibling views of the same data that need the full width use Tabs instead (
 		}
 		.ds-sidenav-phone {
 			display: block;
+		}
+	}
+	@media (pointer: coarse) {
+		.item {
+			height: 44px;
 		}
 	}
 </style>

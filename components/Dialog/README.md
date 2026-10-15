@@ -4,8 +4,9 @@
 delete these records, discard this draft, "Remove both?", "No severity set". Not for forms and
 not for reference info; those are `Sheet` and `Popover`. On phones it presents as a bottom sheet.
 
-Built on a dialog primitive that gives you: focus trap, Esc, scroll lock, `role="alertdialog"`,
-focus returns to the trigger. The content mounts **only while open**, so a Dialog opened over a
+Built on a dialog primitive that gives you: focus trap, Esc, scroll lock, focus returns to the
+trigger, and the role — `alertdialog` for a danger question, `dialog` for a default-tone
+confirmation or one that asks for a note (the `role` prop overrides). The content mounts **only while open**, so a Dialog opened over a
 Sheet is not left `aria-hidden` by the Sheet's modal layer.
 
 `ds-bg-3` at `ds-radius-lg` with `ds-elev-3`, 400px wide, 16px padding.

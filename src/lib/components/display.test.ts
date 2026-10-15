@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createRawSnippet } from 'svelte';
 import { fireEvent, render, screen } from '@testing-library/svelte';
+import HelpTip from './HelpTip.svelte';
 import Pane from './Pane.svelte';
 import Meter from './Meter.svelte';
 import SeverityBadge from './SeverityBadge.svelte';
@@ -146,5 +147,27 @@ describe('Meter', () => {
 	it('is a progressbar when it shows progress', () => {
 		render(Meter, { label: 'Import', kind: 'progress', max: 10, segments: [{ label: 'Done', value: 4 }] });
 		expect(screen.getByRole('progressbar', { name: 'Import' })).toBeTruthy();
+	});
+});
+
+describe('HelpTip', () => {
+	it('is a button described by its note, shown on focus and tap, hidden on Esc', async () => {
+		render(HelpTip, { text: 'Applies to new records only' });
+		const button = screen.getByRole('button', { name: 'More information' });
+		const tip = screen.getByRole('tooltip');
+		expect(button.getAttribute('aria-describedby')).toBe(tip.id);
+		expect(tip.textContent).toBe('Applies to new records only');
+		expect(button.hasAttribute('data-shown')).toBe(false);
+		await fireEvent.focus(button);
+		expect(button.hasAttribute('data-shown')).toBe(true);
+		await fireEvent.keyDown(button, { key: 'Escape' });
+		expect(button.hasAttribute('data-shown')).toBe(false);
+		// A tap on a hidden note shows it; a second tap hides it.
+		await fireEvent.pointerDown(button);
+		await fireEvent.click(button);
+		expect(button.hasAttribute('data-shown')).toBe(true);
+		await fireEvent.pointerDown(button);
+		await fireEvent.click(button);
+		expect(button.hasAttribute('data-shown')).toBe(false);
 	});
 });

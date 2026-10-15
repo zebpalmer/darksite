@@ -23,7 +23,7 @@ not all collapse to one column. A grid given an explicit `min` of **260px or mor
 ## What the consumer provides
 
 `density`, `min` (explicit px, which overrides density), `gap` (CSS, default `18px 14px`),
-`label` (names the grid as a list), `class`, `data-*` passthrough, children (the cards).
+`label` (names the grid as a group), `class`, `data-*` passthrough, children (the cards).
 
 ## Don't
 

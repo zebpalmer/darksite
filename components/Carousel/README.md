@@ -18,19 +18,19 @@ queries only; the row never asks about the viewport.
 
 Gap is 14px, the `Grid` column gap. Tiles snap to their start edge.
 
-## Keyboard: one tab stop
+## Keyboard: one stop per row
 
-A home page with six rows of twenty tiles would be 120 tab stops, so the track is a **single tab
-stop** with a roving tabindex, in the manner of the WAI-ARIA composite widgets (a toolbar or
+A home page with six rows of twenty tiles would be 120 tab stops, so the track holds **one tile in
+the tab order** with a roving tabindex, in the manner of the WAI-ARIA composite widgets (a toolbar or
 listbox) rather than the APG carousel, which is for rotating slides:
 
-- **Tab** lands on the current tile's first focusable element — the first tile until the user moves.
+- **Tab** lands on the current tile's first control — the first tile until the user moves — and
+  walks that tile's other controls (a favorite button, a menu).
 - **← / →** move to the previous / next tile and scroll it into view; **Home / End** jump to the
   ends. The row remembers the tile it was on.
-- **Tab** again leaves the row.
+- **Tab** past the tile's last control leaves the row.
 
-So a tile should hold **one** interactive element (a `Card` is one link). A second control in a
-tile is taken out of the tab order. A track of static tiles (no links) becomes focusable itself, and
+A control that appears in a tile later joins the order the same way. A track of static tiles (no links) becomes focusable itself, and
 the arrow keys scroll it a page at a time.
 
 Screen readers get a `region` named by the heading, holding a `list` of `listitem`s.
@@ -61,6 +61,5 @@ default or `3`), `count` (shown in `meta` beside the title), `href` (the "See al
 ## Don't
 
 - Don't auto-advance a row. Nothing moves unless the user moves it.
-- Don't put two interactive controls in one tile.
 - Don't use it as the only way to reach a long list — link "See all" to a `Grid` page.
 - Don't size tiles from the viewport; set `density` or `--ds-grid-min`.
