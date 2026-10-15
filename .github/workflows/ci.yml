@@ -34,6 +34,10 @@ jobs:
       - name: Lint
         run: stratt lint --check
 
+      # The browser test project runs in Chromium through Playwright.
+      - name: Install Chromium for browser tests
+        run: npx playwright install --with-deps chromium
+
       - name: Test
         run: stratt test
 
@@ -60,6 +64,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # A tag must match the version it ships, or the tarball's name and the README's install URL
+      # disagree (v0.8.0 would carry darksite-0.7.0.tgz).
+      - name: Tag matches package.json
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          test "v$version" = "$TAG" || { echo "::error::tag $TAG does not match package.json version $version"; exit 1; }
+
       # npm pack runs `prepare`, which builds dist/; package.json `files` keeps tests out.
       - name: Pack
         id: pack
@@ -67,6 +80,7 @@ jobs:
           tarball=$(npm pack --silent | tail -n 1)
           test -f "$tarball"
           tar -tzf "$tarball" | grep -q '^package/dist/index.js$'
+          npx publint
           echo "tarball=$tarball" >> "$GITHUB_OUTPUT"
 
       - name: Attach to the release

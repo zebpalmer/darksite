@@ -59,6 +59,8 @@ behind does not scroll while it is open.
 	}
 
 	function surface(dialog: HTMLDialogElement) {
+		// The dialog leaves the DOM as it closes, so the browser cannot restore focus itself.
+		const returnTo = document.activeElement as HTMLElement | null;
 		try {
 			dialog.showModal();
 		} catch {
@@ -72,6 +74,7 @@ behind does not scroll while it is open.
 			untrack();
 			root.style.overflow = previous;
 			if (typeof dialog.close === 'function') dialog.close();
+			if (returnTo?.isConnected) returnTo.focus();
 		};
 	}
 </script>

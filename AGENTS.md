@@ -40,7 +40,10 @@ then `docs/which-primitive.md`. Open requirements live in `TODO.md`.
 ## Delivering a primitive
 
 1. `src/lib/components/<Name>.svelte`, exported from `src/lib/index.ts`.
-2. Tests beside it (`<Name>.test.ts`): roles, ARIA, keyboard, states.
+2. Tests beside it (`<Name>.test.ts`): roles, ARIA, keyboard, states. Anything jsdom cannot model —
+   the top layer, modality, real focus, layout, container queries — goes in a `*.browser.test.ts`,
+   which runs in Chromium (run `npx playwright install chromium` once). Every component is also
+   rendered on the server by `src/lib/server-render.ssr.test.ts`; add new ones to its list.
 3. A gallery page at `src/routes/<name>/+page.svelte`.
 4. The card: `components/<Name>/README.md` (props, states, don'ts). A new primitive's card can be
    written first, as its spec; once the component is live, the card describes it and its gallery
