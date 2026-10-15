@@ -4,7 +4,7 @@
 	let fail = $state(false);
 	let typed = $state(false);
 	let word = $state('');
-	let retire = $state(false);
+	let archiving = $state(false);
 	let note = $state('');
 	const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 </script>
@@ -17,7 +17,7 @@
 		<Button onclick={() => (fail = true)}>Discard draft (fails)</Button>
 		<Button variant="danger" onclick={() => ((word = ''), (typed = true))}>Delete everything</Button
 		>
-		<Button onclick={() => ((note = ''), (retire = true))}>Archive with a note</Button>
+		<Button onclick={() => ((note = ''), (archiving = true))}>Archive with a note</Button>
 	</div>
 	<p>Confirmations only. Focus starts on Cancel; Esc cancels; focus returns to the button.</p>
 </div>
@@ -55,7 +55,7 @@
 	<Input bind:value={word} aria-label="Type confirm" placeholder="confirm" />
 </Dialog>
 <Dialog
-	bind:open={retire}
+	bind:open={archiving}
 	title="Archive this record?"
 	description="It leaves every queue. The note is kept in its history."
 	tone="default"
