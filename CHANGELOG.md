@@ -63,7 +63,7 @@ All notable changes to darksite are recorded here. The format follows
   need no changes; a page without a `PageHeader` shows none. `headerActionsKey` (default `/`)
   focuses its first field. On phones it collapses to an icon button (`headerActionsIcon`,
   `headerActionsLabel`, default a search icon and "Search") that opens a full-width row under the
-  header; Esc from inside the row, or a navigation, closes it.
+  header (the key opens it too); Esc from inside the row, or a navigation, closes it.
 - `PageHeader` `shellActions` (default true): `false` leaves the shell's header actions out of one
   page.
 - `focusShortcut(key = '/')` attachment: a key that focuses the first field inside an element,
@@ -81,7 +81,7 @@ All notable changes to darksite are recorded here. The format follows
   (a linked view keeps its filters while options are partial or loading); `strict: true` on a
   section restores dropping. It also trims values, drops empty ones, and keeps one value for a
   `text` section. `FilterRail` shows such values as checked rows and `ActiveFilters` as chips,
-  labelled by `labelFor(value)` or the value itself; free text is quoted in its chip.
+  labeled by `labelFor(value)` or the value itself; free text is quoted in its chip.
 - `FilterSection.options` is optional (a `text` section has none); code that reads
   `section.options` directly needs `?? []`.
 

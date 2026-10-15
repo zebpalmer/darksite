@@ -23,7 +23,7 @@ in place.
   so a page with no PageHeader shows none. `headerActionsKey` (default `/`) focuses its first
   field; `null` turns that off. On phones it collapses to an icon button (`headerActionsIcon`,
   default a search icon; `headerActionsLabel`, default "Search") that opens a full-width row under
-  the header; Esc inside the row, or a change of `current`, closes it.
+  the header (the key opens it too); Esc inside the row, or a change of `current`, closes it.
 
 A page that renders a `WorkView` gets the work-view frame without touching `padded`: while one is
 mounted the column's padding is zero, and from 768px the shell locks to the viewport so the work

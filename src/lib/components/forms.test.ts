@@ -51,7 +51,7 @@ describe('SegmentedControl', () => {
 	});
 });
 
-describe('Labelling a group with a Field', () => {
+describe('Labeling a group with a Field', () => {
 	it("names the radio group by the Field's label and describes it with the help", () => {
 		render(FormButtonHarness);
 		const group = screen.getByRole('radiogroup', { name: 'View' });

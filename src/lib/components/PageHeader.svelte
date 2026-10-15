@@ -13,8 +13,8 @@ Put it first on the page. The title keeps its width; the count gives way on a na
   figures), `actions` snippet, `sticky`, children (inline after the title), `class`.
 - `shellActions` (default true): inside an AppShell with `headerActions`, a level-1 header renders
   them ahead of its own `actions`, so the page's primary button stays right-most. On phones they
-  collapse to an icon button that opens a full-width row under the header. `false` leaves them out
-  on this page.
+  collapse to an icon button that opens a full-width row under the header (the shell's key
+  opens it too). `false` leaves them out on this page.
 -->
 <script lang="ts">
 	import { untrack, type Snippet } from 'svelte';
@@ -22,6 +22,7 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 
 	import Button from './Button.svelte';
 	import { focusShortcut } from '../hotkeys.js';
+	import { isTypingTarget, matchesKey } from '../keycap.js';
 	import { getHeaderActions } from '../shell-context.js';
 
 	interface Props {
@@ -65,6 +66,19 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 		void shell?.current;
 		void collapsed;
 		untrack(() => (open = false));
+	});
+
+	// On a phone the field is behind the toggle: the shortcut opens the row, which focuses it.
+	$effect(() => {
+		const key = shell?.key;
+		if (!collapsed || open || !key) return;
+		const listener = (event: KeyboardEvent) => {
+			if (event.defaultPrevented || isTypingTarget(event.target) || !matchesKey(event, key)) return;
+			event.preventDefault();
+			open = true;
+		};
+		window.addEventListener('keydown', listener);
+		return () => window.removeEventListener('keydown', listener);
 	});
 
 	function toggle() {

@@ -5,7 +5,7 @@ import Radio from './Radio.svelte';
 import Switch from './Switch.svelte';
 
 describe('Checkbox', () => {
-	it('is a labelled native checkbox that reports changes', async () => {
+	it('is a labeled native checkbox that reports changes', async () => {
 		const onchange = vi.fn();
 		render(Checkbox, { label: 'Archived', onchange });
 		const box = screen.getByRole('checkbox', { name: 'Archived' }) as HTMLInputElement;

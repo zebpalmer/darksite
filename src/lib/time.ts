@@ -161,22 +161,13 @@ export function formatCountdown(remainingMs: number | null | undefined): string 
 	return formatDuration(Math.ceil(ms / 1000));
 }
 
-/** A day as local midnight; a bare `YYYY-MM-DD` is that day, never UTC midnight. */
-function localDay(value: DateInput): Date {
-	if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.trim())) {
-		const [y, m, d] = value.trim().split('-').map(Number);
-		return new Date(y, m - 1, d);
-	}
-	return toDate(value);
-}
-
 /**
  * Whole calendar days from `now` to `due`, in the viewer's time zone: `0` on the day, `3` three
  * days ahead, `-2` two days past. A bare `YYYY-MM-DD` counts as that day.
  */
 export function daysUntil(due: DateInput, now: DateInput = Date.now()): number {
 	const day = (value: DateInput) => {
-		const d = localDay(value);
+		const d = toDate(value);
 		return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
 	};
 	return Math.round((day(due) - day(now)) / DAY);
@@ -192,7 +183,5 @@ export function formatDue(due: DateInput, now: DateInput = Date.now()): string {
 
 /** The exact due date for a tooltip: a bare date is the date alone, a timestamp `formatExact`. */
 export function formatDueExact(due: DateInput, locale?: string): string {
-	return typeof due === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(due.trim())
-		? new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(localDay(due))
-		: formatExact(due, locale);
+	return formatExact(due, locale);
 }

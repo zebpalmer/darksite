@@ -16,7 +16,7 @@ linked and survives a reload.
   free-text value, applied on Enter or when the field is left), `search` (a Combobox over the
   options, for a long list such as owners; chosen values show as removable chips).
 - A selected value the options do not list (a linked URL, options still loading) stays selected
-  and is shown, labelled by `labelFor(value)` or the value itself.
+  and is shown, labeled by `labelFor(value)` or the value itself.
 -->
 <script lang="ts">
 	import ListFilter from '@lucide/svelte/icons/list-filter';

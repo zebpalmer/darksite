@@ -68,7 +68,7 @@ own `actions`**, so the page's primary button stays right-most. Pages change not
 - **On phones** it collapses to an icon button — `headerActionsIcon` (default a search icon) named
   by `headerActionsLabel` (default "Search") — with `aria-expanded`. It opens a full-width row
   under the header, inside it so a sticky header keeps it, and moves focus to the row's first
-  field; the first element in the row grows to its width. Esc from inside the row (unless a control
+  field; the shortcut key opens it the same way; the first element in the row grows to its width. Esc from inside the row (unless a control
   in it already handled Esc) closes it and returns focus to the button, and so does a navigation:
   a change of `current`, or a new page.
 

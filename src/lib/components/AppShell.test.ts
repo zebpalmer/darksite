@@ -84,6 +84,14 @@ describe('AppShell headerActions on a phone', () => {
 		expect(screen.queryByRole('region', { name: 'Search' })).toBeNull();
 	});
 
+	it('opens the row on the shortcut key and focuses its field', async () => {
+		setPhone(true);
+		render(ShellHarness);
+		await fireEvent.keyDown(window, { key: '/' });
+		expect(screen.getByRole('region', { name: 'Search' })).toBeTruthy();
+		expect(document.activeElement).toBe(screen.getByRole('searchbox', { name: 'Find' }));
+	});
+
 	it('closes on Esc from inside the row and returns focus to the toggle', async () => {
 		setPhone(true);
 		render(ShellHarness);
