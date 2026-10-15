@@ -43,6 +43,12 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A value that is absent | `Missing` | An em dash in `ds-text-3`, announced "No value". `Table` and `FactList` draw it already. |
 | A calendar date (no time) | `formatDate` | The same day in every time zone; the year only when it isn't this year. A timestamp is `formatRelative`. |
 | Rows and columns of records | `Table` | Sort, selection, row links, priority columns. Long lists end in "Load more". |
+| Records in groups, one set of columns | `Table groupBy` | Header rows with counts inside one table — not a Pane and a Table per group. |
+| A row that needs to stand out | `Table rowTone` / `rowSeverity` | A 3px leading stripe; the row still says it in a badge. Exceptions only. |
+| A wide table beside a rail | `Table hideBelow` | Move the priority 2 / 3 thresholds so it drops columns sooner. |
+| A secondary block that can fold away | `Pane collapsible` | A disclosure in the heading; `collapseBelow` starts it closed on a narrow column. |
+| A state with a due date | `StatusBadge until` | "· in 3 days", "· 2 days overdue"; danger once overdue unless a tone is given. |
+| A page about one identifier | `PageHeader mono` | The title in mono, like every other identifier. |
 | A piece of media | `Card` in a `Grid` | No card chrome — the thumbnail **is** the card. |
 | Images at their own aspect ratio | `JustifiedGrid` | Rows that fill the width, no crop. |
 | A person or an organization | `EntityCard` in a `Grid min={280}` | A row with a 56px avatar. |

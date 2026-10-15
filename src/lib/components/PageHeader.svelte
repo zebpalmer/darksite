@@ -9,7 +9,8 @@ margins, so every page gets the same bar, the same full-width edge and the same 
 Put it first on the page. The title keeps its width; the count gives way on a narrow header.
 
 - `title`, `count` (a number is localized; or text such as "38 this week"), `level` (default 1),
-  `actions` snippet, `sticky`, children (inline after the title), `class`.
+  `mono` (the title is an identifier — a serial, a hash, a path — set in mono with tabular
+  figures), `actions` snippet, `sticky`, children (inline after the title), `class`.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -18,20 +19,33 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 		title: string;
 		count?: number | string | null;
 		level?: 1 | 2;
+		/** The title is an identifier: mono, tabular figures. */
+		mono?: boolean;
 		actions?: Snippet;
 		sticky?: boolean;
 		class?: string;
 		children?: Snippet;
 	}
 
-	let { title, count = null, level = 1, actions, sticky = false, class: className = '', children }: Props = $props();
+	let {
+		title,
+		count = null,
+		level = 1,
+		mono = false,
+		actions,
+		sticky = false,
+		class: className = '',
+		children
+	}: Props = $props();
 
 	const countText = $derived(typeof count === 'number' ? count.toLocaleString() : count);
 </script>
 
 <header class="ds-pageheader {className}" class:sticky>
 	<div class="lead">
-		<svelte:element this={`h${level}`} class="title">{title}</svelte:element>
+		<svelte:element this={`h${level}`} class="title" data-mono={mono ? '' : undefined}
+			>{title}</svelte:element
+		>
 		{#if countText !== null && countText !== undefined}<span class="count">{countText}</span>{/if}
 		{@render children?.()}
 	</div>
@@ -78,6 +92,11 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 		font-weight: 500;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+	.title[data-mono] {
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+		letter-spacing: 0;
 	}
 	.count {
 		flex: 0 1 auto;

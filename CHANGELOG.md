@@ -31,6 +31,21 @@ All notable changes to darksite are recorded here. The format follows
   a note with one or two `Field`s in its children.
 - Button card: submitting a form from a Sheet or Dialog footer with `form`, and linking to a
   download or a server endpoint with the router's full-load escape hatch (`data-sveltekit-reload`).
+- `Table` row groups: `groupBy`, `groupLabel` and a `group` header snippet put rows under sticky
+  `rowgroup` header rows with a count, inside one table (one `<tbody>` per group). Rows show group
+  by group and the arrow keys follow that order. `TableGroup` type.
+- `Table` row marks: `rowTone` (`accent`, `success`, `warning`, `danger`) and `rowSeverity` draw a
+  3px leading stripe on a row. `TableRowTone` type.
+- `Table hideBelow` moves the column-priority thresholds per table (`{ 2: 640, 3: 960 }`); the
+  table then measures its own width. `hiddenPriorities` and `TablePriorityWidths` are exported.
+- `Pane collapsible`, with a bindable `open` and `collapseBelow` (start collapsed when the pane
+  mounts narrower than that): the title becomes a disclosure button with `aria-expanded`.
+- `StatusBadge until`: "· in 3 days", "· due today", "· 2 days overdue" against a due date, with
+  the tone following the date (danger once overdue, warning on the day) unless one is given.
+  `daysUntil` and `formatDue` are exported.
+- `PageHeader mono` for a title that is an identifier.
+- The contrast checker covers the row marks on a pane's ground (`ds-accent` and the severity marks
+  on `ds-bg-2`); Critical on `ds-bg-2` joins the documented dark-theme Critical shortfall.
 
 ### Changed
 

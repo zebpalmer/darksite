@@ -21,6 +21,11 @@
 		<Table {rows} {columns} rowKey={(r) => r.id} label="Recently changed" />
 		{#snippet footer()}Updated just now{/snippet}
 	</Pane>
+	<Pane title="History" meta="12 entries" collapsible collapseBelow={520} padded>
+		<p style="margin: 0; color: var(--ds-text-2); font-size: var(--ds-text-md)">
+			Collapsible: the title is a disclosure button. It starts collapsed when narrower than 520px.
+		</p>
+	</Pane>
 	<Pane title="Notes" padded>
 		<p style="margin: 0; color: var(--ds-text-2); font-size: var(--ds-text-md)">
 			A padded body for prose or a form. Unpadded, a table sits flush.

@@ -75,6 +75,9 @@ for (const s of severities) {
 }
 add('ds-focus', bgs(0, 1, 2, 3, 4), MARK, 'focus ring');
 add('ds-accent', ['ds-bg-1', 'ds-bg-3'], MARK, 'accent mark');
+// Table row marks: a 3px stripe on the table ground — ds-bg-1 on a page, ds-bg-2 inside a Pane.
+add('ds-accent', ['ds-bg-2'], MARK, 'accent row mark in a pane');
+for (const s of severities) add(`ds-sev-${s}`, bgs(2), MARK, `severity ${s} row mark in a pane`);
 for (const r of ['success', 'warning', 'danger'])
 	add(`ds-${r}`, bgs(1, 2, 3, 4), MARK, `${r} mark`);
 for (let i = 1; i <= 5; i++) add(`ds-cat-${i}`, bgs(2, 4), MARK, `categorical ${i}`);
@@ -97,6 +100,7 @@ const SHORTFALLS = new Set([
 	'ds-border-strong|ds-bg-4|light',
 	'ds-sev-critical|ds-bg-1|dark',
 	'ds-sev-critical|ds-bg-3|dark',
+	'ds-sev-critical|ds-bg-2|dark',
 	'ds-accent-mixed|ds-bg-3|dark'
 ]);
 

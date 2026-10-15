@@ -65,7 +65,14 @@ export { default as Missing } from './components/Missing.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
-export type { TableColumn, TableSort } from './components/Table.svelte';
+export {
+	hiddenPriorities,
+	type TableColumn,
+	type TableGroup,
+	type TablePriorityWidths,
+	type TableRowTone,
+	type TableSort
+} from './components/Table.svelte';
 export type { TimelineEntry, TimelinePart } from './components/Timeline.svelte';
 export type { LightboxItem } from './components/Lightbox.svelte';
 export type { FactItem } from './components/FactList.svelte';
@@ -153,7 +160,7 @@ export {
 	type ResolveOptions
 } from './hotkeys.js';
 export { normalizeKey } from './keycap.js';
-export { formatCountdown } from './time.js';
+export { daysUntil, formatCountdown, formatDue } from './time.js';
 export { formatConfidence } from './numbers.js';
 export { initials } from './labels.js';
 export { errorCopy, type ErrorCopy } from './components/ErrorPage.svelte';

@@ -6,13 +6,23 @@ StatusBadge — a static, non-interactive state: a lifecycle stage, a hold, a ma
 - `tone`: `neutral` (default; a ds-border edge) · `accent` (a marker) · `success` · `warning` ·
   `danger` (each its tint ground and text ink) · `muted` (out of service).
 - `since`: a date; renders "· 12 days" after the label, in mono, for a state that ages.
-- `icon`, `label` (or children), `class`.
+- `until`: a due date; renders "· in 3 days", "· due today" or "· 2 days overdue". With `until`
+  and no `tone`, the tone follows the date: `danger` once overdue, `warning` on the day, `neutral`
+  before. An explicit `tone` always wins.
+- `now` (the reference time for both), `icon`, `label` (or children), `class`.
 
 Never severity colors — an ordered scale is a SeverityBadge. A clickable state is a Chip.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { formatAge, formatExact, type DateInput } from '../time.js';
+	import {
+		daysUntil,
+		formatAge,
+		formatDue,
+		formatDueExact,
+		formatExact,
+		type DateInput
+	} from '../time.js';
 	import type { IconComponent } from '../types.js';
 
 	interface Props {
@@ -20,21 +30,40 @@ Never severity colors — an ordered scale is a SeverityBadge. A clickable state
 		tone?: 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'muted';
 		icon?: IconComponent;
 		since?: DateInput;
-		/** The reference time for `since`; defaults to now. */
+		/** A due date: counts down to it, then counts the days overdue. */
+		until?: DateInput;
+		/** The reference time for `since` and `until`; defaults to now. */
 		now?: DateInput;
 		class?: string;
 		children?: Snippet;
 	}
 
-	let { label, tone = 'neutral', icon: Icon, since, now, class: className = '', children }: Props = $props();
+	let { label, tone, icon: Icon, since, until, now, class: className = '', children }: Props = $props();
 
 	const age = $derived(since === undefined ? null : formatAge(since, now));
+	const left = $derived(until === undefined ? null : daysUntil(until, now));
+	const due = $derived(until === undefined ? null : formatDue(until, now));
+	const shownTone = $derived(
+		tone ?? (left === null ? 'neutral' : left < 0 ? 'danger' : left === 0 ? 'warning' : 'neutral')
+	);
+	const tooltip = $derived(
+		[
+			since === undefined ? null : `Since ${formatExact(since)}`,
+			until === undefined ? null : `Due ${formatDueExact(until)}`
+		]
+			.filter(Boolean)
+			.join(' · ') || undefined
+	);
 </script>
 
-<span class="ds-status {className}" data-tone={tone} title={since === undefined ? undefined : `Since ${formatExact(since)}`}>
+<span class="ds-status {className}" data-tone={shownTone} title={tooltip}>
 	{#if Icon}<Icon size={14} aria-hidden="true" />{/if}
 	<span>{#if children}{@render children()}{:else}{label}{/if}</span>
 	{#if age}<span class="age"><span aria-hidden="true">·</span><span class="ds-sr-only">, for</span> {age}</span>{/if}
+	{#if due}<span class="age due"
+			><span aria-hidden="true">·</span><span class="ds-sr-only">{left! > 0 ? ', due' : ','}</span>
+			{due}</span
+		>{/if}
 </span>
 
 <style>

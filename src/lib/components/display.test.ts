@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { describe, expect, it, vi } from 'vitest';
+import { createRawSnippet } from 'svelte';
+import { fireEvent, render, screen } from '@testing-library/svelte';
+import Pane from './Pane.svelte';
 import Meter from './Meter.svelte';
 import SeverityBadge from './SeverityBadge.svelte';
 import SourceBadge from './SourceBadge.svelte';
@@ -21,6 +23,71 @@ describe('StatusBadge', () => {
 		// The dot is decoration; a screen reader hears "On hold, for 12 days".
 		expect(age.querySelector('[aria-hidden="true"]')?.textContent).toBe('·');
 		expect(age.querySelector('.ds-sr-only')?.textContent).toBe(', for');
+	});
+});
+
+describe('StatusBadge until', () => {
+	const now = new Date(2026, 9, 14, 15, 0);
+	const badge = (until: string | Date, tone?: 'success') => {
+		const { container, unmount } = render(StatusBadge, { label: 'Review', until, now, tone });
+		const el = container.querySelector('.ds-status') as HTMLElement;
+		const text = el.querySelector('.due')?.textContent?.replace(/\s+/g, ' ').trim();
+		const out = { tone: el.dataset.tone, text, title: el.getAttribute('title') };
+		unmount();
+		return out;
+	};
+
+	it('counts down to a due date, then counts the days overdue', () => {
+		expect(badge('2026-10-17').text).toBe('·, due in 3 days');
+		expect(badge('2026-10-15').text).toBe('·, due in 1 day');
+		expect(badge('2026-10-14').text).toBe('·, due today');
+		expect(badge('2026-10-13').text).toBe('·, 1 day overdue');
+		expect(badge(new Date(2026, 9, 12, 23, 0)).text).toBe('·, 2 days overdue');
+	});
+
+	it('takes its tone from the date unless one is given', () => {
+		expect(badge('2026-10-17').tone).toBe('neutral');
+		expect(badge('2026-10-14').tone).toBe('warning');
+		expect(badge('2026-10-12').tone).toBe('danger');
+		expect(badge('2026-10-12', 'success').tone).toBe('success');
+	});
+
+	it('puts the due date in the tooltip as a date, not a UTC midnight', () => {
+		expect(badge('2026-10-17').title).toBe(
+			`Due ${new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(2026, 9, 17))}`
+		);
+	});
+});
+
+describe('Pane', () => {
+	const children = createRawSnippet(() => ({ render: () => '<p>Body</p>' }));
+
+	it('is a disclosure when collapsible: the title button toggles the body', async () => {
+		render(Pane, { title: 'Activity', meta: '12 entries', collapsible: true, children });
+		const toggle = screen.getByRole('button', { name: /Activity/ });
+		expect(toggle.getAttribute('aria-expanded')).toBe('true');
+		const body = document.getElementById(toggle.getAttribute('aria-controls')!)!;
+		expect(body.hidden).toBe(false);
+		await fireEvent.click(toggle);
+		expect(toggle.getAttribute('aria-expanded')).toBe('false');
+		expect(body.hidden).toBe(true);
+		expect(screen.getByRole('heading', { level: 2 }).contains(toggle)).toBe(true);
+	});
+
+	it('can start collapsed, or collapse when it mounts narrower than collapseBelow', () => {
+		const { unmount } = render(Pane, { title: 'Activity', collapsible: true, open: false, children });
+		expect(screen.getByRole('button', { name: /Activity/ }).getAttribute('aria-expanded')).toBe('false');
+		unmount();
+		const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(320);
+		render(Pane, { title: 'History', collapsible: true, collapseBelow: 480, children });
+		expect(screen.getByRole('button', { name: /History/ }).getAttribute('aria-expanded')).toBe('false');
+		width.mockRestore();
+	});
+
+	it('has no button when it is not collapsible', () => {
+		render(Pane, { title: 'Activity', children });
+		expect(screen.queryByRole('button')).toBeNull();
+		expect(screen.getByText('Body')).toBeTruthy();
 	});
 });
 

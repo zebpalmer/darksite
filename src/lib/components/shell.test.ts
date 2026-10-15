@@ -205,4 +205,9 @@ describe('PageHeader', () => {
 		expect(h.textContent).toContain('Records');
 		expect(document.body.textContent).toContain('1,284');
 	});
+
+	it('sets an identifier title in mono', () => {
+		render(PageHeader, { title: 'R-00412', mono: true });
+		expect(screen.getByRole('heading', { name: 'R-00412' }).hasAttribute('data-mono')).toBe(true);
+	});
 });

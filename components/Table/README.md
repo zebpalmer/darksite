@@ -18,8 +18,15 @@ Each column declares `key`, `label`, and optionally `align` (`end` for numbers),
 `priority`, `mono` (serials, hashes, paths — mono with tabular figures), `sortable`, `value(row)`
 (defaults to `row[key]`) and `cell` (a snippet for custom rendering).
 
-**Priority** drops columns as the *table* narrows — a container query, never the viewport:
+**Priority** drops columns as the *table* narrows — the table's own width, never the viewport:
 priority 3 hides below 720px, priority 2 below 480px, priority 1 never.
+
+Those thresholds suit a table with a handful of columns. A wide table — ten columns, or one beside a
+side rail — gets cramped well before 720px, so move them per table with `hideBelow`:
+`hideBelow={{ 3: 960, 2: 640 }}` (either key alone keeps the other's default). The default
+thresholds are pure container queries; with `hideBelow` the table measures its own width with a
+`ResizeObserver` instead (a container query cannot take a variable), so before it mounts every
+column shows.
 
 ## Scrolling and the sticky header
 
@@ -43,6 +50,32 @@ row. **Shift-click** selects a range. A selected row takes `ds-accent-tint`. The
 bulk actions live in the pane's `ActionBar`, never in a floating toolbar. Selecting rows that are
 not loaded yet is a second step — see `docs/layout.md`, "Long lists".
 
+## Row groups
+
+`groupBy(row)` returns a group key, and the rows sit under a header row per group inside the one
+table — one set of columns, one selection, one keyboard path — instead of a Pane and a Table per
+group. Groups keep the order they first appear in `rows`, so sort the rows to order the groups; rows
+show group by group.
+
+Each group is its own `<tbody>` whose header is a `<th scope="rowgroup">` spanning the row: 32px,
+12/500 `ds-text-2`, the group's count after it in `ds-text-3`, and it sticks under the column header
+while its rows scroll past. `groupLabel(key)` gives the header text (the key by default, so map a
+stored code to its label); the `group` snippet replaces the header, receiving `{ key, label, rows,
+count }`. Arrow keys move across groups; the header rows take no focus. Header selection still
+selects every loaded row.
+
+## Row marks
+
+A row can carry a 3px leading stripe, drawn inside its first cell so no column shifts:
+
+- `rowTone(row)` → `accent`, `success`, `warning` or `danger` — the semantic roles' marks, for a
+  state that needs to stand out in a long list (a failed run, a held record).
+- `rowSeverity(row)` → a severity — the severity mark, only ever for a severity (`docs/severity.md`).
+  It wins over `rowTone`.
+
+The stripe is a scan aid, never the only signal: the row must say the same thing in words, with a
+`StatusBadge` or `SeverityBadge` in a cell. Mark the exceptions, not every row.
+
 ## Row links and keyboard
 
 `href(row)` makes the whole row navigable through a real link in its first cell: a pointer click
@@ -64,7 +97,8 @@ opens the row. The focused row shows the focus ring inset.
 
 `rows`, `columns`, `rowKey(row)`, `label` (the accessible name), `density`, `selectable`,
 `selected` (bindable), `sort` (bindable), `onsort`, `href`, `cell` (a fallback snippet for columns
-without their own), `empty`, `loading`, `loadingRows`, `missing`, `minWidth`, `class`.
+without their own), `empty`, `loading`, `loadingRows`, `missing`, `minWidth`, `groupBy`,
+`groupLabel`, `group`, `rowTone`, `rowSeverity`, `hideBelow`, `class`.
 
 ## Don't
 
@@ -72,3 +106,5 @@ without their own), `empty`, `loading`, `loadingRows`, `missing`, `minWidth`, `c
 - Don't let a cell wrap to a second line.
 - Don't give a priority-1 column to anything a reader can do without.
 - Don't use a Table for media — that is `Grid` + `Card`.
+- Don't stack a Pane and a Table per group; use `groupBy`.
+- Don't mark every row, and don't let a stripe be the only place a state is shown.
