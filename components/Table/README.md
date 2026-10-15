@@ -56,8 +56,9 @@ opens the row. The focused row shows the focus ring inset.
 - **Loading:** `loading` shows `loadingRows` skeleton rows of the real geometry and sets
   `aria-busy`.
 - **Empty:** the `empty` snippet, or a default `EmptyState`, inside the table's frame.
-- **Missing values:** `null`, `undefined` or `''` render an em dash in `ds-text-3`, announced as
-  "No value". Never a blank cell — a blank reads as still loading. Override the mark with `missing`.
+- **Missing values:** `null`, `undefined` or `''` render the `Missing` mark — an em dash in
+  `ds-text-3`, announced as "No value". Never a blank cell — a blank reads as still loading.
+  Override the mark with `missing`; a custom `cell` uses `<Missing />` itself.
 
 ## What the consumer provides
 

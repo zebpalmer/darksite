@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { countActive, filtersFromParams, filtersToParams, type FilterSection } from './filters.js';
 import { SEVERITIES, severityLabel, severityRank } from './severity.js';
-import { formatAge, formatRelative } from './time.js';
+import { formatAge, formatDate, formatExact, formatRelative, isCalendarDate } from './time.js';
 
 const now = new Date('2026-10-14T12:00:00Z');
 const ago = (ms: number) => new Date(now.getTime() - ms);
@@ -23,6 +23,54 @@ describe('time', () => {
 		expect(formatRelative(new Date('2025-03-01T00:00:00Z'), now, 'en-US', 'UTC')).toBe(
 			'Mar 1, 2025'
 		);
+	});
+});
+
+describe('calendar dates', () => {
+	// A bare YYYY-MM-DD is a day, not UTC midnight: it must read as that day in every zone.
+	const west = { locale: 'en-US', timeZone: 'America/Los_Angeles', now };
+
+	it('recognizes a bare calendar date and nothing else', () => {
+		expect(isCalendarDate('2026-10-01')).toBe(true);
+		expect(isCalendarDate('2026-10-01T00:00:00Z')).toBe(false);
+		expect(isCalendarDate(new Date())).toBe(false);
+		expect(isCalendarDate(1_700_000_000_000)).toBe(false);
+	});
+
+	it('formats a calendar date as exactly that day, west of UTC too', () => {
+		expect(formatDate('2026-10-01', west)).toBe('Oct 1');
+		expect(formatDate('2026-10-01', { ...west, timeZone: 'Pacific/Honolulu' })).toBe('Oct 1');
+		expect(formatDate('2026-01-01', { ...west, timeZone: 'Asia/Tokyo' })).toBe('Jan 1');
+	});
+
+	it('shows the year only when it is not this year, or always on request', () => {
+		expect(formatDate('2025-12-31', west)).toBe('Dec 31, 2025');
+		expect(formatDate('2027-02-01', west)).toBe('Feb 1, 2027');
+		expect(formatDate('2026-10-01', { ...west, year: 'always' })).toBe('Oct 1, 2026');
+	});
+
+	it("formats a timestamp's day in the viewer's zone", () => {
+		// 02:00 UTC on Oct 2 is still Oct 1 in Los Angeles.
+		expect(formatDate('2026-10-02T02:00:00Z', west)).toBe('Oct 1');
+		expect(formatDate('2026-10-02T02:00:00Z', { ...west, timeZone: 'UTC' })).toBe('Oct 2');
+	});
+
+	it('counts whole days for a calendar date in formatRelative', () => {
+		expect(formatRelative('2026-10-14', now, 'en-US', 'UTC')).toBe('today');
+		expect(formatRelative('2026-10-13', now, 'en-US', 'UTC')).toBe('1 day ago');
+		expect(formatRelative('2026-10-08', now, 'en-US', 'UTC')).toBe('6 days ago');
+		expect(formatRelative('2026-10-07', now, 'en-US', 'UTC')).toBe('Oct 7');
+		expect(formatRelative('2026-10-20', now, 'en-US', 'UTC')).toBe('Oct 20');
+		// In Los Angeles it is still Oct 14 at 05:00, so Oct 14 is today there as well.
+		expect(formatRelative('2026-10-14', now, 'en-US', 'America/Los_Angeles')).toBe('today');
+	});
+
+	it('gives a calendar date its full date, with no time or zone, in formatExact', () => {
+		expect(formatExact('2026-10-01', 'en-US', 'America/Los_Angeles')).toBe('Oct 1, 2026');
+	});
+
+	it('ages a calendar date from local midnight of that day', () => {
+		expect(formatAge('2026-10-02', new Date(2026, 9, 14, 12))).toBe('12 days');
 	});
 });
 

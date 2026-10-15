@@ -59,12 +59,15 @@ export { default as ListRow } from './components/ListRow.svelte';
 export { default as Rating } from './components/Rating.svelte';
 export { default as Stepper } from './components/Stepper.svelte';
 export { default as ErrorPage } from './components/ErrorPage.svelte';
+export { default as FactList } from './components/FactList.svelte';
+export { default as Missing } from './components/Missing.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
 export type { TableColumn, TableSort } from './components/Table.svelte';
 export type { TimelineEntry, TimelinePart } from './components/Timeline.svelte';
 export type { LightboxItem } from './components/Lightbox.svelte';
+export type { FactItem } from './components/FactList.svelte';
 
 export {
 	countActive,
@@ -99,7 +102,16 @@ export {
 	type UnknownStop,
 	type UnknownStopInput
 } from './scale.js';
-export { formatAge, formatDuration, formatExact, formatRelative, type DateInput } from './time.js';
+export {
+	formatAge,
+	formatDate,
+	formatDuration,
+	formatExact,
+	formatRelative,
+	isCalendarDate,
+	type DateInput,
+	type DateOptions
+} from './time.js';
 export type { ControlSize, IconComponent } from './types.js';
 export { badgeText, groupItems, type NavGroup, type NavItem, type NavSection } from './nav.js';
 export {
