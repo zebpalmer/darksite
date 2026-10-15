@@ -8,7 +8,11 @@ button with its key cap, an m:ss countdown and a 2px accent bar draining over it
 than two. Bottom-right at 380px, lifted above the phone tab bar and any ActionBar; full width above
 the tab bar on phones. Each toast is a live region — `status` for results, `alert` for failures —
 and its timing pauses while it is hovered or focused. A toast's key cap works as a hotkey while it
-shows, except while the user is typing.
+shows, except while the user is typing or when another handler already took the key
+(`defaultPrevented`); `hotkeys={false}` turns the binding off and keeps the cap.
+
+While a Dialog or Sheet is open the queue moves into it (`topmost`), so a toast stays visible and
+usable above the modal instead of turning inert behind it. `topmost={false}` opts out.
 -->
 <script lang="ts">
 	import CircleCheck from '@lucide/svelte/icons/circle-check';
@@ -19,9 +23,18 @@ shows, except while the user is typing.
 
 	import KeyCap from './KeyCap.svelte';
 	import { isTypingTarget, matchesKey } from '../keycap.js';
+	import { topmost as toTopmost } from '../layers.svelte.js';
 	import { toasts, type Toast, type ToastStore } from '../toast.svelte.js';
 
-	let { store = toasts }: { store?: ToastStore } = $props();
+	interface Props {
+		store?: ToastStore;
+		/** Run a toast's action from its key cap. The cap still shows when this is off. */
+		hotkeys?: boolean;
+		/** Keep the queue usable above an open modal by moving it into the modal. */
+		topmost?: boolean;
+	}
+
+	let { store = toasts, hotkeys = true, topmost = true }: Props = $props();
 
 	let now = $state(Date.now());
 	$effect(() => {
@@ -31,6 +44,7 @@ shows, except while the user is typing.
 	});
 
 	const left = (t: Toast) => (t.deadline === null ? t.remaining : Math.max(0, t.deadline - now));
+	const share = (t: Toast) => (t.duration ? (left(t) / t.duration) * 100 : 0);
 	const clock = (ms: number) => {
 		const s = Math.ceil(ms / 1000);
 		return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -43,7 +57,7 @@ shows, except while the user is typing.
 	}
 
 	function onkeydown(event: KeyboardEvent) {
-		if (event.defaultPrevented || isTypingTarget(event.target)) return;
+		if (!hotkeys || event.defaultPrevented || isTypingTarget(event.target)) return;
 		const t = [...store.items].reverse().find((x) => x.action?.keycap && matchesKey(event, x.action.keycap));
 		if (t) {
 			event.preventDefault();
@@ -54,40 +68,46 @@ shows, except while the user is typing.
 
 <svelte:window {onkeydown} />
 
-<ol class="ds-toaster" aria-label="Notifications">
-	{#each store.items as t (t.id)}
-		{@const Icon = icons[t.tone]}
-		<li
-			class="toast"
-			data-tone={t.tone}
-			role={t.tone === 'error' ? 'alert' : 'status'}
-			onmouseenter={() => store.pause(t.id)}
-			onmouseleave={() => store.resume(t.id)}
-			onfocusin={() => store.pause(t.id)}
-			onfocusout={() => store.resume(t.id)}
-		>
-			<div class="row">
-				<span class="icon"><Icon size={16} aria-hidden="true" /></span>
-				<span class="msg">{t.message}</span>
-				{#if t.countdown}<span class="countdown" aria-hidden="true">{clock(left(t))}</span>{/if}
-				{#if t.action}
-					<button type="button" class="action" aria-keyshortcuts={t.action.keycap} onclick={() => run(t)}>
-						{t.action.label}
-						{#if t.action.keycap}<KeyCap keys={t.action.keycap} decorative />{/if}
+<!-- The queue travels into an open modal; this wrapper keeps its place in the page. -->
+<div class="ds-toaster-home">
+	<ol class="ds-toaster" aria-label="Notifications" {@attach topmost ? toTopmost : undefined}>
+		{#each store.items as t (t.id)}
+			{@const Icon = icons[t.tone]}
+			<li
+				class="toast"
+				data-tone={t.tone}
+				role={t.tone === 'error' ? 'alert' : 'status'}
+				onmouseenter={() => store.pause(t.id)}
+				onmouseleave={() => store.resume(t.id)}
+				onfocusin={() => store.pause(t.id)}
+				onfocusout={() => store.resume(t.id)}
+			>
+				<div class="row">
+					<span class="icon"><Icon size={16} aria-hidden="true" /></span>
+					<span class="msg">{t.message}</span>
+					{#if t.countdown}<span class="countdown" aria-hidden="true">{clock(left(t))}</span>{/if}
+					{#if t.action}
+						<button type="button" class="action" aria-keyshortcuts={t.action.keycap} onclick={() => run(t)}>
+							{t.action.label}
+							{#if t.action.keycap}<KeyCap keys={t.action.keycap} decorative />{/if}
+						</button>
+					{/if}
+					<button type="button" class="close" aria-label="Dismiss" onclick={() => store.dismiss(t.id)}>
+						<X size={14} aria-hidden="true" />
 					</button>
+				</div>
+				{#if t.countdown}
+					<div class="track" aria-hidden="true"><div class="bar" style:width="{share(t)}%"></div></div>
 				{/if}
-				<button type="button" class="close" aria-label="Dismiss" onclick={() => store.dismiss(t.id)}>
-					<X size={14} aria-hidden="true" />
-				</button>
-			</div>
-			{#if t.countdown}
-				<div class="track" aria-hidden="true"><div class="bar" style:width="{(left(t) / t.duration) * 100}%"></div></div>
-			{/if}
-		</li>
-	{/each}
-</ol>
+			</li>
+		{/each}
+	</ol>
+</div>
 
 <style>
+	.ds-toaster-home {
+		display: contents;
+	}
 	.ds-toaster {
 		position: fixed;
 		right: 16px;

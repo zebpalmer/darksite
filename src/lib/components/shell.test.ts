@@ -77,6 +77,25 @@ describe('ToastStore', () => {
 		expect(store.items).toHaveLength(0);
 	});
 
+	it('keeps a sticky toast until it is dismissed, with no countdown', () => {
+		const store = new ToastStore();
+		const id = store.warning('A new version is available', { duration: null });
+		expect(store.items[0]).toMatchObject({ duration: null, countdown: false, deadline: null });
+		vi.advanceTimersByTime(60 * 60_000);
+		store.pause(id);
+		store.resume(id);
+		vi.advanceTimersByTime(60 * 60_000);
+		expect(store.items).toHaveLength(1);
+		store.dismiss(id);
+		expect(store.items).toHaveLength(0);
+	});
+
+	it('drops the countdown on a sticky action toast', () => {
+		const store = new ToastStore();
+		store.info('Archived', { duration: null, action: { label: 'Undo', onAction: () => {} } });
+		expect(store.items[0].countdown).toBe(false);
+	});
+
 	it('replaces a toast pushed with the same id', () => {
 		const store = new ToastStore();
 		store.push({ id: 'x', message: 'a' });
@@ -96,6 +115,42 @@ describe('Toaster', () => {
 		await fireEvent.keyDown(window, { key: 'z' });
 		expect(onAction).toHaveBeenCalledTimes(1);
 		expect(store.items.map((t) => t.message)).toEqual(['Could not save']);
+		store.clear();
+	});
+});
+
+describe('Toaster hotkeys', () => {
+	it('can turn the key binding off and keep the cap', async () => {
+		const store = new ToastStore();
+		const onAction = vi.fn();
+		const { container } = render(Toaster, { store, hotkeys: false });
+		store.info('Archived', { action: { label: 'Undo', keycap: 'z', onAction } });
+		await vi.waitFor(() => screen.getByRole('button', { name: /Undo/ }));
+		await fireEvent.keyDown(window, { key: 'z' });
+		expect(onAction).not.toHaveBeenCalled();
+		expect(container.querySelector('.ds-kbd')).not.toBeNull();
+		store.clear();
+	});
+
+	it('leaves a key that the page already handled', async () => {
+		const store = new ToastStore();
+		const onAction = vi.fn();
+		render(Toaster, { store });
+		store.info('Archived', { action: { label: 'Undo', keycap: 'z', onAction } });
+		await vi.waitFor(() => screen.getByRole('button', { name: /Undo/ }));
+		const event = new KeyboardEvent('keydown', { key: 'z', cancelable: true, bubbles: true });
+		event.preventDefault();
+		window.dispatchEvent(event);
+		expect(onAction).not.toHaveBeenCalled();
+		store.clear();
+	});
+
+	it('shows no countdown on a sticky toast', async () => {
+		const store = new ToastStore();
+		const { container } = render(Toaster, { store });
+		store.info('Archived', { duration: null, action: { label: 'Undo', onAction: () => {} } });
+		await vi.waitFor(() => screen.getByRole('button', { name: /Undo/ }));
+		expect(container.querySelector('.countdown, .track')).toBeNull();
 		store.clear();
 	});
 });

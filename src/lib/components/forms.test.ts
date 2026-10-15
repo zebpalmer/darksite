@@ -160,6 +160,35 @@ describe('Dialog', () => {
 	});
 });
 
+describe('Dialog closing', () => {
+	it('accepts an onconfirm that returns a value', async () => {
+		const onconfirm = vi.fn((): boolean => true);
+		render(Dialog, { open: true, title: 'Apply?', onconfirm });
+		await fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+		expect(onconfirm).toHaveBeenCalledTimes(1);
+		expect(screen.queryByRole('alertdialog')).toBeNull();
+	});
+
+	it('lets onbeforeclose keep it open on Cancel and Esc', async () => {
+		const onbeforeclose = vi.fn(() => false);
+		const oncancel = vi.fn();
+		render(Dialog, { open: true, title: 'Discard?', dirty: true, onbeforeclose, oncancel });
+		await fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+		const dialog = screen.getByRole('alertdialog');
+		dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+		expect(onbeforeclose).toHaveBeenCalledTimes(2);
+		expect(oncancel).not.toHaveBeenCalled();
+		expect(screen.getByRole('alertdialog')).toBeTruthy();
+	});
+
+	it('follows the browser when it closes anyway', async () => {
+		const onbeforeclose = vi.fn(() => false);
+		render(Dialog, { open: true, title: 'Discard?', onbeforeclose });
+		screen.getByRole('alertdialog').dispatchEvent(new Event('cancel', { cancelable: false }));
+		await vi.waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+	});
+});
+
 describe('Popover', () => {
 	it('opens from its trigger, is non-modal, and closes on Esc', async () => {
 		render(PopoverHarness);

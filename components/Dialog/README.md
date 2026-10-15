@@ -17,8 +17,10 @@ Sheet is not left `aria-hidden` by the Sheet's modal layer.
 - `confirmLabel` (default "Confirm"), `confirmingLabel` (an "-ing" verb while the async
   `onconfirm` runs: "Deleting"), `cancelLabel` (default "Cancel").
 - `tone` — `danger` (a filled `danger-solid` confirm; the default) or `default` (primary).
-- `onconfirm()` — may return a promise: the dialog closes when it resolves and stays open with the
-  error shown if it throws. `oncancel()`.
+- `onconfirm()` — may return any value or a promise: the dialog closes when it resolves and stays
+  open with the error shown if it throws. `oncancel()`.
+- `dirty` — the body holds unsaved input (read app-wide as `modals.dirty`). `onbeforeclose()` runs
+  before Esc, the scrim or Cancel closes the dialog; return `false` to keep it open.
 - `initialFocus` — `cancel` (default), `confirm` (for a confirm the user just asked for), or
   `content` (the dialog itself, for a body with its own keys, where Enter must not press Cancel).
   Explicit, so choice buttons in `children` never take focus first.

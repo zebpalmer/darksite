@@ -26,6 +26,9 @@ announced and not merely drawn.
 **Overlay and page-key etiquette:**
 
 - Page hotkeys are ignored while focus is in an `input` or `textarea`.
+- A handler that takes a key calls `preventDefault()`, and a global binding skips a key that is
+  already `defaultPrevented`. A toast's key cap is a global binding: a page that owns the same key
+  either calls `preventDefault()` in its own handler or mounts `<Toaster hotkeys={false}>`.
 - `Popover` is non-modal, so page keys keep working while one is open.
 - Esc closes the topmost overlay first. A `Combobox` swallows Esc only while its list is open, so
   the page's own Esc still works when it is closed.

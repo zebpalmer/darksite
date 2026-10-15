@@ -97,3 +97,5 @@ export {
 	type JustifiedRow,
 	type JustifyOptions
 } from './justify.js';
+export { modals, topmost, trackModal, type TrackModalOptions } from './layers.svelte.js';
+export { COARSE_QUERY, media, MediaFlag, PHONE_QUERY } from './media.svelte.js';

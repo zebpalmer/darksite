@@ -27,6 +27,14 @@ the alignment when a sheet wants a full-width "Show 42 records".
 `onclose()`, `footer` snippet, `maxHeight` (default `78dvh`; ignored when `side="right"`), `side`
 (`bottom` default | `right`), children (the body, which scrolls).
 
+## Unsaved edits
+
+`dirty` marks a sheet that holds unsaved edits; the app reads it as `modals.dirty` to postpone a
+reload or navigation. `onbeforeclose()` runs before Esc, the scrim or the close button closes the
+sheet — return `false` to keep it open (and ask). Setting `open` to false from code bypasses it. A
+browser may still close a modal on a repeated Esc; the sheet then follows rather than drifting out
+of sync, so treat `onbeforeclose` as a courtesy, not a lock.
+
 ## Don't
 
 - Don't nest an `ActionBar` in the footer.
