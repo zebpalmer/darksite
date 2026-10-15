@@ -35,9 +35,27 @@ A pane that scrolls is always this shape:
 it the child refuses to shrink below its content, the pane grows instead, and the scroll silently
 moves to the document.
 
-On desktop a **work view locks the document** (`overflow: hidden` on `html` and `body`) so its
-panes can be sized from the published header heights instead of fighting the page. On phones it
-does not — there, let the document scroll and let the panes stack.
+On desktop a **work view locks the document** so its panes can be sized by the frame instead of
+fighting the page. On phones it does not — there, let the document scroll and let the panes stack.
+
+**Build a work view with `WorkView`**, which does all of this: inside `AppShell` it locks the shell
+to the viewport from 768px, zeroes the column's padding, and fills what the `Banner` and `TopBar`
+leave, with the `PageHeader` on top, a rail beside the results, the results as the one scroller
+and the `ActionBar` under them. A page should never compute its pane heights from `--ds-topbar-h`
+or cancel padding with negative margins:
+
+```svelte
+<WorkView label="Records">
+  {#snippet header()}<PageHeader title="Records" count={total} />{/snippet}
+  {#snippet rail()}<FilterRail {sections} bind:value />{/snippet}
+  {#snippet top()}<ActiveFilters {sections} bind:value />{/snippet}
+  <Table {rows} {columns} rowKey={(r) => r.id} label="Records" />
+  {#snippet footer()}<ActionBar>…</ActionBar>{/snippet}
+</WorkView>
+```
+
+A work view with a different shape (a queue beside a card) uses the pane pattern above inside the
+WorkView's body.
 
 ## Panes and sidebars
 

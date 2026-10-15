@@ -9,9 +9,29 @@ export interface FilterOption {
 export interface FilterSection {
 	key: string;
 	label: string;
-	options: readonly FilterOption[];
+	/**
+	 * `options` (default): checkboxes, or radios with `multiple: false`. `text`: one free-text value
+	 * ("Name contains"). `search`: a Combobox over `options`, for a list too long to show — owners,
+	 * assignees — with the chosen values as removable chips.
+	 */
+	type?: 'options' | 'text' | 'search';
+	/** The choices of an `options` or `search` section. A `search` section may load them as typed. */
+	options?: readonly FilterOption[];
 	/** Default true: any number of options. False: at most one, with "Any" to clear it. */
 	multiple?: boolean;
+	/** The input's placeholder in a `text` or `search` section. */
+	placeholder?: string;
+	/**
+	 * A readable label for a value that is not among `options` — from a linked URL, or not loaded
+	 * yet (an id whose name the app can look up). Without it the value is shown as it is.
+	 */
+	labelFor?: (value: string) => string | undefined;
+	/** A `search` section's server search: called with the typed text; feed results back as `options`. */
+	onsearch?: (text: string) => void;
+	/** A `search` section is waiting for `onsearch` results. */
+	loading?: boolean;
+	/** Drop values from the URL that are not among `options`, instead of keeping them. */
+	strict?: boolean;
 }
 
 /** Selected option values per section key. A missing or empty list means "no filter". */
@@ -22,6 +42,22 @@ export type ParamsInput = string | { toString(): string };
 
 export function countActive(value: FilterValue): number {
 	return Object.values(value).reduce((n, list) => n + list.length, 0);
+}
+
+/**
+ * The label for a value in a section: its option's label, else `labelFor(value)`, else the value
+ * itself — so a value the options do not list is still shown, never dropped.
+ */
+export function filterLabel(section: FilterSection, value: string): string {
+	return (
+		section.options?.find((o) => o.value === value)?.label ?? section.labelFor?.(value) ?? value
+	);
+}
+
+/** Values selected in a section that its `options` do not list (from a URL, or not loaded yet). */
+export function unlistedValues(section: FilterSection, value: FilterValue): string[] {
+	const listed = new Set((section.options ?? []).map((o) => o.value));
+	return (value[section.key] ?? []).filter((v) => !listed.has(v));
 }
 
 /**
@@ -41,7 +77,11 @@ export function filtersToParams(
 	return params;
 }
 
-/** Read filters back, keeping only values that are options of their section. */
+/**
+ * Read filters back. Values a section's options do not list are **kept** — a linked view keeps its
+ * filters even when the options are partial or still loading — unless the section is `strict`.
+ * Empty values are dropped; a `text` section, or one with `multiple: false`, keeps the first.
+ */
 export function filtersFromParams(
 	params: ParamsInput,
 	sections: readonly FilterSection[]
@@ -49,10 +89,14 @@ export function filtersFromParams(
 	const p = new URLSearchParams(params.toString());
 	const value: FilterValue = {};
 	for (const section of sections) {
-		const allowed = new Set(section.options.map((o) => o.value));
-		const picked = p.getAll(section.key).filter((v) => allowed.has(v));
+		let picked = [...new Set(p.getAll(section.key).map((v) => v.trim()))].filter(Boolean);
+		if (section.strict) {
+			const allowed = new Set((section.options ?? []).map((o) => o.value));
+			picked = picked.filter((v) => allowed.has(v));
+		}
 		if (picked.length)
-			value[section.key] = section.multiple === false ? picked.slice(0, 1) : picked;
+			value[section.key] =
+				section.type === 'text' || section.multiple === false ? picked.slice(0, 1) : picked;
 	}
 	return value;
 }

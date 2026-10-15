@@ -21,7 +21,7 @@
 			'ErrorPage'
 		],
 		Content: ['Avatar', 'Card', 'EntityCard', 'Carousel', 'Lightbox'],
-		Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader', 'Pane'],
+		Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader', 'Pane', 'WorkView'],
 		Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar']
 	};
 </script>

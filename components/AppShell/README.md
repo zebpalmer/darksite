@@ -17,6 +17,9 @@ It is the one component allowed to ask about the viewport ([`layout.md`](../../d
   inset on phones, `0px` on desktop. Pages pad by it; `Toaster` lifts above it.
 - **`--ds-topbar-h`:** the top bar's height (the `TopBar` publishes it), for panes sizing
   themselves against it.
+- **The work-view switch:** while the page renders a `WorkView`, the column's padding is zero and,
+  from 768px, the shell locks to the viewport so the WorkView fills what the `Banner` and `TopBar`
+  leave. No `padded={false}` and no height arithmetic in the page.
 - **One `Toaster`**, mounted here and nowhere else.
 - **A "Skip to content" link**, the first thing a keyboard reaches, onto the page's `<main>`.
 

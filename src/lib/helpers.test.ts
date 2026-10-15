@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { countActive, filtersFromParams, filtersToParams, type FilterSection } from './filters.js';
+import {
+	countActive,
+	filterLabel,
+	filtersFromParams,
+	filtersToParams,
+	unlistedValues,
+	type FilterSection
+} from './filters.js';
 import { SEVERITIES, severityLabel, severityRank } from './severity.js';
 import {
 	daysUntil,
@@ -124,8 +131,32 @@ describe('filters', () => {
 		});
 	});
 
-	it('drops unknown values and keeps one value for a single-choice section', () => {
-		expect(filtersFromParams('status=nope&owner=a&owner=b', sections)).toEqual({ owner: ['a'] });
+	it('keeps values the options do not list, unless strict, and one for a single-choice section', () => {
+		expect(filtersFromParams('status=nope&owner=a&owner=b', sections)).toEqual({
+			status: ['nope'],
+			owner: ['a']
+		});
+		const strict = sections.map((s) => ({ ...s, strict: true }));
+		expect(filtersFromParams('status=nope&status=ready&owner=zz', strict)).toEqual({
+			status: ['ready']
+		});
+	});
+
+	it('keeps one trimmed value for a text section and drops empty ones', () => {
+		const text: FilterSection[] = [{ key: 'q', label: 'Name', type: 'text' }];
+		expect(filtersFromParams('q=%20alpha%20&q=beta', text)).toEqual({ q: ['alpha'] });
+		expect(filtersFromParams('q=', text)).toEqual({});
+	});
+
+	it('labels a value by its option, then labelFor, then the value itself', () => {
+		const section: FilterSection = {
+			...sections[0],
+			labelFor: (v) => (v === 'x' ? 'Ex' : undefined)
+		};
+		expect(filterLabel(section, 'hold')).toBe('On hold');
+		expect(filterLabel(section, 'x')).toBe('Ex');
+		expect(filterLabel(section, 'y')).toBe('y');
+		expect(unlistedValues(section, { status: ['ready', 'x'] })).toEqual(['x']);
 	});
 
 	it('counts active filters', () => {

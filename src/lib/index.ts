@@ -51,6 +51,7 @@ export { default as Tabs } from './components/Tabs.svelte';
 export { default as Timeline } from './components/Timeline.svelte';
 export { default as Toaster } from './components/Toaster.svelte';
 export { default as TopBar } from './components/TopBar.svelte';
+export { default as WorkView } from './components/WorkView.svelte';
 export { default as ScaleBadge } from './components/ScaleBadge.svelte';
 export { default as ScalePicker } from './components/ScalePicker.svelte';
 export { default as Carousel } from './components/Carousel.svelte';
@@ -79,11 +80,13 @@ export type { FactItem } from './components/FactList.svelte';
 
 export {
 	countActive,
+	filterLabel,
 	filtersFromParams,
 	filtersToParams,
 	type FilterOption,
 	type FilterSection,
-	type FilterValue
+	type FilterValue,
+	unlistedValues
 } from './filters.js';
 export { formatKey, formatKeys, isTypingTarget, matchesKey } from './keycap.js';
 export { createLabels, humanize, type Labels } from './labels.js';
