@@ -9,6 +9,7 @@ import Toaster from './Toaster.svelte';
 import { badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
 import { matchesKey } from '../keycap.js';
 import { ToastStore } from '../toast.svelte.js';
+import TopBarHarness from '../../tests/TopBarHarness.svelte';
 
 const groups: NavGroup[] = [{ id: 'admin', label: 'Admin' }];
 const items: NavItem[] = [
@@ -204,5 +205,18 @@ describe('PageHeader', () => {
 		const h = screen.getByRole('heading', { level: 1 });
 		expect(h.textContent).toContain('Records');
 		expect(document.body.textContent).toContain('1,284');
+	});
+});
+
+describe('TopBar', () => {
+	it('focuses its search on /, unless the key is handed to the page', async () => {
+		const { rerender } = render(TopBarHarness);
+		const search = screen.getByRole('textbox', { name: 'Search records' });
+		await fireEvent.keyDown(window, { key: '/' });
+		expect(document.activeElement).toBe(search);
+		search.blur();
+		await rerender({ searchKey: null });
+		await fireEvent.keyDown(window, { key: '/' });
+		expect(document.activeElement).not.toBe(search);
 	});
 });

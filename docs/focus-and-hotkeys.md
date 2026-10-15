@@ -31,6 +31,10 @@ in a `Popover`, so the legend never drifts from the keys. Keep a unit test that 
 conflicts. A letter wears shift as a prefix — `g` and `shift+g` are two keys, and CapsLock changes
 neither — while a punctuation key is its own character (`?`, not `shift+/`).
 
+**A key that focuses a field** — `/` for search — is the `focusShortcut` attachment on the field's
+container: it focuses the first field inside, under the same etiquette as page hotkeys below.
+`TopBar` and the shell's header actions use it.
+
 **Overlay and page-key etiquette:**
 
 - Page hotkeys are ignored while focus is in an `input`, `textarea`, `select` or editable region,

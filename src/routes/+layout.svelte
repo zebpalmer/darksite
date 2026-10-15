@@ -3,6 +3,7 @@
 	import '#lib/base.css';
 	import './demo.css';
 	import type { Snippet } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Bell from '@lucide/svelte/icons/bell';
 	import Contrast from '@lucide/svelte/icons/contrast';
@@ -16,7 +17,8 @@
 	import PanelsTopLeft from '@lucide/svelte/icons/panels-top-left';
 	import Sun from '@lucide/svelte/icons/sun';
 	import SquareMousePointer from '@lucide/svelte/icons/square-mouse-pointer';
-	import { AppShell, Button, type NavGroup, type NavItem } from '#lib';
+	import { AppShell, Button, KeyCap, toasts, type NavGroup, type NavItem } from '#lib';
+	import { componentHref, findComponent, names } from './catalog.js';
 	import { demo } from './demo.svelte.js';
 
 	let { children }: { children: Snippet } = $props();
@@ -66,6 +68,20 @@
 		base.find((i) => i.href !== '/' && page.url.pathname.startsWith(i.href))?.id ?? 'components'
 	);
 	const next = $derived(themes[(themes.findIndex((t) => t.id === theme) + 1) % themes.length]);
+
+	// The shell's header search: Enter opens the best-matching component's page.
+	let query = $state('');
+	function find(event: SubmitEvent) {
+		event.preventDefault();
+		const name = findComponent(query);
+		if (!name) {
+			toasts.info(`No component matches "${query.trim()}"`);
+			return;
+		}
+		query = '';
+		(document.activeElement as HTMLElement | null)?.blur();
+		goto(componentHref(name));
+	}
 </script>
 
 {#snippet mark()}
@@ -73,6 +89,26 @@
 		<rect x="3" y="3" width="18" height="18" rx="4" fill="var(--ds-accent)" />
 		<path d="M8 8h5a4 4 0 0 1 0 8H8z" fill="var(--ds-bg-0)" />
 	</svg>
+{/snippet}
+
+{#snippet headerActions()}
+	<form class="find" role="search" onsubmit={find}>
+		<label>
+			<span class="ds-sr-only">Find a component</span>
+			<input
+				class="ds-control"
+				type="search"
+				placeholder="Find a component"
+				list="gallery-components"
+				aria-keyshortcuts="/"
+				bind:value={query}
+			/>
+			<KeyCap keys="/" decorative />
+		</label>
+		<datalist id="gallery-components">
+			{#each names as name (name)}<option value={name}></option>{/each}
+		</datalist>
+	</form>
 {/snippet}
 
 {#snippet account({ compact }: { compact: boolean })}
@@ -105,6 +141,8 @@
 	product="darksite"
 	{mark}
 	{account}
+	{headerActions}
+	headerActionsLabel="Find a component"
 	rememberAs="gallery"
 	primaryTabs={['components', 'navrail', 'pageheader', 'toaster']}
 >
@@ -112,6 +150,22 @@
 </AppShell>
 
 <style>
+	.find {
+		width: 240px;
+	}
+	.find label {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+	.find input {
+		width: 100%;
+		padding-right: 32px;
+	}
+	.find :global(.ds-kbd) {
+		position: absolute;
+		right: 8px;
+	}
 	.theme {
 		display: flex;
 		flex-direction: column;

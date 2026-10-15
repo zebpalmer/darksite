@@ -14,6 +14,12 @@
 		Tab once from the address bar: the first stop is "Skip to content". Toasts from any page land in
 		the shell's one Toaster, above the tab bar and any ActionBar.
 	</p>
+	<p>
+		The search on this header's line is the shell's <code>headerActions</code>: every page's
+		PageHeader renders it, right-aligned, ahead of the page's own actions. Press <code>/</code> to focus
+		it. Below 768px it becomes an icon button that opens a full-width row under the header; Esc closes
+		it.
+	</p>
 </div>
 
 <style>

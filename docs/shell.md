@@ -99,6 +99,17 @@ shell publishes its height as `--ds-topbar-h` for panes that need to size themse
 If a control is not relevant on every page in the section, it does not belong here — it belongs in
 that page's `PageHeader` actions.
 
+## Header actions
+
+A shell-wide control that should share the line with each page's title instead of taking a row of
+its own — typically global search — is `AppShell`'s `headerActions` snippet. Every level-1
+`PageHeader` renders it right-aligned, ahead of the page's own actions, so the page's primary
+button stays right-most; `/` focuses its first field. On phones it collapses to an icon button that
+opens a full-width row under the header; Esc or a navigation closes it. It is rendered by
+`PageHeader`, so a page without one shows none. Details are in the `AppShell` card.
+
+Give a shell-wide search one home: `headerActions`, a `TopBar` or the rail's search slot.
+
 ## Stacking order
 
 Assign these centrally, not at each call site:

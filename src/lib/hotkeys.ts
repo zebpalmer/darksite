@@ -10,6 +10,7 @@
 //   ]);
 //   $effect(() => installHotkeys(map, run));          — page keys, on the window
 //   <section tabindex="-1" {@attach hotkeys(map, run)}>  — a pane's keys, while focus is inside
+//   <div {@attach focusShortcut('/')}>                    — `/` focuses the first field inside
 
 import type { Attachment } from 'svelte/attachments';
 
@@ -188,4 +189,31 @@ export function hotkeys<A extends string>(
 	options: Omit<InstallOptions, 'target'> = {}
 ): Attachment<EventTarget> {
 	return (target) => installHotkeys(map, handler, { ...options, target });
+}
+
+/** What a focus shortcut looks for: the first form field in its container. */
+const FIELD = 'input, select, textarea, [contenteditable="true"]';
+
+/**
+ * A key that focuses the first field inside an element — `/` to search, the TopBar's and the
+ * shell header's behavior. It listens on the window and stands aside while the user is typing,
+ * when something earlier already handled the press (`defaultPrevented`), and when the element
+ * holds no field right now; a press it takes is `preventDefault`ed. `null` turns it off.
+ *
+ *   <div class="search" {@attach focusShortcut('/')}>{@render search()}</div>
+ */
+export function focusShortcut(key: string | null = '/'): Attachment<HTMLElement> {
+	return (el) => {
+		if (!key || typeof window === 'undefined') return;
+		const listener = (event: KeyboardEvent) => {
+			if (event.defaultPrevented || isTypingTarget(event.target)) return;
+			if (!matchesKey(event, key)) return;
+			const field = el.querySelector<HTMLElement>(FIELD);
+			if (!field) return;
+			event.preventDefault();
+			field.focus();
+		};
+		window.addEventListener('keydown', listener);
+		return () => window.removeEventListener('keydown', listener);
+	};
 }
