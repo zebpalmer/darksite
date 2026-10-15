@@ -23,18 +23,31 @@ export function formatCompact(value: number, locale?: string): string {
 
 /**
  * `1234.5, 'USD'` → `$1,234.50`. `amount` is in major units (dollars, not cents). Pass
- * `maximumFractionDigits` for sub-cent amounts, such as per-unit prices (`$0.0025`).
+ * `maximumFractionDigits` for sub-cent amounts, such as per-unit prices (`$0.0025`), or `0` for
+ * whole units (`$1,235`) — either option alone is enough: the other is fitted to it, so the pair
+ * never contradicts the currency's own default (a `RangeError` in some engines).
  */
 export function formatMoney(
 	amount: number,
 	currency: string,
 	options: NumberOptions & { minimumFractionDigits?: number } = {}
 ): string {
+	let min = options.minimumFractionDigits;
+	let max = options.maximumFractionDigits;
+	if ((min === undefined) !== (max === undefined)) {
+		// One side given: fit the other to it, from the currency's defaults.
+		const fallback = new Intl.NumberFormat(options.locale, { style: 'currency', currency });
+		const defaults = fallback.resolvedOptions();
+		if (min === undefined) min = Math.min(max!, defaults.minimumFractionDigits ?? 2);
+		else max = Math.max(min, defaults.maximumFractionDigits ?? 2);
+	} else if (min !== undefined && max !== undefined && min > max) {
+		min = max;
+	}
 	return new Intl.NumberFormat(options.locale, {
 		style: 'currency',
 		currency,
-		minimumFractionDigits: options.minimumFractionDigits,
-		maximumFractionDigits: options.maximumFractionDigits
+		minimumFractionDigits: min,
+		maximumFractionDigits: max
 	}).format(amount);
 }
 

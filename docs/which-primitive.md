@@ -35,6 +35,9 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A history of changes | `Timeline` | Sentences, relative times, batches, a recent slice with "Show all". |
 | A static state | `StatusBadge` | Lifecycle, holds, markers. Never severity colors; never clickable. |
 | A titled block on a content page | `Pane` | Unpadded so a Table sits flush. No primary button. |
+| The facts about one record | `FactList` | Label–value pairs on a detail pane; two columns that stack by its own width. Many records → `Table`. |
+| A value that is absent | `Missing` | An em dash in `ds-text-3`, announced "No value". `Table` and `FactList` draw it already. |
+| A calendar date (no time) | `formatDate` | The same day in every time zone; the year only when it isn't this year. A timestamp is `formatRelative`. |
 | Rows and columns of records | `Table` | Sort, selection, row links, priority columns. Long lists end in "Load more". |
 | A piece of media | `Card` in a `Grid` | No card chrome — the thumbnail **is** the card. |
 | Images at their own aspect ratio | `JustifiedGrid` | Rows that fill the width, no crop. |

@@ -8,7 +8,7 @@
 		Filtering: ['ActiveFilters', 'FilterRail'],
 		Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
 		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch', 'Rating', 'Stepper'],
-		Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow'],
+		Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow', 'FactList', 'Missing'],
 		Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
 		Feedback: [
 			'EmptyState',

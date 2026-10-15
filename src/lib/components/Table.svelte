@@ -46,6 +46,7 @@ belong in the pane's ActionBar.
 
 	import Checkbox from './Checkbox.svelte';
 	import EmptyState from './EmptyState.svelte';
+	import Missing from './Missing.svelte';
 	import SkeletonLoader from './SkeletonLoader.svelte';
 
 	interface Props {
@@ -208,7 +209,7 @@ belong in the pane's ActionBar.
 	{:else if cell}
 		{@render cell({ row, column, value })}
 	{:else if isMissing(value)}
-		<span class="missing" aria-hidden="true">{missing}</span><span class="ds-sr-only">No value</span>
+		<Missing mark={missing} />
 	{:else}
 		{String(value)}
 	{/if}
@@ -402,9 +403,6 @@ belong in the pane's ActionBar.
 		font-family: var(--font-mono);
 		font-size: var(--ds-text-sm);
 		font-variant-numeric: tabular-nums;
-	}
-	.missing {
-		color: var(--ds-text-3);
 	}
 	.sort {
 		display: inline-flex;

@@ -48,12 +48,18 @@ reason to improvise.
   after that ("Oct 2", with the year when it isn't this year), both in the viewer's locale and time
   zone, and the exact date, time and time zone in a tooltip. `formatRelative` and `formatExact`
   implement it.
+- **Calendar dates** — a day with no time, such as a due date or a start date (`'2026-10-01'`) —
+  are shown as that day in every time zone, never shifted to the day before west of UTC, and
+  follow the same year rule: "Oct 1", or "Oct 1, 2025" when it isn't this year. `formatDate`
+  implements it; `formatRelative` counts whole days for one ("today", "2 days ago") and
+  `formatExact` gives its full date with no time or zone.
 - **Missing values** are an em dash in `ds-text-3`, announced as "No value" — never a blank, which
-  reads as still loading.
+  reads as still loading. `Missing` draws it; `Table` and `FactList` use it.
 - **Numbers and money:** thousands separators and currency in the viewer's locale. Tables show exact
   values; compact values ("12.4K") only where space is tight, with the exact value in a tooltip.
   Money is stored and passed in major units — dollars, not cents. `formatNumber`, `formatCompact`
-  and `formatMoney` implement it.
+  and `formatMoney` implement it; `formatMoney(n, 'USD', { maximumFractionDigits: 0 })` gives
+  whole units.
 - **Stored codes are never shown raw.** A product keeps one label map (`createLabels`) and formats
   every code through it; a code missing from the map reads as words ("Missing start date"), never
   as `missing_start_date`.

@@ -6,6 +6,29 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `formatDate` (and `DateOptions`, `isCalendarDate`): a date with no time. A calendar date
+  (`'2026-10-01'`) shows as exactly that day in every time zone; a timestamp shows its day in the
+  viewer's zone. The year follows the date rule — shown only when it isn't this year, or always
+  with `year: 'always'`.
+- `Missing`: the missing-value mark (an em dash in `ds-text-3`, announced "No value") as its own
+  primitive. `Table` now renders it.
+- `FactList` (and `FactItem`): label–value pairs on a native description list for detail panes,
+  two columns from 560px, one below and stacked under 320px by its own width, with `mono`, `tip`,
+  `wide`, per-item `cell` snippets and the `Missing` mark for empty values.
+
+### Fixed
+
+- A bare calendar date (`'2026-10-01'`) is no longer read as UTC midnight, which showed the day
+  before west of UTC: `formatRelative` counts whole days for it ("today", "2 days ago"),
+  `formatExact` gives its full date with no time or zone, and `formatAge` (so `StatusBadge since`)
+  ages it from local midnight.
+- `formatRelative` decides "this year" in the `timeZone` it was given, not the runtime's.
+- `formatMoney` with only `maximumFractionDigits` (such as `0` for whole units) or only
+  `minimumFractionDigits` fits the other bound to it instead of throwing a `RangeError` against
+  the currency's default; a contradictory pair is clamped.
+
 ## [0.7.0] — 2026-10-14
 
 ### Added

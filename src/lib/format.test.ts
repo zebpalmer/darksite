@@ -21,6 +21,24 @@ describe('numbers', () => {
 			'$0.0025'
 		);
 	});
+
+	it('takes whole units from one option, whatever the currency default', () => {
+		expect(formatMoney(1234.5, 'USD', { locale: 'en-US', maximumFractionDigits: 0 })).toBe(
+			'$1,235'
+		);
+		expect(formatMoney(1234, 'USD', { locale: 'en-US', minimumFractionDigits: 3 })).toBe(
+			'$1,234.000'
+		);
+		// A contradictory pair is fitted, not thrown.
+		expect(
+			formatMoney(1234.5, 'USD', {
+				locale: 'en-US',
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 0
+			})
+		).toBe('$1,235');
+		expect(formatMoney(1234, 'JPY', { locale: 'en-US', maximumFractionDigits: 0 })).toBe('¥1,234');
+	});
 });
 
 describe('labels', () => {
