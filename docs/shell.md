@@ -92,3 +92,58 @@ popover opened above a sticky header rendering *underneath* it is the classic sy
 A **`Banner`** sits in the flow above the `TopBar` and pushes content down, so it needs no layer.
 
 **One `Toaster`**, mounted once at the root. Pages never render toasts themselves.
+
+### Above a modal: `topmost`
+
+A z-index cannot lift anything above an open `Dialog` or `Sheet`. Both are native modal
+`<dialog>`s in the browser's top layer, and while one is open the HTML spec makes everything
+outside the topmost modal's subtree **inert** — a higher z-index, or a popover shown later, can
+still paint above it but cannot be clicked, focused or reached by a screen reader. Inertness follows
+the DOM tree, not the paint order, so the only spec-correct fix is to put the element inside the
+modal.
+
+That is what the `topmost` attachment does. While a modal is open it moves the element into the
+topmost open modal dialog; when that modal closes it moves to the next one down, and when none is
+open it goes back to its own place. Inside the dialog it is part of the focus trap, so Tab reaches
+it, and its live regions are announced.
+
+```svelte
+<script>
+	import { topmost } from 'darksite';
+</script>
+
+<div>
+	<aside class="update-notice" {@attach topmost}>A new version is available. …</aside>
+</div>
+```
+
+- The **`Toaster`** uses it by default (`topmost={false}` opts out), so a toast pushed while a
+  Sheet is open shows above the Sheet and its action still works.
+- Use it for **app-level persistent notices** that must stay reachable whatever is open: an update
+  prompt, a lost-connection notice, a privacy screen. Not for page content.
+- The element keeps its `position: fixed` geometry: a modal dialog is in the top layer, so a fixed
+  descendant still positions against the viewport. That holds only while the dialog element has no
+  `transform`, `filter`, `will-change: transform` or `contain` — so `Dialog` and `Sheet` animate
+  their inner panel, never the dialog element. Don't add those to a dialog through `class`.
+- Attach it to an element whose parent is a plain element you render, not to a component's or an
+  `{#if}` block's first or last node: the element travels, a placeholder keeps its place.
+
+### The modal stack
+
+Every `Dialog` and `Sheet` registers while open, so the app can ask what is open:
+
+```js
+import { modals } from 'darksite';
+
+modals.open; // a modal or sheet is open
+modals.count; // how many
+modals.dirty; // an open Dialog or Sheet was given `dirty`
+```
+
+All three are reactive and read-only. Use `modals.dirty` to postpone a reload, an update or a
+navigation while the user is mid-edit, and `onbeforeclose` on the `Sheet` or `Dialog` itself to
+keep it open (return `false`) while you ask. A modal of your own that calls `showModal()` joins
+the stack with `trackModal(dialog, { dirty })`, which returns the function that leaves it.
+
+A `Menu` or a desktop `Popover` is a non-modal popover, not a modal, so it does not count and
+does not make the page inert.

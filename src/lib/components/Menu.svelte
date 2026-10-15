@@ -44,11 +44,12 @@ Enter or Space activates, Esc closes and returns focus to the trigger, Tab close
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { tick } from 'svelte';
+	import { tick, untrack } from 'svelte';
 	import { autoUpdate, computePosition, flip, offset, shift, type Placement } from '@floating-ui/dom';
 	import MessageSquareText from '@lucide/svelte/icons/message-square-text';
 
 	import KeyCap from './KeyCap.svelte';
+	import { media } from '../media.svelte.js';
 
 	interface Props {
 		trigger: Snippet<[MenuTriggerAttrs]>;
@@ -171,7 +172,7 @@ Enter or Space activates, Esc closes and returns focus to the trigger, Tab close
 	function surface(el: HTMLElement) {
 		if (topLayer) el.showPopover();
 		const anchor = triggerEl();
-		const phone = window.matchMedia?.('(max-width: 767.98px)').matches ?? false;
+		const phone = untrack(() => media.phone);
 		let stop = () => {};
 		if (anchor && !phone && typeof ResizeObserver !== 'undefined') {
 			stop = autoUpdate(anchor, el, () => {

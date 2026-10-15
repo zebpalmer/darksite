@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { Button, Sheet, SheetItem } from '#lib';
+	import { Button, Dialog, Sheet, SheetItem, modals } from '#lib';
 	const sorts = ['Newest first', 'Longest first', 'Highest severity'];
 	let sort = $state('Newest first');
 	let bottom = $state(false);
 	let right = $state(false);
+	let title = $state('Site walkthrough, north wing');
+	let saved = $state('Site walkthrough, north wing');
+	let asking = $state(false);
+	const dirty = $derived(title !== saved);
 </script>
 
 <svelte:head><title>Sheet · darksite</title></svelte:head>
@@ -29,16 +33,40 @@
 	title="Edit record"
 	side="right"
 	description="Changes save when you press Save."
+	{dirty}
+	onbeforeclose={() => {
+		if (dirty) asking = true;
+		return !dirty;
+	}}
 >
-	<input class="ds-control" value="Site walkthrough, north wing" aria-label="Title" />
-	{#snippet footer()}<Button onclick={() => (right = false)}>Cancel</Button><Button
+	<input class="ds-control" bind:value={title} aria-label="Title" />
+	{#snippet footer()}<Button
+			onclick={() => {
+				title = saved;
+				right = false;
+			}}>Cancel</Button
+		><Button
 			variant="primary"
-			onclick={() => (right = false)}>Save</Button
+			onclick={() => {
+				saved = title;
+				right = false;
+			}}>Save</Button
 		>{/snippet}
 </Sheet>
+<Dialog
+	bind:open={asking}
+	title="Discard your changes?"
+	description="The title goes back to what it was."
+	confirmLabel="Discard"
+	onconfirm={() => {
+		title = saved;
+		right = false;
+	}}
+/>
 <p>
 	A native modal dialog: focus stays inside, Esc and the scrim close it, focus returns to the
-	button.
+	button. Edit the record's title, then press Esc: the sheet is <code>dirty</code>, so it asks
+	first. App-wide, <code>modals.dirty</code> is {modals.dirty}.
 </p>
 
 <style>

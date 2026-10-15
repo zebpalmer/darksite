@@ -13,7 +13,20 @@ toasts.error('Could not reach the server'); // also .info, .warning, .dismiss(id
 
 Durations default to 10s with an action, 8s for an error and 4s otherwise. Pushing an `id` that is
 already showing replaces that toast — "Archived 3 records" updates in place instead of stacking.
-An action's `keycap` works as a hotkey while the toast shows, except while the user is typing.
+An action's `keycap` works as a hotkey while the toast shows, except while the user is typing or
+when another handler already took the key (`defaultPrevented`). A page that owns the same key calls
+`preventDefault()` in its handler, or the app mounts `<Toaster hotkeys={false}>` — the binding goes,
+the cap stays.
+
+`duration: null` makes a toast **sticky**: it stays until it is dismissed or its action runs, and
+shows no countdown. Keep it for something the user must not miss and can act on later.
+
+## Props
+
+- `store` — the queue to render (default: the app's `toasts`).
+- `hotkeys` (default true) — run a toast's action from its key cap.
+- `topmost` (default true) — while a `Dialog` or `Sheet` is open, the queue moves into it so a toast
+  stays visible and usable above the modal (see [`docs/shell.md`](../../docs/shell.md#above-a-modal-topmost)).
 
 Each toast is `ds-bg-4` with `ds-elev-2`, a tone icon, the message, and — when it has an action —
 an action button with its key cap, an m:ss countdown in mono `ds-text-2`, and a 2px `ds-accent` bar draining

@@ -25,6 +25,7 @@ presents as a Sheet. A list of actions is a Menu instead.
 	import { autoUpdate, computePosition, flip, offset, shift, type Placement } from '@floating-ui/dom';
 
 	import Sheet from './Sheet.svelte';
+	import { media } from '../media.svelte.js';
 
 	interface Props {
 		trigger: Snippet<[PopoverTriggerAttrs]>;
@@ -57,16 +58,7 @@ presents as a Sheet. A list of actions is a Menu instead.
 	const panelId = `${uid}-panel`;
 	const topLayer = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
 
-	let phone = $state(false);
-	$effect(() => {
-		const mq = window.matchMedia?.('(max-width: 767.98px)');
-		if (!mq) return;
-		phone = mq.matches;
-		const update = () => (phone = mq.matches);
-		mq.addEventListener?.('change', update);
-		return () => mq.removeEventListener?.('change', update);
-	});
-	const asSheet = $derived(sheetOnPhone && phone);
+	const asSheet = $derived(sheetOnPhone && media.phone);
 
 	function close(returnFocus = true) {
 		if (!open) return;

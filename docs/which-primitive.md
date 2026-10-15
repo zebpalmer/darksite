@@ -55,3 +55,6 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A few sibling views of the same data | `Tabs` (links mode) inline in `PageHeader` | Only when all hold: about six sections at most; each is a view of the same data, not a settings page; and the pages are wide tables or grids that need the full width. Otherwise `SideNav`. |
 | Something on every page of a section | `TopBar` | Search, a global create action, a scope selector. Page-specific actions go in `PageHeader` instead. |
 | A page's own title and actions | `PageHeader` | Always flush; `TopBar` sits above it, outside the padded column. |
+| An app-level notice that must stay usable over a modal | `{@attach topmost}` | Update prompts, connectivity, a privacy screen. The `Toaster` already does it. |
+| Know whether a modal is open or holds edits | `modals.open` / `modals.dirty` | Postpone a reload while the user is mid-edit; `onbeforeclose` on the Sheet keeps it open. |
+| Phone layout or touch in script | `media.phone` / `media.coarse` | Reactive and SSR-safe. Styles use the media queries themselves. |

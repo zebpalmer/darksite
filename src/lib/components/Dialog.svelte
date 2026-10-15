@@ -8,8 +8,10 @@ only while open. On phones it presents as a bottom sheet.
 - `open` (bindable), `title`, `description` (the consequence), children (extra body).
 - `confirmLabel`, `confirmingLabel` (while an async `onconfirm` runs), `cancelLabel`.
 - `tone` — `danger` (default; a filled danger confirm) or `default` (primary).
-- `onconfirm()` may return a promise: the dialog closes when it resolves and shows the error if it
-  throws. `oncancel()`.
+- `onconfirm()` may return a value or a promise: the dialog closes when it resolves and shows the
+  error if it throws. `oncancel()`.
+- `dirty` — the body holds unsaved input; read app-wide as `modals.dirty`. `onbeforeclose()` runs
+  before Esc, the scrim or Cancel closes it; return `false` to keep it open.
 - `initialFocus` (`cancel` default | `confirm` | `content`), `finalFocus` (an element to focus on
   close instead of the trigger), `showConfirm`, `confirmDisabled`, `size` (`default` 400 | `wide`).
 -->
@@ -19,6 +21,7 @@ only while open. On phones it presents as a bottom sheet.
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
 	import Button from './Button.svelte';
+	import { trackModal } from '../layers.svelte.js';
 
 	interface Props {
 		open?: boolean;
@@ -28,8 +31,10 @@ only while open. On phones it presents as a bottom sheet.
 		confirmingLabel?: string;
 		cancelLabel?: string;
 		tone?: 'danger' | 'default';
-		onconfirm?: () => void | Promise<void>;
+		onconfirm?: () => unknown;
 		oncancel?: () => void;
+		dirty?: boolean;
+		onbeforeclose?: () => boolean | void;
 		initialFocus?: 'cancel' | 'confirm' | 'content';
 		finalFocus?: HTMLElement | null;
 		showConfirm?: boolean;
@@ -49,6 +54,8 @@ only while open. On phones it presents as a bottom sheet.
 		tone = 'danger',
 		onconfirm,
 		oncancel,
+		dirty = false,
+		onbeforeclose,
 		initialFocus = 'cancel',
 		finalFocus = null,
 		showConfirm = true,
@@ -67,8 +74,10 @@ only while open. On phones it presents as a bottom sheet.
 		busy = false;
 	}
 
-	function cancel() {
-		if (busy) return;
+	// `force`: the browser will close the dialog anyway (a repeated Esc is not cancelable), so the
+	// state follows it rather than drifting out of sync.
+	function cancel(force = false) {
+		if (!force && (busy || onbeforeclose?.() === false)) return;
 		finish();
 		oncancel?.();
 	}
@@ -77,7 +86,7 @@ only while open. On phones it presents as a bottom sheet.
 		if (busy || confirmDisabled) return;
 		error = null;
 		const result = onconfirm?.();
-		if (!(result instanceof Promise)) return finish();
+		if (!isThenable(result)) return finish();
 		busy = true;
 		try {
 			await result;
@@ -88,6 +97,10 @@ only while open. On phones it presents as a bottom sheet.
 		}
 	}
 
+	function isThenable(value: unknown): value is PromiseLike<unknown> {
+		return typeof (value as PromiseLike<unknown> | null)?.then === 'function';
+	}
+
 	function surface(dialog: HTMLDialogElement) {
 		const returnTo = document.activeElement as HTMLElement | null;
 		error = null;
@@ -96,6 +109,7 @@ only while open. On phones it presents as a bottom sheet.
 		} catch {
 			dialog.setAttribute('open', '');
 		}
+		const untrack = trackModal(dialog, { dirty: () => dirty });
 		const root = document.documentElement;
 		const previous = root.style.overflow;
 		root.style.overflow = 'hidden';
@@ -107,6 +121,7 @@ only while open. On phones it presents as a bottom sheet.
 			(target ?? dialog).focus();
 		});
 		return () => {
+			untrack();
 			root.style.overflow = previous;
 			if (typeof dialog.close === 'function') dialog.close();
 			(finalFocus ?? returnTo)?.focus?.();
@@ -125,7 +140,7 @@ only while open. On phones it presents as a bottom sheet.
 		tabindex="-1"
 		oncancel={(e) => {
 			e.preventDefault();
-			cancel();
+			cancel(!e.cancelable);
 		}}
 		onclick={(e) => e.target === e.currentTarget && cancel()}
 		{@attach surface}
@@ -138,7 +153,7 @@ only while open. On phones it presents as a bottom sheet.
 				<p class="error" role="alert"><CircleAlert size={14} aria-hidden="true" />{error}</p>
 			{/if}
 			<div class="actions">
-				<Button data-role="cancel" disabled={busy} onclick={cancel}>{cancelLabel}</Button>
+				<Button data-role="cancel" disabled={busy} onclick={() => cancel()}>{cancelLabel}</Button>
 				{#if showConfirm}
 					<Button
 						data-role="confirm"
@@ -157,19 +172,19 @@ only while open. On phones it presents as a bottom sheet.
 {/if}
 
 <style>
+	/* The dialog element stays untransformed so a fixed element moved into it (the Toaster)
+	   still positions against the viewport; the panel carries the surface and the motion. */
 	.ds-dialog {
+		--dialog-max: calc(100dvh - 64px);
 		width: min(400px, calc(100vw - 32px));
 		max-width: none;
-		max-height: calc(100dvh - 64px);
+		max-height: var(--dialog-max);
 		margin: auto;
 		padding: 0;
-		overflow: auto;
-		border: 1px solid var(--ds-border-subtle);
-		border-radius: var(--ds-radius-lg);
-		background: var(--ds-bg-3);
-		box-shadow: var(--ds-elev-3);
+		overflow: visible;
+		border: 0;
+		background: transparent;
 		color: var(--ds-text-1);
-		animation: ds-pop var(--ds-dur-base) var(--ds-ease-out);
 	}
 	.ds-dialog[data-size='wide'] {
 		width: min(1040px, calc(100vw - 32px));
@@ -184,7 +199,15 @@ only while open. On phones it presents as a bottom sheet.
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+		box-sizing: border-box;
+		max-height: var(--dialog-max);
 		padding: 16px;
+		overflow: auto;
+		border: 1px solid var(--ds-border-subtle);
+		border-radius: var(--ds-radius-lg);
+		background: var(--ds-bg-3);
+		box-shadow: var(--ds-elev-3);
+		animation: ds-pop var(--ds-dur-base) var(--ds-ease-out);
 	}
 	.title {
 		margin: 0;
@@ -215,14 +238,14 @@ only while open. On phones it presents as a bottom sheet.
 	@media (max-width: 767.98px) {
 		.ds-dialog,
 		.ds-dialog[data-size='wide'] {
+			--dialog-max: 85dvh;
 			width: 100%;
-			max-height: 85dvh;
 			margin: auto 0 0;
-			border-radius: var(--ds-radius-lg) var(--ds-radius-lg) 0 0;
-			animation: ds-rise var(--ds-dur-base) var(--ds-ease-out);
 		}
 		.panel {
 			padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+			border-radius: var(--ds-radius-lg) var(--ds-radius-lg) 0 0;
+			animation: ds-rise var(--ds-dur-base) var(--ds-ease-out);
 		}
 		.actions {
 			flex-direction: column-reverse;

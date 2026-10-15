@@ -7,6 +7,8 @@ Built on the native modal `<dialog>`: focus is trapped inside, Esc closes, the p
 be reached, and focus returns to where it was. A press on the scrim closes it too. The page
 behind does not scroll while it is open.
 
+- `dirty` — the sheet holds unsaved edits; read app-wide as `modals.dirty`. `onbeforeclose()` runs
+  before Esc, the scrim or the close button closes it; return `false` to keep it open.
 - `open` (bindable), `title` (the heading and accessible name), `description`, `onclose()`,
   `footer` snippet (a right-aligned row: secondary actions, then the primary, last), `maxHeight`
   (default `78dvh`), `side` (`bottom` | `right`), children (the body, which scrolls).
@@ -15,12 +17,15 @@ behind does not scroll while it is open.
 	import type { Snippet } from 'svelte';
 	import X from '@lucide/svelte/icons/x';
 	import Button from './Button.svelte';
+	import { trackModal } from '../layers.svelte.js';
 
 	interface Props {
 		open?: boolean;
 		title: string;
 		description?: string;
 		onclose?: () => void;
+		dirty?: boolean;
+		onbeforeclose?: () => boolean | void;
 		footer?: Snippet;
 		maxHeight?: string;
 		side?: 'bottom' | 'right';
@@ -33,6 +38,8 @@ behind does not scroll while it is open.
 		title,
 		description,
 		onclose,
+		dirty = false,
+		onbeforeclose,
 		footer,
 		maxHeight = '78dvh',
 		side = 'bottom',
@@ -42,8 +49,10 @@ behind does not scroll while it is open.
 
 	const uid = $props.id();
 
-	function close() {
-		if (!open) return;
+	// `force`: the browser will close the dialog anyway (a repeated Esc is not cancelable), so the
+	// state follows it rather than drifting out of sync.
+	function close(force = false) {
+		if (!open || (!force && onbeforeclose?.() === false)) return;
 		open = false;
 		onclose?.();
 	}
@@ -54,10 +63,12 @@ behind does not scroll while it is open.
 		} catch {
 			dialog.setAttribute('open', '');
 		}
+		const untrack = trackModal(dialog, { dirty: () => dirty });
 		const root = document.documentElement;
 		const previous = root.style.overflow;
 		root.style.overflow = 'hidden';
 		return () => {
+			untrack();
 			root.style.overflow = previous;
 			if (typeof dialog.close === 'function') dialog.close();
 		};
@@ -74,7 +85,7 @@ behind does not scroll while it is open.
 		aria-describedby={description ? `${uid}-desc` : undefined}
 		oncancel={(event) => {
 			event.preventDefault();
-			close();
+			close(!event.cancelable);
 		}}
 		onclick={(event) => {
 			if (event.target === event.currentTarget) close();
@@ -84,7 +95,7 @@ behind does not scroll while it is open.
 			<span class="grab" aria-hidden="true"></span>
 			<div class="head">
 				<h2 id="{uid}-title">{title}</h2>
-				<Button variant="icon" label="Close" icon={X} onclick={close} />
+				<Button variant="icon" label="Close" icon={X} onclick={() => close()} />
 			</div>
 			{#if description}<p id="{uid}-desc" class="desc">{description}</p>{/if}
 			<div class="body">{@render children()}</div>
@@ -102,22 +113,26 @@ behind does not scroll while it is open.
 		max-height: var(--sheet-max);
 		margin: 0 auto;
 		padding: 0;
+		overflow: visible;
 		border: 0;
-		border-radius: var(--ds-radius-lg) var(--ds-radius-lg) 0 0;
-		background: var(--ds-bg-3);
-		box-shadow: var(--ds-elev-3);
+		background: transparent;
 		color: var(--ds-text-1);
-		animation: ds-rise var(--ds-dur-slow) var(--ds-ease-out);
 	}
 	.ds-sheet::backdrop {
 		background: var(--ds-scrim);
 		animation: ds-fade var(--ds-dur-base) var(--ds-ease-out);
 	}
+	/* The dialog element stays untransformed so a fixed element moved into it (the Toaster)
+	   still positions against the viewport; the panel carries the surface and the motion. */
 	.panel {
 		display: flex;
 		flex-direction: column;
 		max-height: var(--sheet-max);
 		padding-bottom: env(safe-area-inset-bottom, 0px);
+		border-radius: var(--ds-radius-lg) var(--ds-radius-lg) 0 0;
+		background: var(--ds-bg-3);
+		box-shadow: var(--ds-elev-3);
+		animation: ds-rise var(--ds-dur-slow) var(--ds-ease-out);
 	}
 	.grab {
 		align-self: center;
@@ -171,12 +186,12 @@ behind does not scroll while it is open.
 			height: 100%;
 			max-height: none;
 			margin: 0;
-			border-radius: var(--ds-radius-lg) 0 0 var(--ds-radius-lg);
-			animation: ds-slide-in-right var(--ds-dur-slow) var(--ds-ease-out);
 		}
 		.ds-sheet[data-side='right'] .panel {
 			height: 100%;
 			max-height: none;
+			border-radius: var(--ds-radius-lg) 0 0 var(--ds-radius-lg);
+			animation: ds-slide-in-right var(--ds-dur-slow) var(--ds-ease-out);
 		}
 		.ds-sheet[data-side='right'] .grab {
 			display: none;
