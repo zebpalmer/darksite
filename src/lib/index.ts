@@ -50,6 +50,8 @@ export { default as Tabs } from './components/Tabs.svelte';
 export { default as Timeline } from './components/Timeline.svelte';
 export { default as Toaster } from './components/Toaster.svelte';
 export { default as TopBar } from './components/TopBar.svelte';
+export { default as ScaleBadge } from './components/ScaleBadge.svelte';
+export { default as ScalePicker } from './components/ScalePicker.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
@@ -71,9 +73,24 @@ export {
 	SEVERITIES,
 	severityLabel,
 	severityRank,
+	severityScale,
 	severityVars,
 	type Severity
 } from './severity.js';
+export {
+	checkScaleContrast,
+	contrastRatio,
+	defineScale,
+	SCALE_MAX_STOPS,
+	type Scale,
+	type ScaleColors,
+	type ScaleContrastOptions,
+	type ScaleContrastResult,
+	type ScaleDefinition,
+	type ScaleStop,
+	type UnknownStop,
+	type UnknownStopInput
+} from './scale.js';
 export { formatAge, formatDuration, formatExact, formatRelative, type DateInput } from './time.js';
 export type { ControlSize, IconComponent } from './types.js';
 export { badgeText, groupItems, type NavGroup, type NavItem, type NavSection } from './nav.js';

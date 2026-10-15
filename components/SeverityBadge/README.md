@@ -3,6 +3,8 @@
 A severity, drawn the same way everywhere: the **name** on the stop's tinted ground with a 3px
 mark inlaid on the left edge. Never the index.
 
+It is `ScaleBadge` over the built-in `severityScale`.
+
 Optionally the 5-pip position bar, which shows how far up the scale this stop sits — pips up to
 and including it are lit in its mark color, the rest are `ds-sev-off`.
 

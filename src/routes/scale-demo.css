@@ -1,0 +1,54 @@
+/* A demo app's own colors for a custom scale: a single-hue ramp that shares no hue with severity.
+   Each ink is at least 7:1 on its ground; each mark at least 3:1 on ds-bg-1 and ds-bg-3. */
+.confidence {
+	--app-conf-1: #388294;
+	--app-conf-1-bg: #152428;
+	--app-conf-1-ink: #aed6e0;
+	--app-conf-2: #3a92a8;
+	--app-conf-2-bg: #16262a;
+	--app-conf-2-ink: #b1d8e1;
+	--app-conf-3: #3ba3bc;
+	--app-conf-3-bg: #17282c;
+	--app-conf-3-ink: #b4d9e3;
+	--app-conf-4: #44afca;
+	--app-conf-4-bg: #18292d;
+	--app-conf-4-ink: #b7dbe4;
+	--app-conf-5: #51b9d3;
+	--app-conf-5-bg: #192b2f;
+	--app-conf-5-ink: #badce5;
+	--app-conf-6: #5fc2da;
+	--app-conf-6-bg: #1b2d31;
+	--app-conf-6-ink: #bedee6;
+	--app-conf-7: #6dcae2;
+	--app-conf-7-bg: #1c2e33;
+	--app-conf-7-ink: #c1e0e7;
+	--app-conf-8: #7dd3e8;
+	--app-conf-8-bg: #1d3035;
+	--app-conf-8-ink: #c4e1e9;
+}
+[data-theme='light'] .confidence {
+	--app-conf-1: #298ba3;
+	--app-conf-1-bg: #e1f0f4;
+	--app-conf-1-ink: #11505f;
+	--app-conf-2: #238199;
+	--app-conf-2-bg: #dfeff3;
+	--app-conf-2-ink: #104d5c;
+	--app-conf-3: #1d788e;
+	--app-conf-3-bg: #ddeef2;
+	--app-conf-3-ink: #104958;
+	--app-conf-4: #196e83;
+	--app-conf-4-bg: #dbedf1;
+	--app-conf-4-ink: #0f4654;
+	--app-conf-5: #146478;
+	--app-conf-5-bg: #d9ecf1;
+	--app-conf-5-ink: #0e4351;
+	--app-conf-6: #105a6c;
+	--app-conf-6-bg: #d7ebf0;
+	--app-conf-6-ink: #0e404d;
+	--app-conf-7: #0c4f60;
+	--app-conf-7-bg: #d5eaef;
+	--app-conf-7-ink: #0d3d49;
+	--app-conf-8: #094453;
+	--app-conf-8-bg: #d3e9ee;
+	--app-conf-8-ink: #0c3a45;
+}
