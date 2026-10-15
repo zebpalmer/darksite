@@ -22,8 +22,8 @@ The children snippet receives `{ id, describedBy, invalid }` — spread it onto 
 - `tip` — the field's explanation as a `HelpTip` beside the label instead of a sentence under the
   control. It still describes the control for a screen reader. **Prefer `tip` over `help`**: this
   system does not put explanatory sentences under controls.
-- `layout` — `stack` (label above; the default, and forced on phones and touch) or `row` (a 96px
-  label column beside the control, for a dense fields pane).
+- `layout` — `stack` (label above; the default) or `row` (a 96px label column beside the control,
+  for a dense fields pane). A row field narrower than 360px, or on a touch screen, stacks anyway.
 - `accessory` snippet — the right end of the label row: a key-cap hint, a "Clear" link.
 - `under` snippet — content below the control: suggestion chips, alternatives, a revert row.
 - `id` (generated otherwise), `class`.

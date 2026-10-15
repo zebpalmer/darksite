@@ -42,9 +42,9 @@ then `docs/which-primitive.md`. Open requirements live in `TODO.md`.
 1. `src/lib/components/<Name>.svelte`, exported from `src/lib/index.ts`.
 2. Tests beside it (`<Name>.test.ts`): roles, ARIA, keyboard, states.
 3. A gallery page at `src/routes/<name>/+page.svelte`.
-4. The card: `components/<Name>/README.md` (props, states, don'ts). A static `preview.html` is the
-   spec only for components not built yet; once a component is live, its gallery page is the
-   reference.
+4. The card: `components/<Name>/README.md` (props, states, don'ts). A new primitive's card can be
+   written first, as its spec; once the component is live, the card describes it and its gallery
+   page shows it.
 5. A row in `docs/which-primitive.md`.
 6. A bullet under `## [Unreleased]` in `CHANGELOG.md`.
 

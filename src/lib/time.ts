@@ -58,3 +58,14 @@ function zoneName(at: DateInput, locale?: string, timeZone?: string): string {
 	);
 	return parts.find((p) => p.type === 'timeZoneName')?.value ?? '';
 }
+
+/** A length of time in seconds as a clock: `42` → `0:42`, `3725` → `1:02:05`. */
+export function formatDuration(seconds: number | null | undefined): string {
+	if (seconds === null || seconds === undefined || !Number.isFinite(seconds) || seconds < 0)
+		return '';
+	const total = Math.round(seconds);
+	const h = Math.floor(total / 3600);
+	const m = Math.floor((total % 3600) / 60);
+	const s = String(total % 60).padStart(2, '0');
+	return h ? `${h}:${String(m).padStart(2, '0')}:${s}` : `${m}:${s}`;
+}

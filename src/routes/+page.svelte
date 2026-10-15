@@ -1,40 +1,6 @@
 <script lang="ts">
-	// Components with a live page here; everything else is specified by its card in components/.
-	const live = new Set([
-		'ActionBar',
-		'ActiveFilters',
-		'AppShell',
-		'Banner',
-		'Button',
-		'Checkbox',
-		'Chip',
-		'EmptyState',
-		'FilterRail',
-		'HelpTip',
-		'KeyCap',
-		'Menu',
-		'Meter',
-		'NavRail',
-		'NewBadge',
-		'PageHeader',
-		'Pane',
-		'Radio',
-		'SeverityBadge',
-		'Sheet',
-		'SheetItem',
-		'SideNav',
-		'SkeletonLoader',
-		'SourceBadge',
-		'Spinner',
-		'Stat',
-		'StatusBadge',
-		'Switch',
-		'TabBar',
-		'Table',
-		'Timeline',
-		'Toaster',
-		'TopBar'
-	]);
+	import { PageHeader } from '#lib';
+
 	const route: Record<string, string> = { ActiveFilters: 'filterrail', SheetItem: 'sheet' };
 	const groups: Record<string, string[]> = {
 		Actions: ['Button', 'KeyCap'],
@@ -61,11 +27,10 @@
 
 <svelte:head><title>darksite</title></svelte:head>
 
-<h1>Components</h1>
+<PageHeader title="Components" />
 <p class="lede">
-	Live components link to their page. The rest are specified by their card in <code
-		>components/</code
-	>.
+	Each page shows a component in use. Its card, <code>components/&lt;Name&gt;/README.md</code>,
+	specifies it.
 </p>
 
 <div class="grid">
@@ -75,11 +40,7 @@
 			<ul>
 				{#each names as name (name)}
 					<li>
-						{#if live.has(name)}
-							<a href="/{route[name] ?? name.toLowerCase()}">{name}</a>
-						{:else}
-							<span class="spec">{name}</span><span class="tag">spec</span>
-						{/if}
+						<a href="/{route[name] ?? name.toLowerCase()}">{name}</a>
 					</li>
 				{/each}
 			</ul>
@@ -88,12 +49,6 @@
 </div>
 
 <style>
-	h1 {
-		margin: 0 0 var(--ds-space-1);
-		font-size: var(--ds-text-xl);
-		line-height: var(--ds-lh-xl);
-		font-weight: 500;
-	}
 	.lede {
 		margin: 0 0 var(--ds-space-6);
 		color: var(--ds-text-3);
@@ -124,13 +79,5 @@
 	}
 	a:hover {
 		text-decoration: underline;
-	}
-	.spec {
-		color: var(--ds-text-2);
-	}
-	.tag {
-		margin-left: var(--ds-space-2);
-		color: var(--ds-text-3);
-		font-size: var(--ds-text-xs);
 	}
 </style>

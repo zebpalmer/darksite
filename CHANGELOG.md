@@ -6,6 +6,20 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Every remaining card is now a component: `Field`, `Input`, `Combobox`, `SegmentedControl`,
+  `Tabs`, `SeverityPicker`, `Dialog`, `Popover`, `Card`, `EntityCard`, `Avatar`, `Grid` and
+  `JustifiedGrid`.
+- `justifyRows`, the justified-rows layout behind `JustifiedGrid`, as a pure function.
+- `formatDuration` for lengths of time as a clock (`1:02:05`).
+- `--ds-grid-min`: set it on the root to apply the viewer's grid density everywhere.
+
+### Removed
+
+- The last static `preview.html` files and `components/index.html`. The cards and the gallery
+  describe every component.
+
 ## [0.5.0] — 2026-10-14
 
 ### Added

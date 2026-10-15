@@ -9,8 +9,8 @@ on badges.
   one. Use it for route sections, including section navigation across a few sibling data views
   (the test is in [`which-primitive.md`](../../docs/which-primitive.md)).
 - **tabs** — no hrefs: a WAI-ARIA tablist (←/→ move and select, one tab stop). Render the panel
-  yourself with `id={panelId(value)}` and `aria-labeledby={tabId(value)}` from the exported
-  helpers.
+  yourself with `id={panelId(idPrefix, value)}` and `aria-labelledby={tabId(idPrefix, value)}`
+  from the exported helpers.
 
 ## Variants
 

@@ -13,8 +13,8 @@ stripe, so the row itself reads as the ramp. A radio group (←/→ move and sel
 
 ## It responds to its own width, not the viewport
 
-A container query on the picker: when the five names no longer fit on one row it folds to a
-two-row grid rather than truncating them, and key caps hide before names do — a name the user
+A container query on the picker: below 520px the key caps hide, and below 400px it folds to a
+two-row grid rather than truncating the names. Key caps go before names do — a name the user
 cannot read is worse than a shortcut they have to hover for. The key stays in the button's `title`
 and in `aria-keyshortcuts` either way.
 
@@ -22,7 +22,8 @@ and in `aria-keyshortcuts` either way.
 
 `value` (bindable; `null` = unset, which is how a fail-closed default should read),
 `onchange(severity)`, `suggested`, `max` (a ceiling — stops above it are **hidden, not disabled**,
-for a viewer who may not assign them), `keycaps`, `counts` (per stop, for a bulk action),
+for a viewer who may not assign them), `keycaps` (show 1–5 as key caps; binding the keys is the
+page's job), `counts` (per stop, for a bulk action),
 `columns` (`auto` | `5` | `3`), `controlled` (the picker keeps no click of its own: it shows
 `value`, and a click only calls `onchange` — for a `value` the parent derives), `label`, `class`.
 

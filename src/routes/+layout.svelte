@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '#lib/tokens.css';
 	import '#lib/base.css';
+	import './demo.css';
 	import type { Snippet } from 'svelte';
 	import { page } from '$app/state';
 	import Bell from '@lucide/svelte/icons/bell';

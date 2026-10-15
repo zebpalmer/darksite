@@ -8,7 +8,7 @@ area. Everything here is general to operator software.
 For each new primitive below:
 
 1. A card in `components/<Name>/`: `README.md` (purpose, geometry, states, what the consumer
-   provides, don'ts) and `preview.html`, in the same shape as the existing cards.
+   provides, don'ts), in the same shape as the existing cards.
 2. A row in [`docs/which-primitive.md`](docs/which-primitive.md).
 3. A **Svelte 5 implementation** (runes, snippets, `$bindable`) in the darksite package, which
    products install at a pinned version (decided 14 October 2026). The existing cards are already
@@ -305,8 +305,8 @@ loading, but neither the trigger nor how it combines with selection is written d
 
 ## Distribution
 
-- [ ] **Svelte 5 implementations of the existing primitives** as well as the new ones, in the
-  package (see "How to deliver a primitive").
+- [x] **Svelte 5 implementations of the existing primitives** as well as the new ones, in the
+  package (see "How to deliver a primitive"). Done in 0.6.0: every card has a component.
 - [x] **A Svelte package with versioned releases, managed by stratt.** Done since 0.1.0: products
   install a pinned tag. Was: A product that cannot fetch a private repo at build time vendors
   `tokens.css` and the components. Tags and a short changelog would let it record which version it
