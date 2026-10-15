@@ -6,6 +6,93 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `data-ds-theme` selects a theme like `data-theme`, and wins when both are set, for apps whose
+  `data-theme` belongs to another library. With no theme chosen, `prefers-color-scheme: light`
+  selects the light theme; dark stays the default. Every theme sets `color-scheme` (high contrast
+  is dark).
+- z-index tokens for the stacking order: `--ds-z-raised` (1), `--ds-z-sticky` (20),
+  `--ds-z-topbar` (21), `--ds-z-tooltip` (50), `--ds-z-popover` (60), `--ds-z-toast` (70),
+  `--ds-z-skip` (90).
+- Each `v*` release attaches the packed, built tarball (`darksite-X.Y.Z.tgz`) to its GitHub
+  release, so products can install without git or a build step.
+- README: "Using darksite with Tailwind or another CSS framework", with the `@layer` order
+  statement and a Tailwind 4 `@theme inline` mapping to the `ds-*` roles.
+- `topmost` attachment: keeps an element visible and usable above an open modal by moving it into
+  the topmost open modal `<dialog>` and back when it closes. `Toaster` uses it by default
+  (`topmost={false}` opts out), so toasts are no longer inert behind a `Dialog`, `Sheet` or
+  `Lightbox`.
+- `modals`, a reactive read-only view of the open modals (`open`, `count`, `top`, `dirty`), and
+  `trackModal(dialog, { dirty })` for a custom modal dialog.
+- `dirty` and `onbeforeclose` on `Dialog` and `Sheet`; `onbeforeclose` returns `false` to keep the
+  modal open on Esc, the scrim or Close/Cancel.
+- `<Toaster hotkeys={false}>` turns off the toast key bindings and keeps the key caps;
+  `duration: null` makes a toast sticky until it is dismissed or its action runs.
+- `media.phone` and `media.coarse` (plus `MediaFlag`, `PHONE_QUERY`, `COARSE_QUERY`): reactive,
+  SSR-safe media checks.
+- `defineScale` and the `Scale` type: an ordinal scale of up to nine stops (each a name plus mark,
+  ground and ink colors), an optional unranked "unknown" stop and `null` as unset, with `label`,
+  `rank`, `vars`, `key`/`fromKey`, `options(max)`, `highest` and `compare`.
+- `ScaleBadge` and `ScalePicker` for app-defined scales; the picker folds by its own width into
+  one row, two balanced rows, or three rows for seven or more cells. `checkScaleContrast` and
+  `contrastRatio` let apps check their own scale colors in each theme. `severityScale` is the
+  built-in instance.
+- Hotkey binding tables (`hotkeys.ts`): declarative `{ keys, action, label, group, when }`
+  bindings, `buildHotkeyMap` with conflict detection, `resolveHotkey`, `groupBindings`,
+  `installHotkeys` and a `hotkeys` attachment; `normalizeKey` in `keycap.ts`.
+- `KeyLegend`: a view's hotkeys grouped with key caps, drawn from the same binding table.
+- `ListRow`: a dense one- or two-line row with leading, title, meta and trailing, as a link, a
+  button or static (40 / 32 dense / 44 touch).
+- `Rating`: a star rating as a radio group, with a read-only display and 44px stars on touch.
+- `Stepper`: − value + in the control look, a spinbutton with arrow and page steps.
+- `ErrorPage` and `errorCopy`: the focused page for a failed route, with neutral copy by status.
+- `Carousel`: a titled horizontal row of tiles on a scroll-snap track, one tab stop with
+  ← / → / Home / End, mouse-only previous and next buttons, tile width from Grid density, optional
+  "See all", count, loading skeleton and empty state.
+- `Lightbox`: a full-screen image viewer on the native modal `<dialog>` with bindable `open` and
+  `index`, keyboard and swipe navigation, an announced counter, zoom and pan, neighbor preloading,
+  `caption` and `actions` snippets, and safe-area insets.
+- `NavRail`: `search`, `status` and `badge` slots, and `pinned` to hide the toggle
+  (`expanded={false} pinned` keeps the rail collapsed); `AppShell` passes them as `railSearch`,
+  `railStatus`, `railBadge` and `railPinned`.
+- `Banner`: `remember={false}` dismisses for this page view only; the update-available notice
+  pattern is documented in `docs/shell.md`.
+- `SkeletonLoader`: a `grid` variant that honors `density`, `min` and `--ds-grid-min`.
+- `formatCountdown`, `formatConfidence` and `initials` (now shared by `Avatar`, `SourceBadge` and
+  `Toaster`).
+
+### Changed
+
+- `base.css` rules live in `@layer ds.base`, so an app's unlayered styles win over them. The focus
+  ring, the reduced-motion duration overrides and the keyframes stay unlayered.
+- Theme selection order: explicit attribute, then `prefers-contrast: more`, then
+  `prefers-color-scheme: light`, then dark. An explicit dark choice still becomes high contrast
+  under `prefers-contrast: more`.
+- Every component z-index uses the new tokens. `HelpTip` rises from 30 to `--ds-z-tooltip` (50).
+- The svelte peer dependency is now `^5.29.0` (attachments).
+- README and AGENTS.md recommend installing the release tarball, with the git tag as fallback.
+- `Dialog` and `Sheet` draw their surface and animation on the inner panel instead of the
+  `<dialog>` element, so fixed elements moved into them keep viewport positioning.
+- `SeverityBadge` and `SeverityPicker` are thin wrappers over `severityScale` with an unchanged API;
+  under a `max` ceiling the picker folds by the number of stops shown. Their root classes are now
+  `ds-scale` and `ds-scalepicker`.
+- `matchesKey`: a bare letter no longer matches with shift held, so `g` and `shift+g` are distinct
+  keys.
+- `scripts/check-contrast.mjs` reads the severity stops from `src/lib/severity.ts`, so a new stop
+  cannot go unchecked.
+
+### Fixed
+
+- `prefers-contrast: more` now applies when a non-darksite `data-theme` value is present.
+- A nested light or high-contrast subtree no longer inherits roles it leaves out from the
+  surrounding theme.
+- `Dialog`'s `onconfirm` type accepts handlers that return a value.
+- A non-cancelable Esc closes a `Dialog` or `Sheet` and its `open` state follows.
+- `docs/shell.md`: the stacking table matches the shipped layers, and the `NavItem` example matches
+  the real type.
+- The install docs no longer pin `v0.1.0`.
+
 ## [0.6.0] — 2026-10-14
 
 ### Added
