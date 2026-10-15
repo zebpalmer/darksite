@@ -11,7 +11,8 @@ at a glance.
 
 ## What the consumer provides
 
-`name` (for the initials and the alt text), `src`, `size` (px, default 32; `EntityCard` passes 56,
+`name` (for the initials — `initials(name)`, exported for anything else that needs the same two
+letters — and the alt text), `src`, `size` (px, default 32; `EntityCard` passes 56,
 and the font steps up to 14px at 48 and above), `shape`, `class`.
 
 ## Don't

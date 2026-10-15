@@ -37,3 +37,20 @@ export function formatMoney(
 		maximumFractionDigits: options.maximumFractionDigits
 	}).format(amount);
 }
+
+/**
+ * A 0–1 confidence as a whole percentage: `0.873` → `87%`. Rounding never overstates certainty at
+ * the ends: `100%` is only ever exactly 1 (`0.997` → `99%`) and `0%` only exactly 0 (`0.003` →
+ * `<1%`). Out-of-range values are clamped; a missing or non-numeric value is an empty string, so
+ * the caller shows its own missing-value mark.
+ */
+export function formatConfidence(value: number | null | undefined): string {
+	if (value === null || value === undefined || !Number.isFinite(value)) return '';
+	const v = Math.min(1, Math.max(0, value));
+	if (v === 1) return '100%';
+	if (v === 0) return '0%';
+	const pct = Math.round(v * 100);
+	if (pct >= 100) return '99%';
+	if (pct < 1) return '<1%';
+	return `${pct}%`;
+}

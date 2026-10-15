@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { createLabels, humanize } from './labels.js';
-import { formatCompact, formatMoney, formatNumber } from './numbers.js';
+import { createLabels, humanize, initials } from './labels.js';
+import { formatCompact, formatConfidence, formatMoney, formatNumber } from './numbers.js';
+import { formatCountdown } from './time.js';
 
 describe('numbers', () => {
 	it('separates thousands in the locale', () => {
@@ -36,5 +37,40 @@ describe('labels', () => {
 		expect(status.label(null)).toBe('');
 		expect(status.has('on_hold')).toBe(true);
 		expect(status.has('awaiting_review')).toBe(false);
+	});
+});
+
+describe('formatConfidence', () => {
+	it('is a whole percentage that never overstates the ends', () => {
+		expect(formatConfidence(0.873)).toBe('87%');
+		expect(formatConfidence(1)).toBe('100%');
+		expect(formatConfidence(0.997)).toBe('99%');
+		expect(formatConfidence(0)).toBe('0%');
+		expect(formatConfidence(0.003)).toBe('<1%');
+		expect(formatConfidence(1.4)).toBe('100%');
+		expect(formatConfidence(null)).toBe('');
+		expect(formatConfidence(Number.NaN)).toBe('');
+	});
+});
+
+describe('formatCountdown', () => {
+	it('counts down in m:ss or h:mm:ss, rounding up to the second', () => {
+		expect(formatCountdown(42_000)).toBe('0:42');
+		expect(formatCountdown(41_200)).toBe('0:42');
+		expect(formatCountdown(1)).toBe('0:01');
+		expect(formatCountdown(0)).toBe('0:00');
+		expect(formatCountdown(-500)).toBe('0:00');
+		expect(formatCountdown(3_725_000)).toBe('1:02:05');
+		expect(formatCountdown(null)).toBe('0:00');
+	});
+});
+
+describe('initials', () => {
+	it('takes the first letter of the first two words', () => {
+		expect(initials('A. Rivera')).toBe('AR');
+		expect(initials('field team north')).toBe('FT');
+		expect(initials('  Lund ')).toBe('L');
+		expect(initials('')).toBe('');
+		expect(initials(null)).toBe('');
 	});
 });

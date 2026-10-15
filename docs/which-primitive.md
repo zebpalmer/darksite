@@ -47,6 +47,12 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Pick a stop on an app's own ordered scale | `ScalePicker` + `defineScale` | Up to nine stops plus unknown; folds to balanced rows. |
 | A preview row of media, several to a page | `Carousel` | One tab stop, ← / → between tiles; tile width follows Grid density. Link "See all" to a `Grid` page. |
 | View images full screen | `Lightbox` | From a `JustifiedGrid` or `Grid`. ← / →, zoom, swipe; focus returns to the thumbnail. |
+| A view's hotkeys, listed | `KeyLegend` in a `Popover` | Drawn from the same binding table the handler uses (`buildHotkeyMap`); `?` opens it by convention. |
+| One record per line in a narrow pane or picker | `ListRow` in a `<ul>` | Leading, title, meta, trailing; 40 / 32 dense / 44 touch. Compared in columns → `Table`; people as an index → `EntityCard`. |
+| Rate something out of five | `Rating` | A radio group; whole stars; `readonly` to display. Never for severity or priority. |
+| Nudge a small number | `Stepper` | − value +, ↑/↓ and PageUp/PageDown, clamped and snapped. A wide range is an `Input`. |
+| A failed route | `ErrorPage` | The focused page: code, title, one sentence, Try again / Go home. Neutral copy. |
+| A new version is waiting | `Banner tone="info" dismissible remember={false}` | One Reload action; dismissed for now, never forever. |
 
 ## The frame
 

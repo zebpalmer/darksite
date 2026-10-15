@@ -8,6 +8,8 @@ SourceBadge — where a value came from: `● Registry 96%`. Not a button.
 - `title`: the full source list, when there is more than one (`Sources: File 20% · Model 80%`).
 -->
 <script lang="ts">
+	import { formatConfidence } from '../numbers.js';
+
 	interface Props {
 		source: string;
 		confidence?: number | null;
@@ -21,7 +23,7 @@ SourceBadge — where a value came from: `● Registry 96%`. Not a button.
 	const pct = $derived(
 		confidence === null || confidence === undefined
 			? ''
-			: `${Math.round(confidence <= 1 ? confidence * 100 : confidence)}%`
+			: formatConfidence(confidence <= 1 ? confidence : confidence / 100)
 	);
 </script>
 

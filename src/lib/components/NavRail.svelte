@@ -1,3 +1,20 @@
+<script lang="ts" module>
+	export interface TipHandlers {
+		onmouseenter: (event: Event) => void;
+		onmouseleave: () => void;
+		onfocus: (event: Event) => void;
+		onblur: () => void;
+	}
+
+	/** What the rail's `search` and `status` snippets receive. */
+	export interface RailSlotArgs {
+		expanded: boolean;
+		/** Spread on a control to give it the rail's tooltip while collapsed:
+		 *  `<Button variant="icon" label="Search" {...tip('Search')} />`. */
+		tip: (label: string) => TipHandlers;
+	}
+</script>
+
 <!--
 @component
 NavRail — the primary navigation on ds-bg-0, full height, from 768px up (below that, TabBar).
@@ -8,7 +25,13 @@ NavRail — the primary navigation on ds-bg-0, full height, from 768px up (below
 - Active = ds-bg-4 + ds-text-1 + a 2px accent bar. The item list scrolls on a short window and
   the current item scrolls into view; the footer (account, collapse toggle, version) stays put.
 - `expanded` is bindable. With `rememberAs`, the choice is remembered for this viewer; with
-  nothing stored the rail starts expanded at 1440px and collapsed below.
+  nothing stored the rail starts expanded at 1440px and collapsed below. `pinned` hides the
+  toggle and holds the rail at `expanded` (`expanded={false} pinned` keeps it always collapsed).
+- Slots, each given `{ expanded, tip }` — `tip(label)` returns handlers that show the rail's own
+  tooltip while it is collapsed: `search` (under the brand; collapsed, an icon button that opens
+  the app's search), `status` (in the footer, above the toggle: a connection or sync state).
+  `badge` (`{ item, expanded }`) replaces an item's count or dot — a dot at the icon's corner
+  collapsed, at the row's end expanded.
 
 Items come from the one navigation list (`NavItem[]`). Items a role cannot use are removed from
 that list, not disabled.
@@ -31,6 +54,10 @@ that list, not disabled.
 		product?: string;
 		mark?: Snippet;
 		footer?: Snippet<[{ expanded: boolean }]>;
+		search?: Snippet<[RailSlotArgs]>;
+		status?: Snippet<[RailSlotArgs]>;
+		badge?: Snippet<[{ item: NavItem; expanded: boolean }]>;
+		pinned?: boolean;
 		version?: string;
 		label?: string;
 		class?: string;
@@ -45,6 +72,10 @@ that list, not disabled.
 		product,
 		mark,
 		footer,
+		search,
+		status,
+		badge: badgeSlot,
+		pinned = false,
 		version,
 		label = 'Primary',
 		class: className = ''
@@ -94,6 +125,16 @@ that list, not disabled.
 		clearTimeout(tipTimer);
 		tip = null;
 	}
+
+	/** Handlers that give a slotted control the rail's collapsed tooltip. */
+	function tipFor(text: string): TipHandlers {
+		return {
+			onmouseenter: (e) => showTip(e.currentTarget as HTMLElement, text, 300),
+			onmouseleave: hideTip,
+			onfocus: (e) => showTip(e.currentTarget as HTMLElement, text, 0),
+			onblur: hideTip
+		};
+	}
 </script>
 
 <nav class="ds-navrail {className}" data-expanded={open ? '' : undefined} aria-label={label}>
@@ -103,6 +144,7 @@ that list, not disabled.
 			{#if product}<span class="product" class:ds-sr-only={!open}>{product}</span>{/if}
 		</div>
 	{/if}
+	{#if search}<div class="search">{@render search({ expanded: open, tip: tipFor })}</div>{/if}
 	<div class="list" bind:this={listEl}>
 		{#each sections as section, si (section.group?.id ?? '_')}
 			{#if si > 0}<div class="divider" aria-hidden="true"></div>{/if}
@@ -122,7 +164,9 @@ that list, not disabled.
 						>
 							{#if item.icon}<item.icon size={open ? 18 : 20} aria-hidden="true" />{/if}
 							<span class="label" class:ds-sr-only={!open}>{item.label}</span>
-							{#if badge !== null}
+							{#if badgeSlot}
+								<span class="badge-slot">{@render badgeSlot({ item, expanded: open })}</span>
+							{:else if badge !== null}
 								<span class="badge" data-dot={badge === '' ? '' : undefined}>{badge}</span>
 								{#if badge}<span class="ds-sr-only">, {badge}</span>{/if}
 							{/if}
@@ -133,13 +177,16 @@ that list, not disabled.
 		{/each}
 	</div>
 	<div class="foot">
+		{#if status}{@render status({ expanded: open, tip: tipFor })}{/if}
 		{#if footer}{@render footer({ expanded: open })}{/if}
-		<Button
-			variant="icon"
-			label={open ? 'Collapse navigation' : 'Expand navigation'}
-			icon={open ? PanelLeftClose : PanelLeftOpen}
-			onclick={toggle}
-		/>
+		{#if !pinned}
+			<Button
+				variant="icon"
+				label={open ? 'Collapse navigation' : 'Expand navigation'}
+				icon={open ? PanelLeftClose : PanelLeftOpen}
+				onclick={toggle}
+			/>
+		{/if}
 		{#if version && open}<span class="version">{version}</span>{/if}
 	</div>
 	{#if tip}
@@ -292,6 +339,26 @@ that list, not disabled.
 	}
 	.ds-navrail[data-expanded] .badge[data-dot] {
 		position: static;
+	}
+	.search {
+		display: flex;
+		flex: none;
+		justify-content: center;
+		padding: 0 8px 8px;
+	}
+	.ds-navrail[data-expanded] .search {
+		justify-content: stretch;
+	}
+	.badge-slot {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		margin-left: auto;
+	}
+	.ds-navrail:not([data-expanded]) .badge-slot {
+		position: absolute;
+		top: 2px;
+		right: 2px;
 	}
 	.foot {
 		display: flex;

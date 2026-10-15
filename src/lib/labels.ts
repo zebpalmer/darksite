@@ -27,3 +27,18 @@ export function createLabels<K extends string>(map: Record<K, string>): Labels<K
 		map
 	};
 }
+
+/**
+ * Up to two initials from a name, for an avatar fallback: `A. Rivera` → `AR`, `field team` →
+ * `FT`, `Lund` → `L`. Takes the first character of the first two words, so it is safe for any
+ * script, and is empty for an empty name.
+ */
+export function initials(name: string | null | undefined): string {
+	return (name ?? '')
+		.trim()
+		.split(/\s+/)
+		.filter(Boolean)
+		.slice(0, 2)
+		.map((w) => [...w][0]?.toUpperCase() ?? '')
+		.join('');
+}

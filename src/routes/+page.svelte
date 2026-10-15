@@ -3,12 +3,12 @@
 
 	const route: Record<string, string> = { ActiveFilters: 'filterrail', SheetItem: 'sheet' };
 	const groups: Record<string, string[]> = {
-		Actions: ['Button', 'KeyCap'],
+		Actions: ['Button', 'KeyCap', 'KeyLegend'],
 		Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 		Filtering: ['ActiveFilters', 'FilterRail'],
 		Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
-		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch'],
-		Data: ['Meter', 'Stat', 'Table', 'Timeline'],
+		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch', 'Rating', 'Stepper'],
+		Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow'],
 		Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
 		Feedback: [
 			'EmptyState',
@@ -17,7 +17,8 @@
 			'SkeletonLoader',
 			'SourceBadge',
 			'Spinner',
-			'Toaster'
+			'Toaster',
+			'ErrorPage'
 		],
 		Content: ['Avatar', 'Card', 'EntityCard', 'Carousel', 'Lightbox'],
 		Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader', 'Pane'],

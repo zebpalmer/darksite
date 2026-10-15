@@ -8,6 +8,8 @@ accounts, `square` for organizations (whose initials switch to mono).
   `shape`, `class`.
 -->
 <script lang="ts">
+	import { initials } from '../labels.js';
+
 	interface Props {
 		name: string;
 		src?: string | null;
@@ -20,15 +22,7 @@ accounts, `square` for organizations (whose initials switch to mono).
 
 	let failed = $state<string | null>(null);
 	const showImage = $derived(!!src && failed !== src);
-	const initials = $derived(
-		name
-			.trim()
-			.split(/\s+/)
-			.filter(Boolean)
-			.slice(0, 2)
-			.map((w) => [...w][0]?.toUpperCase() ?? '')
-			.join('')
-	);
+	const letters = $derived(initials(name));
 </script>
 
 <span
@@ -41,7 +35,7 @@ accounts, `square` for organizations (whose initials switch to mono).
 	{#if showImage}
 		<img {src} alt={name} loading="lazy" onerror={() => (failed = src ?? null)} />
 	{:else}
-		<span class="initials" role="img" aria-label={name}>{initials}</span>
+		<span class="initials" role="img" aria-label={name}>{letters}</span>
 	{/if}
 </span>
 

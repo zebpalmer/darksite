@@ -9,6 +9,9 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 - `id` + `dismissible`: a dismissed banner stays dismissed for this viewer (`viewer` scopes it to
   a signed-in user). A `danger` banner is never dismissible while its condition holds — show it
   until the condition clears.
+- `remember` (default true): false dismisses for this page view only — the banner returns on the
+  next load. For a notice that must come back while its condition holds, such as an update
+  waiting to be loaded.
 - `role="status"` for info and warning, `role="alert"` for danger.
 -->
 <script lang="ts">
@@ -25,6 +28,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 		tone?: 'info' | 'warning' | 'danger';
 		message?: string;
 		dismissible?: boolean;
+		remember?: boolean;
 		viewer?: string;
 		ondismiss?: () => void;
 		action?: Snippet;
@@ -37,6 +41,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 		tone = 'info',
 		message,
 		dismissible = false,
+		remember = true,
 		viewer,
 		ondismiss,
 		action,
@@ -49,7 +54,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 	let dismissed = $state(false);
 
 	onMount(() => {
-		if (!canDismiss) return;
+		if (!canDismiss || !remember) return;
 		try {
 			dismissed = localStorage.getItem(storageKey) === '1';
 		} catch {
@@ -59,12 +64,13 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 
 	function dismiss() {
 		dismissed = true;
+		ondismiss?.();
+		if (!remember) return;
 		try {
 			localStorage.setItem(storageKey, '1');
 		} catch {
 			/* storage unavailable: dismissed for this page view only */
 		}
-		ondismiss?.();
 	}
 
 	const Icon = $derived(tone === 'danger' ? OctagonAlert : tone === 'warning' ? TriangleAlert : Info);

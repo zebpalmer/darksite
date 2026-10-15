@@ -24,6 +24,7 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 	import KeyCap from './KeyCap.svelte';
 	import { isTypingTarget, matchesKey } from '../keycap.js';
 	import { topmost as toTopmost } from '../layers.svelte.js';
+	import { formatCountdown } from '../time.js';
 	import { toasts, type Toast, type ToastStore } from '../toast.svelte.js';
 
 	interface Props {
@@ -45,10 +46,6 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 
 	const left = (t: Toast) => (t.deadline === null ? t.remaining : Math.max(0, t.deadline - now));
 	const share = (t: Toast) => (t.duration ? (left(t) / t.duration) * 100 : 0);
-	const clock = (ms: number) => {
-		const s = Math.ceil(ms / 1000);
-		return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-	};
 	const icons = { info: Info, success: CircleCheck, warning: TriangleAlert, error: CircleAlert };
 
 	function run(t: Toast) {
@@ -85,7 +82,7 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 				<div class="row">
 					<span class="icon"><Icon size={16} aria-hidden="true" /></span>
 					<span class="msg">{t.message}</span>
-					{#if t.countdown}<span class="countdown" aria-hidden="true">{clock(left(t))}</span>{/if}
+					{#if t.countdown}<span class="countdown" aria-hidden="true">{formatCountdown(left(t))}</span>{/if}
 					{#if t.action}
 						<button type="button" class="action" aria-keyshortcuts={t.action.keycap} onclick={() => run(t)}>
 							{t.action.label}
