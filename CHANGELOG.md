@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-10-14
+
 ### Added
 
 - The shell as components: `AppShell`, `NavRail`, `TabBar` (with its More sheet), `SideNav`,
