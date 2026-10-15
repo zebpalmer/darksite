@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/svelte';
+import Input from './Input.svelte';
 import LoadMore from './LoadMore.svelte';
 import Select from './Select.svelte';
 import Textarea from './Textarea.svelte';
@@ -30,6 +31,17 @@ describe('LoadMore', () => {
 		resolve();
 		await rerender({ shown: 100, total: 295, onLoadMore, focusRow });
 		await vi.waitFor(() => expect(focusRow).toHaveBeenCalledWith(50));
+	});
+});
+
+describe('Input', () => {
+	it('takes the Field contract', () => {
+		render(Input, { id: 'q', describedBy: 'q-help', invalid: true });
+		const box = screen.getByRole('textbox') as HTMLInputElement;
+		expect(box.id).toBe('q');
+		expect(box.getAttribute('aria-describedby')).toBe('q-help');
+		expect(box.getAttribute('aria-invalid')).toBe('true');
+		expect(box.hasAttribute('describedby')).toBe(false);
 	});
 });
 

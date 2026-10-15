@@ -4,10 +4,10 @@ Input — a text input in the control look: 32px (44 on touch), ds-bg-3, a ds-bo
 is the global `.ds-control` class, so a bare `<select class="ds-control">` or `<textarea
 class="ds-control">` matches without a wrapper.
 
-- `value` (bindable), `type`, `mono` (paths, hashes), `invalid`, `size` (`dense` 28 | `default`
-  32; dense applies to fine pointers only), `leading` (an inlaid icon), `trailing` snippet (set
-  `--trail-w` to reserve its width, default 120px), `element` (bindable ref), and any other
-  `<input>` attribute. Inside a Field, spread `{ id, describedBy, invalid }` onto it.
+- `value` (bindable), `type`, `mono` (paths, hashes), `invalid`, `describedBy`, `size` (`dense`
+  28 | `default` 32; dense applies to fine pointers only), `leading` (an inlaid icon), `trailing`
+  snippet (set `--trail-w` to reserve its width, default 120px), `element` (bindable ref), and any
+  other `<input>` attribute. Inside a Field, spread `{ id, describedBy, invalid }` onto it.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -19,6 +19,8 @@ class="ds-control">` matches without a wrapper.
 		value?: string | number | null;
 		mono?: boolean;
 		invalid?: boolean;
+		/** A Field's `describedBy`: the ids of its help and error text. */
+		describedBy?: string;
 		size?: 'dense' | 'default';
 		leading?: IconComponent;
 		trailing?: Snippet;
@@ -31,6 +33,7 @@ class="ds-control">` matches without a wrapper.
 		type = 'text',
 		mono = false,
 		invalid = false,
+		describedBy,
 		size = 'default',
 		leading: Leading,
 		trailing,
@@ -55,6 +58,7 @@ class="ds-control">` matches without a wrapper.
 		data-mono={mono ? '' : undefined}
 		aria-invalid={invalid ? 'true' : undefined}
 		{...rest}
+		aria-describedby={describedBy ?? rest['aria-describedby']}
 	/>
 	{#if trailing}<span class="trail">{@render trailing()}</span>{/if}
 </div>

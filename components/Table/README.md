@@ -11,6 +11,8 @@ dividers `ds-border-subtle`, the header divider `ds-border`, header text 12/500 
 
 Cells are **one line**, with an ellipsis and the full value in `title`. Column widths come from
 `width` or an even share — `table-layout: fixed`, so no long string ever sets a column's width.
+When the widths add up to less than the table, the visible columns share what is left over,
+including the width of any column that priority has hidden, so rows always reach the table's edge.
 
 ## Columns
 
@@ -24,9 +26,10 @@ priority 3 hides below 720px, priority 2 below 480px, priority 1 never.
 Those thresholds suit a table with a handful of columns. A wide table — ten columns, or one beside a
 side rail — gets cramped well before 720px, so move them per table with `hideBelow`:
 `hideBelow={{ 3: 960, 2: 640 }}` (either key alone keeps the other's default). The default
-thresholds are pure container queries; with `hideBelow` the table measures its own width with a
-`ResizeObserver` instead (a container query cannot take a variable), so before it mounts every
-column shows.
+thresholds are container queries until the table mounts; from then on it measures its own width
+with a `ResizeObserver` (a container query cannot take a variable, and a full-width row — a group
+header, the empty state — must span only the visible columns). With `hideBelow`, every column
+shows until it mounts.
 
 ## Scrolling and the sticky header
 
@@ -40,11 +43,13 @@ Set `minWidth` to scroll sideways inside the container instead of squeezing colu
 
 A sortable header is a button with `aria-sort` and a 16px sort icon. One key at a time: clicking a
 new column sorts ascending, clicking the sorted one flips it. The consumer owns the data —
-`sort` is bindable and `onsort({ key, direction })` fires on every change.
+`sort` is bindable and `onsort({ key, direction })` fires on every change. `null` and `undefined`
+both mean unsorted, so `bind:sort={sorts[view]}` works while that entry does not exist yet.
 
 ## Selection
 
-`selectable` adds a leading `Checkbox` column; `selected` is a bindable `Set` of row keys. The
+`selectable` adds a leading `Checkbox` column; `selected` is a bindable `Set` of row keys
+(`undefined` is no selection, so it can be bound to a map entry that is not set yet). The
 header box goes mixed when some rows are selected, and clicking it selects or clears every loaded
 row. **Shift-click** selects a range. A selected row takes `ds-accent-tint`. The selection count and
 bulk actions live in the pane's `ActionBar`, never in a floating toolbar. Selecting rows that are

@@ -3,6 +3,7 @@ import { createRawSnippet } from 'svelte';
 import { fireEvent, render, screen, within } from '@testing-library/svelte';
 import TableComponent, { hiddenPriorities } from './Table.svelte';
 import type { TableColumn } from './Table.svelte';
+import TableBindHarness from '../../tests/TableBindHarness.svelte';
 
 interface Row {
 	id: string;
@@ -39,6 +40,15 @@ describe('Table', () => {
 		const cells = within(bodyRows()[1]).getAllByRole('cell');
 		expect(cells[1].textContent).toContain('—');
 		expect(cells[1].textContent).toContain('No value');
+	});
+
+	it('binds sort and selection to map entries that start undefined', async () => {
+		render(TableBindHarness);
+		expect(screen.getByTestId('sort').textContent).toBe('none');
+		await fireEvent.click(screen.getByRole('button', { name: 'Name' }));
+		expect(screen.getByTestId('sort').textContent).toBe('name asc');
+		await fireEvent.click(screen.getAllByRole('checkbox', { name: 'Select row' })[1]);
+		expect(screen.getByTestId('picks').textContent).toBe('r2');
 	});
 
 	it('sorts one key at a time and reports it', async () => {

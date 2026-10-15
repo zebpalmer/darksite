@@ -16,6 +16,17 @@
 	<Stat label="Overdue" value={17} severity="high" meta="past their due date" href="/table" />
 </StatRow>
 <p>Two to four across by the row's own width. A severity is the only way to color a Stat.</p>
+<StatRow label="By stage" max={5}>
+	<Stat label="Queued" value={42} />
+	<Stat label="In review" value={18} />
+	<Stat label="Approved" value={0} />
+	<Stat label="Returned" value={null} />
+	<Stat label="Total" value={60} />
+</StatRow>
+<p>
+	A row of five with <code>max=&#123;5&#125;</code>: 2, 3, then 5 across. An empty value shows the
+	missing mark.
+</p>
 
 <style>
 	h1 {
@@ -24,6 +35,7 @@
 		font-weight: 500;
 	}
 	p {
+		margin: var(--ds-space-3) 0 var(--ds-space-6);
 		color: var(--ds-text-3);
 		font-size: var(--ds-text-xs);
 	}

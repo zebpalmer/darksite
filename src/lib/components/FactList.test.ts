@@ -55,6 +55,19 @@ describe('FactList', () => {
 		expect(container.querySelector('.ds-facts')?.getAttribute('data-columns')).toBe('2');
 	});
 
+	it('hands an item\'s own cell snippet its item and value', () => {
+		const cell = createRawSnippet((args: () => { item: { label: string }; value: unknown }) => ({
+			render: () => `<i>${args().item.label} = ${String(args().value)}</i>`
+		}));
+		render(FactList, {
+			items: [
+				{ label: 'Opened', value: 'Mon', cell },
+				{ label: 'Due', value: 'Fri', cell }
+			]
+		});
+		expect(screen.getAllByRole('definition').map((d) => d.textContent)).toEqual(['Opened = Mon', 'Due = Fri']);
+	});
+
 	it('renders values through a fallback cell snippet', () => {
 		const cell = createRawSnippet((args: () => { item: { label: string }; value: unknown }) => ({
 			render: () => `<b>${args().item.label}: ${String(args().value)}</b>`

@@ -9,12 +9,13 @@ Pair it with ActiveFilters above the results, so a collapsed rail never hides wh
 keep the state in the URL (`filtersToParams` / `filtersFromParams`) so a filtered view can be
 linked and survives a reload.
 
-- `sections` (`{ key, label, type?, options?, multiple?, placeholder?, labelFor?, onsearch?,
-  loading?, strict? }[]`), `value` (bindable: selected values per section key), `collapsed`
-  (bindable), `title` (default "Filters"), `onchange(value)`.
-- Section types: `options` (default; checkboxes, or radios with `multiple: false`), `text` (one
-  free-text value, applied on Enter or when the field is left), `search` (a Combobox over the
-  options, for a long list such as owners; chosen values show as removable chips).
+- `sections` (`{ key, label, type?, options?, multiple?, unsetLabel?, placeholder?, labelFor?,
+  onsearch?, loading?, strict? }[]`), `value` (bindable: selected values per section key),
+  `collapsed` (bindable), `title` (default "Filters"), `onchange(value)`.
+- Section types: `options` (default; checkboxes, or radios with `multiple: false`, whose unset
+  choice reads `unsetLabel`, default "Any"), `text` (one free-text value, applied on Enter or when
+  the field is left), `search` (a Combobox over the options, for a long list such as owners; chosen
+  values show as removable chips).
 - A selected value the options do not list (a linked URL, options still loading) stays selected
   and is shown, labeled by `labelFor(value)` or the value itself.
 -->
@@ -162,7 +163,7 @@ linked and survives a reload.
 					<Radio
 						name="{prefix}-{section.key}"
 						value=""
-						label={strings.any}
+						label={section.unsetLabel ?? strings.any}
 						group={value[section.key]?.[0] ?? ''}
 						onchange={() => pick(section, '')}
 					/>

@@ -9,12 +9,13 @@ It **collapses rather than shrinks** — to a 44px strip whose toggle says how m
 
 ## Sections
 
-`{ key, label, type?, options?, multiple?, placeholder?, labelFor?, onsearch?, loading?, strict? }`.
+`{ key, label, type?, options?, multiple?, unsetLabel?, placeholder?, labelFor?, onsearch?, loading?, strict? }`.
 Three types:
 
 - **`options`** (the default): `options: { value, label, count? }[]`, multiple-choice (checkboxes)
   by default; `multiple: false` makes it single-choice (radios, with "Any" to clear it). Counts sit
-  at the right in 12px `ds-text-3`.
+  at the right in 12px `ds-text-3`. When no filter here means a default rather than every value, name
+  the unset choice per section with `unsetLabel` ("Default", "Current").
 - **`text`**: one free-text value ("Name contains"), in an `Input`. It applies on Enter or when the
   field is left — not on every keystroke, so the URL and the results do not churn — and clears at
   once when emptied. `placeholder` is the hint.

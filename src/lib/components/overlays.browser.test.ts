@@ -7,6 +7,7 @@ import { userEvent } from 'vitest/browser';
 import { render, screen } from '@testing-library/svelte';
 import OverlayHarness from '../../tests/browser/OverlayHarness.svelte';
 import TableHarness from '../../tests/browser/TableHarness.svelte';
+import LayoutHarness from '../../tests/browser/LayoutHarness.svelte';
 import JustifiedHarness from '../../tests/browser/JustifiedHarness.svelte';
 import TooltipHarness from '../../tests/browser/TooltipHarness.svelte';
 
@@ -125,6 +126,19 @@ describe('Table column priorities in a browser', () => {
 		expect(getComputedStyle(owner(narrow)).display).toBe('none');
 		expect(getComputedStyle(owner(wide)).display).not.toBe('none');
 	});
+
+	it('gives the width of hidden columns to the visible ones, with groups or an empty state', async () => {
+		render(TableHarness);
+		await settle();
+		for (const name of ['Grouped', 'Empty']) {
+			const table = screen.getByRole('table', { name });
+			const edge = table.getBoundingClientRect().right;
+			for (const row of table.querySelectorAll('tr')) {
+				const cells = [...row.children].filter((c) => getComputedStyle(c).display !== 'none');
+				expect(Math.round(cells.at(-1)!.getBoundingClientRect().right)).toBe(Math.round(edge));
+			}
+		}
+	});
 });
 
 describe('JustifiedGrid in a browser', () => {
@@ -156,5 +170,37 @@ describe('tooltip in a browser', () => {
 		expect(tip.matches(':popover-open')).toBe(true);
 		await userEvent.keyboard('{Escape}');
 		expect(tip.hidden).toBe(true);
+	});
+});
+
+describe('PageHeader on a narrow header', () => {
+	it('wraps the actions under a title that does not fit beside them, and only then', async () => {
+		render(LayoutHarness);
+		await settle();
+		const parts = (id: string) => {
+			const header = screen.getByTestId(id).querySelector('.ds-pageheader')!;
+			return {
+				title: header.querySelector('.title')!,
+				lead: header.querySelector('.lead')!.getBoundingClientRect(),
+				actions: header.querySelector('.actions')!.getBoundingClientRect()
+			};
+		};
+		const long = parts('long');
+		expect(long.actions.top).toBeGreaterThanOrEqual(long.lead.bottom);
+		expect(long.title.scrollWidth).toBeLessThanOrEqual(long.title.clientWidth);
+		const short = parts('short');
+		expect(short.actions.top).toBeLessThan(short.lead.bottom);
+	});
+});
+
+describe('StatRow in a browser', () => {
+	it('puts five stats on one line with max={5}, and never leaves the fifth alone', async () => {
+		render(LayoutHarness);
+		await settle();
+		const tops = (id: string) =>
+			[...screen.getByTestId(id).querySelectorAll('.ds-stat')].map((s) => Math.round(s.getBoundingClientRect().top));
+		expect(new Set(tops('five')).size).toBe(1);
+		const narrow = tops('five-narrow');
+		expect(narrow.filter((t) => t === narrow[0])).toHaveLength(3);
 	});
 });

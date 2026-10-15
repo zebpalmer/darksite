@@ -6,10 +6,12 @@ panes are a layout, not this — see `docs/layout.md`.)
 `ds-bg-2`, a `ds-border-subtle` edge, `ds-radius-md`, no shadow.
 
 - **Header** — 44px: the `title` in `card-title` (14/500), an optional `meta` (13px `ds-text-3`),
-  an optional `tip` (a `HelpTip`), and an `end` snippet for one link or one secondary action.
-  Sentence case.
-- **Body** — unpadded, so a `Table` or a list sits flush: the Pane hands a Table its ground and its
-  14px inset. `padded` gives prose or a form 14px.
+  an optional `tip` (a `HelpTip`; `tipLabel` is its button's name, default "More information"), and
+  an `end` snippet for one link or one secondary action. Sentence case.
+- **Body** — unpadded, so a `Table`, a list or a `FactList` sits flush: the Pane hands a Table its
+  ground and its 14px inset (`--ds-table-inset`), and a FactList its 14px side and 8px block inset
+  (`--ds-facts-inset`, `--ds-facts-inset-block`). `padded` gives prose or a form 14px, and sets the
+  FactList inset back to 0 so the two do not add up.
 - **Footer** — an optional snippet under a subtle edge, for a timestamp or a "View all".
 
 ## Collapsible
@@ -28,7 +30,7 @@ thing the page is for. A `tip` and the `end` snippet stay outside the button.
 
 ## What the consumer provides
 
-`title`, `meta`, `tip`, `level` (the heading level, default 2), `padded`, `collapsible`, `open`
+`title`, `meta`, `tip`, `tipLabel`, `level` (the heading level, default 2), `padded`, `collapsible`, `open`
 (bindable), `collapseBelow`, `end`, `footer`, children, `class`.
 
 ## Don't

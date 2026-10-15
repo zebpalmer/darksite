@@ -19,6 +19,11 @@ export interface FilterSection {
 	options?: readonly FilterOption[];
 	/** Default true: any number of options. False: at most one, with "Any" to clear it. */
 	multiple?: boolean;
+	/**
+	 * A single-choice section's label for its unset choice (default "Any"). Name what no filter
+	 * means here — "Default" when the unset value is a default rather than every value.
+	 */
+	unsetLabel?: string;
 	/** The input's placeholder in a `text` or `search` section. */
 	placeholder?: string;
 	/**

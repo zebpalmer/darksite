@@ -27,7 +27,7 @@ to 45%.
 ```svelte
 <Field label="Import file" {error} required>
   {#snippet children(f)}
-    <FileInput id={f.id} aria-describedby={f.describedBy} invalid={f.invalid}
+    <FileInput id={f.id} describedBy={f.describedBy} invalid={f.invalid}
       accept=".csv" bind:files onfiles={check} />
   {/snippet}
 </Field>
@@ -38,7 +38,8 @@ upload.
 
 ## What the consumer provides
 
-`accept`, `multiple`, `disabled`, `invalid`, `required`, `name`, `id`, `label` (the button text;
+`accept`, `multiple`, `disabled`, `invalid`, `required`, `name`, `id`, `describedBy` (a Field's
+help and error ids, as on `Input`, `Select` and `Textarea`), `label` (the button text;
 default "Choose file", or "Choose files" with `multiple`), `size` (`dense` | `default`), `files`
 (bindable `File[]`), `onfiles(files)` (also called with `[]` on Clear), `element` (bindable, the
 native input), `class`, and any other `<input>` attribute.

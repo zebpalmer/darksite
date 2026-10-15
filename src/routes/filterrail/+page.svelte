@@ -47,6 +47,17 @@
 				{ value: 'ops', label: 'Ops desk', count: 15 }
 			]
 		},
+		{
+			key: 'order',
+			label: 'Order',
+			multiple: false,
+			// Unset is the view's own order, not "any order".
+			unsetLabel: 'Default',
+			options: [
+				{ value: 'name', label: 'Name, Z to A' },
+				{ value: 'owner', label: 'Owner' }
+			]
+		},
 		{ key: 'q', label: 'Name contains', type: 'text', placeholder: 'Record 01' },
 		{
 			key: 'assignee',
@@ -84,6 +95,13 @@
 				(!value.assignee?.length || value.assignee.includes(r.assignee))
 		)
 	);
+	const ordered = $derived(
+		value.order?.[0] === 'name'
+			? [...rows].reverse()
+			: value.order?.[0] === 'owner'
+				? [...rows].sort((a, b) => a.owner.localeCompare(b.owner))
+				: rows
+	);
 </script>
 
 <svelte:head><title>FilterRail · darksite</title></svelte:head>
@@ -92,7 +110,7 @@
 	<FilterRail {sections} bind:value onchange={sync} />
 	<div class="results">
 		<ActiveFilters {sections} bind:value onchange={sync} />
-		<Table {rows} {columns} rowKey={(r) => r.id} label="Records" />
+		<Table rows={ordered} {columns} rowKey={(r) => r.id} label="Records" />
 	</div>
 </div>
 

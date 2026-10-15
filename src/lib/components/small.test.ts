@@ -61,4 +61,12 @@ describe('small components', () => {
 		render(StatRow, { label: 'This week', children: text('<div>12 open</div>') });
 		expect(screen.getByRole('group', { name: 'This week' }).textContent).toContain('12 open');
 	});
+
+	it('StatRow takes up to five across', () => {
+		const { container, unmount } = render(StatRow, { children: text('<div>12 open</div>') });
+		expect(container.querySelector('.grid')?.getAttribute('data-max')).toBe('4');
+		unmount();
+		const five = render(StatRow, { max: 5, children: text('<div>12 open</div>') });
+		expect(five.container.querySelector('.grid')?.getAttribute('data-max')).toBe('5');
+	});
 });

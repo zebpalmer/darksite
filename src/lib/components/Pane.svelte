@@ -3,9 +3,10 @@
 Pane — a titled block on a content page: a dashboard section, a block on a detail page.
 ds-bg-2 with a subtle edge at ds-radius-md, no shadow.
 
-Header 44px: the title in card-title (14/500), optional `meta`, an optional `tip` (a HelpTip),
-and an `end` snippet for one link or one secondary action. The body is unpadded so a Table or list
-sits flush — `padded` for prose or a form. An optional `footer` snippet sits under a subtle edge.
+Header 44px: the title in card-title (14/500), optional `meta`, an optional `tip` (a HelpTip;
+`tipLabel` names its button), and an `end` snippet for one link or one secondary action. The body
+is unpadded so a Table, a list or a FactList sits at the pane's 14px inset — `padded` for prose or
+a form. An optional `footer` snippet sits under a subtle edge.
 
 `collapsible` makes the title a disclosure button (`aria-expanded`, a chevron) that shows and
 hides the body and footer; `open` is bindable. `collapseBelow` starts it collapsed when the pane
@@ -24,6 +25,8 @@ PageHeader.
 		title: string;
 		meta?: string;
 		tip?: string;
+		/** The tip button's accessible name (HelpTip `label`; default "More information"). */
+		tipLabel?: string;
 		level?: 2 | 3 | 4;
 		padded?: boolean;
 		/** The title becomes a disclosure button that shows and hides the body. */
@@ -42,6 +45,7 @@ PageHeader.
 		title,
 		meta,
 		tip,
+		tipLabel,
 		level = 2,
 		padded = false,
 		collapsible = false,
@@ -90,7 +94,7 @@ PageHeader.
 			<svelte:element this={`h${level}`} class="title">{title}</svelte:element>
 			{#if meta}<span class="meta">{meta}</span>{/if}
 		{/if}
-		{#if tip}<HelpTip text={tip} placement="bottom" />{/if}
+		{#if tip}<HelpTip text={tip} label={tipLabel} placement="bottom" />{/if}
 		{#if end}<span class="end">{@render end()}</span>{/if}
 	</header>
 	<div id="{uid}-body" class="body" data-padded={padded ? '' : undefined} hidden={!shown}>
@@ -103,6 +107,8 @@ PageHeader.
 	.ds-pane {
 		--ds-table-bg: var(--ds-bg-2);
 		--ds-table-inset: 14px;
+		--ds-facts-inset: 14px;
+		--ds-facts-inset-block: 8px;
 		display: flex;
 		flex-direction: column;
 		min-width: 0;
@@ -198,6 +204,8 @@ PageHeader.
 		min-width: 0;
 	}
 	.body[data-padded] {
+		--ds-facts-inset: 0px;
+		--ds-facts-inset-block: 0px;
 		padding: 14px;
 	}
 	footer {

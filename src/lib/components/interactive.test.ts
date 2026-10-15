@@ -53,6 +53,25 @@ describe('FilterRail', () => {
 		await fireEvent.click(within(rail).getByRole('button', { name: 'Collapse filters' }));
 		expect(within(rail).getByRole('button', { name: 'Show filters (1 on)' })).toBeTruthy();
 	});
+
+	it('names a single-choice section\'s unset choice "Any", or its own unsetLabel', async () => {
+		const onchange = vi.fn();
+		render(FilterRail, {
+			sections: [
+				...sections,
+				{ key: 'layout', label: 'Layout', multiple: false, unsetLabel: 'Default', options: [{ value: 'wide', label: 'Wide' }] }
+			],
+			value: { owner: ['field'], layout: ['wide'] },
+			onchange
+		});
+		const rail = screen.getByRole('complementary', { name: 'Filters' });
+		const owner = within(rail).getByRole('group', { name: 'Owner' });
+		const layout = within(rail).getByRole('group', { name: 'Layout' });
+		expect(within(owner).getByRole('radio', { name: 'Any' })).toBeTruthy();
+		expect(within(layout).queryByRole('radio', { name: 'Any' })).toBeNull();
+		await fireEvent.click(within(layout).getByRole('radio', { name: 'Default' }));
+		expect(onchange).toHaveBeenLastCalledWith({ owner: ['field'] });
+	});
 });
 
 describe('FilterRail section types', () => {

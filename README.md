@@ -196,7 +196,9 @@ built tarball to its GitHub release; install a pinned version from there, replac
 npm install https://github.com/zebpalmer/darksite/releases/download/vX.Y.Z/darksite-X.Y.Z.tgz
 ```
 
-The tarball needs no git on the installing machine and no build step. As a fallback, install the
+The tarball needs no git on the installing machine and no build step. It carries this README,
+`CHANGELOG.md`, `docs/` and the component cards (`components/*/README.md`), so the rules and what
+changed in each release can be read in `node_modules/darksite`. As a fallback, install the
 tag straight from the repository; npm then clones it and builds `dist/` itself through `prepare`,
 which needs git and the dev dependencies:
 

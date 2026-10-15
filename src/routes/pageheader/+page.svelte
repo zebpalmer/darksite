@@ -12,6 +12,10 @@
 </PageHeader>
 <p>Scroll: the header sticks, flush with the column's edges.</p>
 <PageHeader title="R-00412" level={2} mono count="Identifier title" />
+<PageHeader title="Records awaiting a second review" level={2} count={38}>
+	{#snippet actions()}<Button variant="ghost" icon={Download}>Export</Button>{/snippet}
+</PageHeader>
+<p>On a narrow header, actions that would cut the title short move to a second line.</p>
 {#each { length: 40 } as _, i (i)}
 	<div class="line">Record {i + 1}</div>
 {/each}

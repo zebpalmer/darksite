@@ -28,7 +28,10 @@
 	"files": [
 		"dist",
 		"!dist/**/*.test.*",
-		"tokens.json"
+		"tokens.json",
+		"CHANGELOG.md",
+		"docs",
+		"components/*/README.md"
 	],
 	"sideEffects": [
 		"**/*.css"
