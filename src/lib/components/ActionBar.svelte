@@ -11,9 +11,10 @@ Primary action right-most; a `<span class="grow"></span>` splits the left and ri
 - `sticky`, `label` (the group's name, default "Actions"), `class`, children.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 
-	let { sticky = false, label = 'Actions', class: className = '', children }: {
+	let { sticky = false, label = strings.actions, class: className = '', children }: {
 		sticky?: boolean;
 		label?: string;
 		class?: string;

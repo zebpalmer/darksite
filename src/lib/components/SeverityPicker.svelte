@@ -14,6 +14,7 @@ its own width: key caps hide first, then the row folds to a 3-column grid, never
   `id`, `aria-labelledby={f.labelId}` and `aria-describedby={f.describedBy}`.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import ScalePicker from './ScalePicker.svelte';
 	import { severityScale, type Severity } from '../severity.js';
 
@@ -33,7 +34,7 @@ its own width: key caps hide first, then the row folds to a 3-column grid, never
 		class?: string;
 	}
 
-	let { value = $bindable(null), label = 'Severity', ...rest }: Props = $props();
+	let { value = $bindable(null), label = strings.severity, ...rest }: Props = $props();
 </script>
 
 <ScalePicker scale={severityScale} bind:value {label} {...rest} />

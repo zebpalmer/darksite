@@ -176,3 +176,4 @@ export { formatConfidence } from './numbers.js';
 export { initials } from './labels.js';
 export { errorCopy, type ErrorCopy } from './components/ErrorPage.svelte';
 export type { RailSlotArgs, TipHandlers } from './components/NavRail.svelte';
+export { resetStrings, setStrings, strings, type Strings } from './strings.svelte.js';

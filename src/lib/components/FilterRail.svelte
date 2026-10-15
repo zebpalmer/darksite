@@ -19,6 +19,7 @@ linked and survives a reload.
   and is shown, labeled by `labelFor(value)` or the value itself.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import ListFilter from '@lucide/svelte/icons/list-filter';
 	import PanelLeftClose from '@lucide/svelte/icons/panel-left-close';
 
@@ -50,7 +51,7 @@ linked and survives a reload.
 		sections,
 		value = $bindable({}),
 		collapsed = $bindable(false),
-		title = 'Filters',
+		title = strings.filters,
 		onchange,
 		class: className = ''
 	}: Props = $props();
@@ -140,7 +141,7 @@ linked and survives a reload.
 						{#each value[section.key] as v (v)}
 							<Chip
 								removable
-								removeLabel="Remove {section.label}: {filterLabel(section, v)}"
+								removeLabel={strings.removeValue(section.label, filterLabel(section, v))}
 								onremove={() => toggle(section, v, false)}>{filterLabel(section, v)}</Chip
 							>
 						{/each}
@@ -155,7 +156,7 @@ linked and survives a reload.
 					<Radio
 						name="{prefix}-{section.key}"
 						value=""
-						label="Any"
+						label={strings.any}
 						group={value[section.key]?.[0] ?? ''}
 						onchange={() => pick(section, '')}
 					/>
@@ -193,7 +194,7 @@ linked and survives a reload.
 		<div class="strip">
 			<Button
 				variant="icon"
-				label={active ? `Show ${title.toLowerCase()} (${active} on)` : `Show ${title.toLowerCase()}`}
+				label={strings.showFilters(title, active)}
 				icon={ListFilter}
 				onclick={() => (collapsed = false)}
 			/>
@@ -204,8 +205,8 @@ linked and survives a reload.
 			<h2 id="{uid}-title">{title}</h2>
 			{#if active}<span class="active">{active} on</span>{/if}
 			<span class="grow"></span>
-			{#if active}<Button variant="ghost" size="dense" onclick={clearAll}>Clear all</Button>{/if}
-			<Button variant="icon" size="dense" label="Collapse {title.toLowerCase()}" icon={PanelLeftClose} onclick={() => (collapsed = true)} />
+			{#if active}<Button variant="ghost" size="dense" onclick={clearAll}>{strings.clearAll}</Button>{/if}
+			<Button variant="icon" size="dense" label={strings.collapseFilters(title)} icon={PanelLeftClose} onclick={() => (collapsed = true)} />
 		</div>
 		<div class="body">{@render controls(`${uid}-rail`)}</div>
 	{/if}
@@ -218,8 +219,8 @@ linked and survives a reload.
 	<Sheet bind:open={sheetOpen} {title}>
 		{@render controls(`${uid}-sheet`)}
 		{#snippet footer()}
-			{#if active}<Button variant="ghost" onclick={clearAll}>Clear all</Button>{/if}
-			<Button variant="primary" onclick={() => (sheetOpen = false)}>Done</Button>
+			{#if active}<Button variant="ghost" onclick={clearAll}>{strings.clearAll}</Button>{/if}
+			<Button variant="primary" onclick={() => (sheetOpen = false)}>{strings.done}</Button>
 		{/snippet}
 	</Sheet>
 </div>

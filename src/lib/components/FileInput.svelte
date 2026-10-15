@@ -16,6 +16,7 @@ visible button is for the pointer only.
   `{ id, describedBy, invalid }` onto it.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import Upload from '@lucide/svelte/icons/upload';
 	import X from '@lucide/svelte/icons/x';
 	import type { HTMLInputAttributes } from 'svelte/elements';
@@ -52,9 +53,13 @@ visible button is for the pointer only.
 		...rest
 	}: Props = $props();
 
-	const buttonLabel = $derived(label ?? (multiple ? 'Choose files' : 'Choose file'));
+	const buttonLabel = $derived(label ?? (multiple ? strings.chooseFiles : strings.chooseFile));
 	const summary = $derived(
-		files.length === 0 ? 'No file chosen' : files.length === 1 ? files[0].name : `${files.length} files`
+		files.length === 0
+			? strings.noFileChosen
+			: files.length === 1
+				? files[0].name
+				: strings.fileCount(files.length)
 	);
 	const allNames = $derived(files.map((f) => f.name).join('\n'));
 
@@ -113,7 +118,7 @@ visible button is for the pointer only.
 			variant="icon"
 			size="dense"
 			icon={X}
-			label={multiple ? 'Clear files' : 'Clear file'}
+			label={multiple ? strings.clearFiles : strings.clearFile}
 			onclick={clear}
 		/>
 	{/if}

@@ -7,6 +7,7 @@ a phone, where the rail is a Sheet) never hides what is on. Renders nothing when
   section's options do not list is shown by `labelFor(value)` or as it is; free text is quoted.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import Button from './Button.svelte';
 	import Chip from './Chip.svelte';
 	import { countActive, filterLabel, type FilterSection, type FilterValue } from '../filters.js';
@@ -46,14 +47,14 @@ a phone, where the rail is a Sheet) never hides what is on. Renders nothing when
 </script>
 
 {#if countActive(value) > 0}
-	<div class="ds-activefilters {className}" role="group" aria-label="Active filters">
+	<div class="ds-activefilters {className}" role="group" aria-label={strings.activeFilters}>
 		{#each applied as item (`${item.section.key}:${item.value}`)}
-			<Chip removable removeLabel="Remove {item.section.label}: {item.label}" onremove={() => remove(item.section.key, item.value)}>
+			<Chip removable removeLabel={strings.removeValue(item.section.label, item.label)} onremove={() => remove(item.section.key, item.value)}>
 				<span class="key">{item.section.label}:</span>
 				{item.label}
 			</Chip>
 		{/each}
-		<Button variant="ghost" size="dense" onclick={clearAll}>Clear all</Button>
+		<Button variant="ghost" size="dense" onclick={clearAll}>{strings.clearAll}</Button>
 	</div>
 {/if}
 

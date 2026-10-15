@@ -19,6 +19,7 @@ Extras: `keycap`, `count`, `icon`, `disabled`, `title`, `tone="warning"` (a valu
 rule), `bodyProps` (spread onto the label button, so it can trigger a Popover or Menu).
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import Plus from '@lucide/svelte/icons/plus';
 	import X from '@lucide/svelte/icons/x';
@@ -127,7 +128,7 @@ rule), `bodyProps` (spread onto the label button, so it can trigger a Popover or
 			{@render body()}
 		{/if}
 		{#if removable}
-			<button type="button" class="remove" aria-label={removeLabel ?? 'Remove'} {disabled} onclick={() => onremove?.()}>
+			<button type="button" class="remove" aria-label={removeLabel ?? strings.remove} {disabled} onclick={() => onremove?.()}>
 				<X size={13} aria-hidden="true" />
 			</button>
 		{/if}

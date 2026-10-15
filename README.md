@@ -45,9 +45,9 @@ reason to improvise.
 - **Plain past tense for results**, in a toast: "Removed Urgent", "Saved as your default",
   "Archived 12 records". A background action's outcome is a toast, not an inline status line.
 - **Dates and times:** relative under seven days ("6 min ago", "2 days ago"), an absolute date
-  after that ("Oct 2", with the year when it isn't this year), both in the viewer's locale and time
-  zone, and the exact date, time and time zone in a tooltip. `formatRelative` and `formatExact`
-  implement it.
+  after that ("Oct 2", with the year when it isn't this year), the date in the viewer's locale and
+  time zone, and the exact date, time and time zone in a tooltip. `formatRelative` and `formatExact`
+  implement it; the relative words come from `strings` (see "Other languages").
 - **Calendar dates** — a day with no time, such as a due date or a start date (`'2026-10-01'`) —
   are shown as that day in every time zone, never shifted to the day before west of UTC, and
   follow the same year rule: "Oct 1", or "Oct 1, 2025" when it isn't this year. `formatDate`
@@ -257,6 +257,27 @@ The theme custom properties in `tokens.css` are deliberately **not** in a cascad
 property only competes with other declarations of the same property, so layering would add nothing
 except making a product's own `--ds-*` overrides harder to reason about. An unlayered override
 after `tokens.css` wins, as it always has.
+
+### Other languages
+
+Every word darksite shows or speaks on its own — "Close", "Clear all", "No matches", "Select row",
+"3 files", "2 days ago" — comes from one table, `strings`, in English by default. A product in
+another language overrides it once, before its app mounts (the root layout's script is the place):
+
+```js
+import { setStrings } from 'darksite';
+
+setStrings({
+	close: 'Fermer',
+	clearAll: 'Tout effacer',
+	days: (n) => `${n} ${n === 1 ? 'jour' : 'jours'}`,
+	ago: (age) => `il y a ${age}`
+});
+```
+
+Words that depend on a number are functions. A prop that names the same thing — a `label`, an
+`emptyText` — still wins for that one instance. Dates and numbers already follow the viewer's
+locale through `Intl`. `ErrorPage` takes its titles and messages from its own `errorCopy` prop.
 
 ### Using darksite with Tailwind or another CSS framework
 

@@ -35,6 +35,7 @@ and a "Show all" link to the full history; never an unbounded list.
   of a collapsed row; default "N items"), `entry` snippet (custom rendering), `now`, `label`.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import SourceBadge from './SourceBadge.svelte';
 	import { formatExact, formatRelative, isCalendarDate, toDate } from '../time.js';
@@ -57,7 +58,7 @@ and a "Show all" link to the full history; never an unbounded list.
 		batchSummary = (list) => `${list.length.toLocaleString()} items`,
 		entry: custom,
 		now,
-		label = 'History',
+		label = strings.history,
 		class: className = ''
 	}: Props = $props();
 
@@ -95,7 +96,7 @@ and a "Show all" link to the full history; never an unbounded list.
 </script>
 
 {#snippet sentence(e: TimelineEntry, object: TimelinePart[])}
-	{#if e.source && !e.actor}<SourceBadge source={e.source} variant="suggestion" title="System: {e.source}" />{:else}<span
+	{#if e.source && !e.actor}<SourceBadge source={e.source} variant="suggestion" title={strings.system(e.source)} />{:else}<span
 			class="actor">{e.actor}</span
 		>{/if}
 	<span class="verb">{e.verb}</span>
@@ -133,7 +134,7 @@ and a "Show all" link to the full history; never an unbounded list.
 							onclick={() => (expanded[row.key] = !expanded[row.key])}
 						>
 							<ChevronRight size={14} aria-hidden="true" />
-							{expanded[row.key] ? 'Hide' : 'Show'} {row.items.length.toLocaleString()}
+							{expanded[row.key] ? strings.hideCount(row.items.length) : strings.showCount(row.items.length)}
 						</button>
 						{#if expanded[row.key]}
 							<ol class="batch" id="{uid}-batch-{row.key}">
@@ -150,7 +151,7 @@ and a "Show all" link to the full history; never an unbounded list.
 			</li>
 		{/each}
 	</ol>
-	{#if more && allHref}<a class="all" href={allHref}>Show all</a>{/if}
+	{#if more && allHref}<a class="all" href={allHref}>{strings.showAll}</a>{/if}
 </div>
 
 <style>

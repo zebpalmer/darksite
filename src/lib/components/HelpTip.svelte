@@ -11,6 +11,7 @@ screen. The note is placed beside the icon and kept inside the viewport.
   (`default` | `warning`), `size` (icon px, default 13), `placement` (`top` default | `bottom`).
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import { computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import Info from '@lucide/svelte/icons/info';
 	import type { IconComponent } from '../types.js';
@@ -27,7 +28,7 @@ screen. The note is placed beside the icon and kept inside the viewport.
 
 	let {
 		text,
-		label = 'More information',
+		label = strings.moreInformation,
 		icon: Icon = Info,
 		tone = 'default',
 		size = 13,

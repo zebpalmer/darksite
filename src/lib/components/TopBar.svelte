@@ -13,6 +13,7 @@ its flush geometry underneath, and publishes its height as `--ds-topbar-h`.
 If a control is not relevant on every page of the section, it belongs in that page's PageHeader.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { focusShortcut } from '../hotkeys.js';
 
@@ -27,7 +28,7 @@ If a control is not relevant on every page of the section, it belongs in that pa
 		class?: string;
 	}
 
-	let { start, search, actions, variant = 'default', sticky = false, label = 'Toolbar', searchKey = '/', class: className = '' }: Props =
+	let { start, search, actions, variant = 'default', sticky = false, label = strings.toolbar, searchKey = '/', class: className = '' }: Props =
 		$props();
 
 	let el: HTMLElement | undefined = $state();

@@ -14,6 +14,7 @@ behind does not scroll while it is open.
   (default `78dvh`), `side` (`bottom` | `right`), children (the body, which scrolls).
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import X from '@lucide/svelte/icons/x';
 	import Button from './Button.svelte';
@@ -103,7 +104,7 @@ behind does not scroll while it is open.
 			<span class="grab" aria-hidden="true"></span>
 			<div class="head">
 				<h2 id="{uid}-title">{title}</h2>
-				<Button variant="icon" label="Close" icon={X} onclick={() => close()} />
+				<Button variant="icon" label={strings.close} icon={X} onclick={() => close()} />
 			</div>
 			{#if description}<p id="{uid}-desc" class="desc">{description}</p>{/if}
 			<div class="body">{@render children()}</div>

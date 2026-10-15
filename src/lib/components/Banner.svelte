@@ -17,6 +17,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 - `role="status"` for info and warning, `role="alert"` for danger.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 	import Info from '@lucide/svelte/icons/info';
@@ -86,7 +87,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 		<p class="msg">{#if children}{@render children()}{:else}{message}{/if}</p>
 		{#if action}<span class="action">{@render action()}</span>{/if}
 		{#if canDismiss}
-			<Button variant="icon" size="dense" label="Dismiss" icon={X} onclick={dismiss} />
+			<Button variant="icon" size="dense" label={strings.dismiss} icon={X} onclick={dismiss} />
 		{/if}
 	</div>
 {/if}

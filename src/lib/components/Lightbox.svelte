@@ -24,6 +24,7 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 </script>
 
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { tick } from 'svelte';
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
@@ -57,7 +58,7 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 		items,
 		open = $bindable(false),
 		index = $bindable(0),
-		label = 'Image viewer',
+		label = strings.imageViewer,
 		loop = false,
 		zoom: zoomable = true,
 		maxZoom = 4,
@@ -337,8 +338,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 				<Button
 					variant="icon"
 					icon={Minus}
-					label="Zoom out"
-					title="Zoom out (−)"
+					label={strings.zoomOut}
+					title="{strings.zoomOut} (−)"
 					keycap="-"
 					disabled={scale <= 1}
 					onclick={() => zoomTo(scale / 1.5)}
@@ -346,14 +347,14 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 				<Button
 					variant="icon"
 					icon={Plus}
-					label="Zoom in"
-					title="Zoom in (+)"
+					label={strings.zoomIn}
+					title="{strings.zoomIn} (+)"
 					keycap="plus"
 					disabled={scale >= maxZoom}
 					onclick={() => zoomTo(scale * 1.5)}
 				/>
 			{/if}
-			<Button variant="icon" icon={X} label="Close" title="Close (Esc)" keycap="escape" onclick={close} />
+			<Button variant="icon" icon={X} label={strings.close} title="{strings.close} (Esc)" keycap="escape" onclick={close} />
 		</div>
 
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -372,7 +373,7 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 			{#if item}
 				{#key item.src}
 					{#if failed}
-						<p class="failed"><ImageOff size={24} aria-hidden="true" />Image unavailable</p>
+						<p class="failed"><ImageOff size={24} aria-hidden="true" />{strings.imageUnavailable}</p>
 					{:else}
 						<img
 							bind:this={img}
@@ -386,7 +387,7 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 							onload={() => (loaded = true)}
 							onerror={() => (failed = true)}
 						/>
-						{#if !loaded}<span class="loading"><Spinner size={24} label="Loading image" /></span>{/if}
+						{#if !loaded}<span class="loading"><Spinner size={24} label={strings.loadingImage} /></span>{/if}
 					{/if}
 				{/key}
 			{/if}
@@ -395,8 +396,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 					class="side prev"
 					variant="icon"
 					icon={ChevronLeft}
-					label="Previous image"
-					title="Previous image (←)"
+					label={strings.previousImage}
+					title="{strings.previousImage} (←)"
 					keycap="arrowleft"
 					disabled={!hasPrev}
 					onclick={() => go(-1)}
@@ -405,8 +406,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 					class="side next"
 					variant="icon"
 					icon={ChevronRight}
-					label="Next image"
-					title="Next image (→)"
+					label={strings.nextImage}
+					title="{strings.nextImage} (→)"
 					keycap="arrowright"
 					disabled={!hasNext}
 					onclick={() => go(1)}

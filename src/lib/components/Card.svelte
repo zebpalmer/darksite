@@ -13,6 +13,7 @@ as ★ n, display only.
   `data-*` / `aria-*` passthrough.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import Film from '@lucide/svelte/icons/film';
 	import Heart from '@lucide/svelte/icons/heart';
@@ -73,7 +74,7 @@ as ★ n, display only.
 		{#if kind === 'gallery' && imageCount}
 			<span class="pill"
 				><Images size={12} aria-hidden="true" />{imageCount.toLocaleString()}<span class="ds-sr-only">
-					images</span
+					{strings.images}</span
 				></span
 			>
 		{:else if duration}
@@ -81,7 +82,7 @@ as ★ n, display only.
 		{/if}
 		{#if favorite}
 			<span class="fav"><Heart size={14} fill="currentColor" aria-hidden="true" /><span class="ds-sr-only"
-					>Favorite</span
+					>{strings.favorite}</span
 				></span>
 		{/if}
 		{@render overlay?.()}
@@ -90,7 +91,7 @@ as ★ n, display only.
 	<span class="row">
 		<span class="title" title={title}>{title}</span>
 		{#if rating}<span class="rating"
-				><span aria-hidden="true">★ {rating}</span><span class="ds-sr-only">, rated {rating} of 5</span
+				><span aria-hidden="true">★ {rating}</span><span class="ds-sr-only">, {strings.rated(rating, 5)}</span
 				></span
 			>{/if}
 	</span>

@@ -43,6 +43,7 @@ Enter or Space activates, Esc closes and returns focus to the trigger, Tab close
 - `open` (bindable), `placement` (default `bottom-end`), `label` (the menu's accessible name).
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { tick, untrack } from 'svelte';
 	import { autoUpdate, computePosition, flip, offset, shift, type Placement } from '@floating-ui/dom';
@@ -237,7 +238,7 @@ Enter or Space activates, Esc closes and returns focus to the trigger, Tab close
 							<span class="icon">{#if entry.icon}<entry.icon size={16} aria-hidden="true" />{/if}</span>
 							<span class="label">{entry.label}</span>
 							{#if entry.needsNote}
-								<span class="note" title="Asks for a note"
+								<span class="note" title={strings.asksForNote}
 									><MessageSquareText size={14} aria-hidden="true" /><span class="ds-sr-only"
 										>(asks for a note)</span
 									></span

@@ -11,6 +11,7 @@ so color is never the only signal.
 Something that needs a Save is a Checkbox, not a Switch.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	interface Props {
 		checked?: boolean;
 		label: string;
@@ -30,8 +31,8 @@ Something that needs a Save is a Checkbox, not a Switch.
 		label,
 		hideLabel = false,
 		stateText = true,
-		onText = 'On',
-		offText = 'Off',
+		onText = strings.on,
+		offText = strings.off,
 		name,
 		disabled = false,
 		id,

@@ -23,6 +23,7 @@ note or reason holds one or two Fields in its children: Enter in a single-line f
 waits until the note is valid. Buttons in children must be `type="button"` (Button's default).
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { tick } from 'svelte';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
@@ -59,9 +60,9 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		open = $bindable(false),
 		title,
 		description,
-		confirmLabel = 'Confirm',
+		confirmLabel = strings.confirm,
 		confirmingLabel,
-		cancelLabel = 'Cancel',
+		cancelLabel = strings.cancel,
 		tone = 'danger',
 		onconfirm,
 		oncancel,

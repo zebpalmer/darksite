@@ -7,13 +7,14 @@ loading. `Table` and `FactList` render it for you.
 - `mark` (default "—"), `label` (what a screen reader hears; default "No value"), `class`.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	interface Props {
 		mark?: string;
 		label?: string;
 		class?: string;
 	}
 
-	let { mark = '—', label = 'No value', class: className = '' }: Props = $props();
+	let { mark = '—', label = strings.noValue, class: className = '' }: Props = $props();
 </script>
 
 <span class="ds-missing {className}"

@@ -12,6 +12,7 @@ is the view's choice.
 - Caps here are content, not hints: they always show, also with hints off and on phones.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import KeyCap from './KeyCap.svelte';
 	import { groupBindings, type HotkeyBinding, type HotkeyMap } from '../hotkeys.js';
 
@@ -29,7 +30,7 @@ is the view's choice.
 		order = [],
 		activeOnly = false,
 		columns = true,
-		label = 'Keyboard shortcuts',
+		label = strings.keyboardShortcuts,
 		class: className = ''
 	}: Props = $props();
 

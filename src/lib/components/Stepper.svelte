@@ -11,6 +11,7 @@ value is clamped and snapped to the step when it is committed (Enter or leaving 
   `width` (of the value field, CSS; default `6ch`), `name`, `id`, `class`.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import Minus from '@lucide/svelte/icons/minus';
 	import Plus from '@lucide/svelte/icons/plus';
 
@@ -114,7 +115,7 @@ value is clamped and snapped to the step when it is committed (Enter or leaving 
 			type="button"
 			class="btn"
 			tabindex="-1"
-			aria-label="Decrease"
+			aria-label={strings.decrease}
 			aria-controls={inputId}
 			disabled={disabled || (min !== undefined && value <= min)}
 			onclick={() => set(value - step)}><Minus size={16} aria-hidden="true" /></button
@@ -141,7 +142,7 @@ value is clamped and snapped to the step when it is committed (Enter or leaving 
 			type="button"
 			class="btn"
 			tabindex="-1"
-			aria-label="Increase"
+			aria-label={strings.increase}
 			aria-controls={inputId}
 			disabled={disabled || (max !== undefined && value >= max)}
 			onclick={() => set(value + step)}><Plus size={16} aria-hidden="true" /></button

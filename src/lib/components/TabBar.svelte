@@ -14,6 +14,7 @@ count up to 99.
 Pages must leave room for it: AppShell publishes its height as `--ds-chrome-bottom`.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
 
@@ -37,9 +38,9 @@ Pages must leave room for it: AppShell publishes its height as `--ds-chrome-bott
 		groups = [],
 		current,
 		primary,
-		moreLabel = 'More',
+		moreLabel = strings.more,
 		footer,
-		label = 'Primary',
+		label = strings.primaryNavigation,
 		class: className = ''
 	}: Props = $props();
 

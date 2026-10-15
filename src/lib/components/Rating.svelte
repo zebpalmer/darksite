@@ -11,6 +11,7 @@ value again clears it too. `readonly` is a display: one image named "4 of 5 star
   `aria-labelledby={f.labelId}` and `aria-describedby={f.describedBy}` so the Field names the group.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import Star from '@lucide/svelte/icons/star';
 
 	import Button from './Button.svelte';
@@ -55,7 +56,7 @@ value again clears it too. `readonly` is a display: one image named "4 of 5 star
 	const shown = $derived(readonly || disabled ? current : (hovered ?? current));
 	const buttons: HTMLButtonElement[] = $state([]);
 	const iconSize = $derived(size === 'dense' ? 16 : 20);
-	const summary = $derived(current ? `${current} of ${stars.length} stars` : 'Not rated');
+	const summary = $derived(current ? strings.stars(current, stars.length) : strings.notRated);
 
 	function set(next: number | null, focus = true) {
 		if (readonly || disabled) return;

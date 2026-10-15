@@ -30,6 +30,7 @@ mounted the column's padding is zero, and from 768px the shell locks to the view
 view fills what the Banner and TopBar leave and the document does not scroll.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import Search from '@lucide/svelte/icons/search';
 
@@ -82,7 +83,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		topBar,
 		headerActions,
 		headerActionsIcon = Search,
-		headerActionsLabel = 'Search',
+		headerActionsLabel = strings.search,
 		headerActionsKey = '/',
 		padded = true,
 		toaster = true,
@@ -126,7 +127,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 {/snippet}
 
 <div class="ds-appshell {className}">
-	<a class="skip" href="#ds-main">Skip to content</a>
+	<a class="skip" href="#ds-main">{strings.skipToContent}</a>
 	<div class="rail">
 		<NavRail
 			{items}

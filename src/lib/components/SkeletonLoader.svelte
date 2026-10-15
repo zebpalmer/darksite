@@ -11,6 +11,7 @@ SkeletonLoader — a placeholder with the same geometry as the real thing: ds-bg
   "Loading" by default; pass `null` when an ancestor already announces loading).
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import Grid from './Grid.svelte';
 
 	interface Props {
@@ -33,7 +34,7 @@ SkeletonLoader — a placeholder with the same geometry as the real thing: ds-bg
 		density,
 		min,
 		gap,
-		label = 'Loading',
+		label = strings.loading,
 		class: className = ''
 	}: Props = $props();
 

@@ -1,10 +1,13 @@
 // Dates and times. The rule: relative under seven days ("6 min ago"), an absolute date after that,
-// both in the viewer's locale and time zone, with the exact date, time and time zone in a tooltip.
+// in the viewer's locale and time zone, with the exact date, time and time zone in a tooltip. The
+// relative words ("ago", "days", "today") come from `strings`, so a product can translate them.
 //
 // Two kinds of value come in. A **timestamp** is an instant (`Date`, epoch milliseconds, or an ISO
 // string with a time). A **calendar date** is a day with no time or zone (`'2026-10-01'`): a due
 // date, a start date. JavaScript parses a bare `YYYY-MM-DD` as UTC midnight, which shows the day
 // before anywhere west of UTC; every function here reads it as that day wherever the viewer is.
+
+import { strings } from './strings.svelte.js';
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -85,11 +88,10 @@ export function formatDate(value: DateInput, options: DateOptions = {}): string 
 /** How long ago, compact: `6 min`, `3 h`, `12 days`. Under a minute is `<1 min`. */
 export function formatAge(since: DateInput, now: DateInput = Date.now()): string {
 	const ms = Math.max(0, toDate(now).getTime() - toDate(since).getTime());
-	if (ms < MINUTE) return '<1 min';
-	if (ms < HOUR) return `${Math.floor(ms / MINUTE)} min`;
-	if (ms < DAY) return `${Math.floor(ms / HOUR)} h`;
-	const days = Math.floor(ms / DAY);
-	return `${days} ${days === 1 ? 'day' : 'days'}`;
+	if (ms < MINUTE) return strings.underAMinute;
+	if (ms < HOUR) return strings.minutes(Math.floor(ms / MINUTE));
+	if (ms < DAY) return strings.hours(Math.floor(ms / HOUR));
+	return strings.days(Math.floor(ms / DAY));
 }
 
 /**
@@ -105,13 +107,13 @@ export function formatRelative(
 ): string {
 	if (isCalendarDate(at)) {
 		const days = Math.round((dayOf(now, timeZone).getTime() - dayOf(at).getTime()) / DAY);
-		if (days === 0) return 'today';
-		if (days > 0 && days < 7) return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+		if (days === 0) return strings.today;
+		if (days > 0 && days < 7) return strings.ago(strings.days(days));
 		return formatDate(at, { locale, timeZone, now });
 	}
 	const ms = toDate(now).getTime() - toDate(at).getTime();
-	if (ms < MINUTE && ms > -MINUTE) return 'just now';
-	if (ms > 0 && ms < 7 * DAY) return `${formatAge(at, now)} ago`;
+	if (ms < MINUTE && ms > -MINUTE) return strings.justNow;
+	if (ms > 0 && ms < 7 * DAY) return strings.ago(formatAge(at, now));
 	return formatDate(at, { locale, timeZone, now });
 }
 
@@ -176,9 +178,8 @@ export function daysUntil(due: DateInput, now: DateInput = Date.now()): number {
 /** Against a due date: `in 3 days`, `in 1 day`, `due today`, `1 day overdue`, `2 days overdue`. */
 export function formatDue(due: DateInput, now: DateInput = Date.now()): string {
 	const n = daysUntil(due, now);
-	const days = (k: number) => `${k} ${k === 1 ? 'day' : 'days'}`;
-	if (n === 0) return 'due today';
-	return n > 0 ? `in ${days(n)}` : `${days(-n)} overdue`;
+	if (n === 0) return strings.dueToday;
+	return n > 0 ? strings.inTime(strings.days(n)) : strings.overdue(strings.days(-n));
 }
 
 /** The exact due date for a tooltip: a bare date is the date alone, a timestamp `formatExact`. */

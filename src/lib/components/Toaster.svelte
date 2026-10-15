@@ -15,6 +15,7 @@ While a Dialog or Sheet is open the queue moves into it (`topmost`), so a toast 
 usable above the modal instead of turning inert behind it. `topmost={false}` opts out.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import CircleCheck from '@lucide/svelte/icons/circle-check';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import Info from '@lucide/svelte/icons/info';
@@ -95,7 +96,7 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 	<div class="ds-toaster-layer" {@attach topmost ? toTopmost : undefined}>
 	<div class="ds-sr-only" role="status" aria-live="polite" aria-atomic="true">{polite}</div>
 	<div class="ds-sr-only" role="alert" aria-live="assertive" aria-atomic="true">{assertive}</div>
-	<ol class="ds-toaster" aria-label="Notifications">
+	<ol class="ds-toaster" aria-label={strings.notifications}>
 		{#each store.items as t (t.id)}
 			{@const Icon = icons[t.tone]}
 			<li
@@ -116,7 +117,7 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 							{#if t.action.keycap}<KeyCap keys={t.action.keycap} decorative />{/if}
 						</button>
 					{/if}
-					<button type="button" class="close" aria-label="Dismiss" onclick={() => store.dismiss(t.id)}>
+					<button type="button" class="close" aria-label={strings.dismiss} onclick={() => store.dismiss(t.id)}>
 						<X size={14} aria-hidden="true" />
 					</button>
 				</div>

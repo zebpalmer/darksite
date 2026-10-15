@@ -18,6 +18,7 @@ touch screens, where swiping is native.
   "See all"), `class`.
 -->
 <script lang="ts" generics="T">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { tick } from 'svelte';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
@@ -53,7 +54,7 @@ touch screens, where swiping is native.
 		level = 2,
 		count,
 		href,
-		seeAllLabel = 'See all',
+		seeAllLabel = strings.seeAll,
 		label,
 		density,
 		min,

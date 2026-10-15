@@ -14,6 +14,7 @@ It carries the infinite-scroll sentinel: with `hasMore`, an observer 800px ahead
   `onLayout(rows)`, `class`.
 -->
 <script lang="ts" generics="T">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 
 	import Spinner from './Spinner.svelte';
@@ -46,7 +47,7 @@ It carries the infinite-scroll sentinel: with `hasMore`, an observer 800px ahead
 		hasMore = false,
 		loadingMore = false,
 		onLoadMore,
-		label = 'Images',
+		label = strings.imageGrid,
 		onLayout,
 		class: className = ''
 	}: Props = $props();
@@ -88,7 +89,7 @@ It carries the infinite-scroll sentinel: with `hasMore`, an observer 800px ahead
 		{/each}
 	</div>
 	{#if hasMore}<div bind:this={sentinel} class="sentinel" aria-hidden="true"></div>{/if}
-	{#if loadingMore}<div class="more"><Spinner size={16} label="Loading more" /></div>{/if}
+	{#if loadingMore}<div class="more"><Spinner size={16} label={strings.loadingMore} /></div>{/if}
 </div>
 
 <style>

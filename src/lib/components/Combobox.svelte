@@ -23,6 +23,7 @@ the list is open.
   `openOnFocus`, `emptyText`, `element` (bindable), `trailing` snippet, `class`.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { autoUpdate, computePosition, flip, offset, size as sizeTo } from '@floating-ui/dom';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
@@ -61,7 +62,7 @@ the list is open.
 		onselect,
 		clearOnSelect = true,
 		oncreate,
-		createLabel = (text: string) => `Create "${text}"`,
+		createLabel = strings.create,
 		oninput,
 		filter = true,
 		loading = false,
@@ -73,7 +74,7 @@ the list is open.
 		disabled = false,
 		size = 'default',
 		openOnFocus = false,
-		emptyText = 'No matches',
+		emptyText = strings.noMatches,
 		element = $bindable(),
 		trailing,
 		class: className = ''
@@ -104,7 +105,7 @@ the list is open.
 		!open || loading
 			? ''
 			: shown.length
-				? `${shown.length} ${shown.length === 1 ? 'option' : 'options'}`
+				? strings.optionCount(shown.length)
 				: canCreate
 					? createLabel(text)
 					: emptyText
@@ -230,13 +231,13 @@ the list is open.
 		{onkeydown}
 	/>
 	<span class="end">
-		{#if loading}<Spinner size={14} label="Searching" />{/if}
+		{#if loading}<Spinner size={14} label={strings.searching} />{/if}
 		{@render trailing?.()}
 		<button
 			type="button"
 			class="chevron"
 			tabindex="-1"
-			aria-label={open ? 'Hide options' : 'Show options'}
+			aria-label={open ? strings.hideOptions : strings.showOptions}
 			{disabled}
 			onmousedown={(e) => e.preventDefault()}
 			onclick={() => {
@@ -280,7 +281,7 @@ the list is open.
 			</li>
 		{/each}
 		{#if !shown.length && !canCreate}
-			<li class="empty" role="presentation" aria-hidden="true">{loading ? 'Searching…' : emptyText}</li>
+			<li class="empty" role="presentation" aria-hidden="true">{loading ? strings.searching : emptyText}</li>
 		{/if}
 		{#if canCreate}
 			{#if shown.length}<li class="sep" role="presentation"></li>{/if}

@@ -70,6 +70,7 @@ paging is "Load more" below the table (docs/layout.md, "Long lists"). Bulk actio
 belong in the pane's ActionBar.
 -->
 <script lang="ts" generics="T">
+	import { strings } from '../strings.svelte.js';
 	import ArrowDown from '@lucide/svelte/icons/arrow-down';
 	import ArrowUp from '@lucide/svelte/icons/arrow-up';
 	import ArrowUpDown from '@lucide/svelte/icons/arrow-up-down';
@@ -324,7 +325,7 @@ belong in the pane's ActionBar.
 			<td class="sel">
 				<Checkbox
 					hideLabel
-					label="Select row"
+					label={strings.selectRow}
 					checked={selected.has(keys[index])}
 					onclick={(event) => clickRowCheckbox(event, index)}
 				/>
@@ -367,7 +368,7 @@ belong in the pane's ActionBar.
 					<th class="sel" scope="col">
 						<Checkbox
 							hideLabel
-							label="Select all rows"
+							label={strings.selectAllRows}
 							checked={headerChecked}
 							disabled={loading || rows.length === 0}
 							onchange={toggleAll}
@@ -417,7 +418,7 @@ belong in the pane's ActionBar.
 				{:else if view.length === 0}
 					<tr class="empty">
 						<td colspan={span}>
-							{#if empty}{@render empty()}{:else}<EmptyState title="Nothing to show" />{/if}
+							{#if empty}{@render empty()}{:else}<EmptyState title={strings.nothingToShow} />{/if}
 						</td>
 					</tr>
 				{:else}

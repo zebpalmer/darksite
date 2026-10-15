@@ -1,3 +1,4 @@
+import { strings } from './strings.svelte.js';
 import type { IconComponent } from './types.js';
 
 /** One destination. Every navigation surface — rail, tab bar, More sheet, side nav — reads the
@@ -41,7 +42,7 @@ export function groupItems(
 
 /** What a screen reader hears after the label for a badge: `, 12`, or `, new` for a dot. The visible
  *  badge is hidden from assistive technology so it is not read twice. */
-export function badgeSpoken(text: string | null, dotLabel = 'new'): string {
+export function badgeSpoken(text: string | null, dotLabel = strings.newBadge): string {
 	if (text === null) return '';
 	return `, ${text === '' ? dotLabel : text}`;
 }

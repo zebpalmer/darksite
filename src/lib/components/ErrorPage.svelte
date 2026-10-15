@@ -53,6 +53,7 @@ and at most two actions (Try again, Go home). One centered column, vertically ce
   `class`.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import CloudOff from '@lucide/svelte/icons/cloud-off';
@@ -83,7 +84,7 @@ and at most two actions (Try again, Go home). One centered column, vertically ce
 		message,
 		onretry,
 		homeHref,
-		homeLabel = 'Go home',
+		homeLabel = strings.goHome,
 		actions,
 		detail,
 		icon,
@@ -117,7 +118,7 @@ and at most two actions (Try again, Go home). One centered column, vertically ce
 				{:else}
 					{#if homeHref}<Button href={homeHref} icon={House}>{homeLabel}</Button>{/if}
 					{#if onretry}<Button variant="primary" icon={RefreshCw} onclick={onretry}
-							>Try again</Button
+							>{strings.tryAgain}</Button
 						>{/if}
 				{/if}
 			</div>

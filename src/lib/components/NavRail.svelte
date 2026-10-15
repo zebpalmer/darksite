@@ -37,6 +37,7 @@ Items come from the one navigation list (`NavItem[]`). Items a role cannot use a
 that list, not disabled.
 -->
 <script lang="ts">
+	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 	import PanelLeftClose from '@lucide/svelte/icons/panel-left-close';
@@ -77,7 +78,7 @@ that list, not disabled.
 		badge: badgeSlot,
 		pinned = false,
 		version,
-		label = 'Primary',
+		label = strings.primaryNavigation,
 		class: className = ''
 	}: Props = $props();
 
@@ -186,7 +187,7 @@ that list, not disabled.
 		{#if !pinned}
 			<Button
 				variant="icon"
-				label={open ? 'Collapse navigation' : 'Expand navigation'}
+				label={open ? strings.collapseNavigation : strings.expandNavigation}
 				icon={open ? PanelLeftClose : PanelLeftOpen}
 				onclick={toggle}
 			/>
