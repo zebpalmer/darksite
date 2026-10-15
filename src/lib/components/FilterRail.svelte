@@ -9,9 +9,14 @@ Pair it with ActiveFilters above the results, so a collapsed rail never hides wh
 keep the state in the URL (`filtersToParams` / `filtersFromParams`) so a filtered view can be
 linked and survives a reload.
 
-- `sections` (`{ key, label, options: { value, label, count? }[], multiple? }[]`), `value`
-  (bindable: selected values per section key), `collapsed` (bindable), `title` (default
-  "Filters"), `onchange(value)`.
+- `sections` (`{ key, label, type?, options?, multiple?, placeholder?, labelFor?, onsearch?,
+  loading?, strict? }[]`), `value` (bindable: selected values per section key), `collapsed`
+  (bindable), `title` (default "Filters"), `onchange(value)`.
+- Section types: `options` (default; checkboxes, or radios with `multiple: false`), `text` (one
+  free-text value, applied on Enter or when the field is left), `search` (a Combobox over the
+  options, for a long list such as owners; chosen values show as removable chips).
+- A selected value the options do not list (a linked URL, options still loading) stays selected
+  and is shown, labelled by `labelFor(value)` or the value itself.
 -->
 <script lang="ts">
 	import ListFilter from '@lucide/svelte/icons/list-filter';
@@ -19,9 +24,18 @@ linked and survives a reload.
 
 	import Button from './Button.svelte';
 	import Checkbox from './Checkbox.svelte';
+	import Chip from './Chip.svelte';
+	import Combobox from './Combobox.svelte';
+	import Input from './Input.svelte';
 	import Radio from './Radio.svelte';
 	import Sheet from './Sheet.svelte';
-	import { countActive, type FilterSection, type FilterValue } from '../filters.js';
+	import {
+		countActive,
+		filterLabel,
+		unlistedValues,
+		type FilterSection,
+		type FilterValue
+	} from '../filters.js';
 
 	interface Props {
 		sections: readonly FilterSection[];
@@ -66,6 +80,28 @@ linked and survives a reload.
 		set(next);
 	}
 
+	function setText(section: FilterSection, text: string) {
+		const t = text.trim();
+		if ((value[section.key]?.[0] ?? '') === t) return;
+		pick(section, t);
+	}
+
+	function add(section: FilterSection, option: string) {
+		if (section.multiple === false) pick(section, option);
+		else toggle(section, option, true);
+	}
+
+	function choices(section: FilterSection) {
+		const chosen = new Set(value[section.key] ?? []);
+		return (section.options ?? [])
+			.filter((o) => !chosen.has(o.value))
+			.map((o) => ({
+				value: o.value,
+				label: o.label,
+				meta: o.count === undefined ? undefined : o.count.toLocaleString()
+			}));
+	}
+
 	function clearAll() {
 		set({});
 	}
@@ -73,41 +109,82 @@ linked and survives a reload.
 
 {#snippet controls(prefix: string)}
 	{#each sections as section (section.key)}
-		<fieldset class="section">
-			<legend>{section.label}</legend>
-			{#if section.multiple === false}
-				<Radio
-					name="{prefix}-{section.key}"
-					value=""
-					label="Any"
-					group={value[section.key]?.[0] ?? ''}
-					onchange={() => pick(section, '')}
+		{@const fieldId = `${prefix}-${section.key}`}
+		{#if section.type === 'text'}
+			<div class="section">
+				<label class="legend" for={fieldId}>{section.label}</label>
+				<Input
+					id={fieldId}
+					type="search"
+					value={value[section.key]?.[0] ?? ''}
+					placeholder={section.placeholder}
+					autocomplete="off"
+					onchange={(e) => setText(section, e.currentTarget.value)}
+					oninput={(e) => e.currentTarget.value === '' && setText(section, '')}
 				/>
-				{#each section.options as option (option.value)}
-					<span class="option">
-						<Radio
-							name="{prefix}-{section.key}"
-							value={option.value}
-							label={option.label}
-							group={value[section.key]?.[0] ?? ''}
-							onchange={() => pick(section, option.value)}
-						/>
-						{#if option.count !== undefined}<span class="count">{option.count.toLocaleString()}</span>{/if}
-					</span>
-				{/each}
-			{:else}
-				{#each section.options as option (option.value)}
-					<span class="option">
-						<Checkbox
-							label={option.label}
-							checked={value[section.key]?.includes(option.value) ?? false}
-							onchange={(on) => toggle(section, option.value, on)}
-						/>
-						{#if option.count !== undefined}<span class="count">{option.count.toLocaleString()}</span>{/if}
-					</span>
-				{/each}
-			{/if}
-		</fieldset>
+			</div>
+		{:else if section.type === 'search'}
+			<div class="section">
+				<label class="legend" for={fieldId}>{section.label}</label>
+				<Combobox
+					id={fieldId}
+					items={choices(section)}
+					placeholder={section.placeholder}
+					filter={!section.onsearch}
+					oninput={section.onsearch}
+					loading={section.loading}
+					onselect={(item) => add(section, item.value)}
+				/>
+				{#if value[section.key]?.length}
+					<div class="chosen">
+						{#each value[section.key] as v (v)}
+							<Chip
+								removable
+								removeLabel="Remove {section.label}: {filterLabel(section, v)}"
+								onremove={() => toggle(section, v, false)}>{filterLabel(section, v)}</Chip
+							>
+						{/each}
+					</div>
+				{/if}
+			</div>
+		{:else}
+			{@const unlisted = unlistedValues(section, value)}
+			<fieldset class="section">
+				<legend>{section.label}</legend>
+				{#if section.multiple === false}
+					<Radio
+						name="{prefix}-{section.key}"
+						value=""
+						label="Any"
+						group={value[section.key]?.[0] ?? ''}
+						onchange={() => pick(section, '')}
+					/>
+					{#each [...(section.options ?? []), ...unlisted.map( (v) => ({ value: v, label: filterLabel(section, v), count: undefined }) )] as option (option.value)}
+						<span class="option">
+							<Radio
+								name="{prefix}-{section.key}"
+								value={option.value}
+								label={option.label}
+								group={value[section.key]?.[0] ?? ''}
+								onchange={() => pick(section, option.value)}
+							/>
+							{#if option.count !== undefined}<span class="count">{option.count.toLocaleString()}</span>{/if}
+						</span>
+					{/each}
+				{:else}
+					{#each [...(section.options ?? []), ...unlisted.map( (v) => ({ value: v, label: filterLabel(section, v), count: undefined }) )] as option (option.value)}
+						<span class="option">
+							<Checkbox
+								label={option.label}
+								checked={value[section.key]?.includes(option.value) ?? false}
+								onchange={(on) => toggle(section, option.value, on)}
+							/>
+							{#if option.count !== undefined}<span class="count">{option.count.toLocaleString()}</span>{/if}
+						</span>
+					{/each}
+				{/if}
+			</fieldset>
+		{/if}
 	{/each}
 {/snippet}
 
@@ -217,11 +294,22 @@ linked and survives a reload.
 		padding: 10px 0 0;
 		border: 0;
 	}
-	legend {
+	legend,
+	.legend {
 		padding: 10px 0 2px;
 		color: var(--ds-text-2);
 		font-size: var(--ds-text-sm);
 		font-weight: 500;
+	}
+	.legend {
+		display: block;
+		padding-bottom: 6px;
+	}
+	.chosen {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		padding-top: 8px;
 	}
 	.option {
 		display: flex;

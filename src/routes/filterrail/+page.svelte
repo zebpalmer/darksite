@@ -12,14 +12,21 @@
 		type TableColumn
 	} from '#lib';
 
-	type Row = { id: string; name: string; status: string; owner: string };
+	type Row = { id: string; name: string; status: string; owner: string; assignee: string };
 	const statuses = ['ready', 'hold', 'progress'];
 	const owners = ['field', 'ops'];
 	const all: Row[] = Array.from({ length: 30 }, (_, i) => ({
 		id: `r${i}`,
 		name: `Record ${String(i + 1).padStart(3, '0')}`,
 		status: statuses[i % 3],
-		owner: owners[i % 2]
+		owner: owners[i % 2],
+		assignee: `u-${(i % 12) + 1}`
+	}));
+	const people = Array.from({ length: 12 }, (_, i) => ({
+		value: `u-${i + 1}`,
+		label:
+			['A. Rivera', 'M. Lund', 'J. Okafor', 'S. Brandt', 'K. Imai', 'L. Moreau'][i % 6] +
+			` ${i + 1}`
 	}));
 	const sections: FilterSection[] = [
 		{
@@ -39,10 +46,20 @@
 				{ value: 'field', label: 'Field team', count: 15 },
 				{ value: 'ops', label: 'Ops desk', count: 15 }
 			]
+		},
+		{ key: 'q', label: 'Name contains', type: 'text', placeholder: 'Record 01' },
+		{
+			key: 'assignee',
+			label: 'Assignee',
+			type: 'search',
+			placeholder: 'Search people',
+			options: people,
+			// A linked value that is not in the list keeps its place, with a readable label.
+			labelFor: (v) => (v.startsWith('u-') ? `Person ${v.slice(2)}` : undefined)
 		}
 	];
 	const label = (key: string, v: string) =>
-		sections.find((s) => s.key === key)?.options.find((o) => o.value === v)?.label ?? v;
+		sections.find((s) => s.key === key)?.options?.find((o) => o.value === v)?.label ?? v;
 	const columns: TableColumn<Row>[] = [
 		{ key: 'name', label: 'Name' },
 		{ key: 'status', label: 'Status', value: (r) => label('status', r.status) },
@@ -62,7 +79,9 @@
 		all.filter(
 			(r) =>
 				(!value.status?.length || value.status.includes(r.status)) &&
-				(!value.owner?.length || value.owner.includes(r.owner))
+				(!value.owner?.length || value.owner.includes(r.owner)) &&
+				(!value.q?.length || r.name.toLowerCase().includes(value.q[0].toLowerCase())) &&
+				(!value.assignee?.length || value.assignee.includes(r.assignee))
 		)
 	);
 </script>

@@ -55,7 +55,77 @@ describe('FilterRail', () => {
 	});
 });
 
+describe('FilterRail section types', () => {
+	const people = [
+		{ value: 'u-1', label: 'A. Rivera' },
+		{ value: 'u-2', label: 'M. Lund' }
+	];
+	const typed: FilterSection[] = [
+		{ key: 'q', label: 'Name contains', type: 'text' },
+		{ key: 'assignee', label: 'Assignee', type: 'search', options: people, labelFor: (v) => `Person ${v}` }
+	];
+
+	it('applies free text on change and clears it when emptied', async () => {
+		const onchange = vi.fn();
+		render(FilterRail, { sections: typed, onchange });
+		const rail = screen.getByRole('complementary', { name: 'Filters' });
+		const box = within(rail).getByLabelText('Name contains') as HTMLInputElement;
+		await fireEvent.input(box, { target: { value: '  alpha ' } });
+		expect(onchange).not.toHaveBeenCalled();
+		await fireEvent.change(box);
+		expect(onchange).toHaveBeenLastCalledWith({ q: ['alpha'] });
+		await fireEvent.input(box, { target: { value: '' } });
+		expect(onchange).toHaveBeenLastCalledWith({});
+	});
+
+	it('picks values with a combobox and shows them as removable chips', async () => {
+		const onchange = vi.fn();
+		render(FilterRail, { sections: typed, onchange });
+		const rail = screen.getByRole('complementary', { name: 'Filters' });
+		const box = within(rail).getByRole('combobox', { name: 'Assignee' });
+		await fireEvent.focus(box);
+		await fireEvent.input(box, { target: { value: 'Lund' } });
+		await fireEvent.keyDown(box, { key: 'ArrowDown' });
+		await fireEvent.keyDown(box, { key: 'Enter' });
+		expect(onchange).toHaveBeenLastCalledWith({ assignee: ['u-2'] });
+		await fireEvent.click(within(rail).getByRole('button', { name: 'Remove Assignee: M. Lund' }));
+		expect(onchange).toHaveBeenLastCalledWith({});
+	});
+
+	it('keeps a value its options do not list, checked, with a readable label', async () => {
+		const onchange = vi.fn();
+		render(FilterRail, {
+			sections: [{ ...sections[0], labelFor: (v: string) => (v === 'archived' ? 'Archived' : undefined) }],
+			value: { status: ['archived', 'ready'] },
+			onchange
+		});
+		const rail = screen.getByRole('complementary', { name: 'Filters' });
+		const extra = within(rail).getByRole('checkbox', { name: 'Archived' }) as HTMLInputElement;
+		expect(extra.checked).toBe(true);
+		await fireEvent.click(extra);
+		expect(onchange).toHaveBeenLastCalledWith({ status: ['ready'] });
+	});
+
+	it('shows an unlisted search value by its fallback label', () => {
+		render(FilterRail, { sections: typed, value: { assignee: ['u-9'] } });
+		const rail = screen.getByRole('complementary', { name: 'Filters' });
+		expect(within(rail).getByRole('button', { name: 'Remove Assignee: Person u-9' })).toBeTruthy();
+	});
+});
+
 describe('ActiveFilters', () => {
+	it('labels unlisted values readably and quotes free text', () => {
+		render(ActiveFilters, {
+			sections: [
+				{ ...sections[0], labelFor: () => 'Archived' },
+				{ key: 'q', label: 'Name', type: 'text' }
+			],
+			value: { status: ['archived'], q: ['alpha'] }
+		});
+		expect(screen.getByRole('button', { name: 'Remove Status: Archived' })).toBeTruthy();
+		expect(screen.getByRole('button', { name: 'Remove Name: "alpha"' })).toBeTruthy();
+	});
+
 	it('shows each applied filter as a removable chip', async () => {
 		const onchange = vi.fn();
 		render(ActiveFilters, { sections, value: { status: ['ready', 'hold'] }, onchange });

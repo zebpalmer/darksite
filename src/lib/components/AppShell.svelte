@@ -18,6 +18,10 @@ in place.
   `badge` slots and `pinned`; `railExpanded` (bindable).
 - `banner`, `topBar` snippets; `padded` (default true — false hands the column to a work view
   that lays out its own panes); `toaster` (default true); children (the page).
+
+A page that renders a `WorkView` gets the work-view frame without touching `padded`: while one is
+mounted the column's padding is zero, and from 768px the shell locks to the viewport so the work
+view fills what the Banner and TopBar leave and the document does not scroll.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -143,6 +147,29 @@ in place.
 		--ds-pad-top: 20px;
 		--ds-pad-x: 24px;
 		padding: var(--ds-pad-top) var(--ds-pad-x) calc(var(--ds-pad-top) + var(--ds-chrome-bottom));
+	}
+	/* A work view takes the column: no padding at any width, and from the phone breakpoint up the
+	   shell locks to the viewport so the WorkView fills what the Banner and TopBar leave. */
+	.ds-appshell .main:has(:global(.ds-workview)) {
+		--ds-pad-top: 0px;
+		--ds-pad-x: 0px;
+		padding: 0 0 var(--ds-chrome-bottom);
+	}
+	@media (min-width: 768px) {
+		.ds-appshell:has(:global(.ds-workview)) {
+			grid-template-rows: minmax(0, 1fr);
+			height: 100dvh;
+			min-height: 0;
+			overflow: hidden;
+		}
+		.ds-appshell:has(:global(.ds-workview)) .column {
+			min-height: 0;
+		}
+		.main:has(:global(.ds-workview)) {
+			display: flex;
+			flex-direction: column;
+			min-height: 0;
+		}
 	}
 	.skip {
 		position: fixed;

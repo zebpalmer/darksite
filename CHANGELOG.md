@@ -6,6 +6,31 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `WorkView`: the work-view frame — `header` (a PageHeader), `rail` (a FilterRail) beside the
+  results, `top` (ActiveFilters), the results as the one scroller (a Table placed in it becomes
+  the scroller, so its header sticks) and `footer` (an ActionBar). Below 768px the document
+  scrolls, the rail is the FilterRail's Filters button and the footer sticks above the tab bar.
+- `AppShell` hands the content column to a mounted `WorkView`: zero padding at every width, and
+  from 768px the shell locks to the viewport so the WorkView fills what the Banner and TopBar
+  leave — no height arithmetic or negative margins in pages.
+- `FilterRail` section types: `type: 'text'` (one free-text value, applied on Enter or blur) and
+  `type: 'search'` (a Combobox over the options, with chosen values as removable chips, and
+  `onsearch` / `loading` for server search). Sections also take `placeholder`, `labelFor` and
+  `strict`.
+- `filterLabel(section, value)` and `unlistedValues(section, value)`.
+
+### Changed
+
+- `filtersFromParams` keeps URL values a section's options do not list instead of dropping them
+  (a linked view keeps its filters while options are partial or loading); `strict: true` on a
+  section restores dropping. It also trims values, drops empty ones, and keeps one value for a
+  `text` section. `FilterRail` shows such values as checked rows and `ActiveFilters` as chips,
+  labelled by `labelFor(value)` or the value itself; free text is quoted in its chip.
+- `FilterSection.options` is optional (a `text` section has none); code that reads
+  `section.options` directly needs `?? []`.
+
 ## [0.7.0] — 2026-10-14
 
 ### Added

@@ -25,6 +25,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Actions on one thing | `Menu` | A detail page's Actions, a row's overflow. A danger item opens a `Dialog`; a disabled one keeps its reason. |
 | Reference info beside the work | `Popover` | A hotkey legend, saved views, the account menu. Non-modal; Esc closes; becomes a Sheet on phones. |
 | Filters beside a list | `FilterRail` + `ActiveFilters` | Collapses rather than shrinks; a Sheet on phones; state in the URL. |
+| Filter by free text, or by one of many | `FilterRail` section `type: 'text'` / `type: 'search'` | Text applies on Enter or blur; search is a Combobox with chips. Unlisted URL values stay, with `labelFor`. |
+| A whole work view | `WorkView` | PageHeader, a rail beside the results, the results as the one scroller, an ActionBar. Sizes itself inside `AppShell`. |
 | A system-wide condition | `Banner` | Above the TopBar, pushing content down. Danger is never dismissible. |
 | Filters, sort, any choice on touch | `Sheet` + `SheetItem` | Replaces Popover and Dialog under 768px. 44px rows. |
 | Edit a record | `Sheet side="right"` | A drawer at ≥768px, a bottom sheet below. Footer: Cancel (secondary) then Save (primary), right-aligned. |

@@ -3,12 +3,13 @@
 ActiveFilters — the applied filters as removable Chips above the results, so a collapsed rail (or
 a phone, where the rail is a Sheet) never hides what is on. Renders nothing when no filter is on.
 
-- `sections`, `value` (bindable — the same as the FilterRail's), `onchange(value)`.
+- `sections`, `value` (bindable — the same as the FilterRail's), `onchange(value)`. A value the
+  section's options do not list is shown by `labelFor(value)` or as it is; free text is quoted.
 -->
 <script lang="ts">
 	import Button from './Button.svelte';
 	import Chip from './Chip.svelte';
-	import { countActive, type FilterSection, type FilterValue } from '../filters.js';
+	import { countActive, filterLabel, type FilterSection, type FilterValue } from '../filters.js';
 
 	interface Props {
 		sections: readonly FilterSection[];
@@ -24,7 +25,7 @@ a phone, where the rail is a Sheet) never hides what is on. Renders nothing when
 			(value[section.key] ?? []).map((v) => ({
 				section,
 				value: v,
-				label: section.options.find((o) => o.value === v)?.label ?? v
+				label: section.type === 'text' ? `"${v}"` : filterLabel(section, v)
 			}))
 		)
 	);
