@@ -27,7 +27,12 @@ and in `aria-keyshortcuts` either way.
 for a viewer who may not assign them), `keycaps` (show 1–5 as key caps; binding the keys is the
 page's job), `counts` (per stop, for a bulk action),
 `columns` (`auto` | `5` | `3`), `controlled` (the picker keeps no click of its own: it shows
-`value`, and a click only calls `onchange` — for a `value` the parent derives), `label`, `class`.
+`value`, and a click only calls `onchange` — for a `value` the parent derives), `label`, `id`,
+`aria-labelledby`, `aria-describedby`, `class`.
+
+In a `Field`, let the Field's label name it: pass `id={f.id}`, `aria-labelledby={f.labelId}` and
+`aria-describedby={f.describedBy}`. A `<label for>` names only a single native control, so a group
+needs the label's id instead.
 
 ## Don't
 

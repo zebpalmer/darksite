@@ -10,7 +10,8 @@ its own width: key caps hide first, then the row folds to a 3-column grid, never
 
 - `value` (bindable; `null` is unset), `onchange(severity)`, `suggested`, `max` (stops above it
   are hidden, not disabled), `keycaps` (show 1–5 as key caps), `counts` (per stop), `columns`
-  (`auto` | `5` | `3`), `controlled` (a click only calls `onchange`), `label`, `class`.
+  (`auto` | `5` | `3`), `controlled` (a click only calls `onchange`), `label`, `class`; in a Field,
+  `id`, `aria-labelledby={f.labelId}` and `aria-describedby={f.describedBy}`.
 -->
 <script lang="ts">
 	import ScalePicker from './ScalePicker.svelte';
@@ -26,6 +27,9 @@ its own width: key caps hide first, then the row folds to a 3-column grid, never
 		columns?: 'auto' | 5 | 3;
 		controlled?: boolean;
 		label?: string;
+		id?: string;
+		'aria-labelledby'?: string;
+		'aria-describedby'?: string;
 		class?: string;
 	}
 

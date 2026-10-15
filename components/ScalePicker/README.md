@@ -38,7 +38,12 @@ stops above it are **hidden, not disabled**; the unknown stop is never above a c
 `keycaps` (show 1–*n* and the unknown key, `0` by default; binding the keys is the page's job —
 `scale.fromKey(key, max)` maps them), `counts` (per stop, for a bulk action), `columns` (`auto`
 | a fixed number), `controlled` (a click only calls `onchange`, for a `value` the parent derives),
-`label` (the group's name; default the scale's `name`), `class`.
+`label` (the group's name; default the scale's `name`), `id`, `aria-labelledby`,
+`aria-describedby`, `class`.
+
+In a `Field`, let the Field's label name it: pass `id={f.id}`, `aria-labelledby={f.labelId}` and
+`aria-describedby={f.describedBy}`. A `<label for>` names only a single native control, so a group
+needs the label's id instead.
 
 ## Don't
 

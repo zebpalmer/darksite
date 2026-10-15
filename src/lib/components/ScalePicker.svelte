@@ -15,7 +15,8 @@ truncating names.
 - `scale`, `value` (bindable; `null` is unset), `onchange(value)`, `suggested`, `max` (stops
   above it are hidden, not disabled; unknown stays), `keycaps` (show 1–9, and the unknown key),
   `counts` (per stop), `columns` (`auto` | a number), `controlled` (a click only calls
-  `onchange`), `label` (default: the scale's name), `class`.
+  `onchange`), `label` (default: the scale's name), `class`. In a Field, pass `id`,
+  `aria-labelledby={f.labelId}` and `aria-describedby={f.describedBy}` so the Field names it.
 -->
 <script lang="ts" generics="V extends string">
 	import KeyCap from './KeyCap.svelte';
@@ -32,6 +33,9 @@ truncating names.
 		columns?: 'auto' | number;
 		controlled?: boolean;
 		label?: string;
+		id?: string;
+		'aria-labelledby'?: string;
+		'aria-describedby'?: string;
 		class?: string;
 	}
 
@@ -46,6 +50,9 @@ truncating names.
 		columns = 'auto',
 		controlled = false,
 		label,
+		id,
+		'aria-labelledby': labelledBy,
+		'aria-describedby': describedBy,
 		class: className = ''
 	}: Props = $props();
 
@@ -82,7 +89,10 @@ truncating names.
 	<div
 		class="row"
 		role="radiogroup"
-		aria-label={label ?? scale.name}
+		{id}
+		aria-label={labelledBy ? undefined : (label ?? scale.name)}
+		aria-labelledby={labelledBy}
+		aria-describedby={describedBy}
 		tabindex="-1"
 		style:--n={stops.length}
 		style:--cols={columns === 'auto' ? undefined : columns}

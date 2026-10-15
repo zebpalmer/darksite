@@ -22,7 +22,12 @@ buttons and no hover. `showValue` adds a `4/5` readout in `meta` `ds-text-3`.
 ## What the consumer provides
 
 `value` (bindable; `null` is unrated), `max`, `label` (required), `onchange(value)`, `readonly`,
-`disabled`, `clearable`, `clearLabel`, `size` (`dense` | `default`), `showValue`, `class`.
+`disabled`, `clearable`, `clearLabel`, `size` (`dense` | `default`), `showValue`, `id`,
+`aria-labelledby`, `aria-describedby`, `class`.
+
+In a `Field`, let the Field's label name it: pass `id={f.id}`, `aria-labelledby={f.labelId}` and
+`aria-describedby={f.describedBy}`. A `<label for>` names only a single native control, so a group
+needs the label's id instead.
 
 ## Don't
 

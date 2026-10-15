@@ -17,6 +17,28 @@ All notable changes to darksite are recorded here. The format follows
 - `FactList` (and `FactItem`): label–value pairs on a native description list for detail panes,
   two columns from 560px, one below and stacked under 320px by its own width, with `mono`, `tip`,
   `wide`, per-item `cell` snippets and the `Missing` mark for empty values.
+- `FileInput`: a secondary Button over a visually hidden native file input that stays the real
+  control (keyboard, screen readers, forms), with the chosen name in mono, a "3 files" count with
+  the list in a tooltip, Clear, and `accept`, `multiple`, `disabled`, `invalid`, `required`,
+  `name`, `size`, bindable `files` and `onfiles`. Works inside `Field`.
+- `Field` hands its control `labelId` as well; `SegmentedControl`, `Rating`, `ScalePicker` and
+  `SeverityPicker` take `id`, `aria-labelledby` and `aria-describedby`, so a Field's label and
+  help name and describe the group. `SegmentedControl`'s `label` is optional when
+  `aria-labelledby` is given.
+- `Dialog`: `initialFocus="field"` focuses the first field in the body. The panel is now a
+  `novalidate` `<form>` whose submit is the confirm button, so Enter in a single-line field
+  confirms (never while `confirmDisabled`). The Dialog card documents a confirmation that asks for
+  a note with one or two `Field`s in its children.
+- Button card: submitting a form from a Sheet or Dialog footer with `form`, and linking to a
+  download or a server endpoint with the router's full-load escape hatch (`data-sveltekit-reload`).
+
+### Changed
+
+- `Button` is typed with every native `<button>` and `<a>` attribute (`form`, `name`, `value`,
+  `download`, `target`, `rel`, `data-*`), all passed through. They already reached the element at
+  run time; the types now accept them.
+- A button inside a `Dialog`'s children must be `type="button"` (`Button`'s default); a native
+  `<button>` without a type now confirms the dialog.
 
 ### Fixed
 

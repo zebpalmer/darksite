@@ -50,4 +50,27 @@ describe('Button', () => {
 		render(Button, { label: 'Repeat', pressed: true });
 		expect(screen.getByRole('button', { name: 'Repeat' }).getAttribute('aria-pressed')).toBe('true');
 	});
+
+	it('passes native link attributes through, for a download or a full page load', () => {
+		render(Button, {
+			href: '/export.csv',
+			label: 'Download',
+			download: 'records.csv',
+			'data-sveltekit-reload': '',
+			rel: 'nofollow'
+		});
+		const link = screen.getByRole('link', { name: 'Download' });
+		expect(link.getAttribute('download')).toBe('records.csv');
+		expect(link.hasAttribute('data-sveltekit-reload')).toBe(true);
+		expect(link.getAttribute('rel')).toBe('nofollow');
+	});
+
+	it('passes native button attributes through', () => {
+		render(Button, { label: 'Save', type: 'submit', form: 'edit', name: 'intent', value: 'save' });
+		const button = screen.getByRole('button', { name: 'Save' });
+		expect(button.getAttribute('type')).toBe('submit');
+		expect(button.getAttribute('form')).toBe('edit');
+		expect(button.getAttribute('name')).toBe('intent');
+		expect(button.getAttribute('value')).toBe('save');
+	});
 });

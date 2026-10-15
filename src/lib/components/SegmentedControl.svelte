@@ -21,6 +21,8 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 - `options` (`{ value, label, icon?, keycap?, count?, disabled?, title? }[]`; `label` is required
   even with `iconOnly`), `value` (bindable), `onchange(value)`, `label` (the group's name),
   `size` (`dense` | `default`; 38 inside the strip on touch), `full`, `iconOnly`, `class`.
+- In a Field, name the group by the Field's label instead: `id={f.id}
+  aria-labelledby={f.labelId} aria-describedby={f.describedBy}` (then `label` may be omitted).
 -->
 <script lang="ts" generics="T extends string | number">
 	import KeyCap from './KeyCap.svelte';
@@ -29,7 +31,11 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 		options: readonly SegmentOption<T>[];
 		value?: T;
 		onchange?: (value: T) => void;
-		label: string;
+		/** The group's name. Required unless `aria-labelledby` names it. */
+		label?: string;
+		id?: string;
+		'aria-labelledby'?: string;
+		'aria-describedby'?: string;
 		size?: 'dense' | 'default';
 		full?: boolean;
 		iconOnly?: boolean;
@@ -41,6 +47,9 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 		value = $bindable(),
 		onchange,
 		label,
+		id,
+		'aria-labelledby': labelledBy,
+		'aria-describedby': describedBy,
 		size = 'default',
 		full = false,
 		iconOnly = false,
@@ -80,7 +89,10 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 <div
 	class="ds-segmented {className}"
 	role="radiogroup"
-	aria-label={label}
+	{id}
+	aria-label={labelledBy ? undefined : label}
+	aria-labelledby={labelledBy}
+	aria-describedby={describedBy}
 	data-size={size}
 	data-full={full ? '' : undefined}
 	tabindex="-1"

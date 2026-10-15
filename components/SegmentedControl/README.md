@@ -16,7 +16,22 @@ strip scrolls sideways rather than letting labels overprint each other.
 even with an icon: it is the accessible name, and `iconOnly` only hides it visually.
 Then `value` (bindable), `onchange(value)`, `label` (the group's `aria-label`), `size` (`dense` 22
 | `default` 26 inside the padded strip; 38 on touch, giving the 44px target), `full` (stretch the
-segments and ellipsize their labels), `iconOnly`, `class`. Generic over the value type.
+segments and ellipsize their labels), `iconOnly`, `id`, `aria-labelledby`, `aria-describedby`,
+`class`. Generic over the value type. `label` is required unless `aria-labelledby` names the group.
+
+## In a Field
+
+Let the Field's label name the group — a `<label for>` names only a single native control, so a
+group takes the label's id instead:
+
+```svelte
+<Field label="View" tip="How the queue is shown">
+  {#snippet children(f)}
+    <SegmentedControl id={f.id} aria-labelledby={f.labelId} aria-describedby={f.describedBy}
+      bind:value={view} {options} />
+  {/snippet}
+</Field>
+```
 
 ## Don't
 

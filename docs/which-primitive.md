@@ -9,6 +9,9 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A frequent low-risk toolbar action | `Button variant="ghost"` | Label plus a `keycap` on desktop. |
 | An icon-only action | `Button variant="icon" label="…"` | `label` is required: it is the aria-label and the tooltip. |
 | An irreversible action | `Button variant="danger"` → `Dialog` | Ghost red; the Dialog is the only confirmation. |
+| Confirm, and record why | `Dialog` with one or two `Field`s | `initialFocus="field"`, `confirmDisabled` until valid; Enter confirms. More fields is a `Sheet`. |
+| Submit a form from a Sheet or Dialog footer | `Button type="submit" form="…"` | The form's `id`; Enter in a field submits too. |
+| A link to a download or a server endpoint | `Button href download data-sveltekit-reload` | The router's full-load escape hatch, or it fetches the file as a page. |
 | Toggle a tag, a category, an attribute | `Chip selected onclick` | A key cap inside on a keyboard-driven view, a count inside in filters, `'mixed'` for a bulk partial. |
 | An applied token or an active filter | `Chip removable` (`variant="token"` for tokens) | The × is its own 22px button (32 on touch). |
 | Offer a value without applying it | `Chip suggestion source confidence` | **Dashed always means "suggested, not applied".** |
@@ -18,7 +21,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Pick one of 2–7 exclusive options | `SegmentedControl` | Density, a view mode, a three-way toggle. **Never a dropdown** for these. |
 | Pick a severity | `SeverityPicker` | Scale order, mark stripes, dashed for suggested. |
 | Pick from many, or create | `Combobox` | Owners, assignees, tags. The `Create "…"` row is always last, on ⇧Enter. |
-| A labeled form control | `Field` + `Input` / `Combobox` / a native control | Field wires the id, the help/error text and `aria-describedby`. |
+| A labeled form control | `Field` + `Input` / `Combobox` / a native control | Field wires the id, the help/error text and `aria-describedby`. A group control (`SegmentedControl`, `Rating`, a picker) takes `aria-labelledby={f.labelId}`. |
+| Choose a file to upload or import | `FileInput` in a `Field` | A Button over the native input; the name in mono; Clear. |
 | A yes/no choice in a form | `Checkbox` | Also a table's selection column. A setting that applies at once is a `Switch`. |
 | One of many in a form, when segments won't fit | `Radio` | More than seven options, or long labels. In a `<fieldset>`. |
 | A setting that applies at once | `Switch` | No Save. The state is written beside the track. |

@@ -2,6 +2,9 @@
 	/** What a Field hands its control: spread these onto it. */
 	export interface FieldControl {
 		id: string;
+		/** The label's id: a group control (SegmentedControl, Rating, ScalePicker) takes it as
+		 *  `aria-labelledby`, since a `<label for>` cannot name a group. */
+		labelId: string;
 		describedBy: string | undefined;
 		invalid: boolean;
 	}
@@ -10,7 +13,9 @@
 <!--
 @component
 Field — a label, a control and its help or error, wired for accessibility. Every form control sits
-in one. The children snippet receives `{ id, describedBy, invalid }`; spread them onto the control.
+in one. The children snippet receives `{ id, labelId, describedBy, invalid }`; spread them onto the
+control. A group control (SegmentedControl, Rating, ScalePicker) takes `labelId` as its
+`aria-labelledby`, because a `<label for>` names only a single native control.
 
 - `label`, `help` (12px ds-text-3), `error` (replaces help while present and makes the control
   invalid), `required`, `disabled` (dims the label and help).
@@ -58,6 +63,7 @@ in one. The children snippet receives `{ id, describedBy, invalid }`; spread the
 
 	const uid = $props.id();
 	const controlId = $derived(id ?? `${uid}-control`);
+	const labelId = `${uid}-label`;
 	const noteId = `${uid}-note`;
 	const tipId = `${uid}-tip`;
 	const describedBy = $derived(
@@ -68,7 +74,7 @@ in one. The children snippet receives `{ id, describedBy, invalid }`; spread the
 <div class="ds-field {className}" data-layout={layout} data-disabled={disabled ? '' : undefined}>
 	<div class="inner">
 		<div class="head">
-			<label class="label" for={controlId}>
+			<label class="label" id={labelId} for={controlId}>
 				{label}{#if required}<span class="req" aria-hidden="true">*</span><span class="ds-sr-only">
 						(required)</span
 					>{/if}
@@ -80,7 +86,7 @@ in one. The children snippet receives `{ id, describedBy, invalid }`; spread the
 			{#if accessory}<span class="accessory">{@render accessory()}</span>{/if}
 		</div>
 		<div class="body">
-			{@render children({ id: controlId, describedBy, invalid: !!error })}
+			{@render children({ id: controlId, labelId, describedBy, invalid: !!error })}
 			{#if error}
 				<p id={noteId} class="note error"><CircleAlert size={12} aria-hidden="true" />{error}</p>
 			{:else if help}

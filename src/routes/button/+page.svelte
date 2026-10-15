@@ -48,6 +48,21 @@
 	<p>Under a coarse pointer every size is 44px.</p>
 </section>
 
+<section>
+	<form id="button-demo-form" class="row" onsubmit={(e) => e.preventDefault()}>
+		<input class="ds-control" aria-label="Name" placeholder="Enter submits" />
+	</form>
+	<div class="row" style="margin-top: var(--ds-space-2)">
+		<Button variant="primary" type="submit" form="button-demo-form">Save</Button>
+		<Button
+			href="data:text/csv,id%2Cname%0AR-00412%2CAlpha"
+			download="records.csv"
+			data-sveltekit-reload>Download</Button
+		>
+	</div>
+	<p>form submits a form elsewhere in the page · download and data-sveltekit-reload pass through</p>
+</section>
+
 <style>
 	h1 {
 		margin: 0 0 var(--ds-space-6);
