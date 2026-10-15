@@ -39,6 +39,13 @@ the viewer cannot have and invites a support question. If they cannot go there, 
 - The collapse state is **remembered per viewer**. With no stored preference it starts expanded at
   `ds-bp-rail` and collapsed below. Width animates over `ds-dur-base`, and not at all under
   reduced motion.
+- **Always collapsed:** a product that wants the 56px rail everywhere passes `expanded={false}`
+  with `pinned` (on `AppShell`, `railExpanded={false} railPinned`) and no `rememberAs`. `pinned`
+  removes the toggle, so the viewer cannot widen it either.
+- **Slots:** `search` (under the brand), `status` (in the footer, above the toggle) and `badge`
+  (per item, replacing the count or dot). The `search` and `status` slots get a `tip(label)` helper
+  so a collapsed control shows the rail's own fixed tooltip, the same as an item. A search slot is
+  for an app with no `TopBar`; with one, search lives there.
 
 ## Phones
 
@@ -90,5 +97,28 @@ Raise a third-party positioner explicitly when its library writes `z-index: auto
 popover opened above a sticky header rendering *underneath* it is the classic symptom.
 
 A **`Banner`** sits in the flow above the `TopBar` and pushes content down, so it needs no layer.
+
+## Update available
+
+When a new version of the app has loaded in the background and is waiting, say so with the
+shell's `banner` slot — not a toast, which would expire, and not a dialog, which would interrupt:
+
+```svelte
+{#snippet banner()}
+  {#if updateReady}
+    <Banner id="update" tone="info" message="A new version is available." dismissible remember={false}>
+      {#snippet action()}<Button size="dense" onclick={reload}>Reload</Button>{/snippet}
+    </Banner>
+  {/if}
+{/snippet}
+```
+
+- `tone="info"`, one sentence, **one action: Reload**. No version numbers or release notes in it.
+- Dismissible, but **never forever** (`remember={false}`): put away, it returns on the next load
+  while the update still waits. Once the update is applied, the condition is gone and so is the
+  banner.
+- Reload applies the update at once. If the page holds unsaved edits, ask first with a `Dialog`.
+- How the app learns an update is waiting — a service worker, a polled version file — is the
+  app's business; the shell only shows the notice.
 
 **One `Toaster`**, mounted once at the root. Pages never render toasts themselves.

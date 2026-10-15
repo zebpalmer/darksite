@@ -14,13 +14,15 @@ in place.
 - `product` and `mark` (the brand at the top of the rail), `account` snippet (the rail's footer
   and the More sheet's footer; receives `{ compact }`), `version`, `rememberAs` (remember the
   rail's state for this viewer), `primaryTabs` (the tab bar's four cells).
+- `railSearch`, `railStatus`, `railBadge`, `railPinned` — the NavRail's `search`, `status` and
+  `badge` slots and `pinned`; `railExpanded` (bindable).
 - `banner`, `topBar` snippets; `padded` (default true — false hands the column to a work view
   that lays out its own panes); `toaster` (default true); children (the page).
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	import NavRail from './NavRail.svelte';
+	import NavRail, { type RailSlotArgs } from './NavRail.svelte';
 	import TabBar from './TabBar.svelte';
 	import Toaster from './Toaster.svelte';
 	import type { NavGroup, NavItem } from '../nav.js';
@@ -40,6 +42,10 @@ in place.
 		padded?: boolean;
 		toaster?: boolean;
 		railExpanded?: boolean;
+		railSearch?: Snippet<[RailSlotArgs]>;
+		railStatus?: Snippet<[RailSlotArgs]>;
+		railBadge?: Snippet<[{ item: NavItem; expanded: boolean }]>;
+		railPinned?: boolean;
 		class?: string;
 		children: Snippet;
 	}
@@ -59,6 +65,10 @@ in place.
 		padded = true,
 		toaster = true,
 		railExpanded = $bindable(),
+		railSearch,
+		railStatus,
+		railBadge,
+		railPinned = false,
 		class: className = '',
 		children
 	}: Props = $props();
@@ -84,6 +94,10 @@ in place.
 			{version}
 			{rememberAs}
 			bind:expanded={railExpanded}
+			search={railSearch}
+			status={railStatus}
+			badge={railBadge}
+			pinned={railPinned}
 			footer={account ? railFooter : undefined}
 		/>
 	</div>

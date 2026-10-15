@@ -19,6 +19,38 @@ The state is **remembered per viewer**. With nothing stored it starts expanded a
 collapsed below, so a laptop is tidy and a wide display is legible without anyone configuring
 either.
 
+### Keeping it collapsed
+
+`pinned` hides the toggle and holds the rail at `expanded`. For a rail that is **always
+collapsed** — a work view that needs every pixel — pass both and no `rememberAs`:
+
+```svelte
+<NavRail {items} expanded={false} pinned />          <!-- or AppShell railExpanded={false} railPinned -->
+```
+
+## Slots
+
+Each slot receives `{ expanded, tip }`. `tip(label)` returns hover and focus handlers that show the
+rail's own fixed tooltip while it is collapsed; spread them on the control.
+
+- **`search`** — under the brand. Collapsed, an icon `Button` that opens the app's search (a
+  command palette, a search page); expanded, the same button at full width or a search field.
+  For apps without a `TopBar`; when there is one, search belongs there.
+- **`status`** — in the footer above the toggle: a connection or sync state. Collapsed, a dot or
+  icon with its words in `ds-sr-only` and the tooltip; expanded, the words beside it.
+- **`badge`** — receives `{ item, expanded }` and replaces an item's count or dot: at the icon's
+  corner collapsed, at the row's end expanded. It sits inside the item's link, so it must not be
+  interactive; give it `ds-sr-only` words if it means something.
+
+```svelte
+<NavRail {items}>
+  {#snippet search({ expanded, tip })}
+    <Button variant={expanded ? 'secondary' : 'icon'} icon={Search} label="Search" full={expanded}
+      onclick={openPalette} {...tip('Search')} />
+  {/snippet}
+</NavRail>
+```
+
 ## Structure
 
 Groups separated by a hairline and, when expanded, an 11px uppercase `ds-text-3` label. Active =
@@ -37,12 +69,13 @@ block — notifications, the account avatar, the collapse toggle, the build vers
 
 `items` (`NavItem[]`: `{ id, label, href, icon?, group?, badge? }`, where `badge` is a count or
 `true` for a dot), `groups` (ordered `{ id, label }`), `current` (the active id), `expanded`
-(bindable), `rememberAs` (a key; the state is kept in this viewer's browser), `product` and `mark`
-(the brand at the top), `footer` snippet (receives `{ expanded }`), `version`, `label` (the
+(bindable), `pinned`, `rememberAs` (a key; the state is kept in this viewer's browser), `product` and `mark`
+(the brand at the top), `footer` snippet (receives `{ expanded }`), `search`, `status` and `badge` snippets, `version`, `label` (the
 `<nav>`'s name, default "Primary"). Inside `AppShell` you pass these to the shell instead.
 
 ## Don't
 
 - Don't disable an item a role cannot use — remove it.
-- Don't put search here. Search belongs in `TopBar`, where it is on every page.
+- Don't put a search field here when there is a `TopBar` — search belongs there, on every page.
+  The `search` slot is for apps without one.
 - Don't use an absolutely positioned tooltip on the collapsed rail; it will clip.

@@ -4,13 +4,20 @@ SkeletonLoader — a placeholder with the same geometry as the real thing: ds-bg
 1.6s opacity pulse, static under reduced motion. The way to load content whose shape is known.
 
 - `variant`: `line` (one 12px text line) | `block` (a sized box) | `card` (a media Card) |
-  `entity` (an EntityCard row).
+  `entity` (an EntityCard row) | `grid` (a whole `Grid` of card placeholders — `count` of them,
+  8 by default — honoring `density`, `min` and `--ds-grid-min` exactly as the real Grid does; a
+  `min` of 260 or more draws entity rows).
 - `width` / `height` (for `line` and `block`), `count` (repeat), `label` (screen-reader status,
   "Loading" by default; pass `null` when an ancestor already announces loading).
 -->
 <script lang="ts">
+	import Grid from './Grid.svelte';
+
 	interface Props {
-		variant?: 'line' | 'block' | 'card' | 'entity';
+		variant?: 'line' | 'block' | 'card' | 'entity' | 'grid';
+		density?: 's' | 'm' | 'l';
+		min?: number;
+		gap?: string;
 		width?: string;
 		height?: string;
 		count?: number;
@@ -22,39 +29,69 @@ SkeletonLoader — a placeholder with the same geometry as the real thing: ds-bg
 		variant = 'line',
 		width,
 		height,
-		count = 1,
+		count,
+		density,
+		min,
+		gap,
 		label = 'Loading',
 		class: className = ''
 	}: Props = $props();
 
-	const items = $derived(Array.from({ length: Math.max(1, count) }, (_, i) => i));
+	const items = $derived(
+		Array.from({ length: Math.max(1, count ?? (variant === 'grid' ? 8 : 1)) }, (_, i) => i)
+	);
+	const rows = $derived(min !== undefined && min >= 260);
 </script>
 
-<span class="ds-skeleton {className}" role={label ? 'status' : undefined}>
-	{#if label}<span class="ds-sr-only">{label}</span>{/if}
-	{#each items as i (i)}
-		{#if variant === 'card'}
-			<span class="card" aria-hidden="true">
-				<span class="blk thumb"></span>
-				<span class="blk ln" style="width: 80%"></span>
-				<span class="blk ln" style="width: 55%"></span>
-			</span>
-		{:else if variant === 'entity'}
-			<span class="entity" aria-hidden="true">
-				<span class="blk av"></span>
-				<span class="col">
-					<span class="blk ln" style="width: 60%"></span>
-					<span class="blk ln" style="width: 40%"></span>
-				</span>
-			</span>
-		{:else if variant === 'block'}
-			<span class="blk" style:width={width ?? '100%'} style:height={height ?? '120px'} aria-hidden="true"
-			></span>
-		{:else}
-			<span class="blk ln" style:width={width ?? '100%'} style:height={height} aria-hidden="true"></span>
-		{/if}
-	{/each}
-</span>
+{#snippet card()}
+	<span class="card" aria-hidden="true">
+		<span class="blk thumb"></span>
+		<span class="blk ln" style="width: 80%"></span>
+		<span class="blk ln" style="width: 55%"></span>
+	</span>
+{/snippet}
+
+{#snippet entity()}
+	<span class="entity" aria-hidden="true">
+		<span class="blk av"></span>
+		<span class="col">
+			<span class="blk ln" style="width: 60%"></span>
+			<span class="blk ln" style="width: 40%"></span>
+		</span>
+	</span>
+{/snippet}
+
+{#if variant === 'grid'}
+	<div class="ds-skeleton {className}" role={label ? 'status' : undefined}>
+		{#if label}<span class="ds-sr-only">{label}</span>{/if}
+		<Grid {density} {min} {gap}>
+			{#each items as i (i)}
+				{#if rows}{@render entity()}{:else}{@render card()}{/if}
+			{/each}
+		</Grid>
+	</div>
+{:else}
+	<span class="ds-skeleton {className}" role={label ? 'status' : undefined}>
+		{#if label}<span class="ds-sr-only">{label}</span>{/if}
+		{#each items as i (i)}
+			{#if variant === 'card'}
+				{@render card()}
+			{:else if variant === 'entity'}
+				{@render entity()}
+			{:else if variant === 'block'}
+				<span
+					class="blk"
+					style:width={width ?? '100%'}
+					style:height={height ?? '120px'}
+					aria-hidden="true"
+				></span>
+			{:else}
+				<span class="blk ln" style:width={width ?? '100%'} style:height={height} aria-hidden="true"
+				></span>
+			{/if}
+		{/each}
+	</span>
+{/if}
 
 <style>
 	.ds-skeleton {

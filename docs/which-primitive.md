@@ -43,6 +43,12 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Actions belonging to a pane | `ActionBar` | The pane's last child; never an overlay. |
 | Nothing to show | `EmptyState` | One sentence, **one** action. |
 | Loading content of known shape | `SkeletonLoader` | The same geometry as the real thing. `Spinner` is only for "Loading more…". |
+| A view's hotkeys, listed | `KeyLegend` in a `Popover` | Drawn from the same binding table the handler uses (`buildHotkeyMap`); `?` opens it by convention. |
+| One record per line in a narrow pane or picker | `ListRow` in a `<ul>` | Leading, title, meta, trailing; 40 / 32 dense / 44 touch. Compared in columns → `Table`; people as an index → `EntityCard`. |
+| Rate something out of five | `Rating` | A radio group; whole stars; `readonly` to display. Never for severity or priority. |
+| Nudge a small number | `Stepper` | − value +, ↑/↓ and PageUp/PageDown, clamped and snapped. A wide range is an `Input`. |
+| A failed route | `ErrorPage` | The focused page: code, title, one sentence, Try again / Go home. Neutral copy. |
+| A new version is waiting | `Banner tone="info" dismissible remember={false}` | One Reload action; dismissed for now, never forever. |
 
 ## The frame
 

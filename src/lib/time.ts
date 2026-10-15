@@ -69,3 +69,16 @@ export function formatDuration(seconds: number | null | undefined): string {
 	const s = String(total % 60).padStart(2, '0');
 	return h ? `${h}:${String(m).padStart(2, '0')}:${s}` : `${m}:${s}`;
 }
+
+/**
+ * Time remaining, as a countdown clock: `42_000` → `0:42`, `3_725_000` → `1:02:05`. Takes
+ * milliseconds and rounds **up** to the second, so the clock reads `0:01` until the time is truly
+ * up and `0:00` only at the end. A negative or missing value reads `0:00`.
+ */
+export function formatCountdown(remainingMs: number | null | undefined): string {
+	const ms =
+		remainingMs === null || remainingMs === undefined || !Number.isFinite(remainingMs)
+			? 0
+			: Math.max(0, remainingMs);
+	return formatDuration(Math.ceil(ms / 1000));
+}

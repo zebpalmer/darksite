@@ -88,7 +88,35 @@ export function matchesKey(event: KeyboardEvent, token: string): boolean {
 	if (named) return event.key === named && event.shiftKey === mods.has('shift');
 	// A single character: shift may be part of the character itself (`?` is shift+/).
 	if (mods.has('shift') && !event.shiftKey) return false;
+	// A letter wears shift as a prefix, so `g` and `shift+g` are two different keys. Matching on
+	// the lowercased character also keeps CapsLock from turning one command into another.
+	if (/^[a-z]$/.test(key) && event.shiftKey && !mods.has('shift')) return false;
 	return event.key.toLowerCase() === key;
+}
+
+const MOD_ORDER = ['ctrl', 'alt', 'meta', 'shift'] as const;
+const MOD_ALIASES: Record<string, string> = { control: 'ctrl', option: 'alt', cmd: 'meta' };
+const KEY_ALIASES: Record<string, string> = {
+	return: 'enter',
+	esc: 'escape',
+	arrowup: 'up',
+	arrowdown: 'down',
+	arrowleft: 'left',
+	arrowright: 'right',
+	' ': 'space'
+};
+
+/**
+ * One canonical spelling of a token, so two bindings can be compared: modifiers resolved to
+ * `ctrl` / `alt` / `meta` / `shift` in that order, key aliases folded (`esc` → `escape`,
+ * `arrowup` → `up`). `Cmd+Shift+K` → `meta+shift+k`.
+ */
+export function normalizeKey(token: string): string {
+	const parts = token.trim().toLowerCase().split('+');
+	const raw = parts.pop() ?? '';
+	const key = KEY_ALIASES[raw] ?? raw;
+	const mods = new Set(parts.map((m) => MOD_ALIASES[m] ?? m));
+	return [...MOD_ORDER.filter((m) => mods.has(m)), key].join('+');
 }
 
 /** Page hotkeys stand aside while the user is typing. */

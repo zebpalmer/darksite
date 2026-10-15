@@ -23,9 +23,20 @@ A cap that **is** the content, as in a hotkey legend, passes `hint={false}` so i
 (`⇧Enter`, `Space`, `g`). A control with a cap also sets `aria-keyshortcuts`, so the shortcut is
 announced and not merely drawn.
 
+**A view's keys are a table, not a switch statement.** Declare them as data —
+`{ keys, action, label, group, when? }` — and build the map once with `buildHotkeyMap`, which
+reports any key claimed twice (`esc` and `escape` count as one). `installHotkeys` (or the
+`hotkeys` attachment, for a pane) wires the map to a handler, and `KeyLegend` lists the same table
+in a `Popover`, so the legend never drifts from the keys. Keep a unit test that the map has no
+conflicts. A letter wears shift as a prefix — `g` and `shift+g` are two keys, and CapsLock changes
+neither — while a punctuation key is its own character (`?`, not `shift+/`).
+
 **Overlay and page-key etiquette:**
 
-- Page hotkeys are ignored while focus is in an `input` or `textarea`.
+- Page hotkeys are ignored while focus is in an `input`, `textarea`, `select` or editable region,
+  and when something earlier already handled the press (`defaultPrevented`). A binding that must
+  work from a field — `escape` to leave it — says so with `allowWhileTyping`.
+- Never bind a key the browser or the OS owns (`ctrl+r`, `meta+w`, `ctrl+tab`).
 - `Popover` is non-modal, so page keys keep working while one is open.
 - Esc closes the topmost overlay first. A `Combobox` swallows Esc only while its list is open, so
   the page's own Esc still works when it is closed.

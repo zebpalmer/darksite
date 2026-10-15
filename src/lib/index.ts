@@ -50,6 +50,11 @@ export { default as Tabs } from './components/Tabs.svelte';
 export { default as Timeline } from './components/Timeline.svelte';
 export { default as Toaster } from './components/Toaster.svelte';
 export { default as TopBar } from './components/TopBar.svelte';
+export { default as KeyLegend } from './components/KeyLegend.svelte';
+export { default as ListRow } from './components/ListRow.svelte';
+export { default as Rating } from './components/Rating.svelte';
+export { default as Stepper } from './components/Stepper.svelte';
+export { default as ErrorPage } from './components/ErrorPage.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
@@ -97,3 +102,24 @@ export {
 	type JustifiedRow,
 	type JustifyOptions
 } from './justify.js';
+export {
+	bindingKeys,
+	buildHotkeyMap,
+	groupBindings,
+	hotkeys,
+	installHotkeys,
+	resolveHotkey,
+	type HotkeyBinding,
+	type HotkeyConflict,
+	type HotkeyGroup,
+	type HotkeyHandler,
+	type HotkeyMap,
+	type InstallOptions,
+	type ResolveOptions
+} from './hotkeys.js';
+export { normalizeKey } from './keycap.js';
+export { formatCountdown } from './time.js';
+export { formatConfidence } from './numbers.js';
+export { initials } from './labels.js';
+export { errorCopy, type ErrorCopy } from './components/ErrorPage.svelte';
+export type { RailSlotArgs, TipHandlers } from './components/NavRail.svelte';
