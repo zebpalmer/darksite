@@ -7,6 +7,7 @@ import { userEvent } from 'vitest/browser';
 import { render, screen } from '@testing-library/svelte';
 import OverlayHarness from '../../tests/browser/OverlayHarness.svelte';
 import TableHarness from '../../tests/browser/TableHarness.svelte';
+import JustifiedHarness from '../../tests/browser/JustifiedHarness.svelte';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
@@ -122,5 +123,21 @@ describe('Table column priorities in a browser', () => {
 			[...t.querySelectorAll('th')].find((th) => th.textContent?.includes('Owner'))!;
 		expect(getComputedStyle(owner(narrow)).display).toBe('none');
 		expect(getComputedStyle(owner(wide)).display).not.toBe('none');
+	});
+});
+
+describe('JustifiedGrid in a browser', () => {
+	it('fills each full row to the container width without cropping', async () => {
+		render(JustifiedHarness);
+		await settle();
+		const grid = screen.getByRole('list', { name: 'Photos' });
+		const width = grid.getBoundingClientRect().width;
+		const rows = [...grid.querySelectorAll<HTMLElement>('.row')];
+		expect(rows.length).toBeGreaterThan(1);
+		for (const row of rows.slice(0, -1)) {
+			const tiles = [...row.children] as HTMLElement[];
+			const used = tiles.reduce((w, t) => w + t.getBoundingClientRect().width, 0) + 6 * (tiles.length - 1);
+			expect(Math.abs(used - width)).toBeLessThan(2);
+		}
 	});
 });
