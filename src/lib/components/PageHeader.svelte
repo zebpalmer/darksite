@@ -57,7 +57,7 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 	.sticky {
 		position: sticky;
 		top: var(--ds-topbar-sticky, 0px);
-		z-index: 20;
+		z-index: var(--ds-z-sticky);
 	}
 	.lead {
 		display: flex;

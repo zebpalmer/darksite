@@ -370,7 +370,7 @@ belong in the pane's ActionBar.
 	th {
 		position: sticky;
 		top: 0;
-		z-index: 1;
+		z-index: var(--ds-z-raised);
 		height: 34px;
 		border-bottom: 1px solid var(--ds-border);
 		background: var(--ds-table-bg, var(--ds-bg-1));

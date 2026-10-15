@@ -25,7 +25,7 @@ narrow header.
 
 `title`, `count` (a number, localized — or preformatted text like "38 this week"), `level` (the
 heading level, default 1), `actions` snippet (search, Views, Sort, density, Filters), `sticky`
-(sticks to the top of the scrolling pane at z-index 20), `class`, children (inline after the
+(sticks to the top of the scrolling pane at `--ds-z-sticky`), `class`, children (inline after the
 title).
 
 ## Don't

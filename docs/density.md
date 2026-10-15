@@ -15,9 +15,11 @@ padded strip (44 outer, 44 min wide); a `Chip`'s × is 32px; a pill `Tabs` is 40
 button inlaid in a 44px field is 36px.
 
 **Touch text controls are 16px.** iOS Safari zooms the page when a control under 16px takes focus
-and leaves it zoomed wider than the screen. One unlayered `(pointer: coarse)` rule forces
+and leaves it zoomed wider than the screen. One `(pointer: coarse)` rule in `base.css` forces
 `max(16px, 1em)` on every text `input`, `textarea`, `select` and `contenteditable`, so no
-per-component size is needed. Never reach for `maximum-scale` or `user-scalable=no` instead.
+per-component size is needed. It is `!important` inside `@layer ds.base`, and a layered
+`!important` beats every normal declaration and every unlayered `!important`, so an app's own
+styles cannot shrink it by accident. Never reach for `maximum-scale` or `user-scalable=no` instead.
 
 **Nothing widens a phone page.** Body text carries `overflow-wrap: break-word`; a long word inside
 a flex or grid item still needs `min-width: 0` plus `overflow-wrap: anywhere` on that item. Check

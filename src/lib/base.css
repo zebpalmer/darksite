@@ -1,50 +1,153 @@
 /* darksite base — the global rules every component relies on.
-   Import once, after tokens.css:  import 'darksite/tokens.css'; import 'darksite/base.css'; */
+   Import once, after tokens.css:  import 'darksite/tokens.css'; import 'darksite/base.css';
 
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
+   Cascade layers: the rules live in `@layer ds.base`, so any unlayered stylesheet the app writes
+   beats them, and an app using its own layers decides where darksite sits with one `@layer`
+   order statement (see the README, "Using darksite with Tailwind or another CSS framework").
+   Three things stay unlayered on purpose: the focus ring (it must beat any library that resets
+   outlines), the reduced-motion duration overrides (they must beat the unlayered custom
+   properties in tokens.css), and the keyframes (names are global; layering adds nothing). */
+
+@layer ds.base {
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	body {
+		margin: 0;
+	}
+
+	html,
+	body {
+		background-color: var(--ds-bg-1);
+		color: var(--ds-text-1);
+		font-family: var(--font-sans);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		/* A long unbroken word wraps instead of pushing a phone page sideways. */
+		overflow-wrap: break-word;
+		-webkit-text-size-adjust: 100%;
+		text-size-adjust: 100%;
+	}
+
+	::selection {
+		background-color: var(--ds-accent-tint-hover);
+		color: var(--ds-text-1);
+	}
+
+	/* Icons never shrink inside a flex row next to a label. */
+	svg {
+		flex-shrink: 0;
+	}
+
+	kbd,
+	code,
+	samp,
+	pre {
+		font-family: var(--font-mono);
+	}
+
+	/* The control look. Input uses it; a bare <select class="ds-control"> or
+	   <textarea class="ds-control"> gets the same 32px (44 on touch) control. */
+	.ds-control {
+		display: block;
+		width: 100%;
+		min-width: 0;
+		height: var(--ds-h-default);
+		padding: 0 10px;
+		border: 1px solid var(--ds-border);
+		border-radius: var(--ds-radius-sm);
+		background: var(--ds-bg-3);
+		color: var(--ds-text-1);
+		font-family: var(--font-sans);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+		transition: border-color var(--ds-dur-fast) var(--ds-ease-out);
+	}
+	.ds-control::placeholder {
+		color: var(--ds-text-3);
+	}
+	.ds-control:hover:not(:disabled) {
+		border-color: var(--ds-border-strong);
+	}
+	.ds-control:focus {
+		border-color: var(--ds-accent);
+	}
+	.ds-control[aria-invalid='true'] {
+		border-color: var(--ds-danger);
+	}
+	.ds-control:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+	textarea.ds-control {
+		height: auto;
+		min-height: 80px;
+		padding: 6px 10px;
+		resize: vertical;
+	}
+	.ds-control[data-mono] {
+		font-family: var(--font-mono);
+		font-size: var(--ds-text-sm);
+	}
+	@media (pointer: coarse) {
+		.ds-control:not(textarea) {
+			height: var(--ds-h-touch);
+		}
+	}
+
+	/* iOS Safari zooms the page when a text control under 16px takes focus, and leaves it zoomed.
+	   Every text control is 16px on touch screens. Never fix this with maximum-scale or
+	   user-scalable=no — that kills pinch zoom. */
+	@media (pointer: coarse) {
+		input:not(
+			[type='checkbox'],
+			[type='radio'],
+			[type='range'],
+			[type='color'],
+			[type='file'],
+			[type='button'],
+			[type='submit'],
+			[type='reset'],
+			[type='image']
+		),
+		textarea,
+		select,
+		[contenteditable]:not([contenteditable='false']) {
+			font-size: max(16px, 1em) !important;
+		}
+	}
+
+	.ds-sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+	}
 }
 
-body {
-	margin: 0;
-}
-
-html,
-body {
-	background-color: var(--ds-bg-1);
-	color: var(--ds-text-1);
-	font-family: var(--font-sans);
-	font-size: var(--ds-text-md);
-	line-height: var(--ds-lh-md);
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	/* A long unbroken word wraps instead of pushing a phone page sideways. */
-	overflow-wrap: break-word;
-	-webkit-text-size-adjust: 100%;
-	text-size-adjust: 100%;
-}
-
-::selection {
-	background-color: var(--ds-accent-tint-hover);
-	color: var(--ds-text-1);
-}
-
-/* Icons never shrink inside a flex row next to a label. */
-svg {
-	flex-shrink: 0;
-}
-
-kbd,
-code,
-samp,
-pre {
-	font-family: var(--font-mono);
-}
-
-/* The focus ring, on every interactive element. Unlayered so it beats any library that resets
-   outlines on its inputs. Components may adjust the offset only. */
+/* The focus ring, on every interactive element. Outside the layer so it beats any library that
+   resets outlines on its inputs. Components may adjust the offset only. */
 :focus:not(:focus-visible) {
 	outline: none;
 }
@@ -53,87 +156,15 @@ pre {
 	outline-offset: 2px;
 }
 
-/* The control look. Input uses it; a bare <select class="ds-control"> or
-   <textarea class="ds-control"> gets the same 32px (44 on touch) control. */
-.ds-control {
-	display: block;
-	width: 100%;
-	min-width: 0;
-	height: var(--ds-h-default);
-	padding: 0 10px;
-	border: 1px solid var(--ds-border);
-	border-radius: var(--ds-radius-sm);
-	background: var(--ds-bg-3);
-	color: var(--ds-text-1);
-	font-family: var(--font-sans);
-	font-size: var(--ds-text-md);
-	line-height: var(--ds-lh-md);
-	transition: border-color var(--ds-dur-fast) var(--ds-ease-out);
-}
-.ds-control::placeholder {
-	color: var(--ds-text-3);
-}
-.ds-control:hover:not(:disabled) {
-	border-color: var(--ds-border-strong);
-}
-.ds-control:focus {
-	border-color: var(--ds-accent);
-}
-.ds-control[aria-invalid='true'] {
-	border-color: var(--ds-danger);
-}
-.ds-control:disabled {
-	opacity: 0.45;
-	cursor: not-allowed;
-}
-textarea.ds-control {
-	height: auto;
-	min-height: 80px;
-	padding: 6px 10px;
-	resize: vertical;
-}
-.ds-control[data-mono] {
-	font-family: var(--font-mono);
-	font-size: var(--ds-text-sm);
-}
-@media (pointer: coarse) {
-	.ds-control:not(textarea) {
-		height: var(--ds-h-touch);
+/* Motion is zeroed, not shortened, under reduced motion. The duration tokens are overridden
+   here, unlayered and after tokens.css; the blanket animation and transition rule sits inside
+   the layer, where its !important beats any normal declaration, layered or not. */
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--ds-dur-fast: 0ms;
+		--ds-dur-base: 0ms;
+		--ds-dur-slow: 0ms;
 	}
-}
-
-/* iOS Safari zooms the page when a text control under 16px takes focus, and leaves it zoomed.
-   Every text control is 16px on touch screens. Never fix this with maximum-scale or
-   user-scalable=no — that kills pinch zoom. */
-@media (pointer: coarse) {
-	input:not(
-		[type='checkbox'],
-		[type='radio'],
-		[type='range'],
-		[type='color'],
-		[type='file'],
-		[type='button'],
-		[type='submit'],
-		[type='reset'],
-		[type='image']
-	),
-	textarea,
-	select,
-	[contenteditable]:not([contenteditable='false']) {
-		font-size: max(16px, 1em) !important;
-	}
-}
-
-.ds-sr-only {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	margin: -1px;
-	padding: 0;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-	white-space: nowrap;
-	border: 0;
 }
 
 @keyframes ds-spin {
@@ -170,22 +201,5 @@ textarea.ds-control {
 	from {
 		opacity: 0;
 		transform: translateY(8px);
-	}
-}
-
-/* Motion is zeroed, not shortened, under reduced motion. */
-@media (prefers-reduced-motion: reduce) {
-	:root {
-		--ds-dur-fast: 0ms;
-		--ds-dur-base: 0ms;
-		--ds-dur-slow: 0ms;
-	}
-	*,
-	*::before,
-	*::after {
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
-		scroll-behavior: auto !important;
 	}
 }

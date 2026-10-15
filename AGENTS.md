@@ -65,5 +65,9 @@ placeholders ("Field team", "R-00412", "A. Rivera").
 
 ## Releases
 
-`stratt release patch|minor` — never `major` unless the owner asks. Products install a pinned tag:
-`npm install github:zebpalmer/darksite#v0.1.0`.
+`stratt release patch|minor` — never `major` unless the owner asks. Pushing the `vX.Y.Z` tag runs CI,
+which packs the built package and attaches `darksite-X.Y.Z.tgz` to that tag's GitHub release.
+Products install that tarball, pinned:
+`npm install https://github.com/zebpalmer/darksite/releases/download/vX.Y.Z/darksite-X.Y.Z.tgz`.
+The git-tag form, `npm install github:zebpalmer/darksite#vX.Y.Z`, is the fallback; it needs git and
+builds `dist/` on install.

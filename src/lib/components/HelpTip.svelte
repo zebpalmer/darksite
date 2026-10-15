@@ -57,7 +57,7 @@ and on keyboard focus — the icon is a tab stop, so the note is reachable witho
 		position: absolute;
 		left: 50%;
 		bottom: calc(100% + 6px);
-		z-index: 30;
+		z-index: var(--ds-z-tooltip);
 		width: max-content;
 		max-width: 240px;
 		padding: 4px 8px;

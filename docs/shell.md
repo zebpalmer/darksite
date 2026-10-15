@@ -16,13 +16,32 @@ Resist a second source of truth for navigation. The moment a rail hard-codes its
 phone menu hard-codes its own, they drift, and the drift is invisible until someone cannot reach
 a page on their phone.
 
-```js
-{ id: 'records', label: 'Records', href: '/records', icon: Boxes,
-  group: 'library', role: 'viewer', badge: () => counts.pending }
+```ts
+import type { NavItem } from 'darksite';
+
+const nav: NavItem[] = [
+	{ id: 'records', label: 'Records', href: '/records', icon: Boxes, group: 'library', badge: 12 },
+	{ id: 'alerts', label: 'Alerts', href: '/alerts', icon: Bell, group: 'library', badge: true },
+	{ id: 'settings', label: 'Settings', href: '/settings', icon: Settings, group: 'admin' }
+];
 ```
+
+`badge` is a count, `true` for a dot, or `false`/`null` for nothing; `groupItems` orders the list
+by group and `badgeText` formats a count (`140` reads `99+`).
 
 **Items a role cannot use are removed, not disabled.** A disabled nav item advertises something
 the viewer cannot have and invites a support question. If they cannot go there, it is not there.
+
+`NavItem` has no role or permission field: darksite does not know the product's access model, so
+filtering is the consumer's job. Keep the rule beside the list and hand every surface the
+filtered result:
+
+```ts
+const rules: Record<string, (viewer: Viewer) => boolean> = {
+	settings: (viewer) => viewer.roles.includes('admin')
+};
+const visible = $derived(nav.filter((item) => rules[item.id]?.(viewer) ?? true));
+```
 
 ## The rail
 
@@ -77,14 +96,19 @@ that page's `PageHeader` actions.
 
 Assign these centrally, not at each call site:
 
-| Layer | z-index |
-|---|---|
-| Sticky `PageHeader`, sticky `ActionBar` | 20 |
-| `Combobox` list | 40 |
-| `Popover` | 50 |
-| Overlay scrim | 60 |
-| `Dialog`, `Sheet` | 61 |
-| `Toaster` | 70 |
+| Layer | Token | z-index |
+|---|---|---|
+| A sticky table header inside its scroller | `--ds-z-raised` | 1 |
+| Sticky `PageHeader`, sticky `ActionBar`, the phone `TabBar` | `--ds-z-sticky` | 20 |
+| `TopBar` | `--ds-z-topbar` | 21 |
+| `HelpTip`, the collapsed `NavRail` label tooltip | `--ds-z-tooltip` | 50 |
+| `Popover`, the `Combobox` list | `--ds-z-popover` | 60 |
+| `Toaster` | `--ds-z-toast` | 70 |
+| The `AppShell` skip link | `--ds-z-skip` | 90 |
+
+`Dialog` and `Sheet` are native modal `<dialog>` elements in the browser's top layer, above every
+z-index, so they need no token; neither does their scrim (`::backdrop`). A product's own layer
+reuses one of these tokens, or sits between two of them as a `calc()` of one, never a literal.
 
 Raise a third-party positioner explicitly when its library writes `z-index: auto` inline — a
 popover opened above a sticky header rendering *underneath* it is the classic symptom.
