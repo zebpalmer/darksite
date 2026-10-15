@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-10-15
+
 ### Added
 
 - `formatDate` (and `DateOptions`, `isCalendarDate`): a date with no time. A calendar date
