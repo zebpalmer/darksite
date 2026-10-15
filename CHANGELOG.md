@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-10-14
+
 ### Added
 
 - `data-ds-theme` selects a theme like `data-theme`, and wins when both are set, for apps whose
