@@ -3,7 +3,7 @@
 const route: Record<string, string> = { ActiveFilters: 'filterrail', SheetItem: 'sheet' };
 
 export const groups: Record<string, string[]> = {
-	Actions: ['Button', 'KeyCap', 'KeyLegend'],
+	Actions: ['Button', 'KeyCap', 'KeyLegend', 'Tooltip'],
 	Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 	Filtering: ['ActiveFilters', 'FilterRail'],
 	Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
@@ -14,11 +14,13 @@ export const groups: Record<string, string[]> = {
 		'FileInput',
 		'Input',
 		'Radio',
+		'Select',
 		'Switch',
+		'Textarea',
 		'Rating',
 		'Stepper'
 	],
-	Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow', 'FactList', 'Missing'],
+	Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow', 'FactList', 'Missing', 'LoadMore'],
 	Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
 	Feedback: [
 		'EmptyState',
@@ -30,8 +32,10 @@ export const groups: Record<string, string[]> = {
 		'Toaster',
 		'ErrorPage'
 	],
-	Content: ['Avatar', 'Card', 'EntityCard', 'Carousel', 'Lightbox'],
-	Layout: ['ActionBar', 'Grid', 'JustifiedGrid', 'PageHeader', 'Pane', 'WorkView'],
+	Content: ['Avatar', 'EntityCard'],
+	// Optional: for products whose content is images and video.
+	Media: ['Card', 'Carousel', 'JustifiedGrid', 'Lightbox'],
+	Layout: ['ActionBar', 'Grid', 'PageHeader', 'Pane', 'WorkView'],
 	Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar']
 };
 

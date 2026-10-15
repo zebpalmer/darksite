@@ -96,8 +96,8 @@ desktop widths, which is correct.
 
 **Tables and lists load a page and offer "Load more"** — no page numbers, no "1–50 of 295" footer.
 
-- The list's foot is a full-width secondary `Button` reading "Load more", beside a `meta` line
-  ("Showing 50 of 295"). While it loads, the button takes its loading state ("Loading more").
+- The list's foot is `LoadMore`: a full-width secondary `Button` reading "Load more", beside a
+  `meta` line ("Showing 50 of 295"). While it loads, the button takes its loading state ("Loading more").
 - New rows **append**. They never steal focus: keyboard focus stays on whatever row had it. When the
   button itself was activated from the keyboard, focus moves to the first new row, so the next
   arrow key continues into the new rows.

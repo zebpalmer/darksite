@@ -8,6 +8,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | The alternative next to it | `Button` (secondary, the default) | Accept all, Apply defaults. |
 | A frequent low-risk toolbar action | `Button variant="ghost"` | Label plus a `keycap` on desktop. |
 | An icon-only action | `Button variant="icon" label="…"` | `label` is required: it is the aria-label and the tooltip. |
+| A short label or note on a control | `{@attach tooltip('…')}` / `Button title` | Hover, keyboard focus and long press; it describes the control. Never something the user must read to act. |
 | An irreversible action | `Button variant="danger"` → `Dialog` | Ghost red; the Dialog is the only confirmation. |
 | Confirm, and record why | `Dialog` with one or two `Field`s | `initialFocus="field"`, `confirmDisabled` until valid; Enter confirms. More fields is a `Sheet`. |
 | Submit a form from a Sheet or Dialog footer | `Button type="submit" form="…"` | The form's `id`; Enter in a field submits too. |
@@ -22,6 +23,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Pick a severity | `SeverityPicker` | Scale order, mark stripes, dashed for suggested. |
 | Pick from many, or create | `Combobox` | Owners, assignees, tags. The `Create "…"` row is always last, on ⇧Enter. |
 | A labeled form control | `Field` + `Input` / `Combobox` / a native control | Field wires the id, the help/error text and `aria-describedby`. A group control (`SegmentedControl`, `Rating`, a picker) takes `aria-labelledby={f.labelId}`. |
+| Multi-line text in a form | `Textarea` in a `Field` | The Field contract, like `Input`. |
+| One choice from a list in a form | `Select` in a `Field` | Native, with a chevron. Searchable or creatable is a `Combobox`; 2–7 visible options a `SegmentedControl`. |
 | Choose a file to upload or import | `FileInput` in a `Field` | A Button over the native input; the name in mono; Clear. |
 | A yes/no choice in a form | `Checkbox` | Also a table's selection column. A setting that applies at once is a `Switch`. |
 | One of many in a form, when segments won't fit | `Radio` | More than seven options, or long labels. In a `<fieldset>`. |
@@ -45,13 +48,14 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A value that is absent | `Missing` | An em dash in `ds-text-3`, announced "No value". `Table` and `FactList` draw it already. |
 | A calendar date (no time) | `formatDate` | The same day in every time zone; the year only when it isn't this year. A timestamp is `formatRelative`. |
 | Rows and columns of records | `Table` | Sort, selection, row links, priority columns. Long lists end in "Load more". |
+| The end of a long table or list | `LoadMore` | "Showing 50 of 295" and a Load more button; rows append; keyboard focus moves into the new rows. |
 | Records in groups, one set of columns | `Table groupBy` | Header rows with counts inside one table — not a Pane and a Table per group. |
 | A row that needs to stand out | `Table rowTone` / `rowSeverity` | A 3px leading stripe; the row still says it in a badge. Exceptions only. |
 | A wide table beside a rail | `Table hideBelow` | Move the priority 2 / 3 thresholds so it drops columns sooner. |
 | A secondary block that can fold away | `Pane collapsible` | A disclosure in the heading; `collapseBelow` starts it closed on a narrow column. |
 | A state with a due date | `StatusBadge until` | "· in 3 days", "· 2 days overdue"; danger once overdue unless a tone is given. |
 | A page about one identifier | `PageHeader mono` | The title in mono, like every other identifier. |
-| A piece of media | `Card` in a `Grid` | No card chrome — the thumbnail **is** the card. |
+| A piece of media (the optional media set) | `Card` in a `Grid` | No card chrome — the thumbnail **is** the card. |
 | Images at their own aspect ratio | `JustifiedGrid` | Rows that fill the width, no crop. |
 | A person or an organization | `EntityCard` in a `Grid min={280}` | A row with a 56px avatar. |
 | The top of a page | `PageHeader` | Title, count, actions. No breadcrumbs, no hero. |

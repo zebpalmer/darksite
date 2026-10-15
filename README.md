@@ -227,6 +227,10 @@ component into the site's own `lib` and own it there; never fork the package.
 Each card specifies its component's props, states and don'ts, and the gallery shows every component
 in use.
 
+**The media set is optional.** `Card`, `Carousel`, `JustifiedGrid` and `Lightbox` are for products
+whose content is images and video. An admin console or a dashboard can ignore them: the package
+tree-shakes, so a component a product never imports costs it nothing.
+
 ### Themes
 
 Dark is the default. A theme is chosen with an attribute, on `<html>` or on any subtree:
