@@ -43,6 +43,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Actions belonging to a pane | `ActionBar` | The pane's last child; never an overlay. |
 | Nothing to show | `EmptyState` | One sentence, **one** action. |
 | Loading content of known shape | `SkeletonLoader` | The same geometry as the real thing. `Spinner` is only for "Loading more…". |
+| A preview row of media, several to a page | `Carousel` | One tab stop, ← / → between tiles; tile width follows Grid density. Link "See all" to a `Grid` page. |
+| View images full screen | `Lightbox` | From a `JustifiedGrid` or `Grid`. ← / →, zoom, swipe; focus returns to the thumbnail. |
 
 ## The frame
 
