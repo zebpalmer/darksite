@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { Button, Dialog, Input, PageHeader, toasts } from '#lib';
+	import { Button, Dialog, Field, Input, PageHeader, toasts } from '#lib';
 	let del = $state(false);
 	let fail = $state(false);
 	let typed = $state(false);
 	let word = $state('');
+	let retire = $state(false);
+	let note = $state('');
 	const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 </script>
 
@@ -15,6 +17,7 @@
 		<Button onclick={() => (fail = true)}>Discard draft (fails)</Button>
 		<Button variant="danger" onclick={() => ((word = ''), (typed = true))}>Delete everything</Button
 		>
+		<Button onclick={() => ((note = ''), (retire = true))}>Archive with a note</Button>
 	</div>
 	<p>Confirmations only. Focus starts on Cancel; Esc cancels; focus returns to the button.</p>
 </div>
@@ -50,4 +53,20 @@
 	onconfirm={() => void toasts.info('Nothing was deleted — this is a demo')}
 >
 	<Input bind:value={word} aria-label="Type confirm" placeholder="confirm" />
+</Dialog>
+<Dialog
+	bind:open={retire}
+	title="Archive this record?"
+	description="It leaves every queue. The note is kept in its history."
+	tone="default"
+	confirmLabel="Archive"
+	confirmDisabled={!note.trim()}
+	initialFocus="field"
+	onconfirm={() => void toasts.success('Archived R-00412')}
+>
+	<Field label="Note" required>
+		{#snippet children(f)}
+			<Input bind:value={note} id={f.id} aria-describedby={f.describedBy} invalid={f.invalid} />
+		{/snippet}
+	</Field>
 </Dialog>

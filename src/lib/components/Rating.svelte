@@ -7,7 +7,8 @@ value again clears it too. `readonly` is a display: one image named "4 of 5 star
 - `value` (bindable, `null` = unrated), `max`, `label` (the group's name; required), `onchange`,
   `readonly`, `disabled`, `clearable` (default true), `clearLabel` (shows an explicit Clear
   button beside the stars when set and something is rated), `size` (`dense` 24 | `default` 32;
-  44 per star on touch), `showValue` (the "4/5" readout), `class`.
+  44 per star on touch), `showValue` (the "4/5" readout), `class`. In a Field, pass `id`,
+  `aria-labelledby={f.labelId}` and `aria-describedby={f.describedBy}` so the Field names the group.
 -->
 <script lang="ts">
 	import Star from '@lucide/svelte/icons/star';
@@ -25,6 +26,9 @@ value again clears it too. `readonly` is a display: one image named "4 of 5 star
 		clearLabel?: string;
 		size?: 'dense' | 'default';
 		showValue?: boolean;
+		id?: string;
+		'aria-labelledby'?: string;
+		'aria-describedby'?: string;
 		class?: string;
 	}
 
@@ -39,6 +43,9 @@ value again clears it too. `readonly` is a display: one image named "4 of 5 star
 		clearLabel,
 		size = 'default',
 		showValue = false,
+		id,
+		'aria-labelledby': labelledBy,
+		'aria-describedby': describedBy,
 		class: className = ''
 	}: Props = $props();
 
@@ -99,7 +106,10 @@ value again clears it too. `readonly` is a display: one image named "4 of 5 star
 		<span
 			class="stars"
 			role="radiogroup"
-			aria-label={label}
+			{id}
+			aria-label={labelledBy ? undefined : label}
+			aria-labelledby={labelledBy}
+			aria-describedby={describedBy}
 			aria-disabled={disabled ? 'true' : undefined}
 			tabindex="-1"
 			{onkeydown}

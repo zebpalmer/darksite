@@ -12,8 +12,14 @@ only while open. On phones it presents as a bottom sheet.
   error if it throws. `oncancel()`.
 - `dirty` — the body holds unsaved input; read app-wide as `modals.dirty`. `onbeforeclose()` runs
   before Esc, the scrim or Cancel closes it; return `false` to keep it open.
-- `initialFocus` (`cancel` default | `confirm` | `content`), `finalFocus` (an element to focus on
-  close instead of the trigger), `showConfirm`, `confirmDisabled`, `size` (`default` 400 | `wide`).
+- `initialFocus` (`cancel` default | `confirm` | `field` | `content`), `finalFocus` (an element to
+  focus on close instead of the trigger), `showConfirm`, `confirmDisabled`, `size` (`default` 400 |
+  `wide`).
+
+The panel is a `<form>` whose submit is the confirm button, so a confirmation that asks for a short
+note or reason holds one or two Fields in its children: Enter in a single-line field confirms
+(unless `confirmDisabled`), `initialFocus="field"` starts in the first one, and `confirmDisabled`
+waits until the note is valid. Buttons in children must be `type="button"` (Button's default).
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -35,7 +41,7 @@ only while open. On phones it presents as a bottom sheet.
 		oncancel?: () => void;
 		dirty?: boolean;
 		onbeforeclose?: () => boolean | void;
-		initialFocus?: 'cancel' | 'confirm' | 'content';
+		initialFocus?: 'cancel' | 'confirm' | 'field' | 'content';
 		finalFocus?: HTMLElement | null;
 		showConfirm?: boolean;
 		confirmDisabled?: boolean;
@@ -117,7 +123,11 @@ only while open. On phones it presents as a bottom sheet.
 			const target =
 				initialFocus === 'content'
 					? dialog
-					: dialog.querySelector<HTMLElement>(`[data-role='${initialFocus}']`);
+					: initialFocus === 'field'
+						? dialog.querySelector<HTMLElement>(
+								'.body :is(input, textarea, select):not(:disabled, [type="hidden"])'
+							)
+						: dialog.querySelector<HTMLElement>(`[data-role='${initialFocus}']`);
 			(target ?? dialog).focus();
 		});
 		return () => {
@@ -145,7 +155,14 @@ only while open. On phones it presents as a bottom sheet.
 		onclick={(e) => e.target === e.currentTarget && cancel()}
 		{@attach surface}
 	>
-		<div class="panel">
+		<form
+			class="panel"
+			novalidate
+			onsubmit={(e) => {
+				e.preventDefault();
+				if (showConfirm) confirm();
+			}}
+		>
 			<h2 id="{uid}-title" class="title">{title}</h2>
 			{#if description}<p id="{uid}-desc" class="desc">{description}</p>{/if}
 			{#if children}<div class="body">{@render children()}</div>{/if}
@@ -157,17 +174,17 @@ only while open. On phones it presents as a bottom sheet.
 				{#if showConfirm}
 					<Button
 						data-role="confirm"
+						type="submit"
 						variant={tone === 'danger' ? 'danger-solid' : 'primary'}
 						loading={busy}
 						loadingLabel={confirmingLabel}
 						disabled={confirmDisabled}
-						onclick={confirm}
 					>
 						{busy && confirmingLabel ? confirmingLabel : confirmLabel}
 					</Button>
 				{/if}
 			</div>
-		</div>
+		</form>
 	</dialog>
 {/if}
 

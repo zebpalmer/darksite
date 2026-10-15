@@ -7,7 +7,17 @@
 		Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 		Filtering: ['ActiveFilters', 'FilterRail'],
 		Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
-		Forms: ['Checkbox', 'Combobox', 'Field', 'Input', 'Radio', 'Switch', 'Rating', 'Stepper'],
+		Forms: [
+			'Checkbox',
+			'Combobox',
+			'Field',
+			'FileInput',
+			'Input',
+			'Radio',
+			'Switch',
+			'Rating',
+			'Stepper'
+		],
 		Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow'],
 		Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
 		Feedback: [

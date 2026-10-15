@@ -14,11 +14,13 @@ Sizes: `dense` 28 · `default` 32 · `comfy` 36 · `touch` 44. A coarse pointer 
 
 Props: `variant`, `size`, `icon` / `iconEnd`, `label`, `loading` + `loadingLabel`, `keycap` (also
 sets `aria-keyshortcuts`), `href` (renders an `<a>`), `type` (default `button`), `disabled`,
-`pressed` (`aria-pressed`), `full`, `class`, children, and any other attribute or handler.
+`pressed` (`aria-pressed`), `full`, `class`, children, and any other attribute or handler — every
+native `<button>` and `<a>` attribute passes through (`form` to submit a form elsewhere in the
+page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { HTMLAttributes } from 'svelte/elements';
+	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 
 	import KeyCap from './KeyCap.svelte';
 	import Spinner from './Spinner.svelte';
@@ -26,7 +28,14 @@ sets `aria-keyshortcuts`), `href` (renders an `<a>`), `type` (default `button`),
 
 	type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'danger-solid' | 'icon';
 
-	interface Props extends Omit<HTMLAttributes<HTMLElement>, 'children'> {
+	// Both elements' attributes, since `href` picks between them: `form`, `name` and `value` reach a
+	// <button>, `download`, `target` and `rel` an <a>.
+	type NativeAttributes = Omit<
+		HTMLButtonAttributes & HTMLAnchorAttributes,
+		'children' | 'type' | 'href' | 'disabled' | 'class'
+	>;
+
+	interface Props extends NativeAttributes {
 		variant?: Variant;
 		size?: ControlSize;
 		icon?: IconComponent;
@@ -40,8 +49,6 @@ sets `aria-keyshortcuts`), `href` (renders an `<a>`), `type` (default `button`),
 		disabled?: boolean;
 		pressed?: boolean;
 		full?: boolean;
-		target?: string;
-		rel?: string;
 		class?: string;
 		children?: Snippet;
 	}

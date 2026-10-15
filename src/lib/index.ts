@@ -17,6 +17,7 @@ export { default as Dialog } from './components/Dialog.svelte';
 export { default as EmptyState } from './components/EmptyState.svelte';
 export { default as EntityCard } from './components/EntityCard.svelte';
 export { default as Field } from './components/Field.svelte';
+export { default as FileInput } from './components/FileInput.svelte';
 export { default as FilterRail } from './components/FilterRail.svelte';
 export { default as Grid } from './components/Grid.svelte';
 export { default as HelpTip } from './components/HelpTip.svelte';

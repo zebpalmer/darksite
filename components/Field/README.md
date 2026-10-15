@@ -3,8 +3,8 @@
 A label, a control and its help or error, wired for accessibility. Every form control in the system
 sits in one.
 
-The children snippet receives `{ id, describedBy, invalid }` — spread it onto the control and the
-`for`/`id` pair, the `aria-describedby` and the invalid state are all correct:
+The children snippet receives `{ id, labelId, describedBy, invalid }` — spread it onto the control
+and the `for`/`id` pair, the `aria-describedby` and the invalid state are all correct:
 
 ```svelte
 <Field label="Owner" error={err}>
@@ -13,6 +13,11 @@ The children snippet receives `{ id, describedBy, invalid }` — spread it onto 
   {/snippet}
 </Field>
 ```
+
+**A group control** — `SegmentedControl`, `Rating`, `ScalePicker`, `SeverityPicker` — is not a
+single native control, so `<label for>` cannot name it. Pass `aria-labelledby={f.labelId}` (with
+`id` and `aria-describedby`) and the Field's label becomes the group's name. A `FileInput` is a
+native input underneath and takes `id` like an `Input`.
 
 ## What the consumer provides
 

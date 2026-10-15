@@ -8,6 +8,8 @@ import SegmentedControl from './SegmentedControl.svelte';
 import SeverityPicker from './SeverityPicker.svelte';
 import Tabs from './Tabs.svelte';
 import FieldHarness from '../../tests/FieldHarness.svelte';
+import FormButtonHarness from '../../tests/FormButtonHarness.svelte';
+import NoteDialogHarness from '../../tests/NoteDialogHarness.svelte';
 import PopoverHarness from '../../tests/PopoverHarness.svelte';
 
 describe('Field', () => {
@@ -46,6 +48,29 @@ describe('SegmentedControl', () => {
 		// The disabled option is skipped: Right wraps to the first.
 		await fireEvent.keyDown(radios[1], { key: 'ArrowRight' });
 		expect(onchange).toHaveBeenLastCalledWith('s');
+	});
+});
+
+describe('Labelling a group with a Field', () => {
+	it("names the radio group by the Field's label and describes it with the help", () => {
+		render(FormButtonHarness);
+		const group = screen.getByRole('radiogroup', { name: 'View' });
+		expect(group.getAttribute('aria-label')).toBeNull();
+		const note = document.getElementById(group.getAttribute('aria-describedby')!);
+		expect(note?.textContent).toBe('How the queue is shown');
+	});
+});
+
+describe('Button form attributes', () => {
+	it('submits a form elsewhere in the page through the form attribute', async () => {
+		const onsubmit = vi.fn();
+		render(FormButtonHarness, { onsubmit });
+		const save = screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement;
+		expect(save.getAttribute('form')).toBe('edit-record');
+		expect(save.form?.id).toBe('edit-record');
+		await fireEvent.click(save);
+		expect(onsubmit).toHaveBeenCalledTimes(1);
+		expect((onsubmit.mock.calls[0][0] as FormData).get('title')).toBe('Alpha');
 	});
 });
 
@@ -157,6 +182,37 @@ describe('Dialog', () => {
 		await fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
 		await vi.waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Could not delete'));
 		expect(screen.getByRole('alertdialog')).toBeTruthy();
+	});
+});
+
+describe('Dialog with a note', () => {
+	it('starts in the field and waits for the note', async () => {
+		const onconfirm = vi.fn();
+		render(NoteDialogHarness, { onconfirm });
+		const note = screen.getByLabelText(/Note/) as HTMLInputElement;
+		await vi.waitFor(() => expect(document.activeElement).toBe(note));
+		const archive = screen.getByRole('button', { name: 'Archive' }) as HTMLButtonElement;
+		expect(archive.disabled).toBe(true);
+		expect(archive.type).toBe('submit');
+		await fireEvent.input(note, { target: { value: 'Duplicate of R-00411' } });
+		expect(archive.disabled).toBe(false);
+	});
+
+	it('confirms when its form is submitted, as Enter in the field does', async () => {
+		const onconfirm = vi.fn();
+		render(NoteDialogHarness, { onconfirm });
+		const note = screen.getByLabelText(/Note/) as HTMLInputElement;
+		await fireEvent.input(note, { target: { value: 'Duplicate' } });
+		await fireEvent.submit(note.form!);
+		expect(onconfirm).toHaveBeenCalledWith('Duplicate');
+		expect(screen.queryByRole('alertdialog')).toBeNull();
+	});
+
+	it('does not submit from Cancel', async () => {
+		const onconfirm = vi.fn();
+		render(NoteDialogHarness, { onconfirm });
+		await fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+		expect(onconfirm).not.toHaveBeenCalled();
 	});
 });
 

@@ -29,7 +29,38 @@ icon button, or the text when there are no children), `loading` + `loadingLabel`
 "-ing" verb: "Saving"), `keycap` (a hotkey token or list — it also sets `aria-keyshortcuts`),
 `href` (renders an `<a>`), `type` (default `button`), `disabled`, `pressed` (a toggle, via
 `aria-pressed`), `full` (100% width), `class`, children (the label), and any other attribute or
-handler, spread onto the element.
+handler, spread onto the element: every native `<button>` and `<a>` attribute passes through,
+typed — `form`, `name`, `value`, `download`, `target`, `rel`, `data-*`.
+
+## Submitting a form from a footer
+
+A `Sheet` or `Dialog` footer sits outside the `<form>` in its body. Give the form an `id` and the
+primary button `type="submit" form="…"`: the button submits that form, and **Enter in any of its
+single-line fields submits too**, because the form has a submit button.
+
+```svelte
+<Sheet bind:open title="Edit record">
+  <form id="edit-record" onsubmit={save}>…</form>
+  {#snippet footer()}
+    <Button onclick={() => (open = false)}>Cancel</Button>
+    <Button variant="primary" type="submit" form="edit-record">Save</Button>
+  {/snippet}
+</Sheet>
+```
+
+## Downloads and server endpoints
+
+A client-side router intercepts same-origin links. A `Button href` that points at a **file
+download** or at an endpoint the app's router does not own (an export, a report rendered by the
+server, a sign-out route) needs the router's full-load escape hatch, or the router fetches it as a
+page and fails. In SvelteKit that is `data-sveltekit-reload`; add `download` for a file:
+
+```svelte
+<Button href="/exports/records.csv" download data-sveltekit-reload icon={Download}>Export</Button>
+```
+
+Other routers have their own attribute (or need `target="_self"`); Button passes any of them
+through.
 
 ## Don't
 
