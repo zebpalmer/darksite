@@ -6,7 +6,9 @@ through `AppShell nav="top"`, which renders it; on its own it is the same compon
 It reads the **same navigation list** as the rail ([`shell.md`](../../docs/shell.md)):
 
 - **Items without a group** are links in the bar.
-- **Each group** is a menu: a button ("Records ▾") that opens a list of links. It follows the
+- **Each group** is a menu: a button ("Records ▾") that opens a list of links. It stands where the
+  group's first item stands in the list, so the bar keeps the list's order — menus and links mixed
+  as the list has them. The phone sheet keeps the same order. It follows the
   disclosure-navigation pattern — `aria-expanded` on the button, real links in the list, so a link
   opens in a new tab like any other. Focus moves into the list when it opens; Esc or a press outside
   closes it and returns focus to the button.

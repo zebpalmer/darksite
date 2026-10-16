@@ -2,7 +2,8 @@
 @component
 TopNav — primary navigation as a bar across the top, for a product with a few top-level sections:
 `AppShell nav="top"` renders it. It reads the same navigation list as the rail. Items without a
-group are links in the bar; each group is a disclosure menu ("Records ▾") of links. On phones the
+group are links in the bar; each group is a disclosure menu ("Records ▾") of links, standing where
+its first item stands in the list, so the bar keeps the list's order. On phones the
 bar keeps the product and a menu button that opens a Sheet with every destination, grouped, and
 the account block.
 
@@ -60,8 +61,23 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 
 	const uid = $props.id();
 	const sections = $derived(groupItems(items, groups));
-	const loose = $derived(sections.find((s) => !s.group)?.items ?? []);
 	const menus = $derived(sections.filter((s) => s.group));
+	// The bar keeps the list's order: a loose item where it stands, a group's menu where its first
+	// item stands ("Records ▾ · Guides ▾ · News · About ▾").
+	type Entry = { kind: 'link'; item: NavItem } | { kind: 'menu'; section: (typeof menus)[number] };
+	const entries = $derived.by(() => {
+		const out: Entry[] = [];
+		const placed = new Set<string>();
+		for (const item of items) {
+			const section = item.group ? menus.find((s) => s.group!.id === item.group) : undefined;
+			if (!section) out.push({ kind: 'link', item });
+			else if (!placed.has(section.group!.id)) {
+				placed.add(section.group!.id);
+				out.push({ kind: 'menu', section });
+			}
+		}
+		return out;
+	});
 	const topLayer = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
 
 	let openGroup = $state<string | null>(null);
@@ -141,14 +157,16 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 	</a>
 	<nav class="nav" aria-label={label}>
 		<ul class="list">
-			{#each loose as item (item.id)}
-				<li>
-					<a href={item.href} class="link" aria-current={item.id === current ? 'page' : undefined}
-						>{item.label}{@render badgeOf(item)}</a
-					>
-				</li>
-			{/each}
-			{#each menus as section (section.group!.id)}
+			{#each entries as entry (entry.kind === 'link' ? `l:${entry.item.id}` : `m:${entry.section.group!.id}`)}
+				{#if entry.kind === 'link'}
+					{@const item = entry.item}
+					<li>
+						<a href={item.href} class="link" aria-current={item.id === current ? 'page' : undefined}
+							>{item.label}{@render badgeOf(item)}</a
+						>
+					</li>
+				{:else}
+				{@const section = entry.section}
 				{@const g = section.group!}
 				{@const here = section.items.some((i) => i.id === current)}
 				<li>
@@ -165,6 +183,7 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 						<ChevronDown size={14} aria-hidden="true" />
 					</button>
 				</li>
+				{/if}
 			{/each}
 		</ul>
 	</nav>
@@ -203,11 +222,20 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 {#snippet sheetFooter()}{@render account?.()}{/snippet}
 
 <Sheet bind:open={sheetOpen} title={strings.menu} footer={account ? sheetFooter : undefined}>
-	{#each sections as section (section.group?.id ?? '_')}
-		{#if section.group}<p class="sheet-group">{section.group.label}</p>{/if}
-		{#each section.items as item (item.id)}
-			<SheetItem label={item.label} icon={item.icon} href={item.href} current={item.id === current} />
-		{/each}
+	{#each entries as entry (entry.kind === 'link' ? `l:${entry.item.id}` : `m:${entry.section.group!.id}`)}
+		{#if entry.kind === 'link'}
+			<SheetItem
+				label={entry.item.label}
+				icon={entry.item.icon}
+				href={entry.item.href}
+				current={entry.item.id === current}
+			/>
+		{:else}
+			<p class="sheet-group">{entry.section.group!.label}</p>
+			{#each entry.section.items as item (item.id)}
+				<SheetItem label={item.label} icon={item.icon} href={item.href} current={item.id === current} />
+			{/each}
+		{/if}
 	{/each}
 </Sheet>
 

@@ -34,6 +34,24 @@ describe('TopNav', () => {
 		expect(button.getAttribute('aria-expanded')).toBe('false');
 	});
 
+	it('keeps the list order, menus and links mixed', () => {
+		render(TopNav, {
+			groups: [
+				{ id: 'records', label: 'Records' },
+				{ id: 'guides', label: 'Guides' }
+			],
+			items: [
+				{ id: 'sites', label: 'Sites', href: '/sites', group: 'records' },
+				{ id: 'start', label: 'Start', href: '/start', group: 'guides' },
+				{ id: 'news', label: 'News', href: '/news' },
+				{ id: 'reports', label: 'Reports', href: '/reports', group: 'records' }
+			]
+		});
+		const nav = screen.getByRole('navigation', { name: 'Primary' });
+		const order = [...nav.querySelectorAll('.link')].map((el) => el.textContent?.trim());
+		expect(order).toEqual(['Records', 'Guides', 'News']);
+	});
+
 	it('links the product name home', () => {
 		render(TopNav, { items, groups, product: 'Acme', homeHref: '/start' });
 		expect(screen.getByRole('link', { name: 'Acme' }).getAttribute('href')).toBe('/start');

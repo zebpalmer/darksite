@@ -14,6 +14,7 @@ Give the column `align: 'end'` and a width. One CellBar column per table at most
 -->
 <script lang="ts">
 	import { chartColor, type ChartTone } from '../chart.js';
+	import { strings } from '../strings.svelte.js';
 	import { tooltip } from '../tooltip.js';
 
 	interface Props {
@@ -39,7 +40,7 @@ Give the column `align: 'end'` and a width. One CellBar column per table at most
 	const share = $derived(max > 0 ? Math.min(1, Math.max(0, value / max)) : 0);
 </script>
 
-<span class="ds-cellbar {className}" {@attach tooltip(`${format(value)} of ${format(max)}`)}>
+<span class="ds-cellbar {className}" {@attach tooltip(strings.valueOfMax(format(value), format(max)))}>
 	<span class="track" aria-hidden="true">
 		{#if share > 0}<span
 				class="bar"

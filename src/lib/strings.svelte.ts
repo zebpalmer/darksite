@@ -35,6 +35,8 @@ const DEFAULTS = {
 	copyFailed: 'Copy failed',
 	code: 'Code',
 	total: 'Total',
+	/** A value against its whole: "12 of 40". */
+	valueOfMax: (value: string, max: string) => `${value} of ${max}`,
 
 	// Shell
 	primaryNavigation: 'Primary',

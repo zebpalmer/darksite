@@ -39,6 +39,12 @@ All notable changes to darksite are recorded here. The format follows
 - `Banner` reads and writes its remembered dismissal through the shared `dismissal.ts`; its storage
   keys are unchanged.
 
+### Fixed
+
+- `TopNav` keeps the navigation list's order: a group's menu stands where its first item does,
+  mixed with the loose links, in the bar and in the phone sheet. It drew every loose link first.
+- `CellBar`'s tooltip takes its "of" from `strings` (`valueOfMax`).
+
 ## [0.11.0] — 2026-10-16
 
 ### Added
