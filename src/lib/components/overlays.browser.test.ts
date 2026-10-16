@@ -10,6 +10,8 @@ import TableHarness from '../../tests/browser/TableHarness.svelte';
 import LayoutHarness from '../../tests/browser/LayoutHarness.svelte';
 import JustifiedHarness from '../../tests/browser/JustifiedHarness.svelte';
 import TooltipHarness from '../../tests/browser/TooltipHarness.svelte';
+import BrandHarness from '../../tests/browser/BrandHarness.svelte';
+import '../brands/teal.css';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
@@ -202,5 +204,24 @@ describe('StatRow in a browser', () => {
 		expect(new Set(tops('five')).size).toBe(1);
 		const narrow = tops('five-narrow');
 		expect(narrow.filter((t) => t === narrow[0])).toHaveLength(3);
+	});
+});
+
+describe('brands in a browser', () => {
+	it('re-colors the root and a reading mode set below it', async () => {
+		render(BrandHarness);
+		await settle();
+		const root = document.documentElement;
+		root.dataset.brand = 'teal';
+		root.setAttribute('data-ds-theme', 'dark');
+		const reader = document.querySelector<HTMLElement>('[data-ds-theme="paper"]')!;
+		const accent = (el: Element) => getComputedStyle(el).getPropertyValue('--ds-accent').trim();
+		expect(accent(root)).toBe('#2bb3a8');
+		const paper = accent(reader);
+		expect(paper).not.toBe('#2bb3a8');
+		expect(paper).not.toBe(getComputedStyle(document.body).getPropertyValue('--color-primary-700').trim());
+		delete root.dataset.brand;
+		expect(accent(root)).not.toBe('#2bb3a8');
+		root.removeAttribute('data-ds-theme');
 	});
 });

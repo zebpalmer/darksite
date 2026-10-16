@@ -103,6 +103,15 @@ const DEFAULTS = {
 	system: (source: string) => `System: ${source}`,
 	asksForNote: 'Asks for a note',
 
+	// Modes
+	theme: 'Theme',
+	modeSystem: 'System',
+	modeDark: 'Dark',
+	modeLight: 'Light',
+	modePaper: 'Paper',
+	modeNight: 'Night',
+	modeContrast: 'High contrast',
+
 	// Error page
 	goHome: 'Go home',
 	tryAgain: 'Try again',

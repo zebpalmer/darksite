@@ -1,9 +1,14 @@
 // The gallery's component list: the index page lists it, the shell's search finds in it.
 
-const route: Record<string, string> = { ActiveFilters: 'filterrail', SheetItem: 'sheet' };
+const route: Record<string, string> = {
+	ActiveFilters: 'filterrail',
+	SheetItem: 'sheet',
+	ModePicker: 'brands'
+};
 
 export const groups: Record<string, string[]> = {
 	Actions: ['Button', 'KeyCap', 'KeyLegend', 'Tooltip'],
+	Theming: ['ModePicker'],
 	Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 	Filtering: ['ActiveFilters', 'FilterRail'],
 	Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],

@@ -16,38 +16,53 @@
 	import PanelTop from '@lucide/svelte/icons/panel-top';
 	import PanelsTopLeft from '@lucide/svelte/icons/panels-top-left';
 	import Sun from '@lucide/svelte/icons/sun';
+	import BookOpen from '@lucide/svelte/icons/book-open';
+	import Monitor from '@lucide/svelte/icons/monitor';
+	import Palette from '@lucide/svelte/icons/palette';
 	import SquareMousePointer from '@lucide/svelte/icons/square-mouse-pointer';
-	import { AppShell, Button, KeyCap, toasts, type NavGroup, type NavItem } from '#lib';
+	import {
+		AppShell,
+		Button,
+		KeyCap,
+		ModePicker,
+		MODES,
+		mode,
+		modeLabel,
+		Select,
+		toasts,
+		type Mode,
+		type NavGroup,
+		type NavItem
+	} from '#lib';
+	import { brands, gallery, initBrand, setBrand } from './brand.svelte.js';
 	import { componentHref, findComponent, names } from './catalog.js';
 	import { demo } from './demo.svelte.js';
 
 	let { children }: { children: Snippet } = $props();
 
-	type Theme = 'dark' | 'light' | 'contrast';
-	const themes: { id: Theme; label: string; icon: typeof Moon }[] = [
-		{ id: 'dark', label: 'Dark', icon: Moon },
-		{ id: 'light', label: 'Light', icon: Sun },
-		{ id: 'contrast', label: 'High contrast', icon: Contrast }
-	];
-	let theme = $state<Theme>('dark');
-
-	// `?theme=light` or `?theme=contrast` opens the gallery in that theme, for screenshots.
+	// `?theme=light` (or paper, night, contrast) and `?brand=nord` open the gallery that way, for
+	// screenshots; otherwise the viewer's saved choices apply.
 	$effect(() => {
+		mode.init();
+		initBrand();
 		const t = new URLSearchParams(location.search).get('theme');
-		if (t === 'light' || t === 'contrast') setTheme(t);
-		// With no theme chosen, tokens.css follows the viewer's system; show what it picked.
-		else if (matchMedia('(prefers-contrast: more)').matches) theme = 'contrast';
-		else if (matchMedia('(prefers-color-scheme: light)').matches) theme = 'light';
+		if (t && (MODES as readonly string[]).includes(t)) mode.set(t as Mode, { persist: false });
 	});
-
-	function setTheme(t: Theme) {
-		theme = t;
-		document.documentElement.dataset.theme = t;
-	}
+	const cycle: Mode[] = ['dark', 'light', 'paper', 'night', 'contrast'];
+	const nextMode = $derived(cycle[(cycle.indexOf(mode.current) + 1) % cycle.length]);
+	const modeIcon = {
+		system: Monitor,
+		dark: Moon,
+		light: Sun,
+		paper: BookOpen,
+		night: Moon,
+		contrast: Contrast
+	};
 
 	const groups: NavGroup[] = [{ id: 'shell', label: 'Shell' }];
 	const base: NavItem[] = [
 		{ id: 'components', label: 'Components', href: '/', icon: LayoutGrid },
+		{ id: 'brands', label: 'Brands and modes', href: '/brands', icon: Palette },
 		{ id: 'appshell', label: 'AppShell', href: '/appshell', icon: PanelsTopLeft, group: 'shell' },
 		{ id: 'navrail', label: 'NavRail', href: '/navrail', icon: PanelLeft, group: 'shell' },
 		{ id: 'tabbar', label: 'TabBar', href: '/tabbar', icon: PanelBottom, group: 'shell' },
@@ -67,7 +82,6 @@
 	const current = $derived(
 		base.find((i) => i.href !== '/' && page.url.pathname.startsWith(i.href))?.id ?? 'components'
 	);
-	const next = $derived(themes[(themes.findIndex((t) => t.id === theme) + 1) % themes.length]);
 
 	// The shell's header search: Enter opens the best-matching component's page.
 	let query = $state('');
@@ -114,23 +128,23 @@
 {#snippet account({ compact }: { compact: boolean })}
 	{#if compact}
 		<Button
-			variant="ghost"
-			size="dense"
-			icon={next.icon}
-			aria-label="Theme: {themes.find((t) => t.id === theme)?.label}. Switch to {next.label}"
-			onclick={() => setTheme(next.id)}
+			variant="icon"
+			icon={modeIcon[mode.current]}
+			label="{modeLabel(mode.current)}. Switch to {modeLabel(nextMode)}"
+			onclick={() => mode.set(nextMode)}
 		/>
 	{:else}
-		<label class="theme">
-			<span>Theme</span>
-			<select
-				class="ds-control"
-				value={theme}
-				onchange={(e) => setTheme(e.currentTarget.value as Theme)}
-			>
-				{#each themes as t (t.id)}<option value={t.id}>{t.label}</option>{/each}
-			</select>
-		</label>
+		<div class="prefs">
+			<ModePicker />
+			<label class="pref">
+				<span>Brand</span>
+				<Select
+					value={gallery.brand}
+					options={brands.map((b) => ({ value: b.name, label: b.label }))}
+					onchange={(e: Event) => setBrand((e.currentTarget as HTMLSelectElement).value)}
+				/>
+			</label>
+		</div>
 	{/if}
 {/snippet}
 
@@ -166,7 +180,12 @@
 		position: absolute;
 		right: 8px;
 	}
-	.theme {
+	.prefs {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+	.pref {
 		display: flex;
 		flex-direction: column;
 		gap: 4px;

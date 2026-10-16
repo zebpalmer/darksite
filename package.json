@@ -22,6 +22,8 @@
 		},
 		"./tokens.css": "./dist/tokens.css",
 		"./base.css": "./dist/base.css",
+		"./brands/*.css": "./dist/brands/*.css",
+		"./brands/index.json": "./dist/brands/index.json",
 		"./tokens.json": "./tokens.json",
 		"./package.json": "./package.json"
 	},
@@ -31,7 +33,10 @@
 		"tokens.json",
 		"CHANGELOG.md",
 		"docs",
-		"components/*/README.md"
+		"components/*/README.md",
+		"bin",
+		"brand",
+		"NOTICE.md"
 	],
 	"sideEffects": [
 		"**/*.css"
@@ -41,12 +46,13 @@
 		"build": "vite build && npm run package",
 		"package": "svelte-kit sync && svelte-package && publint",
 		"prepare": "svelte-kit sync && svelte-package",
-		"tokens": "node scripts/build-tokens.mjs",
+		"tokens": "node scripts/build-tokens.mjs && node scripts/build-brands.mjs",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"lint": "node scripts/build-tokens.mjs --check && node scripts/check-contrast.mjs && prettier --check . && npm run check && npm run package",
+		"lint": "node scripts/build-tokens.mjs --check && node scripts/check-contrast.mjs && node scripts/build-brands.mjs --check && prettier --check . && npm run check && npm run package",
 		"format": "prettier --write .",
 		"test": "vitest run",
-		"contrast": "node scripts/check-contrast.mjs -v"
+		"contrast": "node scripts/check-contrast.mjs -v",
+		"brands": "node scripts/build-brands.mjs"
 	},
 	"peerDependencies": {
 		"svelte": "^5.29.0"
@@ -72,5 +78,8 @@
 	"dependencies": {
 		"@floating-ui/dom": "^1.8.0",
 		"@lucide/svelte": "^1.57.0"
+	},
+	"bin": {
+		"darksite-theme": "./bin/darksite-theme.mjs"
 	}
 }

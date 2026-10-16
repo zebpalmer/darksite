@@ -27,6 +27,7 @@ const props: Record<string, Record<string, unknown>> = {
 	Input: { value: 'x' },
 	KeyCap: { keys: 'shift+enter' },
 	LoadMore: { shown: 50, total: 295, onLoadMore: () => {} },
+	ModePicker: {},
 	Meter: { segments: [{ value: 1, label: 'Done' }], max: 2, label: 'Progress' },
 	NavRail: { items: [{ id: 'a', label: 'Home', href: '/' }], rememberAs: 'main' },
 	PageHeader: { title: 'Records', count: 12 },

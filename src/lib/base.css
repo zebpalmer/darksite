@@ -74,6 +74,19 @@
 		display: none;
 	}
 
+	/* Long-form reading: the reading font at 18px with generous leading, at a readable measure. Pair
+	   it with the paper or night mode for a reader view. */
+	.ds-reading {
+		max-width: 68ch;
+		color: var(--ds-text-1);
+		font-family: var(--font-reading);
+		font-size: 18px;
+		line-height: 1.65;
+	}
+	.ds-reading p {
+		margin: 0 0 1em;
+	}
+
 	::selection {
 		background-color: var(--ds-accent-tint-hover);
 		color: var(--ds-text-1);

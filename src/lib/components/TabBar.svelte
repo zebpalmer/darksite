@@ -100,6 +100,22 @@ Pages must leave room for it: AppShell publishes its height as `--ds-chrome-bott
 
 <style>
 	.ds-tabbar {
+		/* The bar reads the chrome roles, so a brand can color it: everything inside — buttons,
+		   fields, tooltips — follows. By default they are the page's own roles. */
+		--ds-bg-0: var(--ds-bar-bg-0);
+		--ds-bg-1: var(--ds-bar-bg-1);
+		--ds-bg-2: var(--ds-bar-bg-2);
+		--ds-bg-3: var(--ds-bar-bg-3);
+		--ds-bg-4: var(--ds-bar-bg-4);
+		--ds-bg-5: var(--ds-bar-bg-5);
+		--ds-text-1: var(--ds-bar-text-1);
+		--ds-text-2: var(--ds-bar-text-2);
+		--ds-text-3: var(--ds-bar-text-3);
+		--ds-border-subtle: var(--ds-bar-border-subtle);
+		--ds-border: var(--ds-bar-border);
+		--ds-border-strong: var(--ds-bar-border-strong);
+		--ds-accent: var(--ds-bar-accent);
+		--ds-accent-text: var(--ds-bar-accent-text);
 		position: fixed;
 		left: 0;
 		right: 0;

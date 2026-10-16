@@ -3,6 +3,7 @@
 components/
 tokens.json
 src/lib/tokens.css
+src/lib/brands/
 package-lock.json
 .svelte-kit/
 build/

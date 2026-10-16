@@ -66,6 +66,7 @@ export { default as Missing } from './components/Missing.svelte';
 export { default as LoadMore } from './components/LoadMore.svelte';
 export { default as Select } from './components/Select.svelte';
 export { default as Textarea } from './components/Textarea.svelte';
+export { default as ModePicker } from './components/ModePicker.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
@@ -187,3 +188,4 @@ export type { RailSlotArgs, TipHandlers } from './components/NavRail.svelte';
 export { resetStrings, setStrings, strings, type Strings } from './strings.svelte.js';
 export type { SelectOption } from './components/Select.svelte';
 export { tooltip, type TooltipOptions } from './tooltip.js';
+export { MODE_SCRIPT, MODES, ModeStore, mode, modeLabel, type Mode } from './mode.svelte.js';

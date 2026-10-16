@@ -201,6 +201,22 @@ that list, not disabled.
 
 <style>
 	.ds-navrail {
+		/* The rail reads the chrome roles, so a brand can color it: everything inside — buttons,
+		   fields, tooltips — follows. By default they are the page's own roles. */
+		--ds-bg-0: var(--ds-rail-bg-0);
+		--ds-bg-1: var(--ds-rail-bg-1);
+		--ds-bg-2: var(--ds-rail-bg-2);
+		--ds-bg-3: var(--ds-rail-bg-3);
+		--ds-bg-4: var(--ds-rail-bg-4);
+		--ds-bg-5: var(--ds-rail-bg-5);
+		--ds-text-1: var(--ds-rail-text-1);
+		--ds-text-2: var(--ds-rail-text-2);
+		--ds-text-3: var(--ds-rail-text-3);
+		--ds-border-subtle: var(--ds-rail-border-subtle);
+		--ds-border: var(--ds-rail-border);
+		--ds-border-strong: var(--ds-rail-border-strong);
+		--ds-accent: var(--ds-rail-accent);
+		--ds-accent-text: var(--ds-rail-accent-text);
 		display: flex;
 		flex-direction: column;
 		flex: none;
