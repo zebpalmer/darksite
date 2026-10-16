@@ -7,7 +7,8 @@
 		label: string;
 		/** `end` for numbers. */
 		align?: 'start' | 'end';
-		/** A CSS width, e.g. `'120px'` or `'20%'`. */
+		/** A CSS width: `'120px'`, `'20%'`, or a range like `'clamp(120px, 30%, 240px)'` (resolved
+		 *  against the table's width, which fixed table layout cannot do itself). */
 		width?: string;
 		/** 1 = never hidden, 2 = hidden below a 480px table, 3 = below 720px (see `hideBelow`). */
 		priority?: 1 | 2 | 3;
@@ -182,6 +183,34 @@ belong in the pane's ActionBar.
 		const ro = new ResizeObserver(() => (width = el.clientWidth));
 		ro.observe(el);
 		return () => ro.disconnect();
+	});
+
+	// Fixed table layout ignores a width that mixes a percentage into calc(), min(), max() or
+	// clamp(): the column falls back to an even share. Such widths are resolved here, against the
+	// table's own width, to pixels, and again whenever the table is resized.
+	let tableEl: HTMLTableElement | undefined = $state();
+	let resolved = $state<Record<string, string>>({});
+	const MIXED_PERCENT = /\b(?:calc|min|max|clamp)\(.*%/;
+	$effect(() => {
+		void width;
+		const el = tableEl;
+		const needs = columns.filter((c) => c.width && MIXED_PERCENT.test(c.width));
+		if (!el || !el.parentElement || !needs.length) {
+			resolved = {};
+			return;
+		}
+		const box = document.createElement('div');
+		box.style.cssText = `position:absolute;visibility:hidden;height:0;overflow:hidden;width:${el.getBoundingClientRect().width}px`;
+		const probe = document.createElement('div');
+		box.append(probe);
+		el.parentElement.append(box);
+		const out: Record<string, string> = {};
+		for (const c of needs) {
+			probe.style.width = c.width!;
+			out[c.key] = `${probe.getBoundingClientRect().width}px`;
+		}
+		box.remove();
+		resolved = out;
 	});
 
 	function groupRows(list: readonly T[], by: (row: T) => string) {
@@ -377,7 +406,7 @@ belong in the pane's ActionBar.
 	data-hide={hidden.length ? hidden.join(' ') : undefined}
 	style:--ds-table-min={minWidth}
 >
-	<table aria-label={label} aria-busy={loading ? 'true' : undefined}>
+	<table bind:this={tableEl} aria-label={label} aria-busy={loading ? 'true' : undefined}>
 		<thead>
 			<tr>
 				{#if selectable}
@@ -396,7 +425,7 @@ belong in the pane's ActionBar.
 						scope="col"
 						data-align={column.align ?? 'start'}
 						data-priority={column.priority ?? 1}
-						style:width={column.width}
+						style:width={resolved[column.key] ?? column.width}
 						aria-sort={ariaSort(column)}
 					>
 						<span class="head">

@@ -10,7 +10,10 @@ pointer whatever density was passed. 12px cell padding, with the first and last 
 dividers `ds-border-subtle`, the header divider `ds-border`, header text 12/500 `ds-text-3`.
 
 Cells are **one line**, with an ellipsis and the full value in `title`. Column widths come from
-`width` or an even share — `table-layout: fixed`, so no long string ever sets a column's width.
+`width` or an even share — `table-layout: fixed`, so no long string ever sets a column's width. A
+`width` can be a length, a percentage of the table, or a range such as `clamp(120px, 30%, 240px)`;
+fixed table layout cannot resolve a percentage inside `calc()`, `min()`, `max()` or `clamp()` on its
+own, so the table resolves those against its width and again whenever it is resized.
 When the widths add up to less than the table, the visible columns share what is left over,
 including the width of any column that priority has hidden, so rows always reach the table's edge.
 

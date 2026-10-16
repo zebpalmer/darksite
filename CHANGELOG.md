@@ -10,6 +10,10 @@ All notable changes to darksite are recorded here. The format follows
 
 - `TableColumn.tip`: what a column means, as a HelpTip beside its header (named "About <label>", outside the sort button).
 
+### Fixed
+
+- `Table` column `width` works with a percentage inside `calc()`, `min()`, `max()` or `clamp()` (`clamp(120px, 30%, 240px)`). Fixed table layout ignored such widths and gave the column an even share; the table now resolves them against its own width.
+
 ## [0.12.0] — 2026-10-16
 
 ### Added

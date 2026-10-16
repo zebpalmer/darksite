@@ -12,6 +12,7 @@ import JustifiedHarness from '../../tests/browser/JustifiedHarness.svelte';
 import TooltipHarness from '../../tests/browser/TooltipHarness.svelte';
 import BrandHarness from '../../tests/browser/BrandHarness.svelte';
 import TopNavHarness from '../../tests/browser/TopNavHarness.svelte';
+import WidthHarness from '../../tests/browser/WidthHarness.svelte';
 import '../brands/teal.css';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -239,5 +240,25 @@ describe('top navigation in a browser', () => {
 		expect(panel.contains(document.activeElement)).toBe(true);
 		await userEvent.keyboard('{Escape}');
 		expect(document.activeElement).toBe(button);
+	});
+});
+
+describe('Table column widths in a browser', () => {
+	it('resolves a percentage inside clamp(), min() and calc() against the table', async () => {
+		const cases: [string, number, number][] = [
+			['clamp(120px, 30%, 240px)', 375, 120],
+			['clamp(120px, 30%, 240px)', 900, 240],
+			['min(30%, 200px)', 900, 200],
+			['calc(20% + 40px)', 500, 140],
+			['30%', 500, 150]
+		];
+		for (const [width, tableWidth, expected] of cases) {
+			const { unmount } = render(WidthHarness, { width, tableWidth });
+			await settle();
+			await settle();
+			const th = document.querySelector('th')!;
+			expect(Math.round(th.getBoundingClientRect().width), `${width} at ${tableWidth}px`).toBe(expected);
+			unmount();
+		}
 	});
 });
