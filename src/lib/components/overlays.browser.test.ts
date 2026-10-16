@@ -175,6 +175,23 @@ describe('tooltip in a browser', () => {
 		await userEvent.keyboard('{Escape}');
 		expect(tip.hidden).toBe(true);
 	});
+
+	it('stays through the scroll that brings a focused element into view, and hides once it leaves', async () => {
+		render(TooltipHarness);
+		const button = screen.getByRole('button', { name: 'Archive' });
+		screen.getByRole('button', { name: 'Export' }).focus();
+		await userEvent.keyboard('{Tab}');
+		expect(document.activeElement).toBe(button);
+		// The focus scrolled the page; its scroll event arrives after the tooltip shows.
+		await settle();
+		await settle();
+		const tip = document.getElementById(button.getAttribute('aria-describedby')!)!;
+		expect(window.scrollY).toBeGreaterThan(0);
+		expect(tip.matches(':popover-open')).toBe(true);
+		window.scrollTo(0, 0);
+		await settle();
+		expect(tip.hidden).toBe(true);
+	});
 });
 
 describe('PageHeader on a narrow header', () => {

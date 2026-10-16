@@ -19,7 +19,9 @@ one instead of the browser's native title, which a keyboard or touch user never 
 - Shows after 300ms of hover, at once on keyboard focus, and on a long press on a touch screen
   (hiding 1.5s after the finger lifts).
 - Hides on leaving, blur, a scroll, or Esc — Esc is taken only while the tooltip shows, so a
-  surrounding Dialog does not close with it.
+  surrounding Dialog does not close with it. One shown for keyboard focus stays through a scroll
+  while its element is in view, following it: tabbing to an element below the fold scrolls the
+  page, and that must not take the tooltip away again.
 - In the top layer, placed with `placement` (default `top`), flipped and shifted to stay inside the
   viewport. Inside an open modal it moves into the modal, so it shows above it.
 - `ds-bg-4` with `ds-elev-2`, 12px `ds-text-1`, up to 280px wide.

@@ -32,6 +32,9 @@ All notable changes to darksite are recorded here. The format follows
 
 ### Fixed
 
+- A tooltip shown for keyboard focus stays through a scroll while its element is in view. Tabbing
+  to an element below the fold scrolls the page, and that scroll hid the tooltip it had just shown.
+
 - `ModePicker variant="segmented"` and `SegmentedControl` shrink to their container in a flex row
   or a grid cell and scroll sideways, the selected option in view. Six modes overflowed a 320px
   container there instead of scrolling.
