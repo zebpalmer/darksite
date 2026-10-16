@@ -60,12 +60,18 @@ own `actions`**, so the page's primary button stays right-most. Pages change not
 {/snippet}
 ```
 
-- **It lives in the header.** A page with no `PageHeader` shows no header actions; a page that
-  wants none passes `shellActions={false}` to its `PageHeader`. A level-2 header never shows them.
+- **It lives in the header.** A page that wants none passes `shellActions={false}` to its
+  `PageHeader`. A level-2 header never shows them.
+- **A page with no level-1 `PageHeader`** — a map, a custom work view — shows them in the
+  `TopBar` instead, ahead of the bar's own actions; with no `topBar`, the shell adds a slim bar
+  that holds only them. `headerActionsFallback={false}` turns that off (pass it from the layout for
+  the routes that should have none). On the server the bar is rendered for every page, and CSS
+  hides it beside a level-1 header until the client removes it, so nothing flashes.
 - **`/` focuses its first field** (the `focusShortcut` attachment, as in `TopBar`): not while the
   user is typing, and not when the page already took the key. `headerActionsKey` picks another key;
   `null` hands it to the page.
-- **On phones** it collapses to an icon button — `headerActionsIcon` (default a search icon) named
+- **On phones, or when the header lacks room** for the title beside it, it collapses to an icon
+  button — `headerActionsIcon` (default a search icon) named
   by `headerActionsLabel` (default "Search") — with `aria-expanded`. It opens a full-width row
   under the header, inside it so a sticky header keeps it, and moves focus to the row's first
   field; the shortcut key opens it the same way; the first element in the row grows to its width. Esc from inside the row (unless a control

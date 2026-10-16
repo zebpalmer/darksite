@@ -8,14 +8,16 @@ Below 768px it is a full-width native `<select>` with optgroups: the one control
 renders well. Choosing a page calls `onnavigate(href)` — pass the router's navigation (SvelteKit's
 `goto`); without it the browser loads the page.
 
-- `items` (`NavItem[]` with `group`), `groups`, `current`, `label`, `collapsible` (groups without
-  the current page start closed), `onnavigate`.
+- `items` (`NavItem[]` with `group`; an item's `description` is its tooltip), `groups` (a group's
+  `collapsed` sets how it starts), `current`, `label`, `collapsible` (each group is a disclosure;
+  one without the current page starts closed unless its `collapsed` is false), `onnavigate`.
 
 A few sibling views of the same data that need the full width use Tabs instead (which-primitive).
 -->
 <script lang="ts">
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import { badgeSpoken, badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
+	import { tooltip } from '../tooltip.js';
 
 	interface Props {
 		items: readonly NavItem[];
@@ -34,8 +36,14 @@ A few sibling views of the same data that need the full width use Tabs instead (
 	const sections = $derived(groupItems(items, groups));
 	const currentHref = $derived(items.find((i) => i.id === current)?.href ?? '');
 	let closed = $state<Record<string, boolean>>({});
-	const isOpen = (id: string, list: NavItem[]) =>
-		!collapsible || (closed[id] === undefined ? list.some((i) => i.id === current) : !closed[id]);
+	// Until the viewer toggles a group, it is open when it holds the current page, or when the
+	// group asks to start open. Items outside any group have no toggle, so they are always shown.
+	const isOpen = (id: string, group: NavGroup | null, list: NavItem[]) =>
+		!collapsible ||
+		!group ||
+		(closed[id] === undefined
+			? list.some((i) => i.id === current) || group?.collapsed === false
+			: !closed[id]);
 
 	function go(href: string) {
 		if (!href) return;
@@ -47,7 +55,7 @@ A few sibling views of the same data that need the full width use Tabs instead (
 <nav class="ds-sidenav {className}" aria-label={label}>
 	{#each sections as section (section.group?.id ?? '_')}
 		{@const id = section.group?.id ?? '_'}
-		{@const open = isOpen(id, section.items)}
+		{@const open = isOpen(id, section.group, section.items)}
 		{#if section.group}
 			{#if collapsible}
 				<button
@@ -68,7 +76,12 @@ A few sibling views of the same data that need the full width use Tabs instead (
 				{#each section.items as item (item.id)}
 					{@const badge = badgeText(item.badge)}
 					<li>
-						<a href={item.href} class="item" aria-current={item.id === current ? 'page' : undefined}>
+						<a
+							href={item.href}
+							class="item"
+							aria-current={item.id === current ? 'page' : undefined}
+							{@attach tooltip(item.description, { placement: 'right' })}
+						>
 							<span class="label">{item.label}</span>
 							{#if badge}<span class="badge" aria-hidden="true">{badge}</span>{/if}
 							{#if badge !== null}<span class="ds-sr-only">{badgeSpoken(badge)}</span>{/if}

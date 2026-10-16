@@ -12,11 +12,17 @@ export interface NavItem {
 	group?: string;
 	/** A count, or `true` for a dot. */
 	badge?: number | boolean | null;
+	/** A sentence about the destination: SideNav shows it as the item's tooltip. */
+	description?: string;
 }
 
 export interface NavGroup {
 	id: string;
 	label: string;
+	/** In a collapsible SideNav, how the group starts: `true` closed, `false` open. Unset, it starts
+	 *  open only when it holds the current page. A group holding the current page always starts
+	 *  open. */
+	collapsed?: boolean;
 }
 
 export interface NavSection {

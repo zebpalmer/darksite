@@ -6,6 +6,38 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `PageHeader` makes room at any width, not only on phones: when the title and the actions do not
+  fit on one line, the shell's header actions collapse to their icon button first, then the
+  `actions` snippet receives `{ compact: true }` so it can render icon buttons. It gives the room
+  back as the header widens. Busy headers no longer overflow or cut the title.
+- `AppShell` `headerActions` on a page with no level-1 `PageHeader` (a map, a custom work view)
+  show in the `TopBar`, ahead of its actions — or, with no `topBar`, in a slim bar the shell adds;
+  on a phone they collapse to an icon button and a row there. `headerActionsFallback={false}` turns
+  that off. A level-1 header claims them even with `shellActions={false}`.
+- `NavGroup.collapsed`: in a collapsible `SideNav`, `true` starts the group closed and `false`
+  starts it open; unset, it starts closed unless it holds the current page, as before.
+- `NavItem.description`: a sentence about the destination, shown as the item's tooltip in
+  `SideNav` and read as its description.
+
+### Changed
+
+- `TopBar` `start` shrinks and scrolls sideways when the bar is short of room, so a row of filter
+  chips no longer pushes the actions off the bar; the actions always sit at the end, phones
+  included. The bar's contents now sit in an inner line, so the bar can hold the header actions'
+  row beneath it.
+- `NavRail` shows `version` collapsed too: centered, truncated to the rail, and whole in the rail's
+  tooltip on hover. It showed only when expanded.
+
+### Fixed
+
+- `ModePicker variant="segmented"` and `SegmentedControl` shrink to their container in a flex row
+  or a grid cell and scroll sideways, the selected option in view. Six modes overflowed a 320px
+  container there instead of scrolling.
+- A collapsible `SideNav` lists the items outside any group. They have no toggle, and were hidden
+  unless one of them was the current page.
+
 ## [0.14.0] — 2026-10-16
 
 ### Added

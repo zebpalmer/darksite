@@ -121,9 +121,11 @@ that page's `PageHeader` actions.
 A shell-wide control that should share the line with each page's title instead of taking a row of
 its own — typically global search — is `AppShell`'s `headerActions` snippet. Every level-1
 `PageHeader` renders it right-aligned, ahead of the page's own actions, so the page's primary
-button stays right-most; `/` focuses its first field. On phones it collapses to an icon button that
-opens a full-width row under the header (so does `/`); Esc or a navigation closes it. It is rendered by
-`PageHeader`, so a page without one shows none. Details are in the `AppShell` card.
+button stays right-most; `/` focuses its first field. On phones, or when the header lacks room, it
+collapses to an icon button that opens a full-width row under the header (so does `/`); Esc or a
+navigation closes it. A page with no level-1 `PageHeader` shows it in the `TopBar` instead (or a
+slim bar the shell adds); `headerActionsFallback={false}` turns that off. Details are in the
+`AppShell` card.
 
 Give a shell-wide search one home: `headerActions`, a `TopBar` or the rail's search slot.
 

@@ -99,11 +99,12 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | The application frame | `AppShell` | Rail plus content column; publishes the padding, chrome-bottom and top-bar heights. One per app. |
 | Primary navigation, desktop | `NavRail` | 56 collapsed / 208 expanded, grouped, remembered per viewer. |
 | Primary navigation, phone | `TabBar` | At most five cells; the fifth opens a `Sheet` with the rest. |
-| Navigation inside a section | `SideNav` | 200px beside the page. A native `<select>` on phones. |
+| Navigation inside a section | `SideNav` | 200px beside the page. A native `<select>` on phones. `collapsible` with a group's `collapsed` to start it closed or open; an item's `description` is its tooltip. |
 | A few sibling views of the same data | `Tabs` (links mode) inline in `PageHeader` | Only when all hold: about six sections at most; each is a view of the same data, not a settings page; and the pages are wide tables or grids that need the full width. Otherwise `SideNav`. |
-| Something on every page of a section | `TopBar` | Search, a global create action, a scope selector. Page-specific actions go in `PageHeader` instead. |
+| Something on every page of a section | `TopBar` | Search, a global create action, a scope selector or a row of chips in `start` (it scrolls when short of room). Page-specific actions go in `PageHeader` instead. |
 | A page's own title and actions | `PageHeader` | Always flush; `TopBar` sits above it, outside the padded column. |
-| A shell-wide control on every page's header line (global search) | `AppShell` `headerActions` | Rendered by each `PageHeader` ahead of the page's actions; an icon button and a row on phones. |
+| A shell-wide control on every page's header line (global search) | `AppShell` `headerActions` | Rendered by each `PageHeader` ahead of the page's actions; an icon button and a row on phones or when the header lacks room. A page with no level-1 header shows it in the `TopBar`. |
+| Page actions that must fit a busy header | `PageHeader` `actions({ compact })` | Render icon buttons when `compact`; the header asks only when it lacks room. |
 | An app-level notice that must stay usable over a modal | `{@attach topmost}` | Update prompts, connectivity, a privacy screen. The `Toaster` already does it. |
 | Know whether a modal is open or holds edits | `modals.open` / `modals.dirty` | Postpone a reload while the user is mid-edit; `onbeforeclose` on the Sheet keeps it open. |
 | A modal of your own (a `<dialog>`, or a fixed full-screen viewer) | `trackModal(el)` while open | Counts in `modals`, and `topmost` notices move into it. A non-dialog gets no inertness: focus and Esc are its own job. |

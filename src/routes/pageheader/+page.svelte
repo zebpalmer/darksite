@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Download from '@lucide/svelte/icons/download';
+	import Plus from '@lucide/svelte/icons/plus';
 	import { Button, PageHeader } from '#lib';
 </script>
 
@@ -16,11 +17,40 @@
 	{#snippet actions()}<Button variant="ghost" icon={Download}>Export</Button>{/snippet}
 </PageHeader>
 <p>On a narrow header, actions that would cut the title short move to a second line.</p>
+<p>
+	Short of room at any width, a level-1 header first collapses the shell's search to its icon, then
+	tells its <code>actions</code> to be compact. Drag the frame's corner to narrow it.
+</p>
+<div class="frame">
+	<PageHeader title="Records awaiting review" count={1284}>
+		{#snippet actions({ compact })}
+			{#if compact}
+				<Button variant="icon" icon={Download} label="Export" />
+				<Button variant="icon" icon={Plus} label="New record" />
+			{:else}
+				<Button variant="ghost" icon={Download}>Export</Button>
+				<Button variant="primary" icon={Plus}>New record</Button>
+			{/if}
+		{/snippet}
+	</PageHeader>
+</div>
 {#each { length: 40 } as _, i (i)}
 	<div class="line">Record {i + 1}</div>
 {/each}
 
 <style>
+	.frame {
+		--ds-pad-top: 0px;
+		--ds-pad-x: 0px;
+		width: 960px;
+		max-width: 100%;
+		min-width: 280px;
+		margin-bottom: var(--ds-space-4);
+		overflow: hidden;
+		border: 1px solid var(--ds-border-subtle);
+		border-radius: var(--ds-radius-md);
+		resize: horizontal;
+	}
 	p {
 		color: var(--ds-text-2);
 		font-size: var(--ds-text-md);

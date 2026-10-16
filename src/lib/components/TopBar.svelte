@@ -5,17 +5,27 @@ global create action, a scope that outlives the page. 48px on ds-bg-2, or `varia
 on ds-bg-1) where it only carries search. It sits outside the padded column, so PageHeader keeps
 its flush geometry underneath, and publishes its height as `--ds-topbar-h`.
 
-- `start` snippet (a scope selector), `search` snippet (usually an Input with a `/` key cap),
-  `actions` snippet, `variant`, `sticky`, `label`, `searchKey` (default `/`: focuses the first
-  field in `search`, unless the user is typing or the page already handled the key; `null` hands
-  the key to the page). The key is the `focusShortcut` attachment, exported for other containers.
+- `start` snippet (a scope selector, a row of filter chips), `search` snippet (usually an Input
+  with a `/` key cap), `actions` snippet, `variant`, `sticky`, `label`, `searchKey` (default `/`:
+  focuses the first field in `search`, unless the user is typing or the page already handled the
+  key; `null` hands the key to the page). The key is the `focusShortcut` attachment, exported for
+  other containers.
+- `start` gives way when the bar is short of room: it shrinks and scrolls sideways, so a long row
+  of chips never pushes the actions off the bar. The actions always sit at the end.
+- Inside an AppShell, on a page with no level-1 PageHeader, the bar also shows the shell's
+  `headerActions`, ahead of its own actions; on a phone they collapse to an icon button that opens
+  a full-width row under the bar.
 
 If a control is not relevant on every page of the section, it belongs in that page's PageHeader.
 -->
 <script lang="ts">
 	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
+
+	import Button from './Button.svelte';
 	import { focusShortcut } from '../hotkeys.js';
+	import { getHeaderActions } from '../shell-context.js';
+	import { ShellFold } from '../shell-fold.svelte.js';
 
 	interface Props {
 		start?: Snippet;
@@ -28,10 +38,30 @@ If a control is not relevant on every page of the section, it belongs in that pa
 		class?: string;
 	}
 
-	let { start, search, actions, variant = 'default', sticky = false, label = strings.toolbar, searchKey = '/', class: className = '' }: Props =
-		$props();
+	let {
+		start,
+		search,
+		actions,
+		variant = 'default',
+		sticky = false,
+		label = strings.toolbar,
+		searchKey = '/',
+		class: className = ''
+	}: Props = $props();
 
+	const uid = $props.id();
 	let el: HTMLElement | undefined = $state();
+
+	// The shell's header actions, on a page with no level-1 PageHeader to hold them.
+	const shell = getHeaderActions();
+	const shellSnippet = $derived(shell?.snippet && shell.fallback && !shell.claimed ? shell.snippet : undefined);
+	const collapsed = $derived(!!shellSnippet && !!shell?.phone);
+	const fold = new ShellFold(
+		shell,
+		() => collapsed,
+		() => el?.querySelector<HTMLElement>('.ds-topbar-toggle')
+	);
+	const rowOpen = $derived(collapsed && fold.open);
 
 	$effect(() => {
 		if (!el) return;
@@ -48,10 +78,46 @@ If a control is not relevant on every page of the section, it belongs in that pa
 </script>
 
 <div bind:this={el} class="ds-topbar {className}" data-variant={variant} class:sticky role="region" aria-label={label}>
-	{#if start}<div class="start">{@render start()}</div>{/if}
-	{#if search}<div class="search" {@attach focusShortcut(searchKey)}>{@render search()}</div>{/if}
-	<span class="grow"></span>
-	{#if actions}<div class="actions">{@render actions()}</div>{/if}
+	<div class="line">
+		{#if start}<div class="start">{@render start()}</div>{/if}
+		{#if search}<div class="search" {@attach focusShortcut(searchKey)}>{@render search()}</div>{/if}
+		<span class="grow"></span>
+		{#if shellSnippet || actions}
+			<div class="actions">
+				{#if shellSnippet && shell}
+					<span class="fallback">
+						{#if collapsed}
+							<Button
+								variant="icon"
+								class="ds-topbar-toggle"
+								icon={shell.icon}
+								label={shell.label}
+								aria-expanded={fold.open}
+								aria-controls={fold.open ? `${uid}-shell` : undefined}
+								onclick={fold.toggle}
+							/>
+						{:else}
+							<span class="shell" {@attach focusShortcut(shell.key)}>{@render shellSnippet()}</span>
+						{/if}
+					</span>
+				{/if}
+				{@render actions?.()}
+			</div>
+		{/if}
+	</div>
+	{#if rowOpen && shellSnippet && shell}
+		<div
+			id="{uid}-shell"
+			class="row"
+			role="region"
+			aria-label={shell.label}
+			{@attach fold.escapeCloses}
+			{@attach focusShortcut(shell.key)}
+			{@attach fold.focusFirst}
+		>
+			{@render shellSnippet()}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -72,47 +138,98 @@ If a control is not relevant on every page of the section, it belongs in that pa
 		--ds-border-strong: var(--ds-bar-border-strong);
 		--ds-accent: var(--ds-bar-accent);
 		--ds-accent-text: var(--ds-bar-accent-text);
-		display: flex;
-		align-items: center;
-		gap: 10px;
+		--bar-pad: 16px;
 		flex: none;
-		min-height: 48px;
-		padding: 0 16px;
 		border-bottom: 1px solid var(--ds-border-subtle);
 		background: var(--ds-bg-2);
 	}
+	.line {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 48px;
+		padding: 0 var(--bar-pad);
+	}
 	.ds-topbar[data-variant='slim'] {
-		min-height: 40px;
 		background: var(--ds-bg-1);
+	}
+	[data-variant='slim'] .line {
+		min-height: 40px;
 	}
 	.sticky {
 		position: sticky;
 		top: 0;
 		z-index: var(--ds-z-topbar);
 	}
-	.start,
-	.actions {
+	/* The scope cell gives way first: it shrinks and scrolls sideways (a row of chips), with room
+	   around its contents for their focus rings. What is inside keeps its size. */
+	.start {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex: 0 1 auto;
+		min-width: 0;
+		margin: 0 -4px;
+		padding: 4px;
+		overflow-x: auto;
+		scrollbar-width: thin;
+	}
+	.start > :global(*) {
+		flex-shrink: 0;
+	}
+	.actions,
+	.fallback,
+	.shell {
 		display: flex;
 		align-items: center;
 		gap: 8px;
 		flex: none;
 	}
+	/* The end of the bar, with or without the spacer. */
+	.actions {
+		margin-inline-start: auto;
+	}
 	.search {
 		flex: 1;
-		min-width: 0;
+		min-width: min(160px, 50%);
 		max-width: 360px;
 	}
 	.grow {
 		flex: 1;
 	}
+	.actions :global(.ds-topbar-toggle[aria-expanded='true']) {
+		background: var(--ds-bg-4);
+		color: var(--ds-text-1);
+	}
+	/* The phone row: the bar keeps its line, the row spans the full width under it. */
+	.row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px var(--bar-pad);
+		border-top: 1px solid var(--ds-border-subtle);
+	}
+	.row > :global(:first-child) {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+	/* Server-rendered markup cannot know whether the page claims the shell's actions: a page with
+	   a level-1 header hides them here until the client removes them. */
+	:global(.ds-appshell:has(.ds-pageheader[data-shell-claim])) .fallback {
+		display: none;
+	}
 	@media (max-width: 767.98px) {
 		.ds-topbar {
-			padding: 0 12px;
+			--bar-pad: 12px;
 		}
 		.search {
 			max-width: none;
 		}
 		.grow {
+			display: none;
+		}
+		/* Keep the inline form off a phone until the client swaps in the toggle. */
+		.shell {
 			display: none;
 		}
 	}

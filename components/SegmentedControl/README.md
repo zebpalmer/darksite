@@ -8,7 +8,9 @@ It is a real radio group: one tab stop, ←/→ move *and* select, Home/End jump
 
 The container is `ds-bg-2` with a `ds-border-subtle` edge, `ds-radius-md` and 2px of padding; the
 selected segment is `ds-bg-4` with `ds-text-1`, the rest `ds-text-3`. Wider than its container, the
-strip scrolls sideways rather than letting labels overprint each other.
+strip scrolls sideways rather than letting labels overprint each other — in a flex row or a grid
+cell too, where it shrinks to the container instead of growing past it — and the selected segment
+is scrolled into view.
 
 ## What the consumer provides
 

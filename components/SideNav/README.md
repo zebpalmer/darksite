@@ -7,8 +7,27 @@ It sits **beside** the page, not above it, so the page keeps its own full `PageH
 tabs across the top would compete with that header and run out of room by the eighth item.
 
 32px rows, 11px uppercase `ds-text-3` group titles, active = `ds-bg-4` + `ds-text-1` + a 2px
-`ds-accent` bar. A group whose pages are all unvisited may start collapsed, expanding when one of
-its pages becomes current.
+`ds-accent` bar.
+
+## Collapsible groups
+
+With `collapsible`, each group title is a disclosure button. A group starts open when it holds the
+current page; otherwise its `collapsed` says how it starts — `true` closed, `false` open — and with
+neither it starts closed. After that the viewer's toggle wins. Items outside any group have no
+title, so they are always listed.
+
+```ts
+const groups: NavGroup[] = [
+  { id: 'workspace', label: 'Workspace', collapsed: false },
+  { id: 'advanced', label: 'Advanced', collapsed: true }
+];
+```
+
+## Descriptions
+
+An item's `description` is a sentence about the destination, shown as its tooltip on hover, focus
+and long press, and read as its description. It never carries something the user must read to
+choose.
 
 ## When tabs are right instead
 
@@ -25,8 +44,9 @@ handling, and secondary navigation is not worth a modal.
 
 ## What the consumer provides
 
-`items` (`NavItem[]` with `group`), `groups` (ordered ids and labels), `current`, `label` (the
-`<nav>`'s name, required), `collapsible` (default false), `onnavigate(href)` (what the phone select
+`items` (`NavItem[]` with `group` and an optional `description`), `groups` (ordered
+`{ id, label, collapsed? }`), `current`, `label` (the `<nav>`'s name, required), `collapsible`
+(default false), `onnavigate(href)` (what the phone select
 does on change; default `location.assign` — pass your router's `goto`).
 
 ## Don't

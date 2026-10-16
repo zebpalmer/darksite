@@ -3,7 +3,9 @@
 ModePicker — the viewer's choice of mode: System, Dark, Light, Paper, Night, High contrast. It drives
 the `mode` store, which applies the choice to the page and remembers it in this browser
 (`mode.subscribe` keeps it per account as well). A native select by default, which fits a rail
-footer or a settings page; `variant="segmented"` shows the choices side by side.
+footer or a settings page; `variant="segmented"` shows the choices side by side, and in a
+container narrower than all six it shrinks to fit and scrolls sideways, in a flex row or a grid
+cell as in a block.
 
 - `modes` (which to offer, in order; default all six), `label` (default "Theme"), `hideLabel`,
   `variant` (`select` | `segmented`), `store` (default the app's `mode`), `class`.
@@ -57,6 +59,11 @@ footer or a settings page; `variant="segmented"` shows the choices side by side.
 </div>
 
 <style>
+	/* A flex or grid item would otherwise grow to its content and overflow its container. */
+	.ds-modepicker {
+		min-width: 0;
+		max-width: 100%;
+	}
 	.ds-modepicker[data-variant='select'] {
 		display: flex;
 		flex-direction: column;

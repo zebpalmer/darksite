@@ -26,6 +26,10 @@
 
 	<h2>Modes</h2>
 	<div style="max-width: 640px"><ModePicker variant="segmented" /></div>
+	<p>In a 320px flex row it shrinks to fit and scrolls sideways.</p>
+	<div style="display: flex; width: 320px; max-width: 100%">
+		<ModePicker variant="segmented" label="Theme (narrow)" />
+	</div>
 
 	<h2>Brands</h2>
 	<div class="brands">

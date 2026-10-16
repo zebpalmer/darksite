@@ -6,26 +6,30 @@ breadcrumbs, no hero.
 
 Always flush: it cancels the shell's padded column (`--ds-pad-top` / `--ds-pad-x`) with negative
 margins, so every page gets the same bar, the same full-width edge and the same 20px title inset.
-Put it first on the page. The title keeps its width; the count gives way on a narrow header. Under
-560px of header, when the title and count do not fit beside the actions, the actions move to a
-second line, right-aligned, so the title is not cut short by them.
+Put it first on the page. The title keeps its width; the count gives way on a narrow header.
+
+When the title and the actions do not fit on one line, the header makes room in steps, at any
+width: first the shell's header actions collapse to their icon button, then the `actions` snippet
+is told `{ compact: true }` (render icon buttons there). Under 560px of header, if that is still
+not enough, the actions move to a second line, right-aligned, so the title is not cut short.
 
 - `title`, `count` (a number is localized; or text such as "38 this week"), `level` (default 1),
   `mono` (the title is an identifier — a serial, a hash, a path — set in mono with tabular
-  figures), `actions` snippet, `sticky`, children (inline after the title), `class`.
+  figures), `actions` snippet (receives `{ compact }`), `sticky`, children (inline after the
+  title), `class`.
 - `shellActions` (default true): inside an AppShell with `headerActions`, a level-1 header renders
-  them ahead of its own `actions`, so the page's primary button stays right-most. On phones they
-  collapse to an icon button that opens a full-width row under the header (the shell's key
-  opens it too). `false` leaves them out on this page.
+  them ahead of its own `actions`, so the page's primary button stays right-most. Collapsed (on
+  phones, or when the header lacks room) they are an icon button that opens a full-width row
+  under the header (the shell's key opens it too). `false` leaves them out on this page. A
+  level-1 header claims them either way, so the shell does not also show them in a TopBar.
 -->
 <script lang="ts">
-	import { untrack, type Snippet } from 'svelte';
-	import type { Attachment } from 'svelte/attachments';
+	import type { Snippet } from 'svelte';
 
 	import Button from './Button.svelte';
 	import { focusShortcut } from '../hotkeys.js';
-	import { isTypingTarget, matchesKey } from '../keycap.js';
 	import { getHeaderActions } from '../shell-context.js';
+	import { ShellFold } from '../shell-fold.svelte.js';
 
 	interface Props {
 		title: string;
@@ -33,7 +37,8 @@ second line, right-aligned, so the title is not cut short by them.
 		level?: 1 | 2;
 		/** The title is an identifier: mono, tabular figures. */
 		mono?: boolean;
-		actions?: Snippet;
+		/** The page's actions. `compact` is true when the header lacks room for their full form. */
+		actions?: Snippet<[{ compact: boolean }]>;
 		sticky?: boolean;
 		shellActions?: boolean;
 		class?: string;
@@ -57,63 +62,78 @@ second line, right-aligned, so the title is not cut short by them.
 	const uid = $props.id();
 	const shell = getHeaderActions();
 	const shellSnippet = $derived(showShell && level === 1 ? shell?.snippet : undefined);
-	const collapsed = $derived(!!shellSnippet && !!shell?.phone);
+	const claims = $derived(level === 1 && !!shell);
+
+	// What the header has given up for room: 0 nothing, 1 the shell's actions are collapsed,
+	// 2 the page's actions are compact as well.
+	let stage = $state(0);
+	const collapsed = $derived(!!shellSnippet && (!!shell?.phone || stage >= 1));
+	const compact = $derived(stage >= 2);
 
 	let el: HTMLElement | undefined = $state();
-	let open = $state(false);
-	const rowOpen = $derived(collapsed && open);
+	let leadEl: HTMLElement | undefined = $state();
+	let actionsEl: HTMLElement | undefined = $state();
+	const fold = new ShellFold(
+		shell,
+		() => collapsed,
+		() => el?.querySelector<HTMLElement>('.ds-pageheader-toggle')
+	);
+	const rowOpen = $derived(collapsed && fold.open);
 
-	// A navigation (the shell's `current` changes) or leaving the phone layout closes the row.
+	// A level-1 header holds the shell's actions (or opts out of them), so no TopBar shows them.
 	$effect(() => {
-		void shell?.current;
-		void collapsed;
-		untrack(() => (open = false));
+		if (claims) return shell!.claim();
 	});
 
-	// On a phone the field is behind the toggle: the shortcut opens the row, which focuses it.
+	// The actions' width last seen at each stage. A stage not seen yet is tried, then measured.
+	const seen: (number | undefined)[] = [];
+
+	function measure() {
+		if (!el || !leadEl || !actionsEl) return;
+		seen[stage] = actionsEl.offsetWidth;
+		const style = getComputedStyle(el);
+		const room = el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+		const gap = parseFloat(style.columnGap) || 0;
+		const parts = [...leadEl.children] as HTMLElement[];
+		const lead =
+			parts.reduce((sum, part) => sum + Math.max(part.scrollWidth, part.offsetWidth), 0) +
+			gap * Math.max(0, parts.length - 1);
+		// A phone always collapses the shell's actions; without them there is no stage 1.
+		const stages = !shellSnippet ? [0, 2] : shell?.phone ? [1, 2] : [0, 1, 2];
+		const fits = (s: number) => seen[s] === undefined || lead + gap + seen[s]! + 1 <= room;
+		const next = stages.find(fits) ?? stages[stages.length - 1];
+		if (next !== stage) stage = next;
+	}
+
 	$effect(() => {
-		const key = shell?.key;
-		if (!collapsed || open || !key) return;
-		const listener = (event: KeyboardEvent) => {
-			if (event.defaultPrevented || isTypingTarget(event.target) || !matchesKey(event, key)) return;
-			event.preventDefault();
-			open = true;
+		void title;
+		void countText;
+		void shellSnippet;
+		void shell?.phone;
+		if (!el || !leadEl || !actionsEl || typeof ResizeObserver === 'undefined') return;
+		// Measured in the next frame: a stage change resizes what is observed, which inside the
+		// observer's own callback would be a resize loop.
+		let frame = 0;
+		const ro = new ResizeObserver(() => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(measure);
+		});
+		for (const target of [el, actionsEl, ...leadEl.children]) ro.observe(target);
+		return () => {
+			cancelAnimationFrame(frame);
+			ro.disconnect();
 		};
-		window.addEventListener('keydown', listener);
-		return () => window.removeEventListener('keydown', listener);
 	});
-
-	function toggle() {
-		open = !open;
-	}
-
-	function close() {
-		open = false;
-		el?.querySelector<HTMLElement>('.ds-pageheader-toggle')?.focus();
-	}
-
-	// Esc inside the row closes it, unless something inside (an open list) already took the key.
-	const escapeCloses: Attachment<HTMLElement> = (row) => {
-		const onkeydown = (event: KeyboardEvent) => {
-			if (event.key !== 'Escape' || event.defaultPrevented) return;
-			event.preventDefault();
-			close();
-		};
-		row.addEventListener('keydown', onkeydown);
-		return () => row.removeEventListener('keydown', onkeydown);
-	};
-
-	// Opening the row moves focus into it: the first field, or else the first control.
-	const focusFirst: Attachment<HTMLElement> = (row) => {
-		const target =
-			row.querySelector<HTMLElement>('input, select, textarea, [contenteditable="true"]') ??
-			row.querySelector<HTMLElement>('button, a[href], [tabindex]:not([tabindex="-1"])');
-		target?.focus();
-	};
 </script>
 
-<header bind:this={el} class="ds-pageheader {className}" class:sticky class:wrap={rowOpen}>
-	<div class="lead">
+<header
+	bind:this={el}
+	class="ds-pageheader {className}"
+	class:sticky
+	class:wrap={rowOpen}
+	data-shell-claim={claims ? '' : undefined}
+>
+	<div class="lead" bind:this={leadEl}>
 		<svelte:element this={`h${level}`} class="title" data-mono={mono ? '' : undefined}
 			>{title}</svelte:element
 		>
@@ -121,7 +141,7 @@ second line, right-aligned, so the title is not cut short by them.
 		{@render children?.()}
 	</div>
 	{#if shellSnippet || actions}
-		<div class="actions">
+		<div class="actions" bind:this={actionsEl}>
 			{#if shellSnippet && shell}
 				{#if collapsed}
 					<Button
@@ -129,15 +149,15 @@ second line, right-aligned, so the title is not cut short by them.
 						class="ds-pageheader-toggle"
 						icon={shell.icon}
 						label={shell.label}
-						aria-expanded={open}
-						aria-controls={open ? `${uid}-shell` : undefined}
-						onclick={toggle}
+						aria-expanded={fold.open}
+						aria-controls={fold.open ? `${uid}-shell` : undefined}
+						onclick={fold.toggle}
 					/>
 				{:else}
 					<div class="shell" {@attach focusShortcut(shell.key)}>{@render shellSnippet()}</div>
 				{/if}
 			{/if}
-			{@render actions?.()}
+			{@render actions?.({ compact })}
 		</div>
 	{/if}
 	{#if rowOpen && shellSnippet && shell}
@@ -146,9 +166,9 @@ second line, right-aligned, so the title is not cut short by them.
 			class="row"
 			role="region"
 			aria-label={shell.label}
-			{@attach escapeCloses}
+			{@attach fold.escapeCloses}
 			{@attach focusShortcut(shell.key)}
-			{@attach focusFirst}
+			{@attach fold.focusFirst}
 		>
 			{@render shellSnippet()}
 		</div>

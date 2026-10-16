@@ -63,6 +63,9 @@ Groups separated by a hairline and, when expanded, an 11px uppercase `ds-text-3`
 The item list **scrolls** on a short window and the current item scrolls into view; the bottom
 block — notifications, the account avatar, the collapse toggle, the build version — stays put.
 
+The **version** shows in both states. Collapsed, it is centered and truncated to the rail's width,
+and hovering it shows the whole string in the rail's tooltip; a screen reader reads it whole.
+
 ## What the consumer provides
 
 ```svelte
