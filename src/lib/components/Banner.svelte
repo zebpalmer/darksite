@@ -25,6 +25,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 	import OctagonAlert from '@lucide/svelte/icons/octagon-alert';
 	import X from '@lucide/svelte/icons/x';
 	import Button from './Button.svelte';
+	import { dismissalKey, rememberDismissal, wasDismissed } from '../dismissal.js';
 
 	interface Props {
 		id: string;
@@ -56,26 +57,16 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 	}: Props = $props();
 
 	const canDismiss = $derived(dismissible && tone !== 'danger');
-	const storageKey = $derived(`darksite:banner:${viewer ? `${viewer}:` : ''}${id}`);
+	const storageKey = $derived(dismissalKey('banner', id, viewer));
 
 	onMount(() => {
-		if (!canDismiss || !remember || dismissed) return;
-		try {
-			dismissed = localStorage.getItem(storageKey) === '1';
-		} catch {
-			/* storage unavailable: show it */
-		}
+		if (canDismiss && remember && !dismissed) dismissed = wasDismissed(storageKey);
 	});
 
 	function dismiss() {
 		dismissed = true;
 		ondismiss?.();
-		if (!remember) return;
-		try {
-			localStorage.setItem(storageKey, '1');
-		} catch {
-			/* storage unavailable: dismissed for this page view only */
-		}
+		if (remember) rememberDismissal(storageKey);
 	}
 
 	const Icon = $derived(tone === 'danger' ? OctagonAlert : tone === 'warning' ? TriangleAlert : Info);

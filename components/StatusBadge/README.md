@@ -10,10 +10,12 @@ A static, non-interactive state: a lifecycle stage, a hold, a marker such as "Pr
 |---|---|---|
 | `neutral` (default) | a `ds-border` edge, `ds-text-2` | ordinary states: Draft, Queued |
 | `accent` | a `ds-accent` edge, `ds-accent-text` | a marker: Primary, Default |
+| `info` | `ds-accent-tint` ground, `ds-accent-text` ink | something to know, neither good nor bad: Scheduled, Read only, Beta |
 | `success` · `warning` · `danger` | the role's `-tint` ground and `-text` ink | Ready · On hold · Failed |
 | `muted` | a subtle edge, `ds-text-3` | out of service: Retired, Archived |
 
-**Never severity colors.** An ordered scale is a `SeverityBadge`.
+**Never severity colors.** An ordered scale is a `SeverityBadge`. `info` is the accent's tint, the
+same ground as an info `Notice` or `Banner` — not the severity scale's Info.
 
 ## Duration
 

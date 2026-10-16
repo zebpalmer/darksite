@@ -7,11 +7,15 @@ const route: Record<string, string> = {
 	TopNav: 'overview',
 	Intro: 'overview',
 	Steps: 'overview',
-	LinkCard: 'overview'
+	LinkCard: 'overview',
+	CodeBlock: 'copybutton',
+	CellBar: 'charts',
+	BarSeries: 'charts',
+	Ring: 'charts'
 };
 
 export const groups: Record<string, string[]> = {
-	Actions: ['Button', 'KeyCap', 'KeyLegend', 'Tooltip'],
+	Actions: ['Button', 'CopyButton', 'KeyCap', 'KeyLegend', 'Tooltip'],
 	Theming: ['ModePicker'],
 	'Page types': ['Intro', 'Steps', 'LinkCard'],
 	Selection: ['Chip', 'SegmentedControl', 'Tabs'],
@@ -28,13 +32,27 @@ export const groups: Record<string, string[]> = {
 		'Switch',
 		'Textarea',
 		'Rating',
+		'Slider',
 		'Stepper'
 	],
-	Data: ['Meter', 'Stat', 'Table', 'Timeline', 'ListRow', 'FactList', 'Missing', 'LoadMore'],
+	Data: [
+		'Meter',
+		'Stat',
+		'Table',
+		'Timeline',
+		'ListRow',
+		'FactList',
+		'Missing',
+		'LoadMore',
+		'Pager',
+		'CodeBlock'
+	],
+	Charts: ['CellBar', 'BarSeries', 'Ring'],
 	Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
 	Feedback: [
 		'EmptyState',
 		'HelpTip',
+		'Notice',
 		'NewBadge',
 		'SkeletonLoader',
 		'SourceBadge',

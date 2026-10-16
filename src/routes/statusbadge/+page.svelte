@@ -10,6 +10,7 @@
 <div class="row">
 	<StatusBadge label="Draft" />
 	<StatusBadge label="Primary" tone="accent" icon={Star} />
+	<StatusBadge label="Scheduled" tone="info" />
 	<StatusBadge label="Ready" tone="success" />
 	<StatusBadge label="On hold" tone="warning" since={twelveDaysAgo} />
 	<StatusBadge label="Failed" tone="danger" />

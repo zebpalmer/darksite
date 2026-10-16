@@ -10,8 +10,10 @@ Segments take the **categorical palette** by position — `ds-cat-1`, `-2`, `-3`
 separates segments and the legend always names them, so no segment relies on color alone.
 
 The categorical palette (`ds-cat-1`…`ds-cat-5`: azure, gold, cyan, lime, neutral) stays clear of
-the accent, the semantic roles and the severity scale. Every color holds at least 3.5:1 on
-`ds-bg-2` and 3.2:1 on the track in both themes, and neighbors alternate lighter and darker.
+the accent, the semantic roles and the severity scale. Every color holds at least 3:1 on the page
+(`ds-bg-1`), on `ds-bg-2` and on the track in every mode, and neighbors alternate lighter and
+darker. The charts (`CellBar`, `BarSeries`, `Ring`) use the same palette, and `ds-accent-2` as a
+sixth color.
 
 ## Accessibility
 
@@ -26,6 +28,7 @@ and an `aria-valuetext` that states every segment: "Done 12, In progress 5, Bloc
 ## Don't
 
 - Don't use it for loading; that is a `Spinner` or a `SkeletonLoader`.
-- Don't exceed three segments; that is a chart.
+- Don't exceed three segments; that is a chart — a `Ring` for parts of a whole, a `BarSeries` over
+  time.
 - Don't use a categorical color to mean something — meaning belongs to the semantic and severity
   roles.

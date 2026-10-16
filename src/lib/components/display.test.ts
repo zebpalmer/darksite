@@ -27,6 +27,13 @@ describe('StatusBadge', () => {
 	});
 });
 
+describe('StatusBadge info', () => {
+	it('takes the info tone', () => {
+		const { container } = render(StatusBadge, { label: 'Scheduled', tone: 'info' });
+		expect((container.querySelector('.ds-status') as HTMLElement).dataset.tone).toBe('info');
+	});
+});
+
 describe('StatusBadge until', () => {
 	const now = new Date(2026, 9, 14, 15, 0);
 	const badge = (until: string | Date, tone?: 'success') => {

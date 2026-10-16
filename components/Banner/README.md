@@ -44,9 +44,11 @@ Reload applies the update; when the page holds unsaved edits, ask first with a `
 `dismissible`, `remember` (default true), `viewer`, `dismissed` (bindable: pass what the server
 knows from a cookie, so a dismissed banner never shows before hydration), `ondismiss`, `class`.
 
+`Notice` shares this dismissal logic (`darksite:notice:` keys beside `darksite:banner:`).
+
 ## Don't
 
-- Don't use a Banner for something that belongs to a field or a page — that is a `Field` error or
-  an `EmptyState`.
+- Don't use a Banner for something that belongs to a field or a page — that is a `Field` error, a
+  `Notice` in the page, or an `EmptyState`.
 - Don't stack more than one; resolve or combine them.
 - Don't put a Banner over content.

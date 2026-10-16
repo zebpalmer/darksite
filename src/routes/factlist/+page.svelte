@@ -18,6 +18,19 @@
 <svelte:head><title>FactList · darksite</title></svelte:head>
 <h1>FactList</h1>
 <div class="col">
+	<section class="inline">
+		<h2 class="record">R-00412</h2>
+		<FactList
+			layout="inline"
+			items={[
+				{ label: 'Owner', value: 'A. Rivera' },
+				{ label: 'State', cell: state },
+				{ label: 'Opened', value: '2026-09-14', cell: date },
+				{ label: 'Region', value: 'North' },
+				{ label: 'Queue', value: null }
+			] satisfies FactItem[]}
+		/>
+	</section>
 	<Pane title="Details" tip="Straight in an unpadded pane: it takes the pane's inset.">
 		<FactList
 			items={[
@@ -69,5 +82,16 @@
 	}
 	.narrow {
 		max-width: 300px;
+	}
+	.inline {
+		display: flex;
+		flex-direction: column;
+		gap: var(--ds-space-3);
+	}
+	.record {
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: var(--ds-text-lg);
+		font-weight: 500;
 	}
 </style>

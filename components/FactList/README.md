@@ -20,6 +20,23 @@ The list lays itself out from **its own width** (a container query, never the vi
 
 `columns={1}` keeps one column at any width.
 
+## Inline
+
+`layout="inline"` is a **row of facts under a title** — under a `PageHeader`, at the top of a
+`Pane`, on a summary line: each label (13px `ds-text-3`) above its value (14px `ds-text-1`), the
+facts side by side with 24px between them, wrapping onto a further row (8px below) when the width
+runs out. It is still a `<dl>`. `columns` and `wide` do not apply; keep it to a handful of short
+values — a long note belongs in the grid layout.
+
+```svelte
+<PageHeader title="R-00412" mono />
+<FactList layout="inline" items={[
+  { label: 'Owner', value: 'A. Rivera' },
+  { label: 'Opened', value: 'Oct 2' },
+  { label: 'Region', value: 'North' }
+]} />
+```
+
 ## In a Pane
 
 Put it straight in an **unpadded** `Pane`: the pane hands it its inset (`--ds-facts-inset: 14px`
@@ -44,7 +61,7 @@ announced as "No value". Override the mark with `missing`.
 `items` — `{ key?, label, value?, mono?, tip?, wide?, cell? }[]`. `key` defaults to `label` and must be unique, so give repeated labels a `key`; `tip`
 puts a `HelpTip` beside the label; `cell` is a snippet for a value that is not text (a
 `StatusBadge`, a link, a person), receiving `{ item, value }` — so one snippet can format several
-items. Then `columns`, `cell` (a fallback snippet for every item without its own, receiving the
+items. Then `columns`, `layout` (`grid`, the default, | `inline`), `cell` (a fallback snippet for every item without its own, receiving the
 same `{ item, value }`), `missing`, `class`.
 
 ```svelte
@@ -66,4 +83,5 @@ Format values before passing them: `formatDate` for a calendar date, `formatMone
 
 - Don't use it for rows of many records — that is a `Table`.
 - Don't put controls in it; editing a record is a `Sheet` with `Field`s.
+- Don't use the inline layout for more than a line or two of facts; that is the grid.
 - Don't write sentences as labels. A label is a noun: "Owner", "Due".

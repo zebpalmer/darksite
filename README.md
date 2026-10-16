@@ -138,7 +138,8 @@ The reading modes soften the text on purpose — paper's primary text is about 1
 15:1 — but stay above these floors.
 
 **Marks meet 3:1:** the focus ring on every ground, the success, warning and danger marks on every
-ground in every mode, the categorical palette on panels and meter tracks.
+ground in every mode, the categorical palette on the page, on panels and on meter and chart
+tracks.
 
 **Two things fall short of 3:1 in every mode but high contrast, by design:**
 
