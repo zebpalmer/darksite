@@ -225,3 +225,18 @@ describe('Table keyboard stop', () => {
 		expect(after.filter((r) => r.tabIndex === 0)).toHaveLength(1);
 	});
 });
+
+describe('Table column tips', () => {
+	it('puts a named HelpTip beside a header, outside its sort button', () => {
+		const cols: TableColumn<Row>[] = [
+			{ key: 'name', label: 'Name', sortable: true, tip: 'The name as filed' },
+			{ key: 'count', label: 'Count', align: 'end' }
+		];
+		render(Table, { ...base, columns: cols });
+		const tip = screen.getByRole('button', { name: 'About Name' });
+		expect(tip.closest('th')).toBeTruthy();
+		expect(tip.closest('button.sort')).toBeNull();
+		expect(document.getElementById(tip.getAttribute('aria-describedby')!)?.textContent).toBe('The name as filed');
+		expect(screen.getByRole('button', { name: /^Name/ }).classList.contains('sort')).toBe(true);
+	});
+});

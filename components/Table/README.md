@@ -17,7 +17,7 @@ including the width of any column that priority has hidden, so rows always reach
 ## Columns
 
 Each column declares `key`, `label`, and optionally `align` (`end` for numbers), `width`,
-`priority`, `mono` (serials, hashes, paths — mono with tabular figures), `sortable`, `value(row)`
+`priority`, `mono` (serials, hashes, paths — mono with tabular figures), `sortable`, `tip` (what the column means, as a HelpTip beside the header — for a definition a reader needs, such as "weighted median of the last 7 days"), `value(row)`
 (defaults to `row[key]`) and `cell` (a snippet for custom rendering).
 
 **Priority** drops columns as the *table* narrows — the table's own width, never the viewport:

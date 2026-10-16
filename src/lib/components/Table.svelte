@@ -14,6 +14,9 @@
 		/** Serials, hashes, paths: mono with tabular figures. */
 		mono?: boolean;
 		sortable?: boolean;
+		/** What the column means, as a HelpTip beside the header ("Weighted median of the last 7
+		 *  days"). For a definition a reader needs, not for a label that explains itself. */
+		tip?: string;
 		value?: (row: T) => unknown;
 		/** Custom rendering for this column's cells. */
 		cell?: Snippet<[T]>;
@@ -76,6 +79,7 @@ belong in the pane's ActionBar.
 	import ArrowUpDown from '@lucide/svelte/icons/arrow-up-down';
 
 	import Checkbox from './Checkbox.svelte';
+	import HelpTip from './HelpTip.svelte';
 	import { severityVars, type Severity } from '../severity.js';
 	import EmptyState from './EmptyState.svelte';
 	import Missing from './Missing.svelte';
@@ -395,6 +399,7 @@ belong in the pane's ActionBar.
 						style:width={column.width}
 						aria-sort={ariaSort(column)}
 					>
+						<span class="head">
 						{#if column.sortable}
 							<button type="button" class="sort" onclick={() => toggleSort(column.key)}>
 								<span>{column.label}</span>
@@ -408,8 +413,10 @@ belong in the pane's ActionBar.
 								{/if}
 							</button>
 						{:else}
-							{column.label}
+							<span class="label">{column.label}</span>
 						{/if}
+						{#if column.tip}<HelpTip text={column.tip} label={strings.aboutColumn(column.label)} placement="bottom" />{/if}
+						</span>
 					</th>
 				{/each}
 			</tr>
@@ -541,6 +548,19 @@ belong in the pane's ActionBar.
 		font-family: var(--font-mono);
 		font-size: var(--ds-text-sm);
 		font-variant-numeric: tabular-nums;
+	}
+	/* A header's label, sort button and tip, kept on one line at the column's alignment. */
+	.head {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		max-width: 100%;
+		vertical-align: middle;
+	}
+	.head .label {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.sort {
 		display: inline-flex;

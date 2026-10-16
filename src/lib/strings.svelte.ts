@@ -89,6 +89,8 @@ const DEFAULTS = {
 	// Table
 	selectRow: 'Select row',
 	selectAllRows: 'Select all rows',
+	/** A column's HelpTip: "About Median delay". */
+	aboutColumn: (label: string) => `About ${label}`,
 	nothingToShow: 'Nothing to show',
 
 	// Forms
