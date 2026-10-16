@@ -3,8 +3,9 @@
 StatusBadge — a static, non-interactive state: a lifecycle stage, a hold, a marker such as
 "Primary". 22px (it is not a control, so it does not grow on touch), 12/500, an optional 14px icon.
 
-- `tone`: `neutral` (default; a ds-border edge) · `accent` (a marker) · `success` · `warning` ·
-  `danger` (each its tint ground and text ink) · `muted` (out of service).
+- `tone`: `neutral` (default; a ds-border edge) · `accent` (a marker) · `info` · `success` ·
+  `warning` · `danger` (each its tint ground and text ink; info's is the accent's) · `muted` (out
+  of service).
 - `since`: a date; renders "· 12 days" after the label, in mono, for a state that ages.
 - `until`: a due date; renders "· in 3 days", "· due today" or "· 2 days overdue". With `until`
   and no `tone`, the tone follows the date: `danger` once overdue, `warning` on the day, `neutral`
@@ -27,7 +28,7 @@ Never severity colors — an ordered scale is a SeverityBadge. A clickable state
 
 	interface Props {
 		label?: string;
-		tone?: 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'muted';
+		tone?: 'neutral' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'muted';
 		icon?: IconComponent;
 		since?: DateInput;
 		/** A due date: counts down to it, then counts the days overdue. */
@@ -87,6 +88,10 @@ Never severity colors — an ordered scale is a SeverityBadge. A clickable state
 	}
 	.ds-status[data-tone='accent'] {
 		border-color: var(--ds-accent);
+		color: var(--ds-accent-text);
+	}
+	.ds-status[data-tone='info'] {
+		background: var(--ds-accent-tint);
 		color: var(--ds-accent-text);
 	}
 	.ds-status[data-tone='success'] {

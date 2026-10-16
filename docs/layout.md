@@ -110,6 +110,9 @@ desktop widths, which is correct.
 ## Long lists
 
 **Tables and lists load a page and offer "Load more"** — no page numbers, no "1–50 of 295" footer.
+The exception is a list whose pages must each have a URL — a public listing, search results, an
+archive that people link to and search engines read: that list ends in a `Pager` (Newer, "1–50 of
+295", Older, each a link), and nothing else about it changes.
 
 - The list's foot is `LoadMore`: a full-width secondary `Button` reading "Load more", beside a
   `meta` line ("Showing 50 of 295"). While it loads, the button takes its loading state ("Loading more").

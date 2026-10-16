@@ -14,6 +14,9 @@ Deliberate exceptions, each for a reason: a `SegmentedControl` option is 38px in
 padded strip (44 outer, 44 min wide); a `Chip`'s × is 32px; a pill `Tabs` is 40px; an icon
 button inlaid in a 44px field is 36px.
 
+An inline `CopyButton` beside a mono value stays 24px to the eye on touch, so the text around it
+does not move, but its hit area is 44px. A `Slider`'s row is 44px on touch, with a 24px thumb.
+
 **Touch text controls are 16px.** iOS Safari zooms the page when a control under 16px takes focus
 and leaves it zoomed wider than the screen. One `(pointer: coarse)` rule in `base.css` forces
 `max(16px, 1em)` on every text `input`, `textarea`, `select` and `contenteditable`, so no

@@ -53,7 +53,19 @@ const props: Record<string, Record<string, unknown>> = {
 	Tabs: { tabs: [{ value: 'a', label: 'Queue', count: 3 }], value: 'a', label: 'Lanes' },
 	Textarea: { value: 'Note' },
 	Toaster: {},
-	TopBar: {}
+	TopBar: {},
+	CopyButton: { value: 'R-00412', inline: true, label: 'Copy serial' },
+	CodeBlock: { code: 'npm install', label: 'Shell' },
+	Notice: { id: 'n', title: 'Provisional', message: 'Figures may change.', dismissible: true },
+	CellBar: { value: 3, max: 10 },
+	BarSeries: {
+		series: [{ key: 'a', label: 'Opened' }],
+		data: [{ label: 'Oct 1', values: { a: 3 } }],
+		label: 'Records per day'
+	},
+	Ring: { segments: [{ label: 'Done', value: 3 }], max: 10, label: 'Progress' },
+	Pager: { url: 'https://example.com/list?page=2', total: 120 },
+	Slider: { value: 40, label: 'Level', ticks: [0, 50, 100], showValue: true }
 };
 
 describe('server rendering', () => {

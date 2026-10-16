@@ -46,7 +46,7 @@ export function buildPairs(severities = SEVERITIES) {
 	add('ds-accent', bgs(1, 2, 3), MARK, 'accent mark');
 	for (const r of ['success', 'warning', 'danger'])
 		add(`ds-${r}`, bgs(1, 2, 3, 4), MARK, `${r} mark`);
-	for (let i = 1; i <= 5; i++) add(`ds-cat-${i}`, bgs(2, 4), MARK, `categorical ${i}`);
+	for (let i = 1; i <= 5; i++) add(`ds-cat-${i}`, bgs(1, 2, 4), MARK, `categorical ${i}`);
 	add('ds-border-subtle', bgs(1, 2), MARK, 'hairline');
 	add('ds-border', bgs(1, 3), MARK, 'control edge');
 	add('ds-border-strong', bgs(4), MARK, 'secondary button edge');

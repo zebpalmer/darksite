@@ -43,14 +43,14 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Confirm after the fact | `toasts.push({ action })` | Brief; an action toast shows an m:ss countdown. Never more than two. A long-lived undo is not a toast. |
 | Sections of one thing | `Tabs` | Counts inline; links mode for route sections. |
 | A headline number | `Stat` in a `StatRow` | One value, one meta line. `severity` is the only color. |
-| A proportion | `Meter` | Up to three segments, categorical colors, a legend. Not for loading. |
+| A proportion | `Meter` | Up to three segments, categorical colors, a legend. Not for loading. A standalone whole is a `Ring`. |
 | A history of changes | `Timeline` | Sentences, relative times, batches, a recent slice with "Show all". |
 | A static state | `StatusBadge` | Lifecycle, holds, markers. Never severity colors; never clickable. |
 | A titled block on a content page | `Pane` | Unpadded so a Table sits flush. No primary button. |
 | The facts about one record | `FactList` | Label–value pairs on a detail pane; two columns that stack by its own width. Many records → `Table`. |
 | A value that is absent | `Missing` | An em dash in `ds-text-3`, announced "No value". `Table` and `FactList` draw it already. |
 | A calendar date (no time) | `formatDate` | The same day in every time zone; the year only when it isn't this year. A timestamp is `formatRelative`. |
-| Rows and columns of records | `Table` | Sort, selection, row links, priority columns. Long lists end in "Load more". |
+| Rows and columns of records | `Table` | Sort, selection, row links, priority columns. Long lists end in "Load more" (a `Pager` when each page needs a URL). |
 | The end of a long table or list | `LoadMore` | "Showing 50 of 295" and a Load more button; rows append; keyboard focus moves into the new rows. |
 | Records in groups, one set of columns | `Table groupBy` | Header rows with counts inside one table — not a Pane and a Table per group. |
 | A row that needs to stand out | `Table rowTone` / `rowSeverity` | A 3px leading stripe; the row still says it in a badge. Exceptions only. |
@@ -80,6 +80,16 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Nudge a small number | `Stepper` | − value +, ↑/↓ and PageUp/PageDown, clamped and snapped. A wide range is an `Input`. |
 | A failed route | `ErrorPage` | The focused page: code, title, one sentence, Try again / Go home. Neutral copy. |
 | A new version is waiting | `Banner tone="info" dismissible remember={false}` | One Reload action; dismissed for now, never forever. |
+| Something the reader of this page should know | `Notice` | In the content: info, success, warning, danger; one action; dismissal remembered like a Banner's. System-wide is a `Banner`. |
+| Copy a value | `CopyButton` (`inline` beside a mono value) | Says "Copied" and announces it; falls back without the Clipboard API. No toast. |
+| A command, a snippet, an API response | `CodeBlock` | Mono, scrolls sideways, a copy button in its own column. No syntax colors. |
+| Compare rows by one number | `CellBar` in a `Table` cell | One scale for the column; the value stays text. |
+| A few values over time | `BarSeries` | Stacked, up to six categorical series; tooltip, keyboard, a data table behind it. No axes, no zoom. |
+| Parts of one whole, standing alone | `Ring` | Up to six parts, the total in the middle; on one line it is a `Meter`. |
+| Pages of a list people link to | `Pager` | Newer / "1–50 of N" / Older, links driven by the URL. Lists inside an app use `LoadMore`. |
+| A value from a range, by dragging | `Slider` in a `Field` | Native range input; optional value and tick labels. Precise numbers are an `Input` or `Stepper`. |
+| A row of facts under a title | `FactList layout="inline"` | Label over value, wrapping. The facts of a detail pane are the grid layout. |
+| A state that is neither good nor bad | `StatusBadge tone="info"` | The accent's tint: Scheduled, Read only. Not the severity scale's Info. |
 
 ## The frame
 

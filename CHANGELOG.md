@@ -6,6 +6,39 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **`CopyButton`**: copies a string and confirms with "Copied", announced by a polite live region.
+  Falls back to a selected hidden field without the Clipboard API, and says "Copy failed" if
+  nothing can copy. `inline` is a 24px icon form to sit beside a mono value (44px hit area on
+  touch).
+- **`CodeBlock`**: a mono block that scrolls sideways, with an inline `CopyButton` in its own column
+  and an optional caption.
+- **`Notice`**: an in-page notice in four tones (info, success, warning, danger) with an icon, an
+  optional title, a body, one action and optional remembered dismissal. Its dismissal logic is
+  shared with `Banner` (`dismissal.ts`); a danger notice is never dismissible.
+- Small charts, deliberately limited — categorical colors only, a tooltip, and a visually hidden
+  data table behind each, with no axes library and no zoom:
+  - **`CellBar`**: a value with a bar inside a `Table` cell.
+  - **`BarSeries`**: a stacked bar series over time, explored by hover or ← / →.
+  - **`Ring`**: parts of one whole with the total in the middle.
+  - `chartColor` and `CHART_TONES` give the six series colors (`ds-cat-1` … `ds-cat-5`,
+    `ds-accent-2`).
+- **`Pager`**: Newer / "1–50 of N" / Older for lists people link to, driven by the URL (`?page=`),
+  with disabled ends that stay in place. `pageFromUrl` and `pageHref` give the same URLs to a load
+  function. `LoadMore` stays the default for lists inside an app.
+- **`Slider`**: a value from a range, on the native range input, with an optional value readout and
+  labeled ticks.
+- **`FactList layout="inline"`**: a row of facts under a title, label over value, wrapping.
+- **`StatusBadge tone="info"`**: the accent's tint, for a state that is neither good nor bad.
+
+### Changed
+
+- The contrast check holds the categorical palette to 3:1 on the page ground (`ds-bg-1`) too, where
+  charts sit outside a panel.
+- `Banner` reads and writes its remembered dismissal through the shared `dismissal.ts`; its storage
+  keys are unchanged.
+
 ## [0.11.0] — 2026-10-16
 
 ### Added

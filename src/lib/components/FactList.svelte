@@ -29,6 +29,9 @@ width. A missing value renders the `Missing` mark.
   `{ item, value }`), `columns` (`2` default | `1`), `cell` (fallback rendering for items without
   their own; receives `{ item, value }`), `missing` (the mark), `class`. Set `--ds-facts-label` to
   change the 128px label column.
+- `layout="inline"`: a row of facts under a title (a PageHeader, a Pane heading) — each label
+  above its value, the facts side by side and wrapping onto further rows as the width runs out.
+  `columns` and `wide` do not apply.
 - Inset: `--ds-facts-inset` (sides) and `--ds-facts-inset-block` (top and bottom), 0 by default.
   An unpadded Pane sets them to 14px and 8px, so a FactList sits at the pane's inset with no
   wrapper; a `padded` Pane sets them back to 0.
@@ -40,19 +43,27 @@ width. A missing value renders the `Missing` mark.
 	interface Props {
 		items: readonly FactItem[];
 		columns?: 1 | 2;
+		layout?: 'grid' | 'inline';
 		cell?: Snippet<[{ item: FactItem; value: unknown }]>;
 		missing?: string;
 		class?: string;
 	}
 
-	let { items, columns = 2, cell, missing = '—', class: className = '' }: Props = $props();
+	let {
+		items,
+		columns = 2,
+		layout = 'grid',
+		cell,
+		missing = '—',
+		class: className = ''
+	}: Props = $props();
 
 	function isMissing(value: unknown): boolean {
 		return value === null || value === undefined || value === '';
 	}
 </script>
 
-<div class="ds-facts {className}" data-columns={columns}>
+<div class="ds-facts {className}" data-columns={columns} data-layout={layout}>
 	<dl>
 		{#each items as item (item.key ?? item.label)}
 			<div class="fact" data-wide={item.wide ? '' : undefined}>
@@ -124,6 +135,19 @@ width. A missing value renders the `Missing` mark.
 		font-size: var(--ds-text-sm);
 		font-variant-numeric: tabular-nums;
 	}
+	/* Inline: a wrapping row, each label over its value. */
+	[data-layout='inline'] dl {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 24px;
+	}
+	[data-layout='inline'] .fact {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		max-width: 100%;
+		padding: 0;
+	}
 	@container (min-width: 560px) {
 		[data-columns='2'] dl {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -133,7 +157,7 @@ width. A missing value renders the `Missing` mark.
 		}
 	}
 	@container (max-width: 319.98px) {
-		.fact {
+		[data-layout='grid'] .fact {
 			grid-template-columns: minmax(0, 1fr);
 			gap: 2px;
 		}

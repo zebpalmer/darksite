@@ -242,7 +242,9 @@ loading, but neither the trigger nor how it combines with selection is written d
 - [x] **Selection across pages.** Say what "select all" means when not every row is loaded
   ("Select all 295" as a second step, as mail clients do).
 - [x] **Keyboard focus** stays on the last focused row when more rows arrive.
-- Decided: "Load more", written into [`layout.md`](docs/layout.md) under "Long lists".
+- Decided: "Load more", written into [`layout.md`](docs/layout.md) under "Long lists". A list whose pages
+  must each have a URL (a public listing people link to) ends in a `Pager` instead (added after
+  0.11.0).
 
 ## Component changes
 

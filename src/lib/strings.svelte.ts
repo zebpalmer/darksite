@@ -30,6 +30,11 @@ const DEFAULTS = {
 	newBadge: 'new',
 	on: 'On',
 	off: 'Off',
+	copy: 'Copy',
+	copied: 'Copied',
+	copyFailed: 'Copy failed',
+	code: 'Code',
+	total: 'Total',
 
 	// Shell
 	primaryNavigation: 'Primary',
@@ -67,6 +72,17 @@ const DEFAULTS = {
 	showing: (shown: number, total: number) =>
 		`Showing ${shown.toLocaleString()} of ${total.toLocaleString()}`,
 	chooseOption: 'Choose…',
+	pagination: 'Pagination',
+	newer: 'Newer',
+	older: 'Older',
+	/** A Pager's range: "1–50 of 295", "51–100" when the total is unknown, "0 of 0" when empty. */
+	pageRange: (from: number, to: number, total?: number | null) =>
+		(to === 0 ? '0' : `${from.toLocaleString()}–${to.toLocaleString()}`) +
+		(total === null || total === undefined ? '' : ` of ${total.toLocaleString()}`),
+	/** What a screen reader hears for the range: "1 to 50 of 295". */
+	pageRangeSpoken: (from: number, to: number, total?: number | null) =>
+		(to === 0 ? '0' : `${from.toLocaleString()} to ${to.toLocaleString()}`) +
+		(total === null || total === undefined ? '' : ` of ${total.toLocaleString()}`),
 
 	// Table
 	selectRow: 'Select row',

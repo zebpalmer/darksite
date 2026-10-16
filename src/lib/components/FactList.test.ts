@@ -75,4 +75,20 @@ describe('FactList', () => {
 		render(FactList, { items: [{ label: 'Count', value: 3 }], columns: 1, cell });
 		expect(screen.getByRole('definition').textContent).toBe('Count: 3');
 	});
+
+	it('lays out inline, as a row of facts that is still a description list', () => {
+		const { container } = render(FactList, {
+			items: [
+				{ label: 'Owner', value: 'A. Rivera' },
+				{ label: 'Region', value: 'North' }
+			],
+			layout: 'inline'
+		});
+		expect(container.querySelector('.ds-facts')?.getAttribute('data-layout')).toBe('inline');
+		expect(screen.getAllByRole('term')).toHaveLength(2);
+		expect(screen.getAllByRole('definition').map((d) => d.textContent?.trim())).toEqual([
+			'A. Rivera',
+			'North'
+		]);
+	});
 });
