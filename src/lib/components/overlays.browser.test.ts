@@ -230,7 +230,7 @@ describe('brands in a browser', () => {
 describe('top navigation in a browser', () => {
 	it('opens a group menu in the top layer under its button, focus inside', async () => {
 		render(TopNavHarness);
-		const button = screen.getByRole('button', { name: 'Network' });
+		const button = screen.getByRole('button', { name: 'Records' });
 		await userEvent.click(button);
 		await settle();
 		const panel = document.querySelector<HTMLElement>('.panel')!;

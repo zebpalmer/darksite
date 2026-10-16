@@ -1,18 +1,18 @@
 <script lang="ts">
-	import Activity from '@lucide/svelte/icons/activity';
 	import BookOpen from '@lucide/svelte/icons/book-open';
+	import ChartColumn from '@lucide/svelte/icons/chart-column';
+	import ClipboardCheck from '@lucide/svelte/icons/clipboard-check';
 	import Map from '@lucide/svelte/icons/map';
-	import Radio from '@lucide/svelte/icons/radio';
 	import { Button, Grid, Intro, LinkCard, Steps } from '#lib';
 </script>
 
 <svelte:head><title>Overview page · darksite</title></svelte:head>
 <Intro
-	title="A field network, mapped and checked"
-	lead="Every node that reports in, where it is, and how well each area is covered. Start by checking a node, or open the map."
+	title="Every site, inspected and on record"
+	lead="What each site holds, when it was last checked, and what needs attention. Start with a checklist, or open the map."
 >
 	{#snippet actions()}
-		<Button variant="primary" href="#check">Check a node</Button>
+		<Button variant="primary" href="#checklists">Start a checklist</Button>
 		<Button href="/fullbleed">Open the map</Button>
 	{/snippet}
 </Intro>
@@ -22,18 +22,18 @@
 	label="Get started"
 	steps={[
 		{
-			title: 'Find your node',
-			text: 'Search by name or the first bytes of its key.',
-			href: '#find',
-			linkLabel: 'Search nodes'
+			title: 'Pick a site',
+			text: 'Search by name or its reference number.',
+			href: '#sites',
+			linkLabel: 'Find a site'
 		},
 		{
-			title: 'Run a check',
-			text: 'See which observers heard it in the last day.',
-			href: '#check',
-			linkLabel: 'Run a check'
+			title: 'Run the checklist',
+			text: 'Each item takes a minute; skip what does not apply.',
+			href: '#checklists',
+			linkLabel: 'Open checklists'
 		},
-		{ title: 'Fix what it finds', text: 'Each finding comes with the command to fix it.' }
+		{ title: 'File the findings', text: 'Anything that failed becomes a task for the field team.' }
 	]}
 />
 
@@ -43,26 +43,26 @@
 		href="/fullbleed"
 		icon={Map}
 		title="Map"
-		text="Nodes and the links heard between them."
-		meta="Updated every minute"
+		text="Every site and its last inspection."
+		meta="Updated hourly"
 	/>
 	<LinkCard
-		href="#check"
-		icon={Activity}
-		title="Health check"
-		text="One node's coverage over the last 24 hours."
+		href="#checklists"
+		icon={ClipboardCheck}
+		title="Checklists"
+		text="The inspections due this week."
 	/>
 	<LinkCard
-		href="#observers"
-		icon={Radio}
-		title="Observers"
-		text="Who listens where, and since when."
+		href="#reports"
+		icon={ChartColumn}
+		title="Reports"
+		text="Findings by site, month and severity."
 	/>
 	<LinkCard
 		href="/document"
 		icon={BookOpen}
 		title="How it works"
-		text="The method behind the numbers."
+		text="How a finding becomes a task."
 	/>
 </Grid>
 

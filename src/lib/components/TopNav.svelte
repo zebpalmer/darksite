@@ -2,7 +2,7 @@
 @component
 TopNav — primary navigation as a bar across the top, for a product with a few top-level sections:
 `AppShell nav="top"` renders it. It reads the same navigation list as the rail. Items without a
-group are links in the bar; each group is a disclosure menu ("Network ▾") of links. On phones the
+group are links in the bar; each group is a disclosure menu ("Records ▾") of links. On phones the
 bar keeps the product and a menu button that opens a Sheet with every destination, grouped, and
 the account block.
 

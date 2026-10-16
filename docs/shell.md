@@ -51,7 +51,7 @@ const visible = $derived(nav.filter((item) => rules[item.id]?.(viewer) ?? true))
   people work in all day, with many destinations — the rail holds a dozen without strain and can
   collapse to icons.
 - **`top`**: a `TopNav` bar across the top, for a product with a few top-level sections. Items
-  without a group are links in the bar; each group becomes a menu of links ("Network ▾"). On phones
+  without a group are links in the bar; each group becomes a menu of links ("Records ▾"). On phones
   the bar keeps the product name and a menu button that opens a `Sheet` with every destination,
   grouped, and the account block. `navActions` fills the bar's right end (search, a sign-in);
   the account block sits there too, in its compact form.

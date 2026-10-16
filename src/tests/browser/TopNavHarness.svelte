@@ -4,10 +4,10 @@
 
 <TopNav
 	product="Acme"
-	groups={[{ id: 'network', label: 'Network' }]}
+	groups={[{ id: 'records', label: 'Records' }]}
 	items={[
 		{ id: 'home', label: 'Home', href: '#home' },
-		{ id: 'map', label: 'Map', href: '#map', group: 'network' },
-		{ id: 'nodes', label: 'Nodes', href: '#nodes', group: 'network' }
+		{ id: 'sites', label: 'Sites', href: '#sites', group: 'records' },
+		{ id: 'reports', label: 'Reports', href: '#reports', group: 'records' }
 	]}
 />

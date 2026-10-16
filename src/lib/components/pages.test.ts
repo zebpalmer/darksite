@@ -10,25 +10,25 @@ import TopNav from './TopNav.svelte';
 import type { NavGroup, NavItem } from '../nav.js';
 
 const text = (html: string) => createRawSnippet(() => ({ render: () => html }));
-const groups: NavGroup[] = [{ id: 'network', label: 'Network' }];
+const groups: NavGroup[] = [{ id: 'records', label: 'Records' }];
 const items: NavItem[] = [
 	{ id: 'home', label: 'Home', href: '/' },
-	{ id: 'map', label: 'Map', href: '/map', group: 'network' },
-	{ id: 'nodes', label: 'Nodes', href: '/nodes', group: 'network', badge: 3 }
+	{ id: 'sites', label: 'Sites', href: '/sites', group: 'records' },
+	{ id: 'reports', label: 'Reports', href: '/reports', group: 'records', badge: 3 }
 ];
 
 describe('TopNav', () => {
 	it('links loose items and opens a group as a menu of links', async () => {
-		render(TopNav, { items, groups, current: 'nodes', product: 'Acme' });
+		render(TopNav, { items, groups, current: 'reports', product: 'Acme' });
 		const nav = screen.getByRole('navigation', { name: 'Primary' });
 		expect(within(nav).getByRole('link', { name: 'Home' }).getAttribute('href')).toBe('/');
-		const button = within(nav).getByRole('button', { name: 'Network' });
+		const button = within(nav).getByRole('button', { name: 'Records' });
 		expect(button.getAttribute('aria-expanded')).toBe('false');
 		expect(button.hasAttribute('data-current')).toBe(true);
 		await fireEvent.click(button);
 		expect(button.getAttribute('aria-expanded')).toBe('true');
-		const nodes = screen.getByRole('link', { name: /Nodes/ });
-		expect(nodes.getAttribute('aria-current')).toBe('page');
+		const reports = screen.getByRole('link', { name: /Reports/ });
+		expect(reports.getAttribute('aria-current')).toBe('page');
 		expect(button.getAttribute('aria-controls')).toBeTruthy();
 		await fireEvent.keyDown(document, { key: 'Escape' });
 		expect(button.getAttribute('aria-expanded')).toBe('false');
@@ -59,16 +59,16 @@ describe('AppShell nav="top"', () => {
 
 describe('page types', () => {
 	it('Intro is a heading, a lead and its actions', () => {
-		render(Intro, { title: 'A field network', lead: 'Every node, mapped.', actions: text('<a href="/map">Open the map</a>') });
-		expect(screen.getByRole('heading', { level: 1, name: 'A field network' })).toBeTruthy();
-		expect(screen.getByText('Every node, mapped.')).toBeTruthy();
+		render(Intro, { title: 'Every site, on record', lead: 'Inspected and filed.', actions: text('<a href="/map">Open the map</a>') });
+		expect(screen.getByRole('heading', { level: 1, name: 'Every site, on record' })).toBeTruthy();
+		expect(screen.getByText('Inspected and filed.')).toBeTruthy();
 		expect(screen.getByRole('link', { name: 'Open the map' })).toBeTruthy();
 	});
 
 	it('Steps is an ordered list with links', () => {
 		render(Steps, {
 			label: 'Get started',
-			steps: [{ title: 'Find your node', href: '/find', linkLabel: 'Search' }, { title: 'Run a check' }]
+			steps: [{ title: 'Pick a site', href: '/find', linkLabel: 'Search' }, { title: 'Run a check' }]
 		});
 		const list = screen.getByRole('list', { name: 'Get started' });
 		expect(list.tagName).toBe('OL');
