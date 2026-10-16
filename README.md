@@ -35,10 +35,15 @@ reason to improvise.
 
 ## Content fundamentals
 
-- **Labels, not sentences.** A control says `Save`, `Accept all`, `Apply defaults` — never "Click
-  here to save your changes". Controls and menus carry labels only, with no explanatory sub-text.
-- **Explanations live in tooltips**, as a `HelpTip` beside a label or a `Field tip` — not as a
-  sentence under a control.
+- **Labels, not sentences, on controls.** A control says `Save`, `Accept all`, `Apply defaults` —
+  never "Click here to save your changes". Controls and menus carry labels only, with no
+  explanatory sub-text.
+- **On work and list pages, explanations live in tooltips**, as a `HelpTip` beside a label or a
+  `Field tip` — not as a sentence under a control. **Overview and document pages are prose**: an
+  overview's `Intro` says what the product is in a sentence or two, and a document page (help, a
+  how-to, a method note) is written out in full (see [`layout.md`](docs/layout.md), "Page types").
+- **Dashed means not confirmed**: a suggestion not yet applied, a possible link, an estimated
+  position, a low-confidence value. Never decoration, and never a solid fact.
 - **One sentence, one action** in an `EmptyState`. The sentence names the way forward; the single
   button takes it.
 - **Say the name, never the index.** A severity is `High`, not `4`. Digits appear only on key caps.
@@ -115,7 +120,8 @@ and unlayered. Never remove it; a primitive may only adjust the offset. Every ho
 a `KeyCap` next to the control it drives. See [`focus-and-hotkeys.md`](docs/focus-and-hotkeys.md).
 
 **Imagery.** Content thumbnails are the only pictures. No illustration, no gradients, no hero
-images, nothing decorative in the chrome.
+images or color bands, nothing decorative in the chrome. An overview page opens with an `Intro` — a
+title, a sentence or two and its actions — never an image.
 
 ## Accessibility
 

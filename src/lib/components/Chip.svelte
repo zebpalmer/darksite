@@ -11,7 +11,7 @@ Modes, picked by props:
   (22px, 32 on touch). `variant="token"` is the applied-token look. With `onclick` as well, the
   label becomes a second button beside the ×.
 - **suggestion** — `suggestion`, with `source` and `confidence`: a dashed edge, a `+` icon and a
-  SourceBadge. Dashed always means "suggested, not applied". `isNew` adds a NewBadge and an accent
+  SourceBadge. Dashed means not confirmed: here, suggested, not applied. `isNew` adds a NewBadge and an accent
   dashed edge, for a value that exists nowhere yet.
 - **static** — none of the above.
 

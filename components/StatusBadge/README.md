@@ -40,4 +40,4 @@ defaults to now), `class`.
 ## Don't
 
 - Don't make it clickable; a clickable state is a `Chip`.
-- Don't give it a dashed edge; dashed means suggested.
+- Don't give it a dashed edge; dashed means not confirmed.

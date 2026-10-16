@@ -43,6 +43,23 @@ const rules: Record<string, (viewer: Viewer) => boolean> = {
 const visible = $derived(nav.filter((item) => rules[item.id]?.(viewer) ?? true));
 ```
 
+## Rail or top bar
+
+`AppShell` draws the one navigation list in one of two shapes, chosen by `nav`:
+
+- **`rail`** (the default): a `NavRail` beside the page, and a `TabBar` on phones. For a product
+  people work in all day, with many destinations — the rail holds a dozen without strain and can
+  collapse to icons.
+- **`top`**: a `TopNav` bar across the top, for a product with a few top-level sections. Items
+  without a group are links in the bar; each group becomes a menu of links ("Network ▾"). On phones
+  the bar keeps the product name and a menu button that opens a `Sheet` with every destination,
+  grouped, and the account block. `navActions` fills the bar's right end (search, a sign-in);
+  the account block sits there too, in its compact form.
+
+Either shape takes an optional `footer` (a version, a few links) under every page but a full-bleed
+one. Pick by the number of destinations and how people move between them, not by whether the
+product is public: a public site can have a rail, and an admin tool with four sections a top bar.
+
 ## The rail
 
 `ds-bg-0`, full height, at `ds-bp-phone` and above.

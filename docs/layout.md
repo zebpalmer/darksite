@@ -1,9 +1,9 @@
 # Layout
 
-Three page archetypes, one scroll rule, and a short list of breakpoints. Most layout bugs in a
+Six page types, one scroll rule, and a short list of breakpoints. Most layout bugs in a
 dense tool come from a page inventing its own answer to one of these.
 
-## The three archetypes
+## Page types
 
 **1. Content page.** The shell's column supplies the padding (16px on phones, 20px top / 24px
 sides from `ds-bp-phone`) and **the document scrolls**. `PageHeader` first, then the content. This
@@ -17,6 +17,21 @@ archetype a dense tool is actually built from.
 **3. Focused page.** One centered column, capped at a readable width, vertically centered when it is
 short: sign-in, a setup gate, a fatal error. No rail, no header, no actions bar — just the one
 thing being asked.
+
+**4. Overview page.** Where a product or a section starts: what it is, how to begin, where to go.
+An `Intro` (a title, a sentence or two, up to two actions) instead of a PageHeader, then `Steps`
+for getting started and `LinkCard`s in a `Grid` for the destinations — and a `StatRow` if there are
+numbers worth seeing first. This is the only page that opens with an intro block; a work or list
+page never does, because it pushes the work below the fold.
+
+**5. Document page.** Help, a how-to, a method note: prose. `PageHeader`, then an `<article
+class="ds-prose">` — headings, paragraphs, lists and inline code at a readable measure. Long-form
+reading (a story, a report) uses `ds-reading` instead, with the paper or night mode. Sentences are
+the content here; the "labels, not sentences" rule is about controls and work surfaces.
+
+**6. Full-bleed page.** A map, a canvas, a diagram that takes the whole column: `FullBleed`. No
+padding and no footer, the shell locked to the viewport at every width, so it fills exactly what
+the navigation leaves; panels float over it with absolute positioning.
 
 ## Scroll ownership
 

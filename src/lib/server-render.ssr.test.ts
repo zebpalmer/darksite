@@ -17,6 +17,11 @@ const props: Record<string, Record<string, unknown>> = {
 	Combobox: { items: [{ value: '1', label: 'North' }], label: 'Site' },
 	EmptyState: { title: 'Nothing here' },
 	EntityCard: { href: '/p/1', name: 'Grace Hopper' },
+	FullBleed: { children: page },
+	Intro: { title: 'Welcome', lead: 'A sentence.' },
+	LinkCard: { href: '/x', title: 'Docs' },
+	Steps: { steps: [{ title: 'One' }] },
+	TopNav: { items: [{ id: 'a', label: 'Home', href: '/' }], product: 'Acme' },
 	FactList: { items: [{ label: 'Owner', value: null }] },
 	FileInput: {},
 	FilterRail: {

@@ -39,6 +39,10 @@ const DEFAULTS = {
 	expandNavigation: 'Expand navigation',
 	collapseNavigation: 'Collapse navigation',
 	toolbar: 'Toolbar',
+	menu: 'Menu',
+	opensInNewTab: '(opens in a new tab)',
+	home: 'Home',
+	step: (n: number) => `Step ${n}`,
 	notifications: 'Notifications',
 	keyboardShortcuts: 'Keyboard shortcuts',
 

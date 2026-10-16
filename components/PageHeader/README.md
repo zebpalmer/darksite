@@ -2,7 +2,7 @@
 
 The top of a page: 56px, the title in `page-title` (20/500), the count in `meta`, optional content
 after the title (usually `Tabs`), and right-aligned actions. A `ds-border-subtle` bottom edge on
-`ds-bg-1`. **No breadcrumbs, no hero.**
+`ds-bg-1`. **No breadcrumbs, no hero** — an overview page opens with an `Intro` instead.
 
 ## One header geometry everywhere
 
@@ -45,6 +45,6 @@ nothing for this. `shellActions={false}` leaves them out of one page's header.
 
 ## Don't
 
-- Don't add breadcrumbs or a hero band.
+- Don't add breadcrumbs or a hero band; an overview page uses `Intro` in place of the PageHeader.
 - Don't put the page's own padding around it.
 - Don't let the title wrap.

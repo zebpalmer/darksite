@@ -1,7 +1,7 @@
 <!--
 @component
-EmptyState — "nothing here" with a way forward: a solid ds-border edge (never dashed — dashed means
-suggested), a 24px icon, a 16/500 title, one sentence and one action.
+EmptyState — "nothing here" with a way forward: a solid ds-border edge (never dashed — dashed means not
+confirmed), a 24px icon, a 16/500 title, one sentence and one action.
 
 - `title`, `message` (one sentence), `icon` (Lucide; an inbox by default), `action` snippet (a
   single Button), `align` (`start` default | `center` for a lone full-page state).

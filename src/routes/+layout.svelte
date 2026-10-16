@@ -19,6 +19,9 @@
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import Monitor from '@lucide/svelte/icons/monitor';
 	import Palette from '@lucide/svelte/icons/palette';
+	import House from '@lucide/svelte/icons/house';
+	import FileText from '@lucide/svelte/icons/file-text';
+	import Map from '@lucide/svelte/icons/map';
 	import SquareMousePointer from '@lucide/svelte/icons/square-mouse-pointer';
 	import {
 		AppShell,
@@ -34,7 +37,8 @@
 		type NavGroup,
 		type NavItem
 	} from '#lib';
-	import { brands, gallery, initBrand, setBrand } from './brand.svelte.js';
+	import { brands, gallery, initBrand, initNav, setBrand, setNav } from './brand.svelte.js';
+	import pkg from '../../package.json';
 	import { componentHref, findComponent, names } from './catalog.js';
 	import { demo } from './demo.svelte.js';
 
@@ -45,6 +49,7 @@
 	$effect(() => {
 		mode.init();
 		initBrand();
+		initNav();
 		const t = new URLSearchParams(location.search).get('theme');
 		if (t && (MODES as readonly string[]).includes(t)) mode.set(t as Mode, { persist: false });
 	});
@@ -59,7 +64,10 @@
 		contrast: Contrast
 	};
 
-	const groups: NavGroup[] = [{ id: 'shell', label: 'Shell' }];
+	const groups: NavGroup[] = [
+		{ id: 'shell', label: 'Shell' },
+		{ id: 'pages', label: 'Page types' }
+	];
 	const base: NavItem[] = [
 		{ id: 'components', label: 'Components', href: '/', icon: LayoutGrid },
 		{ id: 'brands', label: 'Brands and modes', href: '/brands', icon: Palette },
@@ -76,7 +84,10 @@
 			icon: SquareMousePointer,
 			group: 'shell'
 		},
-		{ id: 'toaster', label: 'Toaster', href: '/toaster', icon: Bell, group: 'shell' }
+		{ id: 'toaster', label: 'Toaster', href: '/toaster', icon: Bell, group: 'shell' },
+		{ id: 'overview', label: 'Overview', href: '/overview', icon: House, group: 'pages' },
+		{ id: 'document', label: 'Document', href: '/document', icon: FileText, group: 'pages' },
+		{ id: 'fullbleed', label: 'Full bleed', href: '/fullbleed', icon: Map, group: 'pages' }
 	];
 	const items = $derived(base.map((i) => ({ ...i, badge: demo.badges[i.id] ?? null })));
 	const current = $derived(
@@ -137,6 +148,18 @@
 		<div class="prefs">
 			<ModePicker />
 			<label class="pref">
+				<span>Navigation</span>
+				<Select
+					value={gallery.nav}
+					options={[
+						{ value: 'rail', label: 'Rail' },
+						{ value: 'top', label: 'Top bar' }
+					]}
+					onchange={(e: Event) =>
+						setNav((e.currentTarget as HTMLSelectElement).value as 'rail' | 'top')}
+				/>
+			</label>
+			<label class="pref">
 				<span>Brand</span>
 				<Select
 					value={gallery.brand}
@@ -148,13 +171,23 @@
 	{/if}
 {/snippet}
 
+{#snippet footer()}
+	<div class="foot">
+		<span>darksite {pkg.version}</span>
+		<a href="https://github.com/zebpalmer/darksite">Source</a>
+		<a href="https://github.com/zebpalmer/darksite/blob/main/CHANGELOG.md">Changelog</a>
+	</div>
+{/snippet}
+
 <AppShell
+	nav={gallery.nav}
 	{items}
 	{groups}
 	{current}
 	product="darksite"
 	{mark}
 	{account}
+	{footer}
 	{headerActions}
 	headerActionsLabel="Find a component"
 	rememberAs="gallery"
@@ -179,6 +212,15 @@
 	.find :global(.ds-kbd) {
 		position: absolute;
 		right: 8px;
+	}
+	.foot {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px 20px;
+		padding: 14px 24px;
+		color: var(--ds-text-3);
+		font-size: var(--ds-text-sm);
 	}
 	.prefs {
 		display: flex;

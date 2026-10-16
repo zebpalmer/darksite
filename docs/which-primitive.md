@@ -15,7 +15,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A link to a download or a server endpoint | `Button href download data-sveltekit-reload` | The router's full-load escape hatch, or it fetches the file as a page. |
 | Toggle a tag, a category, an attribute | `Chip selected onclick` | A key cap inside on a keyboard-driven view, a count inside in filters, `'mixed'` for a bulk partial. |
 | An applied token or an active filter | `Chip removable` (`variant="token"` for tokens) | The × is its own 22px button (32 on touch). |
-| Offer a value without applying it | `Chip suggestion source confidence` | **Dashed always means "suggested, not applied".** |
+| Offer a value without applying it | `Chip suggestion source confidence` | **Dashed means not confirmed: suggested, not applied.** |
 | A value that exists nowhere yet | `Chip suggestion isNew` / `NewBadge` | Check names, aliases and spelling variants first, so `new` means genuinely new. |
 | Where a value came from | `SourceBadge` | One source per value — the most reliable that produced it — with its own confidence; the full list goes in the tooltip. |
 | The viewer's dark, light, reading or high-contrast mode | `ModePicker` | Drives the `mode` store; `MODE_SCRIPT` in `app.html` avoids a flash on load. |
@@ -62,6 +62,11 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Images at their own aspect ratio | `JustifiedGrid` | Rows that fill the width, no crop. |
 | A person or an organization | `EntityCard` in a `Grid min={280}` | A row with a 56px avatar. |
 | The top of a page | `PageHeader` | Title, count, actions. No breadcrumbs, no hero. |
+| The start of a product or a section | `Intro`, then `Steps` and `LinkCard`s in a `Grid min={260}` | The overview page type: a sentence or two, up to two actions. Never on a work or list page. |
+| Numbered steps to get started | `Steps` | An ordered list; three or four across when there is room. |
+| A destination on an overview page | `LinkCard` | A whole-card link: icon, title, a sentence, an arrow. |
+| Help, a how-to, a method note | `PageHeader` + `<article class="ds-prose">` | The document page type: prose at a readable measure. |
+| A map or a canvas that fills the page | `FullBleed` | No padding, no footer, the shell locked to the viewport. |
 | Actions belonging to a pane | `ActionBar` | The pane's last child; never an overlay. |
 | Nothing to show | `EmptyState` | One sentence, **one** action. |
 | Loading content of known shape | `SkeletonLoader` | The same geometry as the real thing. `Spinner` is only for "Loading more…". |

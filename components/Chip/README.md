@@ -14,7 +14,7 @@ Toggle a label or category, show an active filter, carry an applied token, or of
   well and the label becomes a second button beside the ×, so a partial bulk token can add to all
   (label) or remove from all (×).
 - **suggestion** — `suggestion`, with `source` and `confidence`: a dashed border, a `+` icon and a
-  `SourceBadge`. **Dashed always means "suggested, not applied"**; clicking applies it. `isNew`
+  `SourceBadge`. **Dashed means not confirmed — here, "suggested, not applied"**; clicking applies it. `isNew`
   adds a `NewBadge` and tints the dashed border with the accent, for a value that exists nowhere
   yet.
 - **static** — none of the above: a plain `<span>`.

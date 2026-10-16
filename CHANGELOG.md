@@ -6,6 +6,30 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **`AppShell nav="top"`**: the navigation list drawn as a `TopNav` bar across the top, for a
+  product with a few top-level sections. Loose items are links; each group is a disclosure menu of
+  real links; phones get a menu button and a `Sheet` with every destination and the account block.
+  `navActions` fills the bar's right end, and the account block sits there in its compact form.
+  The bar reads the chrome bar roles, so a brand can color it.
+- **`AppShell footer`**: a footer under every page (a version, a few links), hidden on a full-bleed
+  page.
+- **`FullBleed`**: a page that takes the whole column at every width — a map, a canvas — with no
+  padding, no footer and the shell locked to the viewport.
+- The **overview** page type: `Intro` (a title, a sentence or two, up to two actions), `Steps`
+  (numbered steps to get started) and `LinkCard` (a destination tile).
+- The **document** page type: the `ds-prose` class for help, how-tos and method notes.
+
+### Changed
+
+- The content rules now belong to page types and elements, not to products: no explanatory
+  sentences under controls or in work views, but overview and document pages are prose; no intro
+  block on a work or list page, while an overview page opens with an `Intro`; and **dashed means
+  not confirmed** — suggested, possible, estimated — rather than "suggested" alone. `docs/layout.md`
+  lists six page types; `docs/shell.md` explains choosing a rail or a top bar.
+- The phone tab bar's space at the page foot (`--ds-chrome-bottom`) applies only to a rail shell.
+
 ## [0.10.0] — 2026-10-16
 
 ### Added

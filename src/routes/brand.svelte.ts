@@ -13,7 +13,10 @@ interface BrandEntry {
 }
 
 export const brands = index as BrandEntry[];
-export const gallery = $state({ brand: 'violet' });
+export const gallery = $state<{ brand: string; nav: 'rail' | 'top' }>({
+	brand: 'violet',
+	nav: 'rail'
+});
 const KEY = 'darksite-gallery:brand';
 
 export function setBrand(name: string, persist = true) {
@@ -37,4 +40,29 @@ export function initBrand() {
 		/* storage unavailable */
 	}
 	setBrand(asked ?? saved ?? 'violet', !asked);
+}
+
+const NAV_KEY = 'darksite-gallery:nav';
+
+/** The gallery's own navigation shape: the rail, or the top bar. */
+export function setNav(nav: 'rail' | 'top', persist = true) {
+	gallery.nav = nav;
+	if (!persist) return;
+	try {
+		localStorage.setItem(NAV_KEY, nav);
+	} catch {
+		/* storage unavailable */
+	}
+}
+
+export function initNav() {
+	const asked = new URLSearchParams(location.search).get('nav');
+	let saved: string | null = null;
+	try {
+		saved = localStorage.getItem(NAV_KEY);
+	} catch {
+		/* storage unavailable */
+	}
+	const nav = asked ?? saved;
+	if (nav === 'rail' || nav === 'top') setNav(nav, !asked);
 }

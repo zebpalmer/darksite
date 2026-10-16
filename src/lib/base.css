@@ -74,6 +74,51 @@
 		display: none;
 	}
 
+	/* A document page: help, a how-to, a method note. Prose in the interface font at a readable
+	   measure, with headings, lists and inline code spaced for reading. */
+	.ds-prose {
+		max-width: 72ch;
+		color: var(--ds-text-1);
+		font-size: var(--ds-text-md);
+		line-height: 1.6;
+	}
+	.ds-prose :is(h1, h2, h3) {
+		margin: 1.6em 0 0.5em;
+		font-weight: 500;
+		line-height: 1.3;
+	}
+	.ds-prose h1 {
+		font-size: var(--ds-text-2xl);
+	}
+	.ds-prose h2 {
+		font-size: var(--ds-text-xl);
+	}
+	.ds-prose h3 {
+		font-size: var(--ds-text-lg);
+	}
+	.ds-prose > :first-child {
+		margin-top: 0;
+	}
+	.ds-prose :is(p, ul, ol) {
+		margin: 0 0 1em;
+	}
+	.ds-prose :is(ul, ol) {
+		padding-left: 1.4em;
+	}
+	.ds-prose li + li {
+		margin-top: 0.3em;
+	}
+	.ds-prose :not(pre) > code {
+		padding: 1px 5px;
+		border-radius: var(--ds-radius-xs);
+		background: var(--ds-bg-3);
+		font-family: var(--font-mono);
+		font-size: 0.92em;
+	}
+	.ds-prose :is(.muted, small) {
+		color: var(--ds-text-2);
+	}
+
 	/* Long-form reading: the reading font at 18px with generous leading, at a readable measure. Pair
 	   it with the paper or night mode for a reader view. */
 	.ds-reading {

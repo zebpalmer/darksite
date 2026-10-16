@@ -1,0 +1,33 @@
+# TopNav
+
+Primary navigation as a bar across the top, for a product with a few top-level sections. Use it
+through `AppShell nav="top"`, which renders it; on its own it is the same component.
+
+It reads the **same navigation list** as the rail ([`shell.md`](../../docs/shell.md)):
+
+- **Items without a group** are links in the bar.
+- **Each group** is a menu: a button ("Network ▾") that opens a list of links. It follows the
+  disclosure-navigation pattern — `aria-expanded` on the button, real links in the list, so a link
+  opens in a new tab like any other. Focus moves into the list when it opens; Esc or a press outside
+  closes it and returns focus to the button.
+- **The current page** is `aria-current="page"`; its link or its group's button carries a 2px accent
+  mark along the bar's foot.
+- **On phones** the links go: the bar keeps the product and a menu button that opens a `Sheet` with
+  every destination, grouped, and the account block.
+
+The bar is 56px on the chrome's bar roles (`ds-bar-*`), so a brand can give it its own color and
+everything in it follows. Sticky by default.
+
+## What the consumer provides
+
+`items`, `groups`, `current`, `product`, `mark`, `homeHref` (where the product links, default `/`),
+`actions` snippet (the right end: search, a sign-in), `accountInline` snippet (the account block in
+the bar on desktop), `account` snippet (the phone sheet's footer), `label` (default "Primary"),
+`sticky` (default true), `class`. Inside `AppShell` these come from its own props.
+
+## Don't
+
+- Don't use it for more than about seven top-level entries — that is a rail.
+- Don't nest a menu in a menu. Two levels: the bar, and a group's links.
+- Don't put actions (buttons that do something) in a group's menu; it is navigation. Actions go in
+  `actions`.

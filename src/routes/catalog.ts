@@ -3,12 +3,17 @@
 const route: Record<string, string> = {
 	ActiveFilters: 'filterrail',
 	SheetItem: 'sheet',
-	ModePicker: 'brands'
+	ModePicker: 'brands',
+	TopNav: 'overview',
+	Intro: 'overview',
+	Steps: 'overview',
+	LinkCard: 'overview'
 };
 
 export const groups: Record<string, string[]> = {
 	Actions: ['Button', 'KeyCap', 'KeyLegend', 'Tooltip'],
 	Theming: ['ModePicker'],
+	'Page types': ['Intro', 'Steps', 'LinkCard'],
 	Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 	Filtering: ['ActiveFilters', 'FilterRail'],
 	Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
@@ -40,8 +45,8 @@ export const groups: Record<string, string[]> = {
 	Content: ['Avatar', 'EntityCard'],
 	// Optional: for products whose content is images and video.
 	Media: ['Card', 'Carousel', 'JustifiedGrid', 'Lightbox'],
-	Layout: ['ActionBar', 'Grid', 'PageHeader', 'Pane', 'WorkView'],
-	Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar']
+	Layout: ['ActionBar', 'Grid', 'PageHeader', 'Pane', 'WorkView', 'FullBleed'],
+	Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar', 'TopNav']
 };
 
 export const names: string[] = Object.values(groups).flat().sort();

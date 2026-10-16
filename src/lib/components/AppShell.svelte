@@ -9,8 +9,12 @@ It publishes the geometry pages rely on (docs/layout.md): the padded column's `-
 height on phones, so nothing is hidden under it. Content pages scroll the document; the rail stays
 in place.
 
-- `items`, `groups`, `current` — the one navigation list, used by the rail, the tab bar and its
-  More sheet.
+- `nav` — `rail` (default: a NavRail, a TabBar on phones) or `top` (a TopNav bar across the top
+  for a product with a few top-level sections; groups become its menus, and phones get a menu
+  sheet). `navActions` snippet: the top bar's right end. `homeHref`: where the product name links.
+- `footer` snippet: under every page (version, links), hidden on a FullBleed page.
+- `items`, `groups`, `current` — the one navigation list, used by the rail or the top bar, the tab
+  bar and the phone sheets.
 - `product` and `mark` (the brand at the top of the rail), `account` snippet (the rail's footer
   and the More sheet's footer; receives `{ compact }`), `version`, `rememberAs` (remember the
   rail's state for this viewer), `primaryTabs` (the tab bar's four cells).
@@ -25,6 +29,9 @@ in place.
   default a search icon; `headerActionsLabel`, default "Search") that opens a full-width row under
   the header (the key opens it too); Esc inside the row, or a change of `current`, closes it.
 
+A page that renders a `FullBleed` (a map, a canvas) gets the whole column at every width: no
+padding, no footer, the shell locked to the viewport.
+
 A page that renders a `WorkView` gets the work-view frame without touching `padded`: while one is
 mounted the column's padding is zero, and from 768px the shell locks to the viewport so the work
 view fills what the Banner and TopBar leave and the document does not scroll.
@@ -36,6 +43,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 
 	import NavRail, { type RailSlotArgs } from './NavRail.svelte';
 	import TabBar from './TabBar.svelte';
+	import TopNav from './TopNav.svelte';
 	import Toaster from './Toaster.svelte';
 	import type { NavGroup, NavItem } from '../nav.js';
 	import { media } from '../media.svelte.js';
@@ -43,6 +51,14 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	import type { IconComponent } from '../types.js';
 
 	interface Props {
+		/** `rail` (default): a NavRail, and a TabBar on phones. `top`: a TopNav bar, and its menu
+		 *  sheet on phones — for a product with a few top-level sections. */
+		nav?: 'rail' | 'top';
+		/** The bar's right end with `nav="top"`: search, a sign-in. */
+		navActions?: Snippet;
+		/** A footer under every page (version, links); hidden on a FullBleed page. */
+		footer?: Snippet;
+		homeHref?: string;
 		items: readonly NavItem[];
 		groups?: readonly NavGroup[];
 		current?: string;
@@ -70,6 +86,10 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	}
 
 	let {
+		nav = 'rail',
+		navActions,
+		footer,
+		homeHref,
 		items,
 		groups = [],
 		current,
@@ -126,9 +146,13 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	{@render account?.({ compact: false })}
 {/snippet}
 
-<div class="ds-appshell {className}">
+{#snippet barAccount()}
+	{@render account?.({ compact: true })}
+{/snippet}
+
+<div class="ds-appshell {className}" data-nav={nav}>
 	<a class="skip" href="#ds-main">{strings.skipToContent}</a>
-	<div class="rail">
+	{#if nav === 'rail'}<div class="rail">
 		<NavRail
 			{items}
 			{groups}
@@ -144,15 +168,31 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 			pinned={railPinned}
 			footer={account ? railFooter : undefined}
 		/>
-	</div>
-	<div class="column">
+	</div>{/if}
+	<div class="column" data-footer={footer ? '' : undefined}>
 		{@render banner?.()}
+		{#if nav === 'top'}
+			<TopNav
+				{items}
+				{groups}
+				{current}
+				{product}
+				{mark}
+				{homeHref}
+				actions={navActions}
+				accountInline={account ? barAccount : undefined}
+				account={account ? sheetFooter : undefined}
+			/>
+		{/if}
 		{@render topBar?.()}
 		<main id="ds-main" tabindex="-1" class="main" data-padded={padded ? '' : undefined}>
 			{@render children()}
 		</main>
+		{#if footer}<footer class="footer">{@render footer()}</footer>{/if}
 	</div>
-	<TabBar {items} {groups} {current} primary={primaryTabs} footer={account ? sheetFooter : undefined} />
+	{#if nav === 'rail'}
+		<TabBar {items} {groups} {current} primary={primaryTabs} footer={account ? sheetFooter : undefined} />
+	{/if}
 	{#if toaster}<Toaster />{/if}
 </div>
 
@@ -162,6 +202,9 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		grid-template-columns: auto minmax(0, 1fr);
 		min-height: 100dvh;
 		background: var(--ds-bg-1);
+	}
+	.ds-appshell[data-nav='top'] {
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.rail {
 		position: sticky;
@@ -176,9 +219,14 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	.main {
 		--ds-pad-top: 0px;
 		--ds-pad-x: 0px;
+		/* What the page keeps clear at its foot for the phone tab bar; a footer keeps it instead. */
+		--main-foot: var(--ds-chrome-bottom);
 		flex: 1;
 		min-width: 0;
-		padding-bottom: var(--ds-chrome-bottom);
+		padding-bottom: var(--main-foot);
+	}
+	[data-footer] > .main {
+		--main-foot: 0px;
 	}
 	.main:focus {
 		outline: none;
@@ -186,7 +234,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	.main[data-padded] {
 		--ds-pad-top: 20px;
 		--ds-pad-x: 24px;
-		padding: var(--ds-pad-top) var(--ds-pad-x) calc(var(--ds-pad-top) + var(--ds-chrome-bottom));
+		padding: var(--ds-pad-top) var(--ds-pad-x) calc(var(--ds-pad-top) + var(--main-foot));
 	}
 	/* A work view takes the column: no padding at any width, and from the phone breakpoint up the
 	   shell locks to the viewport so the WorkView fills what the Banner and TopBar leave. */
@@ -194,6 +242,34 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		--ds-pad-top: 0px;
 		--ds-pad-x: 0px;
 		padding: 0 0 var(--ds-chrome-bottom);
+	}
+	/* A FullBleed page (a map) takes the whole column at every width, with no padding and no
+	   footer, and the shell locks to the viewport so it fills what the chrome leaves. */
+	.ds-appshell:has(:global(.ds-fullbleed)) {
+		grid-template-rows: minmax(0, 1fr);
+		height: 100dvh;
+		min-height: 0;
+		overflow: hidden;
+	}
+	.ds-appshell:has(:global(.ds-fullbleed)) .column {
+		min-height: 0;
+	}
+	.main:has(:global(.ds-fullbleed)) {
+		--ds-pad-top: 0px;
+		--ds-pad-x: 0px;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		padding: 0 0 var(--ds-chrome-bottom);
+	}
+	.ds-appshell:has(:global(.ds-fullbleed)) .footer {
+		display: none;
+	}
+	.footer {
+		flex: none;
+		border-top: 1px solid var(--ds-border-subtle);
+		background: var(--ds-bg-1);
+		margin-bottom: var(--ds-chrome-bottom);
 	}
 	@media (min-width: 768px) {
 		.ds-appshell:has(:global(.ds-workview)) {
@@ -229,7 +305,8 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		transform: none;
 	}
 	@media (max-width: 767.98px) {
-		:global(:root) {
+		/* The tab bar's height, for a rail shell only: a top-nav shell has nothing fixed below. */
+		:global(:root:has(.ds-appshell[data-nav='rail'])) {
 			--ds-chrome-bottom: calc(var(--ds-tabbar-h) + env(safe-area-inset-bottom, 0px));
 		}
 		.ds-appshell {

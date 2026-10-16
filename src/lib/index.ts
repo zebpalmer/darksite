@@ -67,6 +67,11 @@ export { default as LoadMore } from './components/LoadMore.svelte';
 export { default as Select } from './components/Select.svelte';
 export { default as Textarea } from './components/Textarea.svelte';
 export { default as ModePicker } from './components/ModePicker.svelte';
+export { default as TopNav } from './components/TopNav.svelte';
+export { default as FullBleed } from './components/FullBleed.svelte';
+export { default as Intro } from './components/Intro.svelte';
+export { default as Steps } from './components/Steps.svelte';
+export { default as LinkCard } from './components/LinkCard.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
@@ -189,3 +194,4 @@ export { resetStrings, setStrings, strings, type Strings } from './strings.svelt
 export type { SelectOption } from './components/Select.svelte';
 export { tooltip, type TooltipOptions } from './tooltip.js';
 export { MODE_SCRIPT, MODES, ModeStore, mode, modeLabel, type Mode } from './mode.svelte.js';
+export type { Step } from './components/Steps.svelte';

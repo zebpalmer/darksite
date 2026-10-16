@@ -1,6 +1,6 @@
 # EmptyState
 
-"Nothing here" with a way forward: a solid `ds-border` edge at `ds-radius-md` — never dashed, because dashed means "suggested" —, a 24px
+"Nothing here" with a way forward: a solid `ds-border` edge at `ds-radius-md` — never dashed, because dashed means "not confirmed" —, a 24px
 `ds-text-3` icon, a 16/500 title, **one sentence**, and **one** action.
 
 ## What the consumer provides

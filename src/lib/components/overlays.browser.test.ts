@@ -11,6 +11,7 @@ import LayoutHarness from '../../tests/browser/LayoutHarness.svelte';
 import JustifiedHarness from '../../tests/browser/JustifiedHarness.svelte';
 import TooltipHarness from '../../tests/browser/TooltipHarness.svelte';
 import BrandHarness from '../../tests/browser/BrandHarness.svelte';
+import TopNavHarness from '../../tests/browser/TopNavHarness.svelte';
 import '../brands/teal.css';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -223,5 +224,20 @@ describe('brands in a browser', () => {
 		delete root.dataset.brand;
 		expect(accent(root)).not.toBe('#2bb3a8');
 		root.removeAttribute('data-ds-theme');
+	});
+});
+
+describe('top navigation in a browser', () => {
+	it('opens a group menu in the top layer under its button, focus inside', async () => {
+		render(TopNavHarness);
+		const button = screen.getByRole('button', { name: 'Network' });
+		await userEvent.click(button);
+		await settle();
+		const panel = document.querySelector<HTMLElement>('.panel')!;
+		expect(panel.matches(':popover-open')).toBe(true);
+		expect(panel.getBoundingClientRect().top).toBeGreaterThanOrEqual(button.getBoundingClientRect().bottom);
+		expect(panel.contains(document.activeElement)).toBe(true);
+		await userEvent.keyboard('{Escape}');
+		expect(document.activeElement).toBe(button);
 	});
 });
