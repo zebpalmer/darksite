@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.13.0] — 2026-10-16
+
 ### Added
 
 - `TableColumn.tip`: what a column means, as a HelpTip beside its header (named "About <label>", outside the sort button).
