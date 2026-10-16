@@ -120,28 +120,33 @@ images, nothing decorative in the chrome.
 ## Accessibility
 
 Every ratio here is computed, and `scripts/check-contrast.mjs` re-checks every documented pair in
-every theme as part of `stratt lint`. A color change that breaks a pair fails the build.
+every mode as part of `stratt lint`. A color change that breaks a pair fails the build. Every
+prebuilt brand, and every brand a product generates, is held to the same pairs (see "Brands").
 
-**Text meets 4.5:1 everywhere this system puts it** in dark and light — `ds-text-1/2/3` on the
+**Text meets 4.5:1 everywhere this system puts it** in every mode — `ds-text-1/2/3` on the
 grounds they are documented for, every `-text` role on the page and on its own tint, every severity
 ink on its ground, and every label on a filled accent or danger ground at rest, hover and press.
 `ds-text-3` stops at `ds-bg-3`; use `ds-text-2` from `ds-bg-4` up.
 
-**Marks meet 3:1:** the focus ring on every ground, the success, warning and danger marks on every
-ground in both themes, the categorical palette on panels and meter tracks.
+The reading modes soften the text on purpose — paper's primary text is about 10:1 where light's is
+15:1 — but stay above these floors.
 
-**Two things fall short of 3:1 in dark and light, by design:**
+**Marks meet 3:1:** the focus ring on every ground, the success, warning and danger marks on every
+ground in every mode, the categorical palette on panels and meter tracks.
+
+**Two things fall short of 3:1 in every mode but high contrast, by design:**
 
 - **Control edges.** `ds-border`, `ds-border-subtle` and `ds-border-strong` are 1.1–1.9:1 against
   their grounds; WCAG 2.1 SC 1.4.11 asks 3:1 of a component's identifying boundary. These controls
   are identified by their label, fill and position as much as their edge — but a strict audit will
   flag them. (`ds-accent-mixed` is 2.4:1 in dark for the same reason.)
-- **The Critical mark** is 2.6–2.9:1 on dark grounds. The badge and picker always carry the word.
+- **The Critical mark** is 2.6–2.9:1 on the dark and night grounds. The badge and picker always
+  carry the word.
 
-**For strict conformance, use the high-contrast theme**: `data-theme="contrast"`. It is dark with
+**For strict conformance, use the high-contrast mode**: `data-ds-theme="contrast"`. It is dark with
 every text role at 7:1 or more and every border and mark at 3:1 or more — no shortfalls. It also
 applies automatically when the viewer's system asks for more contrast (`prefers-contrast: more`)
-and the app has not chosen light (see "Themes" below).
+and the app has not chosen another mode (see "Modes" below).
 
 What the components must guarantee: every interactive element is reachable by keyboard and shows
 the focus ring; a severity always carries its word and an error always carries an icon and a
@@ -233,36 +238,87 @@ in use.
 whose content is images and video. An admin console or a dashboard can ignore them: the package
 tree-shakes, so a component a product never imports costs it nothing.
 
-### Themes
+### Modes
 
-Dark is the default. A theme is chosen with an attribute, on `<html>` or on any subtree:
+A **mode** is the viewer's choice of how the page looks; every product gets all five:
+
+| Mode | What it is |
+|---|---|
+| `dark` | The default. |
+| `light` | The light page. |
+| `paper` | A reading mode: a warm, slightly brown page with softer text, like a reader's sepia setting. |
+| `night` | A reading mode: a warm, dark page with softer text, for reading in the dark. |
+| `contrast` | High contrast: dark, with every text role at 7:1 or more and every edge and mark at 3:1. |
+
+A mode is set with an attribute, on `<html>` or on any part of the page — so a reader column can be
+paper while the rest of the app stays dark:
 
 ```html
-<html data-theme="light">
 <html data-ds-theme="light">
+<article data-ds-theme="paper">…</article>
 ```
 
-Both attributes take `dark`, `light` or `contrast`. Use `data-ds-theme` when `data-theme` already
-belongs to another library: when both are set, `data-ds-theme` wins, and a `data-theme` value that
-is not a darksite theme is ignored.
+`data-theme` works too; `data-ds-theme` wins when both are set, so use it when `data-theme` already
+belongs to another library. With no attribute on `<html>`, darksite follows the viewer's system:
+`prefers-contrast: more` selects high contrast, then `prefers-color-scheme: light` selects light,
+and dark is the default. An explicit `dark` still becomes high contrast when the viewer asks for
+more contrast; the other modes are never changed. The reading modes are only ever chosen. Each mode
+sets `color-scheme`, so native scrollbars and form controls match it.
 
-When `<html>` carries no theme attribute, darksite follows the viewer's system. The full order of
-precedence:
+**Let the viewer choose** with `ModePicker` (System, Dark, Light, Paper, Night, High contrast). It
+drives the `mode` store, which sets the attribute on `<html>` and remembers the choice in the
+browser; `mode.subscribe(fn)` also hands each choice to the app, to keep it with the viewer's
+account. Call `mode.init()` once in the root layout, and put `MODE_SCRIPT` in a `<script>` in
+`app.html`'s `<head>` so the saved mode applies before the first paint. For long-form text, the
+`ds-reading` class sets the reading font (`--font-reading`) at a comfortable size and measure.
 
-1. **An explicit attribute** always wins — with one exception, below.
-2. **`prefers-contrast: more`** selects the high-contrast theme.
-3. **`prefers-color-scheme: light`** selects the light theme.
-4. **Dark**, otherwise.
+### Brands
 
-The exception: high contrast is the stronger form of dark, so an explicit `dark` still becomes
-`contrast` when the viewer asks for more contrast. An explicit `light` or `contrast` is never
-changed. Each theme also sets `color-scheme` (`contrast` is dark), so native scrollbars and form
-controls match it.
+A **brand** is a product's colors and fonts. darksite owns the structure and behavior — the shell,
+navigation, tables, forms, keys — and a brand gives a product a look of its own, in every mode.
+The meaning of success, warning and danger stays the same across products, and every contrast pair
+above holds for every brand.
 
-The theme custom properties in `tokens.css` are deliberately **not** in a cascade layer: a custom
-property only competes with other declarations of the same property, so layering would add nothing
-except making a product's own `--ds-*` overrides harder to reason about. An unlayered override
-after `tokens.css` wins, as it always has.
+**Use a prebuilt brand** by importing it after `tokens.css` and naming it on `<html>`:
+
+```js
+import 'darksite/tokens.css';
+import 'darksite/base.css';
+import 'darksite/brands/teal.css';
+```
+
+```html
+<html data-brand="teal">
+```
+
+The prebuilt brands are `violet` (the default), `blue`, `teal`, `green`, `amber`, `rose`,
+`graphite` and `harbor` (a colored navigation rail), and brands from well-known open-source editor
+color schemes: `nord`, `dracula`, `solarized`, `gruvbox`, `catppuccin`, `tokyo-night`, `rose-pine`
+and `one-dark` (credited in `NOTICE.md`). The gallery's "Brands and modes" page shows them all.
+
+**Make your own** from a short brand file, with the `darksite-theme` command the package installs:
+
+```json
+{
+  "name": "acme",
+  "accent": "#e85d3a",
+  "neutral": { "hue": 40, "chroma": 0.5 },
+  "chrome": { "rail": "#24130d" },
+  "fonts": { "sans": "Inter, system-ui, sans-serif" }
+}
+```
+
+```bash
+npx darksite-theme brand.json --out src/brand.css
+```
+
+Import the output after `tokens.css`; it applies to the whole app, with no attribute needed.
+`npx darksite-theme --preset nord > brand.json` starts from a prebuilt brand. A brand can set the
+accent, a second accent, the grays' tint, the page and text colors, the navigation chrome's own
+color, the success, warning and danger hues, and the fonts. The generator builds every role each
+input drives in every mode, then checks every documented contrast pair and nudges any color that
+falls short, reporting what it moved; a brand that cannot pass fails. [`docs/brands.md`](docs/brands.md)
+has the full brand file reference. Regenerate after upgrading darksite.
 
 ### Other languages
 

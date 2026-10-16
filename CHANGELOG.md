@@ -6,6 +6,41 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Brands.** A brand is a product's colors and fonts in every mode. Sixteen prebuilt brands ship as
+  `darksite/brands/<name>.css`, chosen with `data-brand` on `<html>`: `violet` (the default),
+  `blue`, `teal`, `green`, `amber`, `rose`, `graphite`, `harbor` (a colored rail), and adaptations
+  of the `nord`, `dracula`, `solarized`, `gruvbox`, `catppuccin`, `tokyo-night`, `rose-pine` and
+  `one-dark` color schemes (credited in `NOTICE.md`). `darksite/brands/index.json` lists them with
+  swatches.
+- **`darksite-theme`**, a command the package installs: a short brand file (accent, second accent,
+  gray tint, page and text colors, chrome color, success/warning/danger hues, fonts, exact roles) to
+  brand CSS for every mode. It works in OKLCH, checks every documented contrast pair in every mode,
+  nudges and reports colors that fall short, and fails a brand that cannot pass.
+  [`docs/brands.md`](docs/brands.md) is the reference.
+- **Reading modes:** `paper` (a warm, softer light page) and `night` (a warm, softer dark page),
+  beside dark, light and high contrast. Like every mode they can be set on part of the page.
+- **`ModePicker`** and the **`mode`** store: the viewer's choice of System, Dark, Light, Paper,
+  Night or High contrast, applied to `<html>`, remembered in the browser, and handed to the app
+  with `mode.subscribe` to keep per account. `MODE_SCRIPT` applies the saved mode before first
+  paint.
+- **Chrome roles:** `ds-rail-*` and `ds-bar-*` (grounds, text, edges, accent) for `NavRail`, and for
+  `TopBar` and `TabBar`. By default they are the page's own roles; a brand can give the navigation
+  its own color, and everything inside it follows.
+- `ds-accent-2`, `ds-accent-2-text` and `ds-accent-2-tint`: a second color for highlights and
+  charts.
+- `--font-reading` (a serif stack) and the `ds-reading` class for long-form text.
+- The brand generator's modules (`darksite/brand/*.mjs`) ship with type declarations.
+
+### Changed
+
+- The contrast checker reads its pairs from `brand/contrast.mjs`, shared with the generator, follows
+  a mode's `extends`, and declares the documented shortfalls once per pair for every mode but high
+  contrast.
+- The gallery picks a mode with `ModePicker` and a brand from the prebuilt set, and has a "Brands
+  and modes" page. It no longer pins `data-theme="dark"`, so it follows the viewer's system.
+
 ## [0.9.0] — 2026-10-15
 
 ### Added

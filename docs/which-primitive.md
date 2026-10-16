@@ -18,6 +18,9 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Offer a value without applying it | `Chip suggestion source confidence` | **Dashed always means "suggested, not applied".** |
 | A value that exists nowhere yet | `Chip suggestion isNew` / `NewBadge` | Check names, aliases and spelling variants first, so `new` means genuinely new. |
 | Where a value came from | `SourceBadge` | One source per value — the most reliable that produced it — with its own confidence; the full list goes in the tooltip. |
+| The viewer's dark, light, reading or high-contrast mode | `ModePicker` | Drives the `mode` store; `MODE_SCRIPT` in `app.html` avoids a flash on load. |
+| A product's own colors and fonts | A brand: `darksite/brands/<name>.css`, or `npx darksite-theme` | Never hand-written `--ds-*` overrides; the generator covers every role and mode and checks contrast. |
+| Long-form reading | `ds-reading` in a `paper` or `night` region | The reading font at a readable size and measure. |
 | Explain a field, a row or a state | `HelpTip` / `Field tip` | An icon whose tooltip is the note. **No inline sentences.** |
 | Pick one of 2–7 exclusive options | `SegmentedControl` | Density, a view mode, a three-way toggle. **Never a dropdown** for these. |
 | Pick a severity | `SeverityPicker` | Scale order, mark stripes, dashed for suggested. |

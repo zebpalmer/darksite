@@ -65,7 +65,18 @@ that project, not here.
 Never name a product, employer, client, vendor or living private person, and never use realistic
 data copied from a real system — not in code, tests, docs, commit messages or `TODO.md`. Use neutral
 placeholders ("Field team", "R-00412", "A. Rivera"). Well-known historical figures (Ada Lovelace,
-Grace Hopper) are fine as sample names.
+Grace Hopper) are fine as sample names, and so are the open-source color schemes the prebuilt brands
+adapt, each credited in `NOTICE.md`.
+
+## Modes and brands
+
+- Five modes (`dark`, `light`, `paper`, `night`, `contrast`) live in `tokens.json`. A new color role
+  needs a value that passes in every one; `scripts/check-contrast.mjs` checks them all.
+- Brands are generated, never hand-written: the generator is `brand/generate.mjs`, the prebuilt
+  brands are `brand/presets.mjs`, and `npm run brands` writes `src/lib/brands/` (lint fails if it is
+  stale). The contrast pairs both use live in `brand/contrast.mjs`; a new documented pair goes there.
+- A component reads roles, never ramps or literals, so every brand and mode reaches it. The rail and
+  the bars read the chrome roles (`ds-rail-*`, `ds-bar-*`) through a remap at their root.
 
 ## Releases
 

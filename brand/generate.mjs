@@ -296,8 +296,8 @@ export function generateBrand(tokens, brand) {
 			if (!brand.accent || locks.has('ds-accent-contrast')) return;
 			v['ds-accent-contrast'] = value('ds-text-inverse');
 		};
+		pickLabel();
 		for (let pass = 0; pass < 16; pass++) {
-			pickLabel();
 			let moved = false;
 			for (const r of evaluate(pairs, value, mode, family)) {
 				if (r.ok || r.shortfall) continue;
