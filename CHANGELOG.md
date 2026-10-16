@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.14.0] — 2026-10-16
+
 ### Added
 
 - `Card` passes every `<a>` attribute and handler to its link, typed — `role`, `aria-*`, `onclick`,
