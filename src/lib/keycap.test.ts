@@ -15,6 +15,13 @@ describe('formatKey', () => {
 		expect(formatKey('/')).toBe('/');
 	});
 
+	it('reads a lone + as the plus key', () => {
+		expect(formatKey('+')).toBe('+');
+		expect(formatKey('plus')).toBe('+');
+		expect(formatKey('shift++')).toBe('⇧+');
+		expect(formatKey('ctrl+plus')).toBe('⌃+');
+	});
+
 	it('is case-insensitive and trims', () => {
 		expect(formatKey(' Shift+Enter ')).toBe('⇧Enter');
 	});

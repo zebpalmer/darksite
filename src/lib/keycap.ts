@@ -40,10 +40,22 @@ const NAMED: Record<string, string> = {
 /** Keys the token grammar spells as words that are single characters on the keyboard. */
 const CHARACTERS: Record<string, string> = { plus: '+', minus: '-' };
 
-/** `shift+enter` → `⇧Enter`, `space` → `Space`, `g` → `g`. */
-export function formatKey(token: string): string {
-	const parts = token.trim().toLowerCase().split('+');
+/**
+ * A token's modifiers and its key. `+` joins the grammar, so the plus key is spelled `plus`; a lone
+ * `+`, or a trailing one after a joining `+` (`shift++`), is read as the plus key too.
+ */
+function splitToken(token: string): { mods: string[]; key: string } {
+	const t = token.trim().toLowerCase();
+	if (t === '+') return { mods: [], key: 'plus' };
+	if (t.endsWith('++')) return { mods: t.slice(0, -2).split('+'), key: 'plus' };
+	const parts = t.split('+');
 	const key = parts.pop() ?? '';
+	return { mods: parts, key };
+}
+
+/** `shift+enter` → `⇧Enter`, `space` → `Space`, `g` → `g`, `+` → `+`. */
+export function formatKey(token: string): string {
+	const { mods: parts, key } = splitToken(token);
 	const mods = parts.map((m) => MODIFIERS[m] ?? m).join('');
 	const named = NAMED[key] ?? (key.length <= 1 ? key : key[0].toUpperCase() + key.slice(1));
 	return mods + named;
@@ -79,8 +91,7 @@ const EVENT_KEYS: Record<string, string> = {
 
 /** Whether a keyboard event is the hotkey a token names (`shift+enter`, `z`, `ctrl+k`). */
 export function matchesKey(event: KeyboardEvent, token: string): boolean {
-	const parts = token.trim().toLowerCase().split('+');
-	const word = parts.pop() ?? '';
+	const { mods: parts, key: word } = splitToken(token);
 	const key = CHARACTERS[word] ?? word;
 	const mods = new Set(
 		parts.map((m) => (m === 'control' ? 'ctrl' : m === 'option' ? 'alt' : m === 'cmd' ? 'meta' : m))
@@ -119,8 +130,7 @@ const KEY_ALIASES: Record<string, string> = {
  * `arrowup` → `up`). `Cmd+Shift+K` → `meta+shift+k`.
  */
 export function normalizeKey(token: string): string {
-	const parts = token.trim().toLowerCase().split('+');
-	const raw = parts.pop() ?? '';
+	const { mods: parts, key: raw } = splitToken(token);
 	const key = KEY_ALIASES[raw] ?? raw;
 	const mods = new Set(parts.map((m) => MOD_ALIASES[m] ?? m));
 	return [...MOD_ORDER.filter((m) => mods.has(m)), key].join('+');

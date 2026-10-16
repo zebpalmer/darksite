@@ -19,12 +19,16 @@ export interface ScaleStop<V extends string = string> extends ScaleColors {
 export interface UnknownStopInput<V extends string = string> extends Partial<ScaleColors> {
 	value: V;
 	label: string;
-	/** The key cap that picks it; `0` by default (the ordered stops have 1–9). */
-	key?: string;
+	/**
+	 * The key cap that picks it; `0` by default (the ordered stops have 1–9). `null` gives it no
+	 * key: no cap in the picker, and no key picks it.
+	 */
+	key?: string | null;
 }
 
 export interface UnknownStop<V extends string = string> extends ScaleStop<V> {
-	key: string;
+	/** Its key cap, or `null` when it has none. */
+	key: string | null;
 }
 
 export interface ScaleDefinition<V extends string = string> {
@@ -60,7 +64,7 @@ export interface Scale<V extends string = string> {
 	rank(value: V | null | undefined): number;
 	/** CSS values for the stop's three roles; `null` when unset. */
 	vars(value: V | null | undefined): ScaleColors | null;
-	/** The key cap for a stop: `1`–`9` by rank, the unknown stop's own key. */
+	/** The key cap for a stop: `1`–`9` by rank, the unknown stop's own key (empty when it has none). */
 	key(value: V): string;
 	/** The value a key picks, respecting a ceiling; `null` when it picks nothing. */
 	fromKey(key: string, max?: V | null): V | null;
@@ -86,7 +90,7 @@ export function defineScale<const V extends string>(definition: ScaleDefinition<
 		? Object.freeze({
 				value: u.value,
 				label: u.label,
-				key: u.key ?? '0',
+				key: u.key === undefined ? '0' : u.key || null,
 				mark: u.mark ?? 'var(--ds-text-3)',
 				bg: u.bg ?? 'var(--ds-bg-3)',
 				ink: u.ink ?? 'var(--ds-text-2)'
@@ -123,9 +127,10 @@ export function defineScale<const V extends string>(definition: ScaleDefinition<
 			const s = value == null ? undefined : byValue.get(value);
 			return s ? { mark: s.mark, bg: s.bg, ink: s.ink } : null;
 		},
-		key: (value: V) => (unknown && value === unknown.value ? unknown.key : String(rank(value))),
+		key: (value: V) =>
+			unknown && value === unknown.value ? (unknown.key ?? '') : String(rank(value)),
 		fromKey(key: string, max?: V | null) {
-			if (unknown && key === unknown.key) return unknown.value;
+			if (unknown?.key && key === unknown.key) return unknown.value;
 			const n = Number(key);
 			if (!/^[1-9]$/.test(key)) return null;
 			return options(max).find((s, i) => i + 1 === n && s !== unknown)?.value ?? null;

@@ -6,6 +6,43 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `Card` passes every `<a>` attribute and handler to its link, typed — `role`, `aria-*`, `onclick`,
+  `onkeydown`, `target` — so a select mode can make each card a checkbox. It passed only `data-*`
+  and `aria-*`.
+- `SegmentedControl` values may be booleans and `null` as well as strings and numbers, so a
+  tri-state filter uses `true` / `null` / `false` directly.
+- `defineScale` takes `unknown: { …, key: null }` for an unknown stop with no key cap: `ScalePicker`
+  draws no cap on it and `fromKey` never picks it.
+- `Combobox` reserves `--trail-w` (default 120px) beside its chevron when it has a `trailing`
+  snippet, as `Input` does; the text no longer runs under the snippet.
+- `Field` names its tip button "About {label}" (`strings.aboutField`), and `tipLabel` names it
+  instead. Every tip was "More information", so a form with several had identical buttons.
+- `Button reason`: why a disabled button is disabled. With it, the button renders `aria-disabled`
+  instead of the native attribute, stays in the tab order, shows the reason as its tooltip on
+  hover, focus and long press, and ignores clicks, Enter and Space, including form submission.
+  A native disabled button is skipped by Tab, so a tooltip on it could never be read by keyboard.
+- `docs/shell.md`: `trackModal` and `topmost` also work for a modal that is not a `<dialog>`, such
+  as a full-screen viewer drawn as a fixed element. It gets no inertness of the page behind.
+
+### Changed
+
+- `JustifiedGrid` tiles are `position: relative`, and only the tile snippet's first element is
+  stretched to fill the tile. Later elements are overlays the tile positions (a check mark, a
+  badge), with no wrapper needed. Every direct child used to be stretched.
+
+### Fixed
+
+- `ScalePicker` with a fixed `columns` hides its key caps below `columns` × 104px, the width of the
+  columns shown, instead of the cell count × 104px: four columns of eight stops kept no caps below
+  832px.
+- `formatKey('+')` gives `+` instead of an empty string. A lone `+` (or `shift++`) is read as the
+  plus key by `formatKey`, `matchesKey` and `normalizeKey` alike.
+- `Tabs` without an `idPrefix` generates one per instance, so two tab sets on one page no longer
+  share element ids. It was always `tabs`.
+- `Button` no longer calls its `onclick` when a disabled link is clicked.
+
 ## [0.13.0] — 2026-10-16
 
 ### Added

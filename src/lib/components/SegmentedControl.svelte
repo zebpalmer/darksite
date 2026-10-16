@@ -19,12 +19,13 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 (SeverityPicker).
 
 - `options` (`{ value, label, icon?, keycap?, count?, disabled?, title? }[]`; `label` is required
-  even with `iconOnly`), `value` (bindable), `onchange(value)`, `label` (the group's name),
+  even with `iconOnly`; a value is a string, number, boolean or `null`, so a tri-state filter is
+  `true` / `null` / `false`), `value` (bindable), `onchange(value)`, `label` (the group's name),
   `size` (`dense` | `default`; 38 inside the strip on touch), `full`, `iconOnly`, `class`.
 - In a Field, name the group by the Field's label instead: `id={f.id}
   aria-labelledby={f.labelId} aria-describedby={f.describedBy}` (then `label` may be omitted).
 -->
-<script lang="ts" generics="T extends string | number">
+<script lang="ts" generics="T extends string | number | boolean | null">
 	import KeyCap from './KeyCap.svelte';
 
 	interface Props {
@@ -57,9 +58,8 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 	}: Props = $props();
 
 	const enabled = $derived(options.filter((o) => !o.disabled));
-	const stop = $derived(
-		options.find((o) => o.value === value && !o.disabled)?.value ?? enabled[0]?.value
-	);
+	// The option that holds the tab stop. Found as an option, not a value, since `null` is a value.
+	const stop = $derived((options.find((o) => o.value === value && !o.disabled) ?? enabled[0])?.value);
 	const buttons: HTMLButtonElement[] = $state([]);
 
 	function choose(option: SegmentOption<T>) {

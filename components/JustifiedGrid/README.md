@@ -27,6 +27,19 @@ unknown dimensions; extreme strips are clamped to 1:5 and 5:1), `density` (`s` 1
 `onLoadMore`, `label`, `onLayout(rows)` (the current layout after every change, for a keyboard
 cursor that moves up and down a row).
 
+## Overlays on a tile
+
+The tile is `position: relative`, and only the snippet's **first** element is stretched to fill
+it — the image, or the link or button around it. Anything after it is an overlay: position it
+absolutely and it sits against the tile, with no wrapper needed.
+
+```svelte
+{#snippet tile(photo)}
+  <img src={photo.src} alt={photo.alt} />
+  {#if selected.has(photo.id)}<span class="check" style="position: absolute; top: 6px; left: 6px">…</span>{/if}
+{/snippet}
+```
+
 ## Don't
 
 - Don't crop to a fixed ratio. That is what `Grid` is for.

@@ -26,7 +26,9 @@ native input underneath and takes `id` like an `Input`.
   (a `ds-danger-text` star), `disabled` (dims the whole field to 45%).
 - `tip` — the field's explanation as a `HelpTip` beside the label instead of a sentence under the
   control. It still describes the control for a screen reader. **Prefer `tip` over `help`**: this
-  system does not put explanatory sentences under controls.
+  system does not put explanatory sentences under controls. The tip's button is named
+  "About {label}" — "About Retention" — from `strings.aboutField`, so a form with several tips has
+  buttons a screen reader can tell apart; `tipLabel` names it yourself.
 - `layout` — `stack` (label above; the default) or `row` (a 96px label column beside the control,
   for a dense fields pane). A row field narrower than 360px, or on a touch screen, stacks anyway.
 - `accessory` snippet — the right end of the label row: a key-cap hint, a "Clear" link.

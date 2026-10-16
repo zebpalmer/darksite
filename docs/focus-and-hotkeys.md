@@ -20,8 +20,9 @@ when the user turns hints off (a per-user preference, `<html data-hints="off">`)
 A cap that **is** the content, as in a hotkey legend, passes `hint={false}` so it always shows.
 
 **Key names follow one token grammar** (`shift+enter`, `space`, `g`), rendered by one formatter
-(`⇧Enter`, `Space`, `g`). A control with a cap also sets `aria-keyshortcuts`, so the shortcut is
-announced and not merely drawn.
+(`⇧Enter`, `Space`, `g`). `+` joins the grammar, so the plus and minus keys are spelled `plus`
+and `minus`; a lone `+` (or `shift++`) is read as `plus` too, and shows as `+`. A control with a
+cap also sets `aria-keyshortcuts`, so the shortcut is announced and not merely drawn.
 
 **A view's keys are a table, not a switch statement.** Declare them as data —
 `{ keys, action, label, group, when? }` — and build the map once with `buildHotkeyMap`, which

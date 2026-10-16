@@ -31,6 +31,8 @@ describe('normalizeKey', () => {
 		expect(normalizeKey('Cmd+Shift+K')).toBe('meta+shift+k');
 		expect(normalizeKey('shift+control+k')).toBe('ctrl+shift+k');
 		expect(normalizeKey('esc')).toBe('escape');
+		expect(normalizeKey('+')).toBe(normalizeKey('plus'));
+		expect(normalizeKey('Shift++')).toBe('shift+plus');
 		expect(normalizeKey('ArrowUp')).toBe('up');
 	});
 });
@@ -40,6 +42,12 @@ describe('matchesKey and letters', () => {
 		expect(matchesKey(ev('G', { shiftKey: true }), 'g')).toBe(false);
 		expect(matchesKey(ev('G', { shiftKey: true }), 'shift+g')).toBe(true);
 		expect(matchesKey(ev('G'), 'g')).toBe(true);
+	});
+
+	it('matches the plus key spelled + or plus', () => {
+		expect(matchesKey(ev('+', { shiftKey: true }), '+')).toBe(true);
+		expect(matchesKey(ev('+', { shiftKey: true }), 'plus')).toBe(true);
+		expect(matchesKey(ev('=', { shiftKey: false }), '+')).toBe(false);
 	});
 });
 

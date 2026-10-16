@@ -3,11 +3,12 @@
 	let {
 		error = null,
 		help,
-		tip
-	}: { error?: string | null; help?: string; tip?: string } = $props();
+		tip,
+		tipLabel
+	}: { error?: string | null; help?: string; tip?: string; tipLabel?: string } = $props();
 </script>
 
-<Field label="Owner" {error} {help} {tip} required>
+<Field label="Owner" {error} {help} {tip} {tipLabel} required>
 	{#snippet children(f)}
 		<Input id={f.id} aria-describedby={f.describedBy} invalid={f.invalid} />
 	{/snippet}

@@ -10,11 +10,13 @@ as ★ n, display only.
 
 - `href`, `title`, `thumbnail`, `kind` (`video` | `gallery`), `severity`, `duration` (seconds),
   `imageCount`, `favorite`, `progress` (0–1), `rating`, `meta`, `overlay` snippet, `class`, and
-  `data-*` / `aria-*` passthrough.
+  every other `<a>` attribute and handler on the link (`role`, `aria-*`, `data-*`, `onclick`,
+  `onkeydown`, `target`), so a select mode can make the card a checkbox.
 -->
 <script lang="ts">
 	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
+	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import Film from '@lucide/svelte/icons/film';
 	import Heart from '@lucide/svelte/icons/heart';
 	import Images from '@lucide/svelte/icons/images';
@@ -23,7 +25,9 @@ as ★ n, display only.
 	import type { Severity } from '../severity.js';
 	import { formatDuration } from '../time.js';
 
-	interface Props {
+	// Every other attribute and handler reaches the link: a select mode passes `role="checkbox"`,
+	// `aria-checked`, `onclick` and `onkeydown`. `title` is the card's own title, not the attribute.
+	interface Props extends Omit<HTMLAnchorAttributes, 'href' | 'title' | 'class' | 'children'> {
 		href: string;
 		title: string;
 		thumbnail?: string | null;
@@ -37,7 +41,6 @@ as ★ n, display only.
 		meta?: string;
 		overlay?: Snippet;
 		class?: string;
-		[key: `data-${string}` | `aria-${string}`]: unknown;
 	}
 
 	let {

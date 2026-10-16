@@ -14,7 +14,8 @@ Sizes: `dense` 28 · `default` 32 · `comfy` 36 · `touch` 44. A coarse pointer 
 
 Props: `variant`, `size`, `icon` / `iconEnd`, `label`, `loading` + `loadingLabel`, `keycap` (also
 sets `aria-keyshortcuts`), `href` (renders an `<a>`), `type` (default `button`), `disabled`,
-`pressed` (`aria-pressed`), `full`, `title` (shown as an accessible `tooltip`, not the browser's
+`reason` (why it is disabled: it then stays focusable as `aria-disabled`, the reason is its
+tooltip, and a click does nothing), `pressed` (`aria-pressed`), `full`, `title` (shown as an accessible `tooltip`, not the browser's
 native one), `class`, children, and any other attribute or handler — every
 native `<button>` and `<a>` attribute passes through (`form` to submit a form elsewhere in the
 page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
@@ -49,6 +50,8 @@ page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 		href?: string;
 		type?: 'button' | 'submit' | 'reset';
 		disabled?: boolean;
+		/** Why it is disabled. While `disabled`, the button stays focusable and this is its tooltip. */
+		reason?: string;
 		pressed?: boolean;
 		full?: boolean;
 		class?: string;
@@ -67,16 +70,36 @@ page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 		href,
 		type = 'button',
 		disabled = false,
+		reason,
 		pressed,
 		full = false,
 		class: className = '',
 		title,
 		children,
+		onclick,
 		...rest
 	}: Props = $props();
 
 	const iconSize = $derived(size === 'touch' || variant === 'icon' ? 18 : 16);
 	const inert = $derived(disabled || loading);
+	// A disabled button that says why (`reason`) stays focusable, so the reason shows on keyboard
+	// focus and on touch: `aria-disabled` instead of the native `disabled`, which drops it from the
+	// tab order and, in some browsers, from pointer events. Its click is swallowed below.
+	const explained = $derived(disabled && !loading && !!reason);
+	const tip = $derived(explained ? reason : (title ?? (variant === 'icon' ? label : undefined)));
+
+	function guard(event: MouseEvent) {
+		if (inert) {
+			// No navigation, no form submission, and no handler — as a disabled control.
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			return;
+		}
+		(onclick as ((event: MouseEvent) => void) | null | undefined)?.call(
+			event.currentTarget,
+			event
+		);
+	}
 	const shortcut = $derived(
 		keycap === undefined ? undefined : (typeof keycap === 'string' ? [keycap] : [...keycap]).join(' ')
 	);
@@ -88,13 +111,15 @@ page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 	href={href && !inert ? href : undefined}
 	role={href && inert ? 'link' : undefined}
 	type={href ? undefined : type}
-	disabled={href ? undefined : inert}
-	aria-disabled={href && inert ? 'true' : undefined}
+	disabled={href ? undefined : inert && !explained}
+	aria-disabled={inert && (href || explained) ? 'true' : undefined}
+	tabindex={href && explained ? (rest.tabindex ?? 0) : rest.tabindex}
 	aria-busy={loading ? 'true' : undefined}
 	aria-pressed={pressed === undefined ? undefined : pressed ? 'true' : 'false'}
 	aria-label={variant === 'icon' ? (label ?? rest['aria-label']) : rest['aria-label']}
 	aria-keyshortcuts={shortcut}
-	{@attach tooltip(title ?? (variant === 'icon' ? label : undefined))}
+	onclick={guard}
+	{@attach tooltip(tip)}
 	class="ds-btn {className}"
 	class:full
 	data-variant={variant}

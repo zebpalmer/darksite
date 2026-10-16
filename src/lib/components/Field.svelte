@@ -20,7 +20,8 @@ control. A group control (SegmentedControl, Rating, ScalePicker) takes `labelId`
 - `label`, `help` (12px ds-text-3), `error` (replaces help while present and makes the control
   invalid), `required`, `disabled` (dims the label and help).
 - `tip` — the explanation as a HelpTip beside the label; it still describes the control for a
-  screen reader. Prefer it over `help`.
+  screen reader. Prefer it over `help`. Its button is named "About {label}" (`strings.aboutField`),
+  so several tips in one form are told apart; `tipLabel` names it instead.
 - `layout` — `stack` (default) or `row` (a 96px label column). A row field narrower than 360px, or
   on a touch screen, stacks anyway.
 - `accessory` snippet (the right end of the label row), `under` snippet (below the control), `id`.
@@ -30,6 +31,7 @@ control. A group control (SegmentedControl, Rating, ScalePicker) takes `labelId`
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
 	import HelpTip from './HelpTip.svelte';
+	import { strings } from '../strings.svelte.js';
 
 	interface Props {
 		label: string;
@@ -38,6 +40,8 @@ control. A group control (SegmentedControl, Rating, ScalePicker) takes `labelId`
 		required?: boolean;
 		disabled?: boolean;
 		tip?: string;
+		/** The tip button's name. Default "About {label}". */
+		tipLabel?: string;
 		layout?: 'stack' | 'row';
 		accessory?: Snippet;
 		under?: Snippet;
@@ -53,6 +57,7 @@ control. A group control (SegmentedControl, Rating, ScalePicker) takes `labelId`
 		required = false,
 		disabled = false,
 		tip,
+		tipLabel,
 		layout = 'stack',
 		accessory,
 		under,
@@ -80,7 +85,7 @@ control. A group control (SegmentedControl, Rating, ScalePicker) takes `labelId`
 					>{/if}
 			</label>
 			{#if tip}
-				<HelpTip text={tip} />
+				<HelpTip text={tip} label={tipLabel ?? strings.aboutField(label)} />
 				<span id={tipId} class="ds-sr-only">{tip}</span>
 			{/if}
 			{#if accessory}<span class="accessory">{@render accessory()}</span>{/if}

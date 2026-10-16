@@ -23,7 +23,7 @@ describe('Field', () => {
 
 	it('replaces help with the error and marks the control invalid', () => {
 		render(FieldHarness, { help: 'Who answers for it', error: 'Pick an owner', tip: 'One person' });
-		const input = screen.getByLabelText(/Owner/);
+		const input = screen.getByRole('textbox');
 		expect(input.getAttribute('aria-invalid')).toBe('true');
 		const ids = input.getAttribute('aria-describedby')!.split(' ');
 		expect(ids.map((id) => document.getElementById(id)?.textContent)).toEqual(['Pick an owner', 'One person']);
@@ -48,6 +48,42 @@ describe('SegmentedControl', () => {
 		// The disabled option is skipped: Right wraps to the first.
 		await fireEvent.keyDown(radios[1], { key: 'ArrowRight' });
 		expect(onchange).toHaveBeenLastCalledWith('s');
+	});
+});
+
+describe('SegmentedControl with boolean and null values', () => {
+	it('selects true, null and false as values, for a tri-state filter', async () => {
+		const onchange = vi.fn();
+		render(SegmentedControl, {
+			label: 'Flagged',
+			value: null,
+			onchange,
+			options: [
+				{ value: true, label: 'Include' },
+				{ value: null, label: "Don't care" },
+				{ value: false, label: 'Exclude' }
+			]
+		});
+		const radios = screen.getAllByRole('radio');
+		expect(radios.map((r) => r.getAttribute('aria-checked'))).toEqual(['false', 'true', 'false']);
+		expect(radios[1].tabIndex).toBe(0);
+		await fireEvent.keyDown(radios[1], { key: 'ArrowRight' });
+		expect(onchange).toHaveBeenLastCalledWith(false);
+		await fireEvent.click(radios[0]);
+		expect(onchange).toHaveBeenLastCalledWith(true);
+		await fireEvent.click(radios[1]);
+		expect(onchange).toHaveBeenLastCalledWith(null);
+		expect(radios[1].getAttribute('aria-checked')).toBe('true');
+	});
+});
+
+describe('Field tip', () => {
+	it('names its tip button after the label, or by tipLabel', async () => {
+		const { unmount } = render(FieldHarness, { tip: 'One person' });
+		expect(screen.getByRole('button', { name: 'About Owner' })).toBeTruthy();
+		unmount();
+		render(FieldHarness, { tip: 'One person', tipLabel: 'Who owns it' });
+		expect(screen.getByRole('button', { name: 'Who owns it' })).toBeTruthy();
 	});
 });
 
@@ -91,6 +127,19 @@ describe('Tabs', () => {
 		expect(tabs[0].getAttribute('aria-controls')).toBe('lanes-panel-queue');
 		await fireEvent.keyDown(tabs[0], { key: 'ArrowRight' });
 		expect(onchange).toHaveBeenCalledWith('failed');
+	});
+
+	it('gives two tab sets without an idPrefix distinct ids', () => {
+		const tabs = [
+			{ value: 'a', label: 'One' },
+			{ value: 'b', label: 'Two' }
+		];
+		render(Tabs, { tabs, value: 'a', label: 'First' });
+		render(Tabs, { tabs, value: 'a', label: 'Second' });
+		const ids = screen.getAllByRole('tab').map((t) => t.id);
+		expect(ids).toHaveLength(4);
+		expect(new Set(ids).size).toBe(4);
+		expect(new Set(screen.getAllByRole('tab').map((t) => t.getAttribute('aria-controls'))).size).toBe(4);
 	});
 
 	it('is a nav of links with hrefs', () => {
@@ -283,6 +332,28 @@ describe('Avatar', () => {
 });
 
 describe('Card', () => {
+	it('passes role, ARIA and handlers to its link, for a select mode', async () => {
+		const onclick = vi.fn((e: MouseEvent) => e.preventDefault());
+		const onkeydown = vi.fn();
+		render(Card, {
+			href: '/v/1',
+			title: 'Site walkthrough',
+			role: 'checkbox',
+			'aria-checked': true,
+			'data-id': 'v1',
+			onclick,
+			onkeydown
+		});
+		const box = screen.getByRole('checkbox', { name: /Site walkthrough/ });
+		expect(box.tagName).toBe('A');
+		expect(box.getAttribute('aria-checked')).toBe('true');
+		expect(box.dataset.id).toBe('v1');
+		await fireEvent.click(box);
+		await fireEvent.keyDown(box, { key: ' ' });
+		expect(onclick).toHaveBeenCalledOnce();
+		expect(onkeydown).toHaveBeenCalledOnce();
+	});
+
 	it('shows the duration as a clock and the rating as text', () => {
 		render(Card, { href: '/v/1', title: 'Site walkthrough', duration: 3725, rating: 4 });
 		const link = screen.getByRole('link');

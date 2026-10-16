@@ -64,6 +64,20 @@ describe('defineScale', () => {
 		expect(priority.fromKey('x')).toBeNull();
 	});
 
+	it('gives the unknown stop no key when its key is null', () => {
+		const keyless = defineScale({
+			name: 'Keyless',
+			stops: [stop('a', 'A'), stop('b', 'B')],
+			unknown: { value: 'u', label: 'Unknown', key: null }
+		});
+		expect(keyless.unknown?.key).toBeNull();
+		expect(keyless.key('u')).toBe('');
+		expect(keyless.key('b')).toBe('2');
+		expect(keyless.fromKey('0')).toBeNull();
+		expect(keyless.fromKey('')).toBeNull();
+		expect(keyless.fromKey('1')).toBe('a');
+	});
+
 	it('refuses too few, too many or repeated stops', () => {
 		expect(() => defineScale({ name: 'One', stops: [stop('a', 'A')] })).toThrow();
 		const ten = Array.from({ length: 10 }, (_, i) => stop(`s${i}`, `Stop ${i}`));

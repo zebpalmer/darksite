@@ -67,6 +67,10 @@ export const modals = new ModalStack();
 /**
  * Registers an open modal surface — call it right after `showModal()` on a dialog of your own.
  * Dialog and Sheet already do. Returns the function that unregisters it; call that on close.
+ *
+ * It also takes a modal that is not a `<dialog>`, such as a full-screen viewer drawn as a fixed
+ * element: it counts in `modals`, and `topmost` moves notices into it so they paint above it. It
+ * gets no inertness of the page behind; focus and Esc stay its own job (docs/shell.md).
  */
 export function trackModal(el: HTMLElement, options: TrackModalOptions = {}): () => void {
 	const entry: ModalEntry = { el, dirty: options.dirty ?? (() => false) };
@@ -76,7 +80,8 @@ export function trackModal(el: HTMLElement, options: TrackModalOptions = {}): ()
 
 /**
  * Keeps an element visible and usable above any open modal by moving it into the topmost open
- * modal dialog, and back to where it was when none is open. The Toaster uses it; use it for an
+ * modal — a dialog, or any element registered with `trackModal` — and back to where it was when
+ * none is open. The Toaster uses it; use it for an
  * app-level notice that must stay reachable — an update prompt, a lost-connection notice.
  *
  * Attach it to an element whose parent is a plain element you render, not to a component's or a
