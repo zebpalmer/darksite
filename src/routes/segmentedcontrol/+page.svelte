@@ -5,6 +5,7 @@
 	let density = $state('m');
 	let view = $state('grid');
 	let mode = $state('any');
+	let flagged = $state<boolean | null>(null);
 </script>
 
 <svelte:head><title>SegmentedControl · darksite</title></svelte:head>
@@ -49,6 +50,15 @@
 				{ value: 'c', label: 'Month', disabled: true }
 			]}
 		/>
+		<SegmentedControl
+			label="Flagged"
+			bind:value={flagged}
+			options={[
+				{ value: true, label: 'Include' },
+				{ value: null, label: "Don't care" },
+				{ value: false, label: 'Exclude' }
+			]}
+		/>
 	</div>
-	<p class="out">density={density} view={view} archived={mode}</p>
+	<p class="out">density={density} view={view} archived={mode} flagged={String(flagged)}</p>
 </div>

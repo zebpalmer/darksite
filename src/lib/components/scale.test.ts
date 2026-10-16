@@ -41,6 +41,28 @@ describe('ScaleBadge', () => {
 });
 
 describe('ScalePicker', () => {
+	it('shows no key cap on an unknown stop that has no key', () => {
+		const keyless = defineScale({
+			name: 'Keyless',
+			stops: confidence.stops.slice(0, 3),
+			unknown: { value: 'unknown', label: 'Unknown', key: null }
+		});
+		const { container } = render(ScalePicker, { scale: keyless, keycaps: true });
+		const radios = screen.getAllByRole('radio');
+		expect(radios.map((r) => r.getAttribute('aria-keyshortcuts'))).toEqual(['1', '2', '3', null]);
+		expect(radios[3].querySelector('.kc')).toBeNull();
+		expect(radios[3].getAttribute('title')).toBeNull();
+		expect(container.querySelectorAll('.kc')).toHaveLength(3);
+	});
+
+	it('hides key caps by the columns it shows: every cell, or the fixed count', () => {
+		const { container, unmount } = render(ScalePicker, { scale: confidence, keycaps: true });
+		expect(container.querySelector('.ds-scalepicker')?.getAttribute('data-across')).toBe('9');
+		unmount();
+		render(ScalePicker, { scale: confidence, keycaps: true, columns: 4 });
+		expect(document.querySelector('.ds-scalepicker')?.getAttribute('data-across')).toBe('4');
+	});
+
 	it('is a radio group named for the scale, with unknown after a ceiling', () => {
 		render(ScalePicker, { scale: confidence, max: 'c6' });
 		expect(screen.getByRole('radiogroup', { name: 'Confidence' })).toBeTruthy();

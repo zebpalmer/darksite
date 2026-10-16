@@ -94,6 +94,8 @@ const DEFAULTS = {
 	nothingToShow: 'Nothing to show',
 
 	// Forms
+	/** A Field's tip button: "About Retention". */
+	aboutField: (label: string) => `About ${label}`,
 	chooseFile: 'Choose file',
 	chooseFiles: 'Choose files',
 	noFileChosen: 'No file chosen',

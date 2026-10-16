@@ -23,7 +23,8 @@ Set `oncreate` and a `Create "…"` row appears **always last**, under a separat
   back as `items`.
 - `placeholder`, `label`, `id` / `describedBy` / `invalid` (from `Field`), `disabled`, `size`,
   `openOnFocus` (default false), `emptyText`, `element` (a bindable ref), `trailing` snippet
-  (inside the right edge, before the chevron), `class`.
+  (inside the right edge, before the chevron; set `--trail-w` to reserve its width, default
+  120px, as on `Input` — the text stops short of it and the chevron), `class`.
 
 ## Don't
 

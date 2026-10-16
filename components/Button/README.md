@@ -27,10 +27,30 @@ passed — the coarse rule matches `[data-size]` so it out-ranks the size varian
 `variant`, `size`, `icon` / `iconEnd` (Lucide components), `label` (the accessible name for an
 icon button, or the text when there are no children), `loading` + `loadingLabel` (a spinner and an
 "-ing" verb: "Saving"), `keycap` (a hotkey token or list — it also sets `aria-keyshortcuts`),
-`href` (renders an `<a>`), `type` (default `button`), `disabled`, `pressed` (a toggle, via
+`href` (renders an `<a>`), `type` (default `button`), `disabled`, `reason` (why it is disabled:
+it then stays focusable with the reason as its tooltip — see below), `pressed` (a toggle, via
 `aria-pressed`), `full` (100% width), `class`, children (the label), and any other attribute or
 handler, spread onto the element: every native `<button>` and `<a>` attribute passes through,
 typed — `form`, `name`, `value`, `download`, `target`, `rel`, `data-*`.
+
+## A disabled button that says why
+
+A native `disabled` button leaves the tab order, and some browsers send it no pointer events, so a
+tooltip saying why it is disabled can never be reached by keyboard, and in those browsers not by
+hover either. Give the reason as `reason`: while `disabled`, the Button renders
+`aria-disabled="true"` instead of the native attribute. It still looks and announces as disabled,
+but it stays in the tab order, the reason is its tooltip (on hover, keyboard focus and long press)
+and describes it to a screen reader, and a click — by mouse, Enter or Space — does nothing: no
+handler, no navigation, no form submission. A disabled link with a `reason` gets `tabindex="0"` for
+the same reason. Without a `reason`, `disabled` is native, as before; `reason` does nothing while
+the button is enabled.
+
+```svelte
+<Button variant="primary" disabled={!rows.length} reason="Select a row to export">Export</Button>
+```
+
+Keep it short and actionable — what would enable it. A long explanation is a `Field error` or a
+`Notice`.
 
 ## Submitting a form from a footer
 

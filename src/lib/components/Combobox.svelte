@@ -20,7 +20,8 @@ the list is open.
 - `oncreate(text)` adds a `Create "…"` row, always last; `createLabel(text)` words it.
 - Server search: `filter={false}`, `oninput(text)`, `loading`, and feed results back as `items`.
 - `placeholder`, `label`, `id` / `describedBy` / `invalid` (from Field), `disabled`, `size`,
-  `openOnFocus`, `emptyText`, `element` (bindable), `trailing` snippet, `class`.
+  `openOnFocus`, `emptyText`, `element` (bindable), `trailing` snippet (set `--trail-w` to
+  reserve its width, default 120px, as on Input), `class`.
 -->
 <script lang="ts">
 	import { strings } from '../strings.svelte.js';
@@ -203,7 +204,12 @@ the list is open.
 	}
 </script>
 
-<div bind:this={wrap} class="ds-combobox {className}" data-size={size}>
+<div
+	bind:this={wrap}
+	class="ds-combobox {className}"
+	data-size={size}
+	data-trailing={trailing ? '' : undefined}
+>
 	<input
 		bind:this={element}
 		bind:value
@@ -310,8 +316,15 @@ the list is open.
 		align-items: center;
 		min-width: 0;
 	}
+	/* The chevron's room, plus the trailing snippet's (`--trail-w`, as on Input) when there is one. */
+	.ds-combobox {
+		--chevron-w: 36px;
+	}
 	.ds-combobox input {
-		padding-right: 36px;
+		padding-right: var(--chevron-w);
+	}
+	.ds-combobox[data-trailing] input {
+		padding-right: calc(var(--chevron-w) + var(--trail-w, 120px));
 	}
 	@media (pointer: fine) {
 		[data-size='dense'] input {
@@ -405,8 +418,8 @@ the list is open.
 	}
 	/* Touch: the chevron is the way to open the list without typing, so it gets a full target. */
 	@media (pointer: coarse) {
-		.ds-combobox input {
-			padding-right: 48px;
+		.ds-combobox {
+			--chevron-w: 48px;
 		}
 		.chevron {
 			width: 44px;

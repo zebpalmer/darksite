@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Chip, Combobox, Field, PageHeader, type ComboboxItem } from '#lib';
+	import { Chip, Combobox, Field, KeyCap, PageHeader, type ComboboxItem } from '#lib';
 	let items = $state<ComboboxItem[]>([
 		{ value: 'north', label: 'North wing', meta: '12' },
 		{ value: 'south', label: 'South wing', meta: '4' },
@@ -45,6 +45,18 @@
 		<Field label="Primary site">
 			{#snippet children(f)}
 				<Combobox {items} id={f.id} bind:value={single} clearOnSelect={false} openOnFocus />
+			{/snippet}
+		</Field>
+		<Field label="Jump to site">
+			{#snippet children(f)}
+				<Combobox
+					{items}
+					id={f.id}
+					placeholder="A long placeholder that stops short of the key"
+					--trail-w="32px"
+				>
+					{#snippet trailing()}<KeyCap keys="/" decorative />{/snippet}
+				</Combobox>
 			{/snippet}
 		</Field>
 	</div>

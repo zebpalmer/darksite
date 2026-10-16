@@ -10,7 +10,8 @@ on badges.
   (the test is in [`which-primitive.md`](../../docs/which-primitive.md)).
 - **tabs** — no hrefs: a WAI-ARIA tablist (←/→ move and select, one tab stop). Render the panel
   yourself with `id={panelId(idPrefix, value)}` and `aria-labelledby={tabId(idPrefix, value)}`
-  from the exported helpers.
+  from the exported helpers. Pass the same `idPrefix` to `Tabs`; without one, its ids are unique
+  to the instance, so two tab sets on a page never collide, but a panel cannot name its tab.
 
 ## Variants
 

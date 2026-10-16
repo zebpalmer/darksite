@@ -17,7 +17,27 @@ even with an icon: it is the accessible name, and `iconOnly` only hides it visua
 Then `value` (bindable), `onchange(value)`, `label` (the group's `aria-label`), `size` (`dense` 22
 | `default` 26 inside the padded strip; 38 on touch, giving the 44px target), `full` (stretch the
 segments and ellipsize their labels), `iconOnly`, `id`, `aria-labelledby`, `aria-describedby`,
-`class`. Generic over the value type. `label` is required unless `aria-labelledby` names the group.
+`class`. Generic over the value type: a value is a string, a number, a boolean or `null`, and
+each option's must be distinct. `label` is required unless `aria-labelledby` names the group.
+
+## Tri-state filters
+
+A three-way Include / Don't care / Exclude filter is often stored as `true` / `null` / `false`.
+Use those values as they are, rather than mapping them to strings and back:
+
+```svelte
+<SegmentedControl
+  label="Archived"
+  bind:value={archived}
+  options={[
+    { value: true, label: 'Include' },
+    { value: null, label: "Don't care" },
+    { value: false, label: 'Exclude' }
+  ]}
+/>
+```
+
+`null` is a value here, the selected "Don't care"; `undefined` selects nothing.
 
 ## In a Field
 

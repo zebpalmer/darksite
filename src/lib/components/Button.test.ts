@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/svelte';
 import Button from './Button.svelte';
 
 describe('Button', () => {
@@ -48,6 +48,48 @@ describe('Button', () => {
 		const button = screen.getByRole('button', { name: 'Saving' });
 		expect(button.getAttribute('aria-busy')).toBe('true');
 		expect((button as HTMLButtonElement).disabled).toBe(true);
+	});
+
+	it('stays focusable as aria-disabled when disabled with a reason, and ignores clicks', async () => {
+		const onclick = vi.fn();
+		render(Button, { label: 'Export', disabled: true, reason: 'Select a row to export', onclick });
+		const button = screen.getByRole('button', { name: 'Export' }) as HTMLButtonElement;
+		expect(button.disabled).toBe(false);
+		expect(button.getAttribute('aria-disabled')).toBe('true');
+		const tip = document.getElementById(button.getAttribute('aria-describedby')!)!;
+		expect(tip.textContent).toBe('Select a row to export');
+		const click = new MouseEvent('click', { bubbles: true, cancelable: true });
+		button.dispatchEvent(click);
+		expect(click.defaultPrevented).toBe(true);
+		expect(onclick).not.toHaveBeenCalled();
+	});
+
+	it('is natively disabled without a reason, and ignores the reason while enabled', async () => {
+		const onclick = vi.fn();
+		const { unmount } = render(Button, { label: 'Export', disabled: true, title: 'Exports the rows', onclick });
+		const off = screen.getByRole('button', { name: 'Export' }) as HTMLButtonElement;
+		expect(off.disabled).toBe(true);
+		expect(off.hasAttribute('aria-disabled')).toBe(false);
+		unmount();
+		render(Button, { label: 'Export', title: 'Exports the rows', reason: 'Select a row', onclick });
+		const on = screen.getByRole('button', { name: 'Export' });
+		expect(document.getElementById(on.getAttribute('aria-describedby')!)?.textContent).toBe('Exports the rows');
+		await fireEvent.click(on);
+		expect(onclick).toHaveBeenCalledOnce();
+	});
+
+	it('keeps a disabled link with a reason in the tab order', () => {
+		render(Button, { href: '/records', label: 'Records', disabled: true, reason: 'No records yet' });
+		const link = screen.getByRole('link', { name: 'Records' });
+		expect(link.getAttribute('tabindex')).toBe('0');
+		expect(link.hasAttribute('href')).toBe(false);
+	});
+
+	it('does not call onclick on a disabled link', async () => {
+		const onclick = vi.fn();
+		render(Button, { href: '/records', label: 'Records', disabled: true, onclick });
+		await fireEvent.click(screen.getByRole('link', { name: 'Records' }));
+		expect(onclick).not.toHaveBeenCalled();
 	});
 
 	it('announces its hotkey and draws the cap as decoration', () => {

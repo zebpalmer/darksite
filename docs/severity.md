@@ -76,7 +76,7 @@ export const priority = defineScale({
 
 The scale object is the one module the order and names come from: `label(v)`, `rank(v)` (1-based;
 0 for unset and unknown), `vars(v)` (the three CSS values), `key(v)` and `fromKey(key, max)` (the
-1–9 key caps; unknown is `0`), `options(max)` (what a picker shows under a ceiling), `highest(list)`
+1–9 key caps; unknown is `0`, or no key at all with `unknown: { …, key: null }`), `options(max)` (what a picker shows under a ceiling), `highest(list)`
 and `compare(a, b)`.
 
 **Rules**
@@ -101,7 +101,8 @@ and `compare(a, b)`.
   a glance; use a `Combobox`.
 
 **How the picker folds.** It answers to its own width, by the number of cells *n* it shows (the
-stops under the ceiling, plus unknown). Key caps hide below *n* × 104px. Below *n* × 80px the
+stops under the ceiling, plus unknown). Key caps hide below *n* × 104px — or, with a fixed
+`columns`, below `columns` × 104px, the width of the columns actually shown. Below *n* × 80px the
 row folds to two balanced rows of ceil(*n*/2) columns: 4 + 4 for eight, 5 + 4 for nine, 3 + 2 for
 severity's five. With seven or more cells, when even two rows would leave a cell under 80px, it
 folds again to three rows of ceil(*n*/3) columns (3 + 3 + 3 for nine). Names never truncate.

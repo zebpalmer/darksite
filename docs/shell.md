@@ -229,3 +229,17 @@ the stack with `trackModal(dialog, { dirty })`, which returns the function that 
 
 A `Menu` or a desktop `Popover` is a non-modal popover, not a modal, so it does not count and
 does not make the page inert.
+
+### A modal that is not a `<dialog>`
+
+`trackModal` and `topmost` take any element, not only a `<dialog>`. A full-screen viewer drawn as a
+`position: fixed` element that covers the page — rather than with `showModal()` — can join the
+stack with `trackModal(el)` while it is open: `modals.open` and `modals.dirty` then count it, and
+`topmost` moves the Toaster and any other notice into it, so they paint above the viewer inside its
+stacking context instead of under its z-index. The same rule as a dialog's holds: the element must
+have no `transform`, `filter`, `will-change: transform` or `contain`, or a fixed notice inside it
+positions against it rather than the viewport.
+
+What such an element does not get is a dialog's modality: nothing outside it is inert, so focus,
+Esc and the screen reader's view of the page behind are its own job. Prefer a `<dialog>` with
+`showModal()` (or `Lightbox`) when you can; use this for a viewer that cannot be one.

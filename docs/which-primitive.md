@@ -9,6 +9,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A frequent low-risk toolbar action | `Button variant="ghost"` | Label plus a `keycap` on desktop. |
 | An icon-only action | `Button variant="icon" label="…"` | `label` is required: it is the aria-label and the tooltip. |
 | A short label or note on a control | `{@attach tooltip('…')}` / `Button title` | Hover, keyboard focus and long press; it describes the control. Never something the user must read to act. |
+| An action not available yet, and why | `Button disabled reason="…"` | Stays focusable; the reason is its tooltip. Short: what would enable it. |
 | An irreversible action | `Button variant="danger"` → `Dialog` | Ghost red; the Dialog is the only confirmation. |
 | Confirm, and record why | `Dialog` with one or two `Field`s | `initialFocus="field"`, `confirmDisabled` until valid; Enter confirms. More fields is a `Sheet`. |
 | Submit a form from a Sheet or Dialog footer | `Button type="submit" form="…"` | The form's `id`; Enter in a field submits too. |
@@ -105,4 +106,5 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A shell-wide control on every page's header line (global search) | `AppShell` `headerActions` | Rendered by each `PageHeader` ahead of the page's actions; an icon button and a row on phones. |
 | An app-level notice that must stay usable over a modal | `{@attach topmost}` | Update prompts, connectivity, a privacy screen. The `Toaster` already does it. |
 | Know whether a modal is open or holds edits | `modals.open` / `modals.dirty` | Postpone a reload while the user is mid-edit; `onbeforeclose` on the Sheet keeps it open. |
+| A modal of your own (a `<dialog>`, or a fixed full-screen viewer) | `trackModal(el)` while open | Counts in `modals`, and `topmost` notices move into it. A non-dialog gets no inertness: focus and Esc are its own job. |
 | Phone layout or touch in script | `media.phone` / `media.coarse` | Reactive and SSR-safe. Styles use the media queries themselves. |

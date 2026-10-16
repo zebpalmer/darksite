@@ -10,7 +10,8 @@ It carries the infinite-scroll sentinel: with `hasMore`, an observer 800px ahead
 
 - `items`, `key(item)`, `aspect(item)` (width ÷ height), `density` (`s` 160 | `m` 220 | `l` 300
   target height), `rowHeight` (overrides it), `gap` (px, default 6), `tile` snippet — receives
-  `(item, index, { width, height })` — `hasMore`, `loadingMore`, `onLoadMore`, `label`,
+  `(item, index, { width, height })`; its first element fills the tile and later ones are
+  overlays, positioned against the tile — `hasMore`, `loadingMore`, `onLoadMore`, `label`,
   `onLayout(rows)`, `class`.
 -->
 <script lang="ts" generics="T">
@@ -103,13 +104,16 @@ It carries the infinite-scroll sentinel: with `hasMore`, an observer 800px ahead
 	.row {
 		display: flex;
 	}
+	/* The tile is the positioning box: its first child (the image, or a link around it) fills it,
+	   and anything after it is an overlay the tile positions — a check mark, a badge, actions. */
 	.tile {
+		position: relative;
 		flex: none;
 		overflow: hidden;
 		border-radius: var(--ds-radius-sm);
 		background: var(--ds-bg-3);
 	}
-	.tile > :global(*) {
+	.tile > :global(:first-child) {
 		display: block;
 		width: 100%;
 		height: 100%;

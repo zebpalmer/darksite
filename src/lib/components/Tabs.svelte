@@ -28,8 +28,8 @@ panel you render with `id={panelId(idPrefix, value)}` and
 `aria-labelledby={tabId(idPrefix, value)}`.
 
 - `tabs` (`{ value, label, count?, tone?, href?, disabled? }[]`), `value` (bindable),
-  `onchange(value)`, `label`, `idPrefix` (required in tabs mode), `variant` (`underline` |
-  `pill`), `full`, `class`.
+  `onchange(value)`, `label`, `idPrefix` (pass it in tabs mode to render the panels; unique per
+  instance by default), `variant` (`underline` | `pill`), `full`, `class`.
 -->
 <script lang="ts" generics="T extends string | number">
 	interface Props {
@@ -43,12 +43,16 @@ panel you render with `id={panelId(idPrefix, value)}` and
 		class?: string;
 	}
 
+	// Unique per instance, so two tab sets on one page never share ids. Pass `idPrefix` to render
+	// the panels: `panelId` and `tabId` need it.
+	const uid = $props.id();
+
 	let {
 		tabs,
 		value = $bindable(),
 		onchange,
 		label,
-		idPrefix = 'tabs',
+		idPrefix = uid,
 		variant = 'underline',
 		full = false,
 		class: className = ''

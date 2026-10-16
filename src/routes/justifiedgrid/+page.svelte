@@ -67,5 +67,22 @@
 			alt="Photo {p.id + 1}"
 			loading="lazy"
 		/>
+		<span class="pill">{p.w / 100}:{p.h / 100}</span>
 	{/snippet}
 </JustifiedGrid>
+
+<style>
+	/* An overlay: the tile positions it, no wrapper needed. */
+	.pill {
+		position: absolute;
+		right: 6px;
+		bottom: 6px;
+		padding: 1px 6px;
+		border-radius: var(--ds-radius-sm);
+		background: var(--ds-media-scrim);
+		color: var(--ds-on-media);
+		font-family: var(--font-mono);
+		font-size: var(--ds-text-xs);
+		line-height: var(--ds-lh-xs);
+	}
+</style>

@@ -32,10 +32,14 @@
 		<Button variant="icon" label="Close" icon={X} />
 		<Button variant="icon" label="Repeat" icon={Repeat} pressed={true} />
 		<Button disabled>Disabled</Button>
+		<Button disabled reason="Select a row to export">Export</Button>
 		<Button loading loadingLabel="Saving">Save</Button>
 		<Button href="/">A link</Button>
 	</div>
-	<p>icon (label required) · pressed · disabled · loading · href renders a link</p>
+	<p>
+		icon (label required) · pressed · disabled · disabled with a reason (focusable, its tooltip says
+		why) · loading · href renders a link
+	</p>
 </section>
 
 <section>

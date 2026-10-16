@@ -31,11 +31,16 @@ plus unknown):
 Key caps go before names do; the key stays in the button's `title` and `aria-keyshortcuts`.
 Names never truncate.
 
+With a fixed `columns`, the picker never folds, and key caps hide below `columns` × 104px — the
+width the columns actually shown need — rather than *n* × 104px. Four columns of eight stops keep
+their caps down to 416px.
+
 ## What the consumer provides
 
 `scale`, `value` (bindable; `null` = unset), `onchange(value)`, `suggested`, `max` (a ceiling —
 stops above it are **hidden, not disabled**; the unknown stop is never above a ceiling),
-`keycaps` (show 1–*n* and the unknown key, `0` by default; binding the keys is the page's job —
+`keycaps` (show 1–*n* and the unknown key, `0` by default, none when the scale defines it with
+`key: null`; binding the keys is the page's job —
 `scale.fromKey(key, max)` maps them), `counts` (per stop, for a bulk action), `columns` (`auto`
 | a fixed number), `controlled` (a click only calls `onchange`, for a `value` the parent derives),
 `label` (the group's name; default the scale's `name`), `id`, `aria-labelledby`,

@@ -7,13 +7,14 @@ Selected: the stop's tinted ground and ink with its mark as the border. Suggeste
 border, not applied. Unknown: its stripe is dashed, and it sits after the ordered stops. Idle:
 ds-bg-3 with the stripe at 55%. 40px tall, 48 on touch.
 
-It answers to its own width, by the number of cells n: key caps hide below n × 104px, then the
-row folds to two balanced rows (ceil(n / 2) columns) below n × 80px, and with seven or more cells
-to three rows (ceil(n / 3) columns) when two rows would still be under 80px a cell. Never
-truncating names.
+It answers to its own width, by the number of cells n: key caps hide below 104px a column (n ×
+104px, or `columns` × 104px with a fixed `columns`), then the row folds to two balanced rows
+(ceil(n / 2) columns) below n × 80px, and with seven or more cells to three rows (ceil(n / 3)
+columns) when two rows would still be under 80px a cell. Never truncating names.
 
 - `scale`, `value` (bindable; `null` is unset), `onchange(value)`, `suggested`, `max` (stops
-  above it are hidden, not disabled; unknown stays), `keycaps` (show 1–9, and the unknown key),
+  above it are hidden, not disabled; unknown stays), `keycaps` (show 1–9, and the unknown key unless
+  the scale gives it none),
   `counts` (per stop), `columns` (`auto` | a number), `controlled` (a click only calls
   `onchange`), `label` (default: the scale's name), `class`. In a Field, pass `id`,
   `aria-labelledby={f.labelId}` and `aria-describedby={f.describedBy}` so the Field names it.
@@ -85,6 +86,7 @@ truncating names.
 	class="ds-scalepicker {className}"
 	data-columns={columns === 'auto' ? 'auto' : 'fixed'}
 	data-count={stops.length}
+	data-across={columns === 'auto' ? stops.length : columns}
 >
 	<div
 		class="row"
@@ -107,8 +109,8 @@ truncating names.
 				role="radio"
 				class="stop"
 				aria-checked={value === s.value}
-				aria-keyshortcuts={keycaps ? key : undefined}
-				title={keycaps ? `${s.label} (${key})` : undefined}
+				aria-keyshortcuts={keycaps && key ? key : undefined}
+				title={keycaps && key ? `${s.label} (${key})` : undefined}
 				tabindex={s.value === stop ? 0 : -1}
 				data-suggested={suggested === s.value && value !== s.value ? '' : undefined}
 				data-unknown={scale.isUnknown(s.value) ? '' : undefined}
@@ -119,7 +121,7 @@ truncating names.
 			>
 				<span class="name">{s.label}</span>
 				{#if count !== undefined}<span class="count">{count.toLocaleString()}</span>{/if}
-				{#if keycaps}<span class="kc"><KeyCap keys={key} decorative /></span>{/if}
+				{#if keycaps && key}<span class="kc"><KeyCap keys={key} decorative /></span>{/if}
 			</button>
 		{/each}
 	</div>
@@ -138,49 +140,56 @@ truncating names.
 	.row:focus {
 		outline: none;
 	}
-	/* Folding, per cell count (docs/severity.md, "Custom scales"). */
+	/* Key caps hide below 104px a column: the cells in one row (`data-across`), which is every cell
+	   with auto columns and the fixed count with `columns`. Then the auto row folds, per cell count
+	   (docs/severity.md, "Custom scales"). */
+	@container (max-width: 104px) {
+		[data-across='1'] .kc {
+			display: none;
+		}
+	}
 	@container (max-width: 208px) {
-		[data-count='2'] .kc {
+		[data-across='2'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 312px) {
-		[data-count='3'] .kc {
+		[data-across='3'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 416px) {
-		[data-count='4'] .kc {
+		[data-across='4'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 520px) {
-		[data-count='5'] .kc {
+		[data-across='5'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 624px) {
-		[data-count='6'] .kc {
+		[data-across='6'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 728px) {
-		[data-count='7'] .kc {
+		[data-across='7'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 832px) {
-		[data-count='8'] .kc {
+		[data-across='8'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 936px) {
-		[data-count='9'] .kc {
+		[data-across='9'] .kc {
 			display: none;
 		}
 	}
 	@container (max-width: 1040px) {
-		[data-count='10'] .kc {
+		[data-across='10'] .kc {
 			display: none;
 		}
 	}
