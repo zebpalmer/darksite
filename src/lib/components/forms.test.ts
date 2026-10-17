@@ -234,6 +234,36 @@ describe('Dialog', () => {
 	});
 });
 
+describe('Dialog hero', () => {
+	it('is a default-tone dialog with a primary confirm and a hidden grab handle', async () => {
+		const onconfirm = vi.fn();
+		render(Dialog, {
+			open: true,
+			size: 'hero',
+			title: 'Welcome aboard',
+			description: 'Make an account to keep your place.',
+			confirmLabel: 'Get started',
+			cancelLabel: 'Not now',
+			onconfirm
+		});
+		const dialog = screen.getByRole('dialog', { name: 'Welcome aboard' });
+		expect(dialog.dataset.size).toBe('hero');
+		expect(dialog.querySelector('.grab')?.getAttribute('aria-hidden')).toBe('true');
+		const confirm = screen.getByRole('button', { name: 'Get started' });
+		expect(confirm.dataset.variant).toBe('primary');
+		await fireEvent.click(confirm);
+		expect(onconfirm).toHaveBeenCalledTimes(1);
+	});
+
+	it('keeps an explicit danger tone, and no grab handle on the other sizes', () => {
+		render(Dialog, { open: true, size: 'hero', tone: 'danger', title: 'Leave the beta?' });
+		expect(screen.getByRole('alertdialog').querySelector('.grab')).toBeTruthy();
+		document.body.innerHTML = '';
+		render(Dialog, { open: true, title: 'Delete?' });
+		expect(screen.getByRole('alertdialog').querySelector('.grab')).toBeNull();
+	});
+});
+
 describe('Dialog scrim', () => {
 	it('closes on a press that starts and ends on the scrim, not on a drag out of the panel', async () => {
 		const oncancel = vi.fn();

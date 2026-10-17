@@ -11,6 +11,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A short label or note on a control | `{@attach tooltip('…')}` / `Button title` | Hover, keyboard focus and long press; it describes the control. Never something the user must read to act. |
 | An action not available yet, and why | `Button disabled reason="…"` | Stays focusable; the reason is its tooltip. Short: what would enable it. |
 | An irreversible action | `Button variant="danger"` → `Dialog` | Ghost red; the Dialog is the only confirmation. |
+| A welcome or sign-up moment | `Dialog size="hero"` | 520px, centered, a heading, a sentence or two and at most a short form; a bottom sheet on phones. Once, never on every visit. |
 | Confirm, and record why | `Dialog` with one or two `Field`s | `initialFocus="field"`, `confirmDisabled` until valid; Enter confirms. More fields is a `Sheet`. |
 | Submit a form from a Sheet or Dialog footer | `Button type="submit" form="…"` | The form's `id`; Enter in a field submits too. |
 | A link to a download or a server endpoint | `Button href download data-sveltekit-reload` | The router's full-load escape hatch, or it fetches the file as a page. |
@@ -71,6 +72,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Numbered steps to get started | `Steps` | An ordered list, one step per line; `variant="cards"` for tiles three or four across. |
 | A destination on an overview page | `LinkCard` | A whole-card link: icon, title, a sentence, an arrow. |
 | Help, a how-to, a method note | `PageHeader` + `<article class="ds-prose">` | The document page type: prose at a readable measure. |
+| A post on a public site: a blog or news article | `<article class="ds-article">` | Its own header (title, `ds-article-summary`, `ds-article-meta`) instead of a PageHeader; 720px text, `ds-article-wide` breaks out to 1120px. |
 | A map or a canvas that fills the page | `FullBleed` | No padding, no footer, the shell locked to the viewport. |
 | Actions belonging to a pane | `ActionBar` | The pane's last child; never an overlay. |
 | Nothing to show | `EmptyState` | One sentence, **one** action. |

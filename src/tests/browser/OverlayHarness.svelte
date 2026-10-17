@@ -4,6 +4,7 @@
 
 	let dialog = $state(false);
 	let sheet = $state(false);
+	let hero = $state(false);
 	const items = [
 		{ value: 'n', label: 'North wing' },
 		{ value: 's', label: 'South wing' },
@@ -14,6 +15,7 @@
 <div style="padding: 24px; display: flex; gap: 8px; align-items: center;">
 	<Button onclick={() => (dialog = true)}>Delete</Button>
 	<Button onclick={() => (sheet = true)}>Edit</Button>
+	<Button onclick={() => (hero = true)}>Sign up</Button>
 	<Menu
 		label="Record actions"
 		items={[
@@ -35,4 +37,16 @@
 </div>
 
 <Dialog bind:open={dialog} title="Delete 3 records?" confirmLabel="Delete" onconfirm={() => {}} />
+<Dialog
+	bind:open={hero}
+	size="hero"
+	title="Welcome"
+	description="Make an account to keep your place."
+	confirmLabel="Get started"
+	cancelLabel="Not now"
+	initialFocus="field"
+	onconfirm={() => {}}
+>
+	<input aria-label="Email" type="email" />
+</Dialog>
 <Sheet bind:open={sheet} title="Edit record"><input aria-label="Title" /></Sheet>

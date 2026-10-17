@@ -31,6 +31,28 @@ top bar (`nav="top"`) the article is centered in the column; beside a rail it st
 column's edge. `AppShell proseAlign` sets either for the whole product. Sentences are the content
 here; the "labels, not sentences" rule is about controls and work surfaces.
 
+A post on a public site — a blog or news article, a write-up — uses `<article class="ds-article">`
+instead: the interface font at 18px in a 720px text column, inside a 1120px wide column. The
+article's own `<header>` takes the place of the PageHeader: the `h1` title, a
+`<p class="ds-article-summary">` of a sentence or two, and a `<p class="ds-article-meta">` line (the
+date, the reading time), all in the text column on the body's left edge. A figure, a table or a
+code block marked `ds-article-wide` breaks out to the wide column; a component goes in a `<div>` or
+`<figure>` that carries the class. The article always centers itself, whatever `proseAlign` says,
+and both columns shrink to what the column has: under a 1060px `contentWidth` the wide column is
+1060px, and on a phone both are the padded column.
+
+```svelte
+<article class="ds-article">
+  <header>
+    <h1>Title</h1>
+    <p class="ds-article-summary">A sentence or two.</p>
+    <p class="ds-article-meta"><time datetime="2026-10-04">October 4, 2026</time><span>6 min read</span></p>
+  </header>
+  <p>Body…</p>
+  <figure class="ds-article-wide"><img src="…" alt="…" /><figcaption>…</figcaption></figure>
+</article>
+```
+
 **6. Full-bleed page.** A map, a canvas, a diagram that takes the whole column: `FullBleed`. No
 padding and no footer, the shell locked to the viewport at every width, so it fills exactly what
 the navigation leaves; panels float over it with absolute positioning.

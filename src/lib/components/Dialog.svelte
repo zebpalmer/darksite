@@ -1,21 +1,23 @@
 <!--
 @component
 Dialog — confirmations only: a question that blocks the action the user just asked for. Not for
-forms (Sheet) or information (Popover). A native modal dialog — `role="alertdialog"` for a danger question, `role="dialog"` for a
+forms (Sheet) or information (Popover). The one exception is `size="hero"`: a welcome or sign-up
+moment, centered and roomier, with a sentence or two and at most a short form. A native modal dialog — `role="alertdialog"` for a danger question, `role="dialog"` for a
 default-tone one or one that asks for a note (`role` overrides): focus is
 trapped, Esc cancels, the page cannot scroll, and focus returns to the trigger. The content mounts
 only while open. On phones it presents as a bottom sheet.
 
 - `open` (bindable), `title`, `description` (the consequence), children (extra body).
 - `confirmLabel`, `confirmingLabel` (while an async `onconfirm` runs), `cancelLabel`.
-- `tone` — `danger` (default; a filled danger confirm) or `default` (primary).
+- `tone` — `danger` (default; a filled danger confirm) or `default` (primary; the default for a
+  hero).
 - `onconfirm()` may return a value or a promise: the dialog closes when it resolves and shows the
   error if it throws. `oncancel()`.
 - `dirty` — the body holds unsaved input; read app-wide as `modals.dirty`. `onbeforeclose()` runs
   before Esc, the scrim or Cancel closes it; return `false` to keep it open.
 - `initialFocus` (`cancel` default | `confirm` | `field` | `content`), `finalFocus` (an element to
   focus on close instead of the trigger), `showConfirm`, `confirmDisabled`, `size` (`default` 400 |
-  `wide`).
+  `wide` | `hero` 520, centered, a bottom sheet with a grab handle on phones).
 
 The panel is a `<form>` whose submit is the confirm button, so a confirmation that asks for a short
 note or reason holds one or two Fields in its children: Enter in a single-line field confirms
@@ -50,7 +52,8 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		finalFocus?: HTMLElement | null;
 		showConfirm?: boolean;
 		confirmDisabled?: boolean;
-		size?: 'default' | 'wide';
+		/** `hero`: a welcome or sign-up moment, 520px, centered, with more room. */
+		size?: 'default' | 'wide' | 'hero';
 		class?: string;
 		children?: Snippet;
 	}
@@ -63,7 +66,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		confirmLabel = strings.confirm,
 		confirmingLabel,
 		cancelLabel = strings.cancel,
-		tone = 'danger',
+		tone: toneProp,
 		onconfirm,
 		oncancel,
 		dirty = false,
@@ -78,6 +81,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	}: Props = $props();
 
 	let pressedScrim = false;
+	const tone = $derived(toneProp ?? (size === 'hero' ? 'default' : 'danger'));
 	const dialogRole = $derived(
 		role ?? (tone === 'danger' && initialFocus !== 'field' ? 'alertdialog' : 'dialog')
 	);
@@ -177,6 +181,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 				if (showConfirm) confirm();
 			}}
 		>
+			{#if size === 'hero'}<span class="grab" aria-hidden="true"></span>{/if}
 			<h2 id="{uid}-title" class="title">{title}</h2>
 			{#if description}<p id="{uid}-desc" class="desc">{description}</p>{/if}
 			{#if children}<div class="body">{@render children()}</div>{/if}
@@ -220,6 +225,9 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	.ds-dialog[data-size='wide'] {
 		width: min(1040px, calc(100vw - 32px));
 	}
+	.ds-dialog[data-size='hero'] {
+		width: min(520px, calc(100vw - 32px));
+	}
 	.ds-dialog:focus {
 		outline: none;
 	}
@@ -242,6 +250,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	}
 	.title {
 		margin: 0;
+		color: var(--ds-text-heading, var(--ds-text-1));
 		font-size: var(--ds-text-lg);
 		line-height: var(--ds-lh-lg);
 		font-weight: 500;
@@ -266,9 +275,36 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		gap: 8px;
 		margin-top: 6px;
 	}
+	/* The hero: more room, a larger title, and the heading, sentence and actions centered. A form in
+	   the body keeps its labels on the left. */
+	[data-size='hero'] .panel {
+		gap: 12px;
+		padding: 32px;
+	}
+	[data-size='hero'] .title {
+		font-size: var(--ds-text-2xl);
+		line-height: var(--ds-lh-2xl);
+		text-align: center;
+	}
+	[data-size='hero'] .desc {
+		font-size: var(--ds-text-lg);
+		line-height: var(--ds-lh-lg);
+		text-align: center;
+	}
+	[data-size='hero'] .body {
+		margin-top: 8px;
+	}
+	[data-size='hero'] .actions {
+		justify-content: center;
+		margin-top: 12px;
+	}
+	.grab {
+		display: none;
+	}
 	@media (max-width: 767.98px) {
 		.ds-dialog,
-		.ds-dialog[data-size='wide'] {
+		.ds-dialog[data-size='wide'],
+		.ds-dialog[data-size='hero'] {
 			--dialog-max: 85dvh;
 			width: 100%;
 			margin: auto 0 0;
@@ -283,6 +319,25 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		}
 		.actions :global(.ds-btn) {
 			width: 100%;
+		}
+		/* A hero on a phone is the Sheet's bottom sheet: a grab handle, the slower rise. */
+		[data-size='hero'] .panel {
+			padding: 0 20px calc(24px + env(safe-area-inset-bottom, 0px));
+			animation-duration: var(--ds-dur-slow);
+		}
+		[data-size='hero'] .title {
+			font-size: var(--ds-text-xl);
+			line-height: var(--ds-lh-xl);
+		}
+		.grab {
+			display: block;
+			align-self: center;
+			flex: none;
+			width: 36px;
+			height: 4px;
+			margin: 8px 0 4px;
+			border-radius: 2px;
+			background: var(--ds-border-strong);
 		}
 	}
 </style>

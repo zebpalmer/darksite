@@ -136,6 +136,192 @@
 		margin: 0 0 1em;
 	}
 
+	/* A long-form article on a public site: a post, a story, a write-up. The interface font at 18px
+	   in a 720px text column, centered in a 1120px wide column that a figure, a table or a code
+	   block marked `ds-article-wide` breaks out to. Both columns shrink to fit a narrower page
+	   column (a capped content width, a phone); the page or the shell supplies the gutter. The
+	   article's `<header>` (the title, a `ds-article-summary` and a `ds-article-meta` line) sits in
+	   the text column, on the body's left edge.
+
+	   A grid, not margins, places the children, so a component's own margins cannot move it off
+	   the column; the spacing is top margins only, since grid items' margins do not collapse. */
+	.ds-article {
+		--article-text: var(--ds-article-text-width, 720px);
+		--article-wide: var(--ds-article-wide-width, 1120px);
+		container: ds-article / inline-size;
+		display: grid;
+		grid-template-columns:
+			[wide-start] minmax(0, 1fr)
+			[text-start] min(var(--article-text), 100%)
+			[text-end] minmax(0, 1fr)
+			[wide-end];
+		align-content: start;
+		width: min(var(--article-wide), 100%);
+		margin-inline: auto;
+		color: var(--ds-text-1);
+		font-size: 18px;
+		line-height: 1.6;
+	}
+	.ds-article > * {
+		grid-column: text;
+		min-width: 0;
+		margin-block: 0;
+	}
+	.ds-article > .ds-article-wide {
+		grid-column: wide;
+	}
+	.ds-article :is(h1, h2, h3) {
+		color: var(--ds-text-heading, var(--ds-text-1));
+		font-weight: 500;
+	}
+	.ds-article h1 {
+		margin: 0;
+		font-size: var(--ds-text-3xl);
+		line-height: var(--ds-lh-3xl);
+	}
+	.ds-article h2 {
+		font-size: var(--ds-text-2xl);
+		line-height: var(--ds-lh-2xl);
+	}
+	.ds-article h3 {
+		font-size: var(--ds-text-xl);
+		line-height: var(--ds-lh-xl);
+	}
+	/* The rhythm, all at one specificity so the later rule wins: 24px between blocks, more around
+	   the blocks that break the run of text, most above a heading, least below one. */
+	.ds-article > :where(* + *) {
+		margin-top: 24px;
+	}
+	.ds-article > :where(* + :is(figure, blockquote, pre, table, hr, .ds-article-wide)),
+	.ds-article > :where(:is(figure, blockquote, pre, table, hr, .ds-article-wide) + *) {
+		margin-top: 40px;
+	}
+	.ds-article > :where(header + *) {
+		margin-top: 48px;
+	}
+	.ds-article > :where(* + h2) {
+		margin-top: 56px;
+	}
+	.ds-article > :where(* + h3) {
+		margin-top: 40px;
+	}
+	.ds-article > :where(h2 + *) {
+		margin-top: 12px;
+	}
+	.ds-article > :where(h3 + *) {
+		margin-top: 8px;
+	}
+	.ds-article-summary {
+		margin: 12px 0 0;
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-xl);
+		line-height: 1.5;
+	}
+	.ds-article-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px 16px;
+		margin: 16px 0 0;
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+	}
+	/* The element rules below match bare elements only (no class), as written by hand or by a
+	   Markdown renderer, so a component placed in the article keeps its own look. */
+	.ds-article :is(ul, ol):not([class]) {
+		padding-left: 1.4em;
+	}
+	.ds-article :is(ul, ol):not([class]) > li + li {
+		margin-top: 8px;
+	}
+	.ds-article blockquote:not([class]) {
+		margin-inline: 0;
+		padding-left: 20px;
+		border-left: 3px solid var(--ds-border-strong);
+		color: var(--ds-text-2);
+	}
+	.ds-article blockquote > * {
+		margin: 0;
+	}
+	.ds-article blockquote > * + * {
+		margin-top: 12px;
+	}
+	.ds-article figure {
+		margin-inline: 0;
+	}
+	.ds-article figure > :is(img, video, svg, canvas, iframe):not([class]) {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: var(--ds-radius-md);
+	}
+	.ds-article figcaption:not([class]) {
+		margin-top: 8px;
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+	}
+	.ds-article img:not([class]) {
+		max-width: 100%;
+		height: auto;
+	}
+	.ds-article :not(pre) > code:not([class]) {
+		padding: 1px 5px;
+		border-radius: var(--ds-radius-xs);
+		background: var(--ds-bg-3);
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+	}
+	.ds-article pre:not([class]) {
+		padding: 16px;
+		overflow-x: auto;
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-bg-2);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+	}
+	/* A table scrolls sideways inside its wrapper rather than pushing the page. */
+	.ds-article :is(figure, div):has(> table:not([class])) {
+		overflow-x: auto;
+	}
+	.ds-article table:not([class]) {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+	}
+	.ds-article :is(th, td):not([class]) {
+		padding: 8px 12px;
+		border-bottom: 1px solid var(--ds-border-subtle);
+		text-align: left;
+		vertical-align: top;
+	}
+	.ds-article th:not([class]) {
+		font-weight: 500;
+	}
+	.ds-article hr:not([class]) {
+		border: 0;
+		border-top: 1px solid var(--ds-border-subtle);
+	}
+	/* A narrow article (a phone, a small pane) steps the headings down a size. */
+	@container ds-article (max-width: 520px) {
+		.ds-article h1 {
+			font-size: var(--ds-text-2xl);
+			line-height: var(--ds-lh-2xl);
+		}
+		.ds-article h2 {
+			font-size: var(--ds-text-xl);
+			line-height: var(--ds-lh-xl);
+		}
+		.ds-article h3 {
+			font-size: 18px;
+			line-height: 1.4;
+		}
+		.ds-article-summary {
+			font-size: 18px;
+		}
+	}
+
 	::selection {
 		background-color: var(--ds-accent-tint-hover);
 		color: var(--ds-text-1);
