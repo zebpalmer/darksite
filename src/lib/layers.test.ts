@@ -90,6 +90,8 @@ describe('Dialog and Sheet on the stack', () => {
 		// The queue travels with its live regions, in one layer.
 		const layer = queue.parentElement!;
 		expect(layer.classList.contains('ds-toaster-layer')).toBe(true);
+		// A landmark, so the queue is never content outside every region.
+		expect(layer).toBe(screen.getByRole('region', { name: 'Notifications' }));
 		const home = container.querySelector('.ds-toaster-home');
 		expect(layer.parentElement).toBe(home);
 

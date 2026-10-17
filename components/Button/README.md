@@ -29,7 +29,8 @@ icon button, or the text when there are no children), `loading` + `loadingLabel`
 "-ing" verb: "Saving"), `keycap` (a hotkey token or list — it also sets `aria-keyshortcuts`),
 `href` (renders an `<a>`), `type` (default `button`), `disabled`, `reason` (why it is disabled:
 it then stays focusable with the reason as its tooltip — see below), `pressed` (a toggle, via
-`aria-pressed`), `full` (100% width), `class`, children (the label), and any other attribute or
+`aria-pressed`, shown with the pressed look; a bare `aria-pressed` attribute passes through for a
+toggle whose label already shows its state and should keep its resting look), `full` (100% width), `class`, children (the label), and any other attribute or
 handler, spread onto the element: every native `<button>` and `<a>` attribute passes through,
 typed — `form`, `name`, `value`, `download`, `target`, `rel`, `data-*`.
 

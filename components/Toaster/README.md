@@ -44,6 +44,8 @@ exist before any toast does — `role="status"` (polite) for results and informa
 action and key ("Archived 3 records. Undo: z"). They travel with the queue into an open modal, so
 a dialog does not silence them.
 The countdown is `aria-hidden` — announcing every tick would drown the message.
+The queue and its live regions sit in a region landmark named "Notifications", so they are never
+page content outside every landmark.
 
 ## What belongs in a toast
 
