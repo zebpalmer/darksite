@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.17.0] — 2026-10-16
+
 ### Added
 
 - `AppShell contentWidth`: caps the page content at a width and centers it (`true` for 1060px, a
