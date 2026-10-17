@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { createRawSnippet } from 'svelte';
 import { fireEvent, render, screen } from '@testing-library/svelte';
 import Avatar from './Avatar.svelte';
 import Card from './Card.svelte';
@@ -261,6 +262,63 @@ describe('Dialog hero', () => {
 		document.body.innerHTML = '';
 		render(Dialog, { open: true, title: 'Delete?' });
 		expect(screen.getByRole('alertdialog').querySelector('.grab')).toBeNull();
+	});
+});
+
+describe('Dialog hero mark and actions', () => {
+	const mark = createRawSnippet(() => ({ render: () => '<svg class="logo" width="40" height="40"></svg>' }));
+
+	it('renders the mark above the title, decorative unless it is named', () => {
+		render(Dialog, { open: true, size: 'hero', title: 'Welcome aboard', mark });
+		const dialog = screen.getByRole('dialog', { name: 'Welcome aboard' });
+		const box = dialog.querySelector('.mark') as HTMLElement;
+		expect(box.querySelector('.logo')).toBeTruthy();
+		expect(box.getAttribute('aria-hidden')).toBe('true');
+		expect(box.hasAttribute('role')).toBe(false);
+		const title = screen.getByRole('heading', { name: 'Welcome aboard' });
+		expect(box.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+		document.body.innerHTML = '';
+		render(Dialog, { open: true, size: 'hero', title: 'Welcome aboard', mark, markLabel: 'Acme' });
+		const named = screen.getByRole('img', { name: 'Acme' });
+		expect(named.classList.contains('mark')).toBe(true);
+		expect(named.hasAttribute('aria-hidden')).toBe(false);
+	});
+
+	it('shows a mark only on the hero', () => {
+		render(Dialog, { open: true, title: 'Delete?', mark });
+		expect(screen.getByRole('alertdialog').querySelector('.mark, .logo')).toBeNull();
+	});
+
+	it('puts the primary first and a ghost Cancel, with its name, under it', async () => {
+		const oncancel = vi.fn();
+		render(Dialog, {
+			open: true,
+			size: 'hero',
+			title: 'Welcome aboard',
+			confirmLabel: 'Get started',
+			cancelLabel: 'Not now',
+			oncancel
+		});
+		const dialog = screen.getByRole('dialog', { name: 'Welcome aboard' });
+		const buttons = [...dialog.querySelectorAll<HTMLElement>('.actions .ds-btn')];
+		expect(buttons.map((b) => b.dataset.role)).toEqual(['confirm', 'cancel']);
+		expect(buttons[0].dataset.variant).toBe('primary');
+		const cancel = screen.getByRole('button', { name: 'Not now' });
+		expect(cancel).toBe(buttons[1]);
+		expect(cancel.dataset.variant).toBe('ghost');
+		// Esc cancels as before.
+		await fireEvent(dialog, new Event('cancel', { cancelable: true }));
+		expect(oncancel).toHaveBeenCalledTimes(1);
+		expect(screen.queryByRole('dialog')).toBeNull();
+	});
+
+	it('keeps Cancel first and secondary on the other sizes', () => {
+		render(Dialog, { open: true, title: 'Delete?', confirmLabel: 'Delete' });
+		const buttons = [...screen.getByRole('alertdialog').querySelectorAll<HTMLElement>('.actions .ds-btn')];
+		expect(buttons.map((b) => [b.dataset.role, b.dataset.variant])).toEqual([
+			['cancel', 'secondary'],
+			['confirm', 'danger-solid']
+		]);
 	});
 });
 

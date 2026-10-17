@@ -18,6 +18,9 @@ only while open. On phones it presents as a bottom sheet.
 - `initialFocus` (`cancel` default | `confirm` | `field` | `content`), `finalFocus` (an element to
   focus on close instead of the trigger), `showConfirm`, `confirmDisabled`, `size` (`default` 400 |
   `wide` | `hero` 520, centered, a bottom sheet with a grab handle on phones).
+- The hero only: `mark` snippet (an icon or logo, centered above the title; decorative and
+  `aria-hidden` unless `markLabel` names it, which makes it an image), and stacked full-width
+  actions on every viewport — the primary on top, a quiet ghost Cancel under it.
 
 The panel is a `<form>` whose submit is the confirm button, so a confirmation that asks for a short
 note or reason holds one or two Fields in its children: Enter in a single-line field confirms
@@ -54,6 +57,10 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		confirmDisabled?: boolean;
 		/** `hero`: a welcome or sign-up moment, 520px, centered, with more room. */
 		size?: 'default' | 'wide' | 'hero';
+		/** The hero only: an icon or logo centered above the title. Other sizes ignore it. */
+		mark?: Snippet;
+		/** Names the mark, which is then an image; without it the mark is decorative. */
+		markLabel?: string;
 		class?: string;
 		children?: Snippet;
 	}
@@ -76,11 +83,14 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 		showConfirm = true,
 		confirmDisabled = false,
 		size = 'default',
+		mark,
+		markLabel,
 		class: className = '',
 		children
 	}: Props = $props();
 
 	let pressedScrim = false;
+	const hero = $derived(size === 'hero');
 	const tone = $derived(toneProp ?? (size === 'hero' ? 'default' : 'danger'));
 	const dialogRole = $derived(
 		role ?? (tone === 'danger' && initialFocus !== 'field' ? 'alertdialog' : 'dialog')
@@ -153,6 +163,16 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	}
 </script>
 
+{#snippet cancelButton()}
+	<Button
+		data-role="cancel"
+		variant={hero ? 'ghost' : 'secondary'}
+		size={hero ? 'comfy' : 'default'}
+		disabled={busy}
+		onclick={() => cancel()}>{cancelLabel}</Button
+	>
+{/snippet}
+
 {#if open}
 	<dialog
 		class="ds-dialog {className}"
@@ -181,20 +201,32 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 				if (showConfirm) confirm();
 			}}
 		>
-			{#if size === 'hero'}<span class="grab" aria-hidden="true"></span>{/if}
+			{#if hero}<span class="grab" aria-hidden="true"></span>{/if}
+			{#if hero && mark}
+				<div
+					class="mark"
+					role={markLabel ? 'img' : undefined}
+					aria-label={markLabel || undefined}
+					aria-hidden={markLabel ? undefined : 'true'}
+				>
+					{@render mark()}
+				</div>
+			{/if}
 			<h2 id="{uid}-title" class="title">{title}</h2>
 			{#if description}<p id="{uid}-desc" class="desc">{description}</p>{/if}
 			{#if children}<div class="body">{@render children()}</div>{/if}
 			{#if error}
 				<p class="error" role="alert"><CircleAlert size={14} aria-hidden="true" />{error}</p>
 			{/if}
+			<!-- A hero reads top to bottom, the primary first, so its DOM order is the visual one. -->
 			<div class="actions">
-				<Button data-role="cancel" disabled={busy} onclick={() => cancel()}>{cancelLabel}</Button>
+				{#if !hero}{@render cancelButton()}{/if}
 				{#if showConfirm}
 					<Button
 						data-role="confirm"
 						type="submit"
 						variant={tone === 'danger' ? 'danger-solid' : 'primary'}
+						size={hero ? 'comfy' : 'default'}
 						loading={busy}
 						loadingLabel={confirmingLabel}
 						disabled={confirmDisabled}
@@ -202,6 +234,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 						{busy && confirmingLabel ? confirmingLabel : confirmLabel}
 					</Button>
 				{/if}
+				{#if hero}{@render cancelButton()}{/if}
 			</div>
 		</form>
 	</dialog>
@@ -294,9 +327,23 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	[data-size='hero'] .body {
 		margin-top: 8px;
 	}
-	[data-size='hero'] .actions {
+	/* A hero's mark: an icon or logo, centered, sized by the consumer. */
+	.mark {
+		display: flex;
 		justify-content: center;
+		margin-bottom: 4px;
+		color: var(--ds-text-2);
+		line-height: 0;
+	}
+	/* A hero's actions stack full width on every viewport: the primary on top, the quiet ghost
+	   Cancel under it, as a sign-up moment reads. */
+	[data-size='hero'] .actions {
+		flex-direction: column;
+		gap: 4px;
 		margin-top: 12px;
+	}
+	[data-size='hero'] .actions :global(.ds-btn) {
+		width: 100%;
 	}
 	.grab {
 		display: none;

@@ -85,6 +85,7 @@ export { default as SearchPalette } from './components/SearchPalette.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
+export type { StatLevel } from './components/Stat.svelte';
 export {
 	DEFAULT_PRIORITY_WIDTHS,
 	hiddenPriorities,

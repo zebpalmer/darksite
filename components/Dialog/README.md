@@ -36,6 +36,7 @@ Sheet is not left `aria-hidden` by the Sheet's modal layer.
   the user type `confirm`.
 - `size` — `default` (400px), `wide` (up to 1040px, scrolling) for a side-by-side comparison
   (never for a form), or `hero` (520px, centered; below).
+- `mark` snippet and `markLabel` — the hero only: an icon or logo above the title (below).
 
 ## The hero
 
@@ -45,10 +46,21 @@ address, a name) or just the two actions. It keeps everything else a Dialog does
 the modal stack, the focus trap, Esc, focus returning to the trigger.
 
 - 520px wide with 32px padding; the title at `ds-text-2xl`, the description at `ds-text-lg`, both
-  centered, and the actions centered under them. A form in the body keeps its labels on the left.
+  centered. A form in the body keeps its labels on the left.
+- **A mark** — the `mark` snippet puts an icon or a logo centered above the title, in
+  `ds-text-2` (a Lucide icon takes it as `currentColor`; a logo keeps its own colors). Size it in
+  the snippet: a 40px icon, a logo up to about 64px tall. It is **decorative** — `aria-hidden`,
+  since the title already says what the moment is — unless `markLabel` names it ("Acme"), which
+  makes it an image with that name. Only the hero shows a mark; the other sizes ignore it, because a
+  confirmation's question is the whole message and an icon would compete with it (a danger tone
+  already says the action is serious).
+- **The actions stack full width on every viewport**, the primary on top (36px) and Cancel under
+  it as a quiet **ghost** button: the text in `ds-text-2`, no fill until hover, the same name, and
+  the same way out — Esc and the scrim still cancel. The markup follows that order, so Tab reaches
+  the primary first.
 - `tone` defaults to `default`, so the confirm is a primary button and the role is `dialog`.
 - Below 768px it is a full-width bottom sheet like `Sheet`'s: a grab handle, the top corners
-  rounded, the slower rise, the actions stacked full width, and the safe area kept clear.
+  rounded, the slower rise, and the safe area kept clear.
 - The cancel button is the way out: label it for the moment ("Not now"), not "Cancel".
 
 ```svelte
@@ -56,6 +68,7 @@ the modal stack, the focus trap, Esc, focus returning to the trigger.
   description="One email a week with what changed, and nothing else."
   confirmLabel="Subscribe" cancelLabel="Not now" initialFocus="field"
   confirmDisabled={!valid} onconfirm={() => subscribe(email)}>
+  {#snippet mark()}<Mail size={40} />{/snippet}
   <Field label="Email">
     {#snippet children(f)}<Input bind:value={email} id={f.id} type="email" />{/snippet}
   </Field>

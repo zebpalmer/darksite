@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Mail from '@lucide/svelte/icons/mail';
 	import { Button, Dialog, Field, Input, PageHeader, toasts } from '#lib';
 	let del = $state(false);
 	let fail = $state(false);
@@ -7,6 +8,7 @@
 	let archiving = $state(false);
 	let note = $state('');
 	let welcome = $state(false);
+	let trial = $state(false);
 	let email = $state('');
 	const emailValid = $derived(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()));
 	const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -26,10 +28,12 @@
 	<h2>Hero</h2>
 	<div class="row">
 		<Button variant="primary" onclick={() => ((email = ''), (welcome = true))}>Sign up</Button>
+		<Button onclick={() => (trial = true)}>Start a trial</Button>
 	</div>
 	<p>
 		<code>size="hero"</code>: a welcome or sign-up moment. 520px and centered on a desktop, a bottom
-		sheet on a phone.
+		sheet on a phone. A <code>mark</code> (an icon, or a logo named by <code>markLabel</code>) sits
+		above the title; the actions stack full width, the primary on top and a quiet Cancel under it.
 	</p>
 </div>
 
@@ -92,6 +96,7 @@
 	initialFocus="field"
 	onconfirm={() => void toasts.success('Subscribed')}
 >
+	{#snippet mark()}<Mail size={40} />{/snippet}
 	<Field label="Email">
 		{#snippet children(f)}
 			<Input
@@ -104,4 +109,28 @@
 			/>
 		{/snippet}
 	</Field>
+</Dialog>
+<Dialog
+	bind:open={trial}
+	size="hero"
+	title="Try every feature for 14 days"
+	description="No card needed. When the trial ends you keep your work and pick a plan, or don't."
+	confirmLabel="Start the trial"
+	cancelLabel="Maybe later"
+	markLabel="Acme"
+	onconfirm={() => void toasts.success('Trial started')}
+>
+	{#snippet mark()}
+		<svg viewBox="0 0 48 48" width="56" height="56">
+			<rect x="4" y="4" width="40" height="40" rx="10" fill="var(--ds-accent)" />
+			<path
+				d="M15 33 24 14l9 19M18.5 26h11"
+				fill="none"
+				stroke="var(--ds-accent-contrast)"
+				stroke-width="3.5"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			/>
+		</svg>
+	{/snippet}
 </Dialog>

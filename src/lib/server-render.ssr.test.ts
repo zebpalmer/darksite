@@ -121,4 +121,33 @@ describe('server rendering a hero dialog', () => {
 		expect(body).toContain('class="grab');
 		expect(body).toContain('data-variant="primary"');
 	});
+
+	it('renders a decorative mark and the primary before a ghost Cancel', () => {
+		const mark = createRawSnippet(() => ({ render: () => '<svg class="logo"></svg>' }));
+		const { body } = render(lib.Dialog, {
+			props: { open: true, size: 'hero', title: 'Welcome', confirmLabel: 'Get started', mark }
+		});
+		expect(body).toMatch(/class="mark[^"]*"[^>]*aria-hidden="true"/);
+		expect(body.indexOf('class="logo"')).toBeLessThan(body.indexOf('Welcome'));
+		expect(body.indexOf('data-role="confirm"')).toBeLessThan(body.indexOf('data-role="cancel"'));
+		expect(body).toContain('data-variant="ghost"');
+	});
+});
+
+describe('server rendering a Stat broken down by level', () => {
+	it('renders a badge and a count per level', () => {
+		const { body } = render(lib.Stat, {
+			props: {
+				label: 'Needs attention',
+				value: 6,
+				scale: lib.severityScale,
+				levels: [
+					{ level: 'critical', value: 4 },
+					{ level: 'medium', value: 2 }
+				]
+			}
+		});
+		expect(body.indexOf('Medium')).toBeLessThan(body.indexOf('Critical'));
+		expect(body.match(/class="entry/g)).toHaveLength(2);
+	});
 });

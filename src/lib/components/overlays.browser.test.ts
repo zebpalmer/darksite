@@ -17,6 +17,7 @@ import WidthHarness from '../../tests/browser/WidthHarness.svelte';
 import HeadHarness from '../../tests/browser/HeadHarness.svelte';
 import ProseHarness from '../../tests/browser/ProseHarness.svelte';
 import SiteHarness from '../../tests/browser/SiteHarness.svelte';
+import StatLevelsHarness from '../../tests/browser/StatLevelsHarness.svelte';
 import '../brands/teal.css';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -69,6 +70,31 @@ describe('Dialog hero in a browser', () => {
 		expect(document.activeElement).toBe(trigger);
 	});
 
+	it('stacks its actions full width on a desktop, the primary over a quiet Cancel', async () => {
+		render(OverlayHarness);
+		await userEvent.click(screen.getByRole('button', { name: 'Sign up' }));
+		const dialog = await screen.findByRole('dialog', { name: 'Welcome' });
+		await settle();
+		// Layout boxes, not client rects: the panel's entry motion scales it.
+		const actions = dialog.querySelector<HTMLElement>('.actions')!;
+		const confirm = screen.getByRole('button', { name: 'Get started' });
+		const cancel = screen.getByRole('button', { name: 'Not now' });
+		expect(actions.clientWidth).toBeGreaterThan(400);
+		expect(confirm.offsetWidth).toBe(actions.clientWidth);
+		expect(cancel.offsetWidth).toBe(actions.clientWidth);
+		expect(confirm.offsetLeft).toBe(cancel.offsetLeft);
+		expect(confirm.offsetTop + confirm.offsetHeight).toBeLessThanOrEqual(cancel.offsetTop);
+		expect(confirm.offsetHeight).toBe(36);
+		// Cancel is text-style: no fill, no border, the secondary text color.
+		const quiet = getComputedStyle(cancel);
+		expect(quiet.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+		expect(quiet.borderTopColor).toBe('rgba(0, 0, 0, 0)');
+		expect(quiet.color).toBe(getComputedStyle(dialog.querySelector('.desc')!).color);
+		await userEvent.keyboard('{Escape}');
+		await settle();
+		expect(screen.queryByRole('dialog', { name: 'Welcome' })).toBeNull();
+	});
+
 	it('is a full-width bottom sheet with a grab handle on a phone', async () => {
 		await page.viewport(375, 700);
 		try {
@@ -84,6 +110,36 @@ describe('Dialog hero in a browser', () => {
 			expect(getComputedStyle(grab).display).toBe('block');
 		} finally {
 			await page.viewport(1280, 800);
+		}
+	});
+});
+
+describe('Stat levels in a browser', () => {
+	it('wraps whole entries in a narrow tile, and no line starts with a dot', async () => {
+		render(StatLevelsHarness);
+		await settle();
+		const levels = document.querySelector<HTMLElement>('.ds-stat .levels')!;
+		const box = levels.getBoundingClientRect();
+		const entries = [...levels.querySelectorAll<HTMLElement>('.entry')];
+		expect(entries).toHaveLength(4);
+		const lines = new Map<number, HTMLElement[]>();
+		for (const e of entries) {
+			const top = Math.round(e.getBoundingClientRect().top);
+			lines.set(top, [...(lines.get(top) ?? []), e]);
+		}
+		expect(lines.size).toBeGreaterThan(1);
+		for (const line of lines.values()) {
+			// The first entry's dot sits in the clipped 15px gutter, left of the visible box.
+			const first = line[0].getBoundingClientRect();
+			expect(Math.round(first.left)).toBe(Math.round(box.left - 15));
+			for (const e of line) {
+				const r = e.getBoundingClientRect();
+				// Whole: the badge and its count fit inside the tile.
+				expect(r.right).toBeLessThanOrEqual(box.right + 0.5);
+				expect(e.querySelector('.count')!.getBoundingClientRect().right).toBeLessThanOrEqual(
+					box.right + 0.5
+				);
+			}
 		}
 	});
 });

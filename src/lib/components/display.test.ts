@@ -9,6 +9,7 @@ import SourceBadge from './SourceBadge.svelte';
 import Stat from './Stat.svelte';
 import StatusBadge from './StatusBadge.svelte';
 import { defineScale } from '../scale.js';
+import { severityScale } from '../severity.js';
 
 describe('StatusBadge', () => {
 	it('shows its label and how long the state has held', () => {
@@ -223,6 +224,92 @@ describe('Stat', () => {
 		expect(el.hasAttribute('data-level')).toBe(false);
 		expect(el.textContent).toContain('High');
 		expect(el.querySelector('.ds-scale[data-value="good"]')).toBeNull();
+	});
+
+	const entries = (el: Element) =>
+		[...el.querySelectorAll('.entry')].map((e) => [
+			e.querySelector('.ds-scale')?.textContent ?? null,
+			e.querySelector('.count')?.textContent ?? e.textContent
+		]);
+
+	it('breaks a count down by level: one badge and count per entry, in scale order', () => {
+		const { container } = render(Stat, {
+			label: 'Needs attention',
+			value: 6,
+			scale: health,
+			levels: [
+				{ level: 'unknown', value: 1 },
+				{ level: 'good', value: 1200 },
+				{ level: 'excellent', value: 9 },
+				{ level: 'poor', value: 4 }
+			]
+		});
+		const el = container.querySelector('.ds-stat') as HTMLElement;
+		expect(entries(el)).toEqual([
+			['Poor', '4'],
+			['Good', '1,200'],
+			['Unknown', '1']
+		]);
+		expect(el.querySelectorAll('.ds-scale')).toHaveLength(3);
+		// No level of its own: no stripe.
+		expect(el.hasAttribute('data-level')).toBe(false);
+		expect(el.querySelector('.value')?.textContent).toBe('6');
+	});
+
+	it('keeps the stripe for level, replaces its single badge, and puts meta last', () => {
+		const { container } = render(Stat, {
+			label: 'Needs attention',
+			value: 6,
+			scale: health,
+			level: 'poor',
+			levels: [
+				{ level: 'fair', value: 2 },
+				{ level: 'poor', value: 4 }
+			],
+			meta: 'since 09:00'
+		});
+		const el = container.querySelector('.ds-stat') as HTMLElement;
+		expect(el.dataset.level).toBe('poor');
+		expect(el.style.getPropertyValue('--mark')).toBe('var(--app-h1)');
+		expect(entries(el)).toEqual([
+			['Poor', '4'],
+			['Fair', '2'],
+			[null, 'since 09:00']
+		]);
+		expect(el.querySelectorAll('.ds-scale')).toHaveLength(2);
+	});
+
+	it('counts severities on the severity scale, under a severity stripe', () => {
+		const { container } = render(Stat, {
+			label: 'Needs attention',
+			value: 6,
+			severity: 'critical',
+			scale: severityScale,
+			levels: [
+				{ level: 'critical', value: 4 },
+				{ level: 'medium', value: 2 }
+			]
+		});
+		const el = container.querySelector('.ds-stat') as HTMLElement;
+		expect(el.dataset.severity).toBe('critical');
+		expect(entries(el)).toEqual([
+			['Medium', '2'],
+			['Critical', '4']
+		]);
+		// The severity's own badge is not shown again beside the list.
+		expect(el.querySelectorAll('.ds-scale')).toHaveLength(2);
+	});
+
+	it('shows no breakdown without a scale or with no entry on it', () => {
+		for (const props of [
+			{ levels: [{ level: 'poor', value: 1 }] },
+			{ scale: health, levels: [] },
+			{ scale: health, levels: [{ level: 'excellent', value: 1 }] }
+		]) {
+			const { container, unmount } = render(Stat, { label: 'Open', value: 1, ...props });
+			expect(container.querySelector('.levels')).toBeNull();
+			unmount();
+		}
 	});
 });
 

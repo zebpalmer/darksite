@@ -11,7 +11,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A short label or note on a control | `{@attach tooltip('…')}` / `Button title` | Hover, keyboard focus and long press; it describes the control. Never something the user must read to act. |
 | An action not available yet, and why | `Button disabled reason="…"` | Stays focusable; the reason is its tooltip. Short: what would enable it. |
 | An irreversible action | `Button variant="danger"` → `Dialog` | Ghost red; the Dialog is the only confirmation. |
-| A welcome or sign-up moment | `Dialog size="hero"` | 520px, centered, a heading, a sentence or two and at most a short form; a bottom sheet on phones. Once, never on every visit. |
+| A welcome or sign-up moment | `Dialog size="hero"` | 520px, centered, an optional `mark` (icon or logo) over the heading, a sentence or two and at most a short form; the primary stacked over a quiet Cancel; a bottom sheet on phones. Once, never on every visit. |
 | Confirm, and record why | `Dialog` with one or two `Field`s | `initialFocus="field"`, `confirmDisabled` until valid; Enter confirms. More fields is a `Sheet`. |
 | Submit a form from a Sheet or Dialog footer | `Button type="submit" form="…"` | The form's `id`; Enter in a field submits too. |
 | A link to a download or a server endpoint | `Button href download data-sveltekit-reload` | The router's full-load escape hatch, or it fetches the file as a page. |
@@ -48,6 +48,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Sections of one thing | `Tabs` | Counts inline; links mode for route sections. |
 | A headline number | `Stat` in a `StatRow` | One value, one meta line. `severity` or a scale `level` is the only color. |
 | A status on the app's own scale, as a headline | `Stat scale level` | The stop's name is the value, on its stripe; beside a value of its own, a `ScaleBadge` in the meta line. |
+| A headline count broken down by level | `Stat scale levels` | "Medium 2 · Critical 4": a `ScaleBadge` and a count per stop in the meta line, in scale order, wrapping whole in a narrow tile. The stripe stays `level`'s or `severity`'s. |
 | A proportion | `Meter` | Up to three segments, categorical colors, a legend. Not for loading. A standalone whole is a `Ring`. |
 | A history of changes | `Timeline` | Sentences, relative times, batches, a recent slice with "Show all". |
 | A static state | `StatusBadge` | Lifecycle, holds, markers. Never severity colors; never clickable. |
