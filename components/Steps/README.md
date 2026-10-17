@@ -4,7 +4,8 @@ Numbered steps for getting something done: "Get started" on an overview page, a 
 outline. An ordered list, so a screen reader hears how many steps there are and where it is.
 
 Each step is a number in an accent tint, a title, a sentence and an optional link, one per line, with
-no box around it. `variant="cards"` makes each step a tile instead: three or four across when the
+no box around it. A step with an `href` links its title; give it a `linkLabel` to show a separate
+"label →" link under the text instead. `variant="cards"` makes each step a tile instead: three or four across when the
 list has room (from 720px of its own width), one per line below that.
 
 ## What the consumer provides

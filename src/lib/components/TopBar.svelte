@@ -54,7 +54,9 @@ If a control is not relevant on every page of the section, it belongs in that pa
 
 	// The shell's header actions, on a page with no level-1 PageHeader to hold them.
 	const shell = getHeaderActions();
-	const shellSnippet = $derived(shell?.snippet && shell.fallback && !shell.claimed ? shell.snippet : undefined);
+	const shellSnippet = $derived(
+		shell?.snippet && shell.fallback && shell.host === 'bar' && !shell.claimed ? shell.snippet : undefined
+	);
 	const collapsed = $derived(!!shellSnippet && !!shell?.phone);
 	const fold = new ShellFold(
 		shell,
@@ -139,6 +141,8 @@ If a control is not relevant on every page of the section, it belongs in that pa
 		--ds-accent: var(--ds-bar-accent);
 		--ds-accent-text: var(--ds-bar-accent-text);
 		--bar-pad: 16px;
+		/* The side padding, widened to keep the contents to the shell's content width. */
+		--bar-inset: max(var(--bar-pad), calc((100% - var(--ds-content-max, 100000px)) / 2));
 		flex: none;
 		border-bottom: 1px solid var(--ds-border-subtle);
 		background: var(--ds-bg-2);
@@ -148,7 +152,7 @@ If a control is not relevant on every page of the section, it belongs in that pa
 		align-items: center;
 		gap: 10px;
 		min-height: 48px;
-		padding: 0 var(--bar-pad);
+		padding: 0 var(--bar-inset);
 	}
 	.ds-topbar[data-variant='slim'] {
 		background: var(--ds-bg-1);
@@ -206,7 +210,7 @@ If a control is not relevant on every page of the section, it belongs in that pa
 		display: flex;
 		align-items: center;
 		gap: 8px;
-		padding: 8px var(--bar-pad);
+		padding: 8px var(--bar-inset);
 		border-top: 1px solid var(--ds-border-subtle);
 	}
 	.row > :global(:first-child) {

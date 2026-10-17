@@ -88,8 +88,12 @@ width. A missing value renders the `Missing` mark.
 </div>
 
 <style>
+	/* A query container sizes as empty, so in a flex row it would collapse to nothing: the grid
+	   claims a 320px width there, and the inline layout, which has no container queries, is not a
+	   container at all and sizes to its facts. */
 	.ds-facts {
 		container-type: inline-size;
+		contain-intrinsic-inline-size: 320px;
 		min-width: 0;
 		padding: var(--ds-facts-inset-block, 0px) var(--ds-facts-inset, 0px);
 	}
@@ -136,6 +140,9 @@ width. A missing value renders the `Missing` mark.
 		font-variant-numeric: tabular-nums;
 	}
 	/* Inline: a wrapping row, each label over its value. */
+	.ds-facts[data-layout='inline'] {
+		container-type: normal;
+	}
 	[data-layout='inline'] dl {
 		display: flex;
 		flex-wrap: wrap;

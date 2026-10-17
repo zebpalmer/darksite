@@ -15,6 +15,11 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 - `items`, `groups`, `current` (the one navigation list), `product`, `mark`, `homeHref` (default
   `/`), `actions` snippet (the bar's right end: search, a sign-in), `accountInline` snippet (the
   account block in the bar on desktop), `account` snippet (the phone sheet's footer), `label` (default "Primary"), `sticky` (default true), `class`.
+- Inside an AppShell with no `topBar`, on a page with no level-1 PageHeader, the bar also holds the
+  shell's `headerActions` (a global search), ahead of its own actions. On a phone they collapse to
+  an icon button beside the menu button that opens a full-width row under the bar.
+- With `AppShell contentWidth`, the bar's contents keep to the same width as the page, so the
+  product name, the titles and the content share edges.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -23,6 +28,9 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 	import MenuIcon from '@lucide/svelte/icons/menu';
 
 	import Button from './Button.svelte';
+	import { focusShortcut } from '../hotkeys.js';
+	import { getHeaderActions } from '../shell-context.js';
+	import { ShellFold } from '../shell-fold.svelte.js';
 	import Sheet from './Sheet.svelte';
 	import SheetItem from './SheetItem.svelte';
 	import { badgeSpoken, badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
@@ -60,6 +68,20 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 	}: Props = $props();
 
 	const uid = $props.id();
+
+	// The shell's header actions, on a page with no level-1 PageHeader and no TopBar to hold them.
+	const shell = getHeaderActions();
+	const shellSnippet = $derived(
+		shell?.snippet && shell.fallback && shell.host === 'nav' && !shell.claimed ? shell.snippet : undefined
+	);
+	const collapsed = $derived(!!shellSnippet && !!shell?.phone);
+	let headerEl: HTMLElement | undefined = $state();
+	const fold = new ShellFold(
+		shell,
+		() => collapsed,
+		() => headerEl?.querySelector<HTMLElement>('.ds-topnav-toggle')
+	);
+	const rowOpen = $derived(collapsed && fold.open);
 	const sections = $derived(groupItems(items, groups));
 	const menus = $derived(sections.filter((s) => s.group));
 	// The bar keeps the list's order: a loose item where it stands, a group's menu where its first
@@ -148,7 +170,8 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 	{/if}
 {/snippet}
 
-<header class="ds-topnav {className}" class:sticky>
+<header bind:this={headerEl} class="ds-topnav {className}" class:sticky>
+	<div class="line">
 	<a class="brand" href={homeHref}>
 		{#if mark}<span class="mark">{@render mark()}</span>{/if}
 		{#if product}<span class="product">{product}</span>{:else}<span class="ds-sr-only"
@@ -188,11 +211,42 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 		</ul>
 	</nav>
 	<span class="grow"></span>
+	{#if shellSnippet && shell}
+		<div class="fallback">
+			{#if collapsed}
+				<Button
+					variant="icon"
+					class="ds-topnav-toggle"
+					icon={shell.icon}
+					label={shell.label}
+					aria-expanded={fold.open}
+					aria-controls={fold.open ? `${uid}-shell` : undefined}
+					onclick={fold.toggle}
+				/>
+			{:else}
+				<span class="shell" {@attach focusShortcut(shell.key)}>{@render shellSnippet()}</span>
+			{/if}
+		</div>
+	{/if}
 	{#if actions}<div class="actions">{@render actions()}</div>{/if}
 	{#if accountInline}<div class="account">{@render accountInline()}</div>{/if}
 	<span class="menu-button">
 		<Button variant="icon" icon={MenuIcon} label={strings.menu} aria-haspopup="dialog" onclick={() => (sheetOpen = true)} />
 	</span>
+	</div>
+	{#if rowOpen && shellSnippet && shell}
+		<div
+			id="{uid}-shell"
+			class="row"
+			role="region"
+			aria-label={shell.label}
+			{@attach fold.escapeCloses}
+			{@attach focusShortcut(shell.key)}
+			{@attach fold.focusFirst}
+		>
+			{@render shellSnippet()}
+		</div>
+	{/if}
 </header>
 
 {#if openGroup}
@@ -256,15 +310,47 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 		--ds-border-strong: var(--ds-bar-border-strong);
 		--ds-accent: var(--ds-bar-accent);
 		--ds-accent-text: var(--ds-bar-accent-text);
+		/* The side padding, widened to keep the contents to the shell's content width. */
+		--nav-pad: max(16px, calc((100% - var(--ds-content-max, 100000px)) / 2));
+		min-width: 0;
+		border-bottom: 1px solid var(--ds-border-subtle);
+		background: var(--ds-bg-2);
+		color: var(--ds-text-1);
+	}
+	.line {
 		display: flex;
 		align-items: center;
 		gap: 16px;
 		min-width: 0;
 		height: var(--ds-header-h);
-		padding: 0 16px;
-		border-bottom: 1px solid var(--ds-border-subtle);
-		background: var(--ds-bg-2);
+		padding: 0 var(--nav-pad);
+	}
+	/* The phone row: the bar keeps its line, the row spans the full width under it. */
+	.row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px var(--nav-pad);
+		border-top: 1px solid var(--ds-border-subtle);
+	}
+	.row > :global(:first-child) {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+	.fallback,
+	.shell {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+	}
+	.fallback :global(.ds-topnav-toggle[aria-expanded='true']) {
+		background: var(--ds-bg-4);
 		color: var(--ds-text-1);
+	}
+	/* Server-rendered markup cannot know whether the page claims the shell's actions: a page with
+	   a level-1 header hides them here until the client removes them. */
+	:global(.ds-appshell:has(.ds-pageheader[data-shell-claim])) .fallback {
+		display: none;
 	}
 	.sticky {
 		position: sticky;
@@ -440,6 +526,10 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 			display: inline-flex;
 		}
 		.account {
+			display: none;
+		}
+		/* Keep the inline form off a phone until the client swaps in the toggle. */
+		.shell {
 			display: none;
 		}
 	}

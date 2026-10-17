@@ -27,6 +27,15 @@
 	A row of five with <code>max=&#123;5&#125;</code>: 2, 3, then 5 across. An empty value shows the
 	missing mark.
 </p>
+<StatRow label="Network" max={3}>
+	<Stat label="Nodes online" value={412} variant="headline" />
+	<Stat label="Links" value={1284} variant="headline" />
+	<Stat label="Sites" value={36} variant="headline" />
+</StatRow>
+<p>
+	<code>variant="headline"</code> in a row of three (<code>max=&#123;3&#125;</code>): a public
+	page's key figures, the label under the value.
+</p>
 
 <style>
 	h1 {

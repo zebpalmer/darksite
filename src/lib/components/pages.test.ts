@@ -94,6 +94,16 @@ describe('page types', () => {
 		expect(screen.getByRole('link', { name: 'Search' }).getAttribute('href')).toBe('/find');
 	});
 
+	it('Steps links the title of a step with an href, and adds a separate link only with linkLabel', () => {
+		render(Steps, { steps: [{ title: 'Pick a site', href: '/find' }, { title: 'Run a check', href: '/run', linkLabel: 'Open checklists' }] });
+		const links = screen.getAllByRole('link');
+		expect(links.map((l) => [l.textContent?.trim(), l.getAttribute('href')])).toEqual([
+			['Pick a site', '/find'],
+			['Open checklists', '/run']
+		]);
+		expect(screen.getByText('Run a check').closest('a')).toBeNull();
+	});
+
 	it('Steps is a plain list by default, and tiles with variant="cards"', () => {
 		const steps = [{ title: 'Pick a site' }, { title: 'Run a check' }];
 		const { container, unmount } = render(Steps, { steps });

@@ -3,7 +3,8 @@
 - **Don't use opacity for text hierarchy.** Use `ds-text-1` / `-2` / `-3`. Opacity does one job:
   disabled, at 45%.
 - **Don't drop below 12px, and don't use a weight above 500.** There is no bold here; a utility
-  asking for one should resolve to 500. The one sub-12px text is the 11px uppercase group title,
+  asking for one should resolve to 500. The one heavier weight is a headline Stat's value
+  (`Stat variant="headline"`, 650); never use it for text. The one sub-12px text is the 11px uppercase group title,
   where capitals and tracking carry the legibility.
 - **Don't flood a surface with accent or severity color.** They are for marks, borders and small
   tinted grounds.

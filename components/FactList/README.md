@@ -26,7 +26,9 @@ The list lays itself out from **its own width** (a container query, never the vi
 `Pane`, on a summary line: each label (13px `ds-text-3`) above its value (14px `ds-text-1`), the
 facts side by side with 24px between them, wrapping onto a further row (8px below) when the width
 runs out. It is still a `<dl>`. `columns` and `wide` do not apply; keep it to a handful of short
-values — a long note belongs in the grid layout.
+values — a long note belongs in the grid layout. In a flex row (beside a button, say) it sizes to
+its facts and wraps when the row is short; it needs no `flex: 1` wrapper. The grid layout claims
+320px there before the row shares out its room.
 
 ```svelte
 <PageHeader title="R-00412" mono />

@@ -15,6 +15,7 @@ import TopNavHarness from '../../tests/browser/TopNavHarness.svelte';
 import WidthHarness from '../../tests/browser/WidthHarness.svelte';
 import HeadHarness from '../../tests/browser/HeadHarness.svelte';
 import ProseHarness from '../../tests/browser/ProseHarness.svelte';
+import SiteHarness from '../../tests/browser/SiteHarness.svelte';
 import '../brands/teal.css';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -328,5 +329,46 @@ describe('document prose in a browser', () => {
 		render(ProseHarness, { nav: 'top', proseAlign: 'start' });
 		await settle();
 		expect(place().left).toBeLessThan(40);
+	});
+});
+
+describe('a capped site in a browser', () => {
+	const left = (el: Element) => Math.round(el.getBoundingClientRect().left);
+
+	it('caps the content at contentWidth and keeps the bar and footer to the same edges', async () => {
+		const capped = render(SiteHarness, { contentWidth: true });
+		await settle();
+		const content = document.querySelector('[data-testid="content"]')!;
+		const edge = (window.innerWidth - 1060) / 2;
+		expect(left(content)).toBe(edge);
+		expect(Math.round(content.getBoundingClientRect().width)).toBe(1060);
+		expect(left(document.querySelector('.ds-topnav .brand')!)).toBe(edge);
+		expect(left(document.querySelector('[data-testid="foot"]')!)).toBe(edge - 24);
+		capped.unmount();
+
+		const wide = render(SiteHarness, { contentWidth: true, wide: true });
+		await settle();
+		expect(left(document.querySelector('[data-testid="content"]')!)).toBe(24);
+		wide.unmount();
+
+		render(SiteHarness, {});
+		await settle();
+		expect(left(document.querySelector('[data-testid="content"]')!)).toBe(24);
+		expect(left(document.querySelector('.ds-topnav .brand')!)).toBe(16);
+	});
+
+	it('puts three stats across, a headline value above its label, and sizes an inline FactList in a row', async () => {
+		render(SiteHarness, { contentWidth: true });
+		await settle();
+		const stats = [...document.querySelectorAll('[data-testid="three"] .ds-stat')];
+		expect(new Set(stats.map((s) => Math.round(s.getBoundingClientRect().top))).size).toBe(1);
+		const value = stats[0].querySelector('.value')!;
+		const label = stats[0].querySelector('.label')!;
+		expect(value.getBoundingClientRect().bottom).toBeLessThanOrEqual(label.getBoundingClientRect().top + 1);
+		expect(getComputedStyle(value).fontWeight).toBe('650');
+		const facts = document.querySelector<HTMLElement>('[data-testid="row"] .ds-facts')!;
+		expect(facts.getBoundingClientRect().width).toBeGreaterThan(150);
+		const dd = facts.querySelector('dd')!;
+		expect(dd.getBoundingClientRect().height).toBeLessThan(30);
 	});
 });

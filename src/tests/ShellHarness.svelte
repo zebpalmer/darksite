@@ -10,6 +10,7 @@
 		headerActionsKey?: string | null;
 		headerActionsFallback?: boolean;
 		withTopBar?: boolean;
+		nav?: 'rail' | 'top';
 	}
 
 	let {
@@ -20,7 +21,8 @@
 		withActions = true,
 		headerActionsKey = '/',
 		headerActionsFallback = true,
-		withTopBar = false
+		withTopBar = false,
+		nav = 'rail'
 	}: Props = $props();
 
 	const items: NavItem[] = [
@@ -30,6 +32,7 @@
 </script>
 
 <AppShell
+	{nav}
 	{items}
 	{current}
 	toaster={false}

@@ -181,3 +181,44 @@ describe('AppShell headerActions on a page without a level-1 PageHeader', () => 
 		expect(screen.getByRole('region', { name: 'Search' })).toBeTruthy();
 	});
 });
+
+describe('AppShell headerActions in a top-nav shell', () => {
+	const topnav = () => document.querySelector<HTMLElement>('.ds-topnav')!;
+
+	it('shows them in the TopNav, not in an added bar, while no level-1 header claims them', async () => {
+		setPhone(false);
+		const { rerender } = render(ShellHarness, { nav: 'top', header: false });
+		expect(screen.queryByRole('region', { name: 'Toolbar' })).toBeNull();
+		const find = screen.getByRole('searchbox', { name: 'Find' });
+		expect(topnav().contains(find)).toBe(true);
+		await fireEvent.keyDown(window, { key: '/' });
+		expect(document.activeElement).toBe(find);
+		find.blur();
+		await rerender({ header: true });
+		expect(topnav().querySelector('input')).toBeNull();
+		expect(screen.getAllByRole('searchbox', { name: 'Find' })).toHaveLength(1);
+	});
+
+	it("leaves them to the shell's TopBar when there is one", () => {
+		setPhone(false);
+		render(ShellHarness, { nav: 'top', header: false, withTopBar: true });
+		expect(topnav().querySelector('input')).toBeNull();
+		expect(screen.getByRole('region', { name: 'Section' }).contains(screen.getByRole('searchbox', { name: 'Find' }))).toBe(true);
+	});
+
+	it('collapses on a phone to an icon beside the menu button that opens a row under the bar', async () => {
+		setPhone(true);
+		render(ShellHarness, { nav: 'top', header: false });
+		expect(screen.queryByRole('searchbox', { name: 'Find' })).toBeNull();
+		const toggle = screen.getByRole('button', { name: 'Search' });
+		expect(topnav().contains(toggle)).toBe(true);
+		await fireEvent.click(toggle);
+		const row = screen.getByRole('region', { name: 'Search' });
+		expect(topnav().contains(row)).toBe(true);
+		expect(toggle.getAttribute('aria-controls')).toBe(row.id);
+		expect(document.activeElement).toBe(screen.getByRole('searchbox', { name: 'Find' }));
+		await fireEvent.keyDown(screen.getByRole('searchbox', { name: 'Find' }), { key: 'Escape' });
+		expect(screen.queryByRole('region', { name: 'Search' })).toBeNull();
+		expect(document.activeElement).toBe(toggle);
+	});
+});

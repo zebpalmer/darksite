@@ -24,8 +24,7 @@
 		{
 			title: 'Pick a site',
 			text: 'Search by name or its reference number.',
-			href: '#sites',
-			linkLabel: 'Find a site'
+			href: '#sites'
 		},
 		{
 			title: 'Run the checklist',

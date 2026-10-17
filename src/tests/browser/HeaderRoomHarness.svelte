@@ -14,6 +14,7 @@
 		phone: false,
 		current: undefined,
 		fallback: true,
+		host: 'bar',
 		claimed: true,
 		claim: () => () => {}
 	});

@@ -53,8 +53,11 @@ const visible = $derived(nav.filter((item) => rules[item.id]?.(viewer) ?? true))
 - **`top`**: a `TopNav` bar across the top, for a product with a few top-level sections. Items
   without a group are links in the bar; each group becomes a menu of links ("Records ▾"). On phones
   the bar keeps the product name and a menu button that opens a `Sheet` with every destination,
-  grouped, and the account block. `navActions` fills the bar's right end (search, a sign-in);
-  the account block sits there too, in its compact form.
+  grouped, and the account block. `navActions` fills the bar's right end (a sign-in, a mode
+  picker); the account block sits there too, in its compact form. A global search belongs in
+  `headerActions`: on a page with no level-1 header the TopNav holds it, and on a phone it
+  collapses to an icon beside the menu button. `contentWidth` caps the page and the bar's contents
+  at one width for a site that reads better centered.
 
 Either shape takes an optional `footer` (a version, a few links) under every page but a full-bleed
 one. Pick by the number of destinations and how people move between them, not by whether the

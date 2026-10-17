@@ -3,6 +3,7 @@
 StatRow — a row of Stats, two to four across by the row's own width (a container query, never the
 viewport): 2 below 560px, 3 below 800px, 4 from there. `max={5}` is for a row of five (four
 counts and a total): 2 below 560px, 3 below 960px, 5 from there, so the fifth never sits alone.
+`max={3}` is for three: one per line below 480px, then three across.
 `label` names the group for assistive tech.
 -->
 <script lang="ts">
@@ -12,7 +13,7 @@ counts and a total): 2 below 560px, 3 below 960px, 5 from there, so the fifth ne
 		max = 4,
 		class: className = '',
 		children
-	}: { label?: string; max?: 4 | 5; class?: string; children: Snippet } = $props();
+	}: { label?: string; max?: 3 | 4 | 5; class?: string; children: Snippet } = $props();
 </script>
 
 <div class="ds-statrow {className}" role={label ? 'group' : undefined} aria-label={label}>
@@ -28,6 +29,14 @@ counts and a total): 2 below 560px, 3 below 960px, 5 from there, so the fifth ne
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 12px;
+	}
+	.grid[data-max='3'] {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	@container (min-width: 480px) {
+		.grid[data-max='3'] {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
 	}
 	@container (min-width: 560px) {
 		.grid {

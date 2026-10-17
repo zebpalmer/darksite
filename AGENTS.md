@@ -27,7 +27,8 @@ then `docs/which-primitive.md`. Open requirements live in `TODO.md`.
 - **Svelte 5 only** — runes, snippets, `$bindable`. No other framework, ever.
 - **`ds-*` roles only** in components: never a ramp stop (`color-*`) or a literal color.
 - **Type:** nothing below 12px (the one exception is the 11px uppercase navigation group title),
-  nothing above weight 500. American spelling, sentence case, no emoji.
+  nothing above weight 500 (the one exception is the 650 headline-number role, a headline Stat's
+  value). American spelling, sentence case, no emoji.
 - **Touch:** 44px under `(pointer: coarse)`, with the coarse rule matching the size selector
   (`docs/density.md`).
 - **Focus:** a visible `:focus-visible` on everything interactive. **Motion:** zeroed under
