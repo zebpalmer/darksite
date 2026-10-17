@@ -19,6 +19,24 @@ All notable changes to darksite are recorded here. The format follows
 - `--ds-chrome-top`: the sticky chrome's height at the top — the TopNav's in a `nav="top"` shell,
   0 with the rail. A sticky sidebar or map offsets its `top` by it; a sticky `TopBar`, `SideNav`
   and sticky `PageHeader` now stop below the TopNav instead of sliding under it.
+- `Table striped`: a ledger's zebra rows. Every second body row takes a faint stripe (45%
+  `ds-border-subtle` into the table's ground), restarting in each group. Hover steps up to
+  `ds-bg-3` on a striped table, and a selected row's tint and a row mark keep precedence.
+- `Stat scale` and `level`: a stop on an app's own `defineScale` scale, shown the way a severity is
+  — the stop's 3px leading stripe (dashed for the scale's unknown stop) and a `ScaleBadge` in the
+  meta line; with no `value`, the stop's name is the value ("Status: Good"). An unset or
+  unrecognized level shows no stripe, and `severity` wins over a level.
+- `CodeBlock size="comfy"`, to sit beside 18px long-form text: 16px mono on 26px lines, more
+  padding, and a 32px copy button. `CopyButton size="comfy"` now also sizes the inline form: 32px
+  with an 18px icon, still a 44px hit area on touch.
+- `ds-article` in `base.css`: a long-form article layout for a public site, in the interface font
+  at 18px in a 720px text column inside a 1120px wide column. Its own `<header>` (the title,
+  `ds-article-summary`, `ds-article-meta`) sits in the text column, and `ds-article-wide` breaks a
+  figure, table or code block out to the wide column. It centers itself, shrinks to a capped or
+  phone-width column, and steps its headings down in a narrow container. New Article gallery page.
+- `Dialog size="hero"`: a 520px centered dialog for a welcome or sign-up moment, with more padding
+  and a larger centered title, defaulting to the `default` tone. On phones it is a full-width
+  bottom sheet with a grab handle, like `Sheet`.
 
 ### Changed
 
@@ -31,6 +49,10 @@ All notable changes to darksite are recorded here. The format follows
 - `darksite-theme`: a brand's dark `surfaces` no longer move high contrast's grounds and text to the
   dark surface's lightness. High contrast keeps its own darker grounds and brighter text, in the
   surface's tint, unless `surfaces.contrast` names its own.
+- `PageHeader`: content after the title, such as chips, wraps onto a line under the title when the
+  header is too narrow, instead of overflowing a phone-width page. The title keeps its one line and
+  ellipsis, the header still compacts and moves its actions first, and a count with no room beside
+  the title leads the second line.
 
 ## [0.19.0] — 2026-10-17
 
