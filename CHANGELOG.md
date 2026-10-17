@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.19.0] — 2026-10-17
+
 ### Added
 
 - `SearchPalette`: one search for a whole site — a modal (native `<dialog>`, in the modal stack)
