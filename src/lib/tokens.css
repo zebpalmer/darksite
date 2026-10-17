@@ -841,6 +841,12 @@
   line-height: 38px;
   font-weight: 400;
 }
+.ds-type-headline-number {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 650;
+}
 .ds-type-detail-title {
   font-family: var(--font-sans);
   font-size: 32px;

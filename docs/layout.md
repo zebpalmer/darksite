@@ -87,9 +87,16 @@ width. A sidebar that exists to balance the page is decoration, and this system 
 
 ## Width
 
-**Nothing caps the page width.** Panes grow, grids add columns, tables get more room. The two
-exceptions are **prose** and **forms**, which cap around 60–70 characters and 520px respectively,
-because a 2000px-wide input is unusable.
+**In a tool, nothing caps the page width.** Panes grow, grids add columns, tables get more room.
+The two exceptions are **prose** and **forms**, which cap around 60–70 characters and 520px
+respectively, because a 2000px-wide input is unusable.
+
+**A site under a top bar caps its content.** A public or reference site (`nav="top"`, pages of
+prose, figures and short lists) reads better on a centered grid than stretched across a wide
+screen: `AppShell contentWidth` (`true` for 1060px) caps the column and keeps the TopNav, TopBar
+and footer contents to the same width, so the product name, the page titles and the content share
+edges. A map or a work view still takes the whole column, and a page that holds a wide table marks
+an element `ds-wide` to use `--ds-content-wide` instead (no cap unless the product sets one).
 
 This is why `Grid` is container-driven: a grid beside an open filter rail should show fewer
 columns than the same grid with the rail closed, and no viewport breakpoint can know that.

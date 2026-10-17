@@ -4,8 +4,9 @@
 	export interface Step {
 		title: string;
 		text?: string;
-		/** A link to where the step is done. */
+		/** A link to where the step is done: the title is the link, unless `linkLabel` is set. */
 		href?: string;
+		/** A separate link under the text, with this label, instead of linking the title. */
 		linkLabel?: string;
 	}
 </script>
@@ -14,7 +15,8 @@
 @component
 Steps — numbered steps for getting something done: "Get started", a setup, a how-to's outline. An
 ordered list (screen readers hear the count and position), each step a number, a title, a sentence
-and an optional link, one per line. `variant="cards"` makes each step a tile instead, three or four
+and an optional link (the title itself, or a separate `linkLabel` link under the text), one per
+line. `variant="cards"` makes each step a tile instead, three or four
 across when there is room, by the list's own width, and one per line below that.
 
 - `steps` (`{ title, text?, href?, linkLabel? }[]`), `step` snippet (custom content for a step;
@@ -42,10 +44,12 @@ across when there is room, by the list's own width, and one per line below that.
 				<span class="n" aria-hidden="true">{i + 1}</span>
 				<div class="body">
 					{#if step}{@render step({ step: s, index: i })}{:else}
-						<p class="title">{s.title}</p>
+						<p class="title">
+							{#if s.href && !s.linkLabel}<a href={s.href}>{s.title}</a>{:else}{s.title}{/if}
+						</p>
 						{#if s.text}<p class="text">{s.text}</p>{/if}
-						{#if s.href}<a class="go" href={s.href}
-								>{s.linkLabel ?? s.title}<ArrowRight size={14} aria-hidden="true" /></a
+						{#if s.href && s.linkLabel}<a class="go" href={s.href}
+								>{s.linkLabel}<ArrowRight size={14} aria-hidden="true" /></a
 							>{/if}
 					{/if}
 				</div>
@@ -110,6 +114,13 @@ across when there is room, by the list's own width, and one per line below that.
 		font-size: var(--ds-text-md);
 		font-weight: 500;
 		line-height: 28px;
+	}
+	.title a {
+		color: var(--ds-accent-text);
+		text-decoration: none;
+	}
+	.title a:hover {
+		text-decoration: underline;
 	}
 	.text {
 		margin: 0;

@@ -16,6 +16,13 @@ It reads the **same navigation list** as the rail ([`shell.md`](../../docs/shell
   mark along the bar's foot.
 - **On phones** the links go: the bar keeps the product and a menu button that opens a `Sheet` with
   every destination, grouped, and the account block.
+- **The shell's search.** Inside an `AppShell` with no `topBar`, on a page with no level-1
+  `PageHeader`, the bar holds the shell's `headerActions` ahead of its own actions. On a phone they
+  collapse to an icon button beside the menu button that opens a full-width row under the bar —
+  inside it, so the sticky bar keeps it. Put a search there, not in `actions`, which stay inline at
+  every width.
+- **Content width.** With `AppShell contentWidth`, the bar's contents keep to the page's width, so
+  the product name lines up with the page titles and the content.
 
 The bar is 56px on the chrome's bar roles (`ds-bar-*`), so a brand can give it its own color and
 everything in it follows. Sticky by default.

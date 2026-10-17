@@ -32,8 +32,14 @@ in place.
   `headerActionsLabel`, default "Search") that opens a full-width row under the header (the key
   opens it too); Esc inside the row, or a change of `current`, closes it.
 - A page with no level-1 PageHeader (a map, a custom work view) shows them in the TopBar
-  instead, ahead of its actions — or, with no `topBar`, in a slim bar the shell adds. On a phone
-  they collapse there the same way. `headerActionsFallback={false}` turns that off.
+  instead, ahead of its actions — or, with no `topBar`, in the TopNav (`nav="top"`) or a slim bar
+  the shell adds (the rail). On a phone they collapse there the same way.
+  `headerActionsFallback={false}` turns that off.
+- `contentWidth` — caps the page's content at a width and centers it, with the TopNav, TopBar and
+  footer contents kept to the same width, so the product name, titles and content share edges:
+  `true` for 1060px, or a number of pixels or a CSS length. Unset, the content spans the column.
+  A FullBleed or WorkView page still takes the whole column; a page that renders an element with
+  the `ds-wide` class (a wide table) uses `--ds-content-wide` instead (default: no cap).
 
 A page that renders a `FullBleed` (a map, a canvas) gets the whole column at every width: no
 padding, no footer, the shell locked to the viewport.
@@ -85,6 +91,9 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		 *  true), or nowhere (false). */
 		headerActionsFallback?: boolean;
 		padded?: boolean;
+		/** Cap the page content at this width, centered: `true` for 1060px, a number of pixels, or
+		 *  a CSS length. */
+		contentWidth?: boolean | number | string;
 		/** Where a document page's prose sits in the column. Default `center` with `nav="top"`,
 		 *  `start` with the rail. */
 		proseAlign?: 'start' | 'center';
@@ -121,6 +130,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		headerActionsFallback = true,
 		padded = true,
 		proseAlign,
+		contentWidth,
 		toaster = true,
 		railExpanded = $bindable(),
 		railSearch,
@@ -132,10 +142,21 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	}: Props = $props();
 
 	const prose = $derived(proseAlign ?? (nav === 'top' ? 'center' : 'start'));
+	const contentCap = $derived(
+		contentWidth === true
+			? '1060px'
+			: typeof contentWidth === 'number'
+				? `${contentWidth}px`
+				: contentWidth || undefined
+	);
 
 	// Level-1 PageHeaders on the page; with none, the TopBar hosts the header actions.
 	let claims = $state(0);
-	const fallbackBar = $derived(!topBar && !!headerActions && headerActionsFallback && claims === 0);
+	// With a top nav and no TopBar, the TopNav holds them instead of an added bar.
+	const fallbackHost = $derived<'nav' | 'bar'>(nav === 'top' && !topBar ? 'nav' : 'bar');
+	const fallbackBar = $derived(
+		!topBar && fallbackHost === 'bar' && !!headerActions && headerActionsFallback && claims === 0
+	);
 
 	setHeaderActions({
 		get snippet() {
@@ -158,6 +179,9 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		},
 		get fallback() {
 			return headerActionsFallback;
+		},
+		get host() {
+			return fallbackHost;
 		},
 		get claimed() {
 			return claims > 0;
@@ -186,7 +210,12 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	{@render account?.({ compact: true })}
 {/snippet}
 
-<div class="ds-appshell {className}" data-nav={nav} data-prose={prose}>
+<div
+	class="ds-appshell {className}"
+	data-nav={nav}
+	data-prose={prose}
+	style:--ds-content-cap={contentCap}
+>
 	<a class="skip" href="#ds-main">{strings.skipToContent}</a>
 	{#if nav === 'rail'}<div class="rail">
 		<NavRail
@@ -238,6 +267,9 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 
 <style>
 	.ds-appshell {
+		/* The content cap (contentWidth); a page with a ds-wide element uses the wide cap. Unset,
+		   either is so large that nothing is capped. */
+		--ds-content-max: var(--ds-content-cap, 100000px);
 		display: grid;
 		grid-template-columns: auto minmax(0, 1fr);
 		min-height: 100dvh;
@@ -271,10 +303,15 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	.main:focus {
 		outline: none;
 	}
+	.ds-appshell:has(:global(.ds-wide)) {
+		--ds-content-max: var(--ds-content-wide, 100000px);
+	}
 	.main[data-padded] {
 		--ds-pad-top: 20px;
 		--ds-pad-x: 24px;
-		padding: var(--ds-pad-top) var(--ds-pad-x) calc(var(--ds-pad-top) + var(--main-foot));
+		/* The gutter, or wider: what centers the content at the content cap. */
+		padding: var(--ds-pad-top) max(var(--ds-pad-x), calc((100% - var(--ds-content-max)) / 2))
+			calc(var(--ds-pad-top) + var(--main-foot));
 	}
 	/* A work view takes the column: no padding at any width, and from the phone breakpoint up the
 	   shell locks to the viewport so the WorkView fills what the Banner and TopBar leave. */
@@ -314,7 +351,10 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	.ds-appshell:has(:global(.ds-pageheader[data-shell-claim])) :global(.ds-appshell-fallback) {
 		display: none;
 	}
+	/* The footer's contents keep to the content width plus a 24px gutter each side, which is
+	   where a footer's own padding puts its text. */
 	.footer {
+		padding-inline: max(0px, calc((100% - var(--ds-content-max)) / 2 - 24px));
 		flex: none;
 		border-top: 1px solid var(--ds-border-subtle);
 		background: var(--ds-bg-1);

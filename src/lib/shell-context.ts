@@ -19,8 +19,10 @@ export interface HeaderActionsContext {
 	readonly phone: boolean;
 	/** The shell's current destination; a change is a navigation, and closes the open row. */
 	readonly current: string | undefined;
-	/** Whether a page that claims nothing shows them in the TopBar instead. */
+	/** Whether a page that claims nothing shows them in a bar instead. */
 	readonly fallback: boolean;
+	/** Which bar holds them then: the TopNav (`nav`, a top-nav shell with no TopBar) or a TopBar. */
+	readonly host: 'nav' | 'bar';
 	/** Whether a level-1 PageHeader is on the page: it hosts them, or opted out of them. */
 	readonly claimed: boolean;
 	/** A level-1 PageHeader claims them while it is mounted; the return value releases. */

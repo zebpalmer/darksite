@@ -39,6 +39,9 @@ for this viewer), `primaryTabs` (the tab bar's four ids), `banner` and `topBar` 
 `children` (the page), `padded` (default true; false hands the whole column to a work view),
 `proseAlign` (`center` or `start`: where a document page's `ds-prose` / `ds-reading` article sits
 in a column wider than its measure; default `center` with `nav="top"`, `start` with the rail),
+`contentWidth` (`true` for 1060px, a number of pixels or a CSS length: caps the page content and
+centers it, with the TopNav, TopBar and footer contents at the same width; a page with a `ds-wide`
+element uses `--ds-content-wide` instead, and FullBleed and WorkView pages take the whole column),
 `toaster` (default true), `railExpanded` (bindable), and the rail's slots — `railSearch`,
 `railStatus`, `railBadge` and `railPinned`, passed to `NavRail` as `search`, `status`, `badge` and
 `pinned`.
@@ -65,8 +68,9 @@ own `actions`**, so the page's primary button stays right-most. Pages change not
 - **It lives in the header.** A page that wants none passes `shellActions={false}` to its
   `PageHeader`. A level-2 header never shows them.
 - **A page with no level-1 `PageHeader`** — a map, a custom work view — shows them in the
-  `TopBar` instead, ahead of the bar's own actions; with no `topBar`, the shell adds a slim bar
-  that holds only them. `headerActionsFallback={false}` turns that off (pass it from the layout for
+  `TopBar` instead, ahead of the bar's own actions. With no `topBar`, a top-nav shell puts them
+  in the `TopNav`, and a rail shell adds a slim bar that holds only them; on a phone the TopNav
+  shows them as an icon beside its menu button, opening a full-width row under the bar. `headerActionsFallback={false}` turns that off (pass it from the layout for
   the routes that should have none). On the server the bar is rendered for every page, and CSS
   hides it beside a level-1 header until the client removes it, so nothing flashes.
 - **`/` focuses its first field** (the `focusShortcut` attachment, as in `TopBar`): not while the
@@ -84,6 +88,7 @@ Pick one home for a shell-wide search: `headerActions`, a `TopBar` or the rail's
 
 ## Don't
 
-- Don't give the column a maximum width. Panes grow and grids add columns.
+- Don't give a tool's column a maximum width: panes grow and grids add columns. A site under a
+  top bar uses `contentWidth`, never a wrapper with its own `max-width`.
 - Don't mount a second `Toaster`, or a second navigation list.
 - Don't let a page reach past the shell to position itself against the viewport.

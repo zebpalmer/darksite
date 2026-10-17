@@ -91,6 +91,8 @@ cut from; use them to define a new role, never directly in a component.
 
 **Type.** `sans` is Geist, `mono` is Geist Mono. **12px is the floor and 500 is the ceiling** —
 there is no bold in this system, and a utility class asking for one should resolve to 500. The one
+weight above it is the headline-number role (28px at 650), used only by `Stat variant="headline"`
+for a public page's key figures. The one
 text below 12px is the 11px uppercase group title in navigation, where capitals and letter-spacing
 carry the legibility. Set
 titles in `page-title` / `card-title`, body in `body`, labels in `label`, meta and counts in

@@ -6,6 +6,34 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `AppShell contentWidth`: caps the page content at a width and centers it (`true` for 1060px, a
+  number of pixels or a CSS length), with the `TopNav`, `TopBar` and footer contents kept to the
+  same width, so the product name, the page titles and the content share edges. A `FullBleed` or
+  `WorkView` page still takes the whole column, and a page that renders an element with the
+  `ds-wide` class uses `--ds-content-wide` instead (no cap unless the product sets one).
+- `Stat variant="headline"`: the value at 28px in a new headline-number weight (650, the one
+  weight above 500, for numbers only), with the label under it, for a public page's key figures.
+  The label stays first in the markup, so it is read before the number. The role is in
+  `tokens.json` as `headline-number`.
+- `StatRow max={3}`: one per line below 480px, then all three across, with no empty fourth slot.
+
+### Changed
+
+- A top-nav `AppShell` with no `topBar` shows `headerActions` (on a page with no level-1
+  `PageHeader`) in the `TopNav` instead of adding a bar under it. On a phone they collapse to an
+  icon button beside the menu button that opens a full-width row under the bar. A rail shell still
+  adds the slim bar.
+- A `Steps` step with an `href` links its title, and no longer repeats the title as a separate
+  "title →" link. Set `linkLabel` for a separate link under the text.
+
+### Fixed
+
+- `FactList layout="inline"` in a flex row sized to nothing and wrapped its values a character per
+  line. It is no longer a query container (it has no container queries), so it sizes to its facts.
+  The grid layout claims 320px in a flex row instead of nothing.
+
 ## [0.16.0] — 2026-10-16
 
 ### Added

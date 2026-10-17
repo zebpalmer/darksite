@@ -13,7 +13,7 @@ interface BrandEntry {
 }
 
 export const brands = index as BrandEntry[];
-export const gallery = $state<{ brand: string; nav: 'rail' | 'top' }>({
+export const gallery = $state<{ brand: string; nav: 'rail' | 'top' | 'site' }>({
 	brand: 'violet',
 	nav: 'rail'
 });
@@ -44,8 +44,9 @@ export function initBrand() {
 
 const NAV_KEY = 'darksite-gallery:nav';
 
-/** The gallery's own navigation shape: the rail, or the top bar. */
-export function setNav(nav: 'rail' | 'top', persist = true) {
+/** The gallery's own navigation shape: the rail, the top bar, or the top bar with the content
+ *  capped at 1060px (a site). */
+export function setNav(nav: 'rail' | 'top' | 'site', persist = true) {
 	gallery.nav = nav;
 	if (!persist) return;
 	try {
@@ -64,5 +65,5 @@ export function initNav() {
 		/* storage unavailable */
 	}
 	const nav = asked ?? saved;
-	if (nav === 'rail' || nav === 'top') setNav(nav, !asked);
+	if (nav === 'rail' || nav === 'top' || nav === 'site') setNav(nav, !asked);
 }

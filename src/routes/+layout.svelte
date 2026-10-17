@@ -153,10 +153,11 @@
 					value={gallery.nav}
 					options={[
 						{ value: 'rail', label: 'Rail' },
-						{ value: 'top', label: 'Top bar' }
+						{ value: 'top', label: 'Top bar' },
+						{ value: 'site', label: 'Top bar, 1060px' }
 					]}
 					onchange={(e: Event) =>
-						setNav((e.currentTarget as HTMLSelectElement).value as 'rail' | 'top')}
+						setNav((e.currentTarget as HTMLSelectElement).value as 'rail' | 'top' | 'site')}
 				/>
 			</label>
 			<label class="pref">
@@ -180,7 +181,8 @@
 {/snippet}
 
 <AppShell
-	nav={gallery.nav}
+	nav={gallery.nav === 'rail' ? 'rail' : 'top'}
+	contentWidth={gallery.nav === 'site'}
 	{items}
 	{groups}
 	{current}

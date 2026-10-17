@@ -6,7 +6,9 @@ one meta line that breaks the number down. ds-bg-2 with a subtle edge; no shadow
 - `label`, `value` (a number is localized; `null`, `undefined` or `''` shows the Missing mark,
   without the unit), `unit`, `of` (renders "of N"), `missing` (the mark), `meta` (text or a
   snippet — one line, never a sentence), `href` (the whole tile becomes a link), `severity` (a 3px
-  leading stripe and a SeverityBadge in the meta line — the only way to color a Stat).
+  leading stripe and a SeverityBadge in the meta line — the only way to color a Stat), `variant`
+  (`default` | `headline`: the value at 28px and the one weight above 500, with the label under
+  it — a public page's key figures).
 
 Put several in a StatRow (`max={5}` for a row of five).
 -->
@@ -27,6 +29,8 @@ Put several in a StatRow (`max={5}` for a row of five).
 		meta?: string | Snippet;
 		href?: string;
 		severity?: Severity | null;
+		/** `headline`: a bigger, heavier value with the label under it. */
+		variant?: 'default' | 'headline';
 		class?: string;
 	}
 
@@ -39,6 +43,7 @@ Put several in a StatRow (`max={5}` for a row of five).
 		meta,
 		href,
 		severity = null,
+		variant = 'default',
 		class: className = ''
 	}: Props = $props();
 
@@ -52,6 +57,7 @@ Put several in a StatRow (`max={5}` for a row of five).
 	{href}
 	class="ds-stat {className}"
 	data-severity={severity ?? undefined}
+	data-variant={variant}
 	style:--mark={mark}
 >
 	<span class="label">{label}</span>
@@ -116,6 +122,17 @@ Put several in a StatRow (`max={5}` for a row of five).
 		font-size: var(--ds-text-sm);
 		line-height: var(--ds-lh-sm);
 		white-space: nowrap;
+	}
+	/* Headline: the figure first and heavier, the label under it. The label stays first in the
+	   markup, so it is still read before the number. The weight is the headline-number role, the
+	   one step above 500. */
+	[data-variant='headline'] .figure {
+		order: -1;
+	}
+	[data-variant='headline'] .value {
+		font-size: 28px;
+		line-height: 34px;
+		font-weight: 650;
 	}
 	.meta {
 		display: flex;
