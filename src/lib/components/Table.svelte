@@ -71,7 +71,8 @@ values render the missing-value mark.
 
 `groupBy` puts rows under group header rows inside the one table (`group` snippet for a custom
 header). `rowTone` / `rowSeverity` mark a row with a 3px leading stripe; the row must also say it
-in words (a StatusBadge or SeverityBadge in a cell).
+in words (a StatusBadge or SeverityBadge in a cell). `striped` is a ledger's zebra rows: every
+second row takes a faint stripe, restarting in each group; selection and row marks still show on it.
 
 The consumer owns the data: sorting calls `onsort`, selection is a bindable set of row keys, and
 paging is "Load more" below the table (docs/layout.md, "Long lists"). Bulk actions for a selection
@@ -130,6 +131,8 @@ belong in the pane's ActionBar.
 		rowSeverity?: (row: T) => Severity | null | undefined;
 		/** Table widths below which priority 2 / 3 columns hide (default 480 / 720). */
 		hideBelow?: TablePriorityWidths;
+		/** A ledger: every second row takes a faint stripe (restarting in each group). */
+		striped?: boolean;
 		class?: string;
 	}
 
@@ -159,6 +162,7 @@ belong in the pane's ActionBar.
 		rowTone,
 		rowSeverity,
 		hideBelow,
+		striped = false,
 		class: className = ''
 	}: Props = $props();
 
@@ -360,7 +364,8 @@ belong in the pane's ActionBar.
 	{/if}
 {/snippet}
 
-{#snippet bodyRow(row: T, index: number)}
+<!-- `nth` is the row's place in its group (or the table), so a group's stripes start afresh. -->
+{#snippet bodyRow(row: T, index: number, nth: number)}
 	{@const link = href?.(row)}
 	{@const mark = markOf(row)}
 	<tr
@@ -369,6 +374,7 @@ belong in the pane's ActionBar.
 		data-selected={selectable && chosen.has(keys[index]) ? '' : undefined}
 		data-link={link ? '' : undefined}
 		data-mark={mark ? '' : undefined}
+		data-stripe={striped && nth % 2 === 1 ? '' : undefined}
 		data-tone={rowSeverity?.(row) ?? rowTone?.(row) ?? undefined}
 		style:--row-mark={mark}
 		onclick={(event) => onRowClick(event, index)}
@@ -413,6 +419,7 @@ belong in the pane's ActionBar.
 	bind:this={root}
 	class="ds-table {className}"
 	data-density={density}
+	data-striped={striped ? '' : undefined}
 	data-priority-at={hideBelow || width !== null ? '' : undefined}
 	data-hide={hidden.length ? hidden.join(' ') : undefined}
 	style:--ds-table-min={minWidth}
@@ -482,7 +489,7 @@ belong in the pane's ActionBar.
 					</tr>
 				{:else}
 					{#each view as row, index (keys[index])}
-						{@render bodyRow(row, index)}
+						{@render bodyRow(row, index, index)}
 					{/each}
 				{/if}
 			</tbody>
@@ -500,7 +507,7 @@ belong in the pane's ActionBar.
 						</th>
 					</tr>
 					{#each g.rows as row, i (keys[g.start + i])}
-						{@render bodyRow(row, g.start + i)}
+						{@render bodyRow(row, g.start + i, i)}
 					{/each}
 				</tbody>
 			{/each}
@@ -644,6 +651,20 @@ belong in the pane's ActionBar.
 		background: var(--ds-accent-tint);
 	}
 	tbody tr[data-selected]:hover td {
+		background: var(--ds-accent-tint-hover);
+	}
+	/* Striped: a ledger's zebra rows, a faint mix of the row divider into the table's ground. Hover
+	   steps up to ds-bg-3 so it still shows on a stripe, and a selected row keeps its tint. */
+	.ds-table[data-striped] tbody tr[data-stripe] td {
+		background: color-mix(in srgb, var(--ds-border-subtle) 45%, var(--ds-table-bg, var(--ds-bg-1)));
+	}
+	.ds-table[data-striped] tbody tr:not(.empty, .skeleton):hover td {
+		background: var(--ds-bg-3);
+	}
+	.ds-table[data-striped] tbody tr[data-selected] td {
+		background: var(--ds-accent-tint);
+	}
+	.ds-table[data-striped] tbody tr[data-selected]:hover td {
 		background: var(--ds-accent-tint-hover);
 	}
 	/* A row mark: a 3px leading stripe, drawn inside the first cell so it never shifts a column. */

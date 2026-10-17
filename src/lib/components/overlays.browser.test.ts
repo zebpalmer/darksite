@@ -7,6 +7,7 @@ import { userEvent } from 'vitest/browser';
 import { render, screen } from '@testing-library/svelte';
 import OverlayHarness from '../../tests/browser/OverlayHarness.svelte';
 import TableHarness from '../../tests/browser/TableHarness.svelte';
+import StripeHarness from '../../tests/browser/StripeHarness.svelte';
 import LayoutHarness from '../../tests/browser/LayoutHarness.svelte';
 import JustifiedHarness from '../../tests/browser/JustifiedHarness.svelte';
 import TooltipHarness from '../../tests/browser/TooltipHarness.svelte';
@@ -385,5 +386,62 @@ describe('a capped site in a browser', () => {
 		expect(facts.getBoundingClientRect().width).toBeGreaterThan(150);
 		const dd = facts.querySelector('dd')!;
 		expect(dd.getBoundingClientRect().height).toBeLessThan(30);
+	});
+});
+
+describe('Table striped in a browser', () => {
+	// What a role or a mix resolves to inside the table, read off a probe element.
+	const resolve = (within: Element, background: string) => {
+		const probe = document.createElement('div');
+		probe.style.background = background;
+		within.append(probe);
+		const color = getComputedStyle(probe).backgroundColor;
+		probe.remove();
+		return color;
+	};
+	const bodyRows = (name: string) =>
+		[...screen.getByRole('table', { name }).querySelectorAll<HTMLTableRowElement>('tbody tr:not(.group-row)')];
+	const ground = (row: HTMLTableRowElement) => getComputedStyle(row.cells[row.cells.length - 1]).backgroundColor;
+
+	it('stripes every second row, keeps a selected row tinted and a mark on its stripe', async () => {
+		render(StripeHarness);
+		await settle();
+		const root = screen.getByRole('table', { name: 'Ledger' }).parentElement!;
+		const stripe = resolve(root, 'color-mix(in srgb, var(--ds-border-subtle) 45%, var(--ds-bg-1))');
+		const tint = resolve(root, 'var(--ds-accent-tint)');
+		const rows = bodyRows('Ledger');
+		expect(stripe).not.toBe(resolve(root, 'var(--ds-bg-1)'));
+		expect(ground(rows[0])).toBe('rgba(0, 0, 0, 0)');
+		expect(ground(rows[1])).toBe(stripe);
+		expect(ground(rows[2])).toBe('rgba(0, 0, 0, 0)');
+		expect(ground(rows[3])).toBe(tint);
+		expect(ground(rows[4])).toBe('rgba(0, 0, 0, 0)');
+		// The mark's 3px stripe is still drawn on a striped row.
+		expect(getComputedStyle(rows[1].cells[0]).boxShadow).toContain('inset');
+		expect(getComputedStyle(rows[1].cells[0]).backgroundColor).toBe(stripe);
+		// An unstriped table has no stripes.
+		for (const row of bodyRows('Plain')) expect(ground(row)).toBe('rgba(0, 0, 0, 0)');
+	});
+
+	it('steps hover up to ds-bg-3 on a striped row', async () => {
+		render(StripeHarness);
+		await settle();
+		const root = screen.getByRole('table', { name: 'Ledger' }).parentElement!;
+		const rows = bodyRows('Ledger');
+		await userEvent.hover(rows[1].cells[1]);
+		expect(ground(rows[1])).toBe(resolve(root, 'var(--ds-bg-3)'));
+		await userEvent.hover(rows[3].cells[1]);
+		expect(ground(rows[3])).toBe(resolve(root, 'var(--ds-accent-tint-hover)'));
+		await userEvent.unhover(rows[3].cells[1]);
+	});
+
+	it('restarts the stripes in each group', async () => {
+		render(StripeHarness);
+		await settle();
+		const root = screen.getByRole('table', { name: 'Grouped ledger' }).parentElement!;
+		const stripe = resolve(root, 'color-mix(in srgb, var(--ds-border-subtle) 45%, var(--ds-bg-1))');
+		const striped = bodyRows('Grouped ledger').map((row) => ground(row) === stripe);
+		// Ready: Alpha, Bravo, Charlie; On hold: Delta, Echo.
+		expect(striped).toEqual([false, true, false, false, true]);
 	});
 });

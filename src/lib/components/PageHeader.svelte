@@ -12,6 +12,8 @@ When the title and the actions do not fit on one line, the header makes room in 
 width: first the shell's header actions collapse to their icon button, then the `actions` snippet
 is told `{ compact: true }` (render icon buttons there). Under 560px of header, if that is still
 not enough, the actions move to a second line, right-aligned, so the title is not cut short.
+Content after the title (chips, a status) wraps onto a further line under the title when the lead
+has no room for it; the title keeps its one line.
 
 - `title`, `count` (a number is localized; or text such as "38 this week"), `level` (default 1),
   `mono` (the title is an identifier — a serial, a hash, a path — set in mono with tabular
@@ -133,7 +135,7 @@ not enough, the actions move to a second line, right-aligned, so the title is no
 	class:wrap={rowOpen}
 	data-shell-claim={claims ? '' : undefined}
 >
-	<div class="lead" bind:this={leadEl}>
+	<div class="lead" bind:this={leadEl} data-after={children ? '' : undefined}>
 		<svelte:element this={`h${level}`} class="title" data-mono={mono ? '' : undefined}
 			>{title}</svelte:element
 		>
@@ -213,6 +215,15 @@ not enough, the actions move to a second line, right-aligned, so the title is no
 		gap: 12px;
 		flex: 1;
 		min-width: 0;
+	}
+	/* Content after the title wraps under it rather than widening the header. The padding spaces a
+	   second line from the edges; on one line the title sits where it would without it, and a 44px
+	   touch tab strip still fits the 56px bar. */
+	.lead[data-after] {
+		flex-wrap: wrap;
+		align-content: center;
+		row-gap: 8px;
+		padding-block: 6px;
 	}
 	.title {
 		flex: none;

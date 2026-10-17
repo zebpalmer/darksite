@@ -21,6 +21,13 @@ Put it **first** on the page. Something that must sit above it bleeds the same w
 The title keeps its width and truncates at the lead's edge; **the count is what gives way** on a
 narrow header.
 
+Content after the title — chips, a status — **wraps onto a further line under the title** when the
+lead has no room for it beside the title, so a long title and two chips never widen a phone page.
+The title keeps its one line and its ellipsis; the header grows to fit the second line. A count
+that has no room beside the title leads that second line, so it stays readable. The header
+still makes room in the steps below first, counting that content in, so it wraps only once the
+actions are as compact as they go.
+
 ## Making room
 
 When the title (and the count and anything after it) do not fit beside the actions on one line, the

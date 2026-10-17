@@ -89,6 +89,17 @@ A row can carry a 3px leading stripe, drawn inside its first cell so no column s
 The stripe is a scan aid, never the only signal: the row must say the same thing in words, with a
 `StatusBadge` or `SeverityBadge` in a cell. Mark the exceptions, not every row.
 
+## Striped
+
+`striped` is the ledger option: every second body row takes a faint stripe, a 45% mix of
+`ds-border-subtle` into the table's ground (`--ds-table-bg`, `ds-bg-1` by default), so the eye can
+follow a long row of figures across. Hover steps up to `ds-bg-3` on a striped table, so it still
+shows on a striped row. A selected row keeps its `ds-accent-tint`, and a row mark's stripe is drawn
+over either. In a grouped table the stripes restart in each group: its first row is plain.
+
+Use it where rows are read across many columns of numbers — a ledger, a schedule, a price list.
+Most tables need only their row dividers.
+
 ## Row links and keyboard
 
 `href(row)` makes the whole row navigable through a real link in its first cell: a pointer click
@@ -114,7 +125,7 @@ opens the row. The focused row shows the focus ring inset.
 `rows`, `columns`, `rowKey(row)`, `label` (the accessible name), `density`, `selectable`,
 `selected` (bindable), `sort` (bindable), `onsort`, `href`, `rowLabel`, `cell` (a fallback snippet for columns
 without their own), `empty`, `loading`, `loadingRows`, `missing`, `minWidth`, `groupBy`,
-`groupLabel`, `group`, `rowTone`, `rowSeverity`, `hideBelow`, `class`.
+`groupLabel`, `group`, `rowTone`, `rowSeverity`, `hideBelow`, `striped`, `class`.
 
 ## Don't
 

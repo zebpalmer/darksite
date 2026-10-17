@@ -99,6 +99,19 @@ describe('CopyButton', () => {
 	});
 });
 
+describe('CopyButton comfy', () => {
+	it('grows the inline form only for comfy', () => {
+		const { container, unmount } = render(CopyButton, { value: 'abc', inline: true, size: 'dense' });
+		expect(container.querySelector('.inline')?.hasAttribute('data-size')).toBe(false);
+		expect(container.querySelector('svg')?.getAttribute('width')).toBe('16');
+		unmount();
+		const comfy = render(CopyButton, { value: 'abc', inline: true, size: 'comfy', label: 'Copy identifier' });
+		const button = screen.getByRole('button', { name: 'Copy identifier' });
+		expect(button.dataset.size).toBe('comfy');
+		expect(comfy.container.querySelector('svg')?.getAttribute('width')).toBe('18');
+	});
+});
+
 describe('CodeBlock', () => {
 	const code = 'npm install --save-dev example-package';
 
@@ -113,6 +126,18 @@ describe('CodeBlock', () => {
 		expect(screen.getByText('Shell').tagName).toBe('FIGCAPTION');
 		await fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
 		expect(writeText).toHaveBeenCalledWith(code);
+	});
+
+	it('takes a comfy size for a reading page, and passes it to its copy button', () => {
+		const { container, unmount } = render(CodeBlock, { code });
+		expect(container.querySelector('figure')?.dataset.size).toBe('default');
+		expect(container.querySelector('.inline')?.hasAttribute('data-size')).toBe(false);
+		unmount();
+		const comfy = render(CodeBlock, { code, size: 'comfy' });
+		expect(comfy.container.querySelector('figure')?.dataset.size).toBe('comfy');
+		const button = comfy.container.querySelector('.inline') as HTMLElement;
+		expect(button.dataset.size).toBe('comfy');
+		expect(button.querySelector('svg')?.getAttribute('width')).toBe('18');
 	});
 
 	it('is named "Code" without a label, and can leave out the copy button', () => {

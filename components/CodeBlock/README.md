@@ -15,6 +15,12 @@ block scrolls. `label` adds a caption above the block (12px `ds-text-3`): a file
 
 `wrap` wraps long lines instead, for output that is read more than copied.
 
+## On a reading page
+
+`size="comfy"` sits beside 18px long-form text (`ds-reading`): 16px mono on 26px lines, 14px by
+16px of padding, a 13px caption, and a comfy inline `CopyButton` (32px, an 18px icon) whose center
+stays on the first line's. The default size suits the 14px of an operator screen and `ds-prose`.
+
 ## Color
 
 None. There is no syntax highlighting: color in this system carries meaning, and token colors
@@ -22,10 +28,16 @@ would carry none.
 
 ## What the consumer provides
 
-`code`, `label`, `copy` (default true), `copyLabel` (default "Copy"), `wrap`, `class`.
+`code`, `label`, `copy` (default true), `copyLabel` (default "Copy"), `wrap`, `size` (`default` |
+`comfy`), `class`.
 
 ```svelte
 <CodeBlock label="Shell" code="npm install ./package-1.2.0.tgz" />
+
+<article class="ds-reading">
+  <p>Install the package first.</p>
+  <CodeBlock size="comfy" label="Shell" code="npm install ./package-1.2.0.tgz" />
+</article>
 ```
 
 ## Don't

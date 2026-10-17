@@ -12,7 +12,9 @@ screen reader hears the result while focus stays on the button.
   `FactList`, a hash in a table cell, a key in a settings page. Ghost, `ds-text-3` at rest,
   `ds-text-1` on a `ds-bg-4` hover, `ds-success-text` while it says Copied. `label` is its accessible
   name and its tooltip, so name what it copies: "Copy identifier". On touch its hit area grows to
-  44px without moving the value beside it.
+  44px without moving the value beside it. Beside reading-sized text (`ds-reading`, a comfy
+  `CodeBlock`), `size="comfy"` makes it 32px with an 18px icon; its touch hit area is still 44px.
+  The other sizes leave the inline form at 24px.
 
 ## Without the Clipboard API
 
@@ -24,7 +26,8 @@ which.
 ## What the consumer provides
 
 `value` (a string, or a function returning one, read at the moment of copying), `label` (default
-"Copy"), `copiedLabel` (default "Copied"), `inline`, `variant`, `size`, `resetAfter` (ms, default
+"Copy"), `copiedLabel` (default "Copied"), `inline`, `variant`, `size` (as `Button`; `comfy` also
+sizes the inline form), `resetAfter` (ms, default
 2000), `oncopy(ok)`, `disabled`, `class`.
 
 ```svelte

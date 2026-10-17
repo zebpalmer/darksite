@@ -56,7 +56,8 @@ Severity is one instance of a general **ordinal scale**: ordered stops, each wit
 same three color roles. An app that needs another ordered scale — a priority P1–P4, a confidence
 from Remote to Certain, a clearance level — defines it once with `defineScale` and draws it with
 `ScaleBadge` and `ScalePicker`. `SeverityBadge` and `SeverityPicker` are those two components over
-the built-in `severityScale`.
+the built-in `severityScale`. A `Stat` shows a stop as a headline with `scale` and `level`, the way
+it shows a severity.
 
 ```ts
 import { defineScale } from 'darksite';

@@ -8,6 +8,7 @@ import SeverityBadge from './SeverityBadge.svelte';
 import SourceBadge from './SourceBadge.svelte';
 import Stat from './Stat.svelte';
 import StatusBadge from './StatusBadge.svelte';
+import { defineScale } from '../scale.js';
 
 describe('StatusBadge', () => {
 	it('shows its label and how long the state has held', () => {
@@ -154,6 +155,74 @@ describe('Stat', () => {
 		const { container } = render(Stat, { label: 'Blocked', value: 0 });
 		expect(container.querySelector('.ds-missing')).toBeNull();
 		expect(container.querySelector('.value')?.textContent).toBe('0');
+	});
+
+	const health = defineScale({
+		name: 'Health',
+		stops: [
+			{ value: 'poor', label: 'Poor', mark: 'var(--app-h1)', bg: 'var(--app-h1-bg)', ink: 'var(--app-h1-ink)' },
+			{ value: 'fair', label: 'Fair', mark: 'var(--app-h2)', bg: 'var(--app-h2-bg)', ink: 'var(--app-h2-ink)' },
+			{ value: 'good', label: 'Good', mark: 'var(--app-h3)', bg: 'var(--app-h3-bg)', ink: 'var(--app-h3-ink)' }
+		],
+		unknown: { value: 'unknown', label: 'Unknown' }
+	});
+	const tile = (props: Record<string, unknown>) => {
+		const { container, unmount } = render(Stat, { label: 'Status', scale: health, ...props });
+		const el = container.querySelector('.ds-stat') as HTMLElement;
+		const out = {
+			value: el.querySelector('.value')?.textContent,
+			badge: el.querySelector('.ds-scale')?.textContent ?? null,
+			level: el.dataset.level ?? null,
+			unknown: el.hasAttribute('data-unknown'),
+			mark: el.style.getPropertyValue('--mark') || null,
+			missing: !!el.querySelector('.ds-missing')
+		};
+		unmount();
+		return out;
+	};
+
+	it('shows a level on a custom scale as its name, with the stop mark', () => {
+		expect(tile({ level: 'good' })).toEqual({
+			value: 'Good',
+			badge: null,
+			level: 'good',
+			unknown: false,
+			mark: 'var(--app-h3)',
+			missing: false
+		});
+	});
+
+	it('puts the level in a ScaleBadge beside a value of its own', () => {
+		expect(tile({ label: 'Uptime', value: 98, unit: '%', level: 'fair' })).toMatchObject({
+			value: '98',
+			badge: 'Fair',
+			level: 'fair',
+			mark: 'var(--app-h2)'
+		});
+	});
+
+	it("marks the scale's unknown stop as unknown, and shows nothing for an unset or stray level", () => {
+		expect(tile({ level: 'unknown' })).toMatchObject({ value: 'Unknown', unknown: true, level: 'unknown' });
+		for (const level of [null, undefined, 'excellent']) {
+			expect(tile({ level }), String(level)).toEqual({
+				value: '—No value',
+				badge: null,
+				level: null,
+				unknown: false,
+				mark: null,
+				missing: true
+			});
+		}
+		expect(tile({ value: 4, level: 'excellent' })).toMatchObject({ value: '4', badge: null, mark: null });
+	});
+
+	it('lets a severity win over a level', () => {
+		const { container } = render(Stat, { label: 'Status', value: 2, severity: 'high', scale: health, level: 'good' });
+		const el = container.querySelector('.ds-stat') as HTMLElement;
+		expect(el.dataset.severity).toBe('high');
+		expect(el.hasAttribute('data-level')).toBe(false);
+		expect(el.textContent).toContain('High');
+		expect(el.querySelector('.ds-scale[data-value="good"]')).toBeNull();
 	});
 });
 

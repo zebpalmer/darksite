@@ -192,6 +192,21 @@ describe('Table', () => {
 		expect(r[2].dataset.tone).toBe('high');
 		expect(r[2].style.getPropertyValue('--row-mark')).toBe('var(--ds-sev-high)');
 	});
+
+	it('stripes every second row when striped, restarting in each group', () => {
+		const { container, unmount } = render(Table, base);
+		expect(container.querySelector('.ds-table')?.hasAttribute('data-striped')).toBe(false);
+		expect(bodyRows().some((r) => r.hasAttribute('data-stripe'))).toBe(false);
+		unmount();
+		const more = [...rows, { id: 'r4', name: 'Delta', count: 1 }, { id: 'r5', name: 'Echo', count: 2 }];
+		const striped = render(Table, { ...base, rows: more, striped: true });
+		expect(striped.container.querySelector('.ds-table')?.hasAttribute('data-striped')).toBe(true);
+		expect(bodyRows().map((r) => r.hasAttribute('data-stripe'))).toEqual([false, true, false, true, false]);
+		striped.unmount();
+		render(Table, { ...base, rows: more, striped: true, groupBy: (r: Row) => (r.id < 'r4' ? 'a' : 'b') });
+		const body = bodyRows().filter((r) => !r.classList.contains('group-row'));
+		expect(body.map((r) => r.hasAttribute('data-stripe'))).toEqual([false, true, false, false, true]);
+	});
 });
 
 describe('Table column priority widths', () => {

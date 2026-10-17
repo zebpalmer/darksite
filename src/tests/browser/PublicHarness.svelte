@@ -46,6 +46,9 @@
 {#snippet bar(row: Row)}<CellBar value={row.count} max={1240} />{/snippet}
 
 <div style="width: 300px" data-testid="code"><CodeBlock code={long} label="Shell" /></div>
+<div style="width: 300px" data-testid="code-comfy" class="ds-reading">
+	<CodeBlock code={long} label="Shell" size="comfy" />
+</div>
 
 {#snippet action()}<Button size="dense">Review</Button>{/snippet}
 <div style="width: 360px" data-testid="notice-narrow">
