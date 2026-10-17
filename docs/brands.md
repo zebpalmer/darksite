@@ -38,11 +38,11 @@ object leaves out takes its family's color: `night` and `contrast` take `dark`'s
 | `accent` | Primary buttons, the current item, the focus ring, links, selection, tints. The color lands exactly on the accent fill in the modes it names; the hover, pressed, text and tint roles keep their spacing around it. |
 | `accent2` | A second color (`ds-accent-2`, `-text`, `-tint`) for highlights and charts. Never a button, a focus ring or a meaning. |
 | `neutral` | The grays' tint: `{ "hue": 40, "chroma": 0.5 }`. `hue` in degrees (OKLCH); `chroma` a multiple of the default tint, 0 for pure gray. Moves every ground, edge and text role. |
-| `surfaces` | Exact page and text colors per mode: `{ "dark": { "bg": "#2e3440", "text": "#d8dee9" } }`. `bg` is the page (`ds-bg-1`); the other grounds and the edges keep their steps around it. Paper and night keep their warm grounds, and high contrast its own darker ones, unless named here. |
+| `surfaces` | Exact page and text colors per mode: `{ "dark": { "bg": "#2e3440", "text": "#d8dee9" } }`. `bg` is the page (`ds-bg-1`); the other grounds and the edges keep their steps around it, and the text roles are re-fitted to their designed contrast on it (12.2:1 body, 8.5:1 secondary, 5.6:1 muted and 16.3:1 headings in dark), with muted text holding 4.5:1 on `ds-bg-4`. `text` sets `ds-text-1` exactly instead. Paper and night keep their warm grounds unless named here; high contrast keeps its own ground, never lighter than the dark one, in the dark surface's tint. |
 | `chrome` | The navigation's own color: `{ "rail": "#24130d", "bar": "#…" }`. The rail is `NavRail`; the bar is `TopBar` and `TabBar`. Each gets its own grounds, text, edges and accent from the one color, and everything inside it follows. |
 | `success`, `warning`, `danger` | A product's own green, yellow and red, with their text, tints and severity stops. |
 | `fonts` | `{ "sans": "…", "mono": "…", "reading": "…" }`: CSS font stacks. Load the font files yourself. |
-| `roles` | Exact role values per mode, `{ "dark": { "ds-bg-0": "#…" } }`, for what the inputs cannot express. Never adjusted, so they must pass on their own. |
+| `roles` | Exact role values, for what the inputs cannot express: `{ "ds-warning-fill": "#…" }` at the top holds in every mode, and a mode's own map, `{ "dark": { "ds-bg-0": "#…" } }`, overrides it there. Never adjusted, so they must pass on their own. |
 
 ## How the colors are made
 
@@ -66,5 +66,6 @@ A brand whose colors cannot pass — a `roles` value that fails, say — exits w
 Every brand works in all five modes. In the reading modes the grounds stay warm and the text stays
 soft whatever the brand, and the brand's accent, second color and fonts carry over; name `paper` or
 `night` in `surfaces` to change their grounds too. High contrast keeps its own grounds and text
-unless `surfaces` names `contrast` (it takes the dark surface's tint, not its lightness), and its
-own lighter values for a plain accent color, so it stays at 7:1.
+unless `surfaces` names `contrast`: it takes the dark surface's tint, and its ground follows a
+darker dark surface down but never sits above it, so it is never the paler of the two. It also
+keeps its own lighter values for a plain accent color, so it stays at 7:1.

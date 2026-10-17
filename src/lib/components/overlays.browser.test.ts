@@ -451,7 +451,7 @@ describe('Table striped in a browser', () => {
 		render(StripeHarness);
 		await settle();
 		const root = screen.getByRole('table', { name: 'Ledger' }).parentElement!;
-		const stripe = resolve(root, 'color-mix(in srgb, var(--ds-border-subtle) 45%, var(--ds-bg-1))');
+		const stripe = resolve(root, 'color-mix(in oklab, var(--ds-border-subtle) 45%, var(--ds-bg-1))');
 		const tint = resolve(root, 'var(--ds-accent-tint)');
 		const rows = bodyRows('Ledger');
 		expect(stripe).not.toBe(resolve(root, 'var(--ds-bg-1)'));
@@ -483,7 +483,7 @@ describe('Table striped in a browser', () => {
 		render(StripeHarness);
 		await settle();
 		const root = screen.getByRole('table', { name: 'Grouped ledger' }).parentElement!;
-		const stripe = resolve(root, 'color-mix(in srgb, var(--ds-border-subtle) 45%, var(--ds-bg-1))');
+		const stripe = resolve(root, 'color-mix(in oklab, var(--ds-border-subtle) 45%, var(--ds-bg-1))');
 		const striped = bodyRows('Grouped ledger').map((row) => ground(row) === stripe);
 		// Ready: Alpha, Bravo, Charlie; On hold: Delta, Echo.
 		expect(striped).toEqual([false, true, false, false, true]);

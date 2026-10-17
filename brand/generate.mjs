@@ -109,6 +109,24 @@ function shift(hex, { dl = 0, remap, hue, chroma = 1, setChroma }) {
 
 const ratioOf = (from, to) => (from.c > 0.012 ? to.c / from.c : undefined);
 
+/** The color at `hex`'s hue and chroma whose contrast on `ground` is at least `target`, as close
+ *  to it as lightness allows, on the side of the ground `hex` is on. */
+function fitContrast(hex, ground, target) {
+	const o = oklch(hex);
+	const g = oklch(ground);
+	const up = luminance(hex) >= luminance(ground);
+	const at = (l) => fromOklch({ l, c: o.c, h: o.h });
+	let lo = up ? g.l : 0;
+	let hi = up ? 1 : g.l;
+	for (let i = 0; i < 40; i++) {
+		const mid = (lo + hi) / 2;
+		const short = contrastOn(at(mid), ground) < target;
+		if (up === short) lo = mid;
+		else hi = mid;
+	}
+	return at(up ? hi : lo);
+}
+
 export function themesOf(tokens) {
 	return tokens.color.themes;
 }
@@ -162,26 +180,26 @@ export function generateBrand(tokens, brand) {
 		const locks = new Set();
 
 		// Grounds, edges and text: a gray tint, or explicit surfaces (a page color, a text color).
-		// The reading modes and high contrast keep their own lightness unless the brand names them;
-		// high contrast still takes the dark surface's tint, so it reads as the same brand.
+		// The reading modes and high contrast keep their own lightness unless the brand names them.
+		// High contrast still takes the dark surface's tint, and its ground goes no lighter than the
+		// dark one: it is never the paler of the two.
 		const own = READING.has(mode) || mode === 'contrast';
 		const surface = own
 			? brand.surfaces?.[mode]
 			: (brand.surfaces?.[mode] ?? brand.surfaces?.[family]);
-		const tintOf = (bg) => {
-			if (!bg) return undefined;
-			const from = oklch(value('ds-bg-1'));
-			const to = oklch(bg);
-			const chroma = ratioOf(from, to);
-			return { hue: to.h, chroma: chroma ?? 1 };
-		};
-		const neutral =
-			READING.has(mode) && !brand.surfaces?.[mode]
-				? undefined
-				: (brand.neutral ??
-					(mode === 'contrast' && !surface ? tintOf(brand.surfaces?.dark?.bg) : undefined));
+		const darkBg = mode === 'contrast' && !surface ? brand.surfaces?.dark?.bg : undefined;
+		const neutral = READING.has(mode) && !brand.surfaces?.[mode] ? undefined : brand.neutral;
 		let groundShift;
-		if (surface?.bg) {
+		if (darkBg) {
+			const from = oklch(value('ds-bg-1'));
+			const to = oklch(darkBg);
+			groundShift = {
+				dl: Math.min(0, to.l - from.l),
+				hue: to.h,
+				chroma: ratioOf(from, to) ?? 1,
+				setChroma: ratioOf(from, to) === undefined ? to.c : undefined
+			};
+		} else if (surface?.bg) {
 			const from = oklch(value('ds-bg-1'));
 			const to = oklch(surface.bg);
 			groundShift = {
@@ -207,6 +225,20 @@ export function generateBrand(tokens, brand) {
 				textShift = { dl: to.l - from.l, hue: to.h, setChroma: to.c };
 			}
 			for (const r of TEXTS) v[r] = shift(value(r), textShift);
+			// On a ground of its own, each text role is re-fitted to the contrast it has in the default
+			// theme (headings 16.3:1, body 12.2:1, secondary 8.5:1, muted 5.6:1 in dark), so a darker
+			// or lighter page does not push the text brighter or dimmer than designed; muted text also
+			// holds 4.5:1 on ds-bg-4. A text color the brand gives stays exact.
+			if (surface?.bg) {
+				const was = resolver(base[mode]);
+				for (const r of TEXTS) {
+					if (r === 'ds-text-1' && surface.text) continue;
+					const target = contrastOn(was(r), was('ds-bg-1'));
+					v[r] = fitContrast(value(r), value('ds-bg-1'), target);
+				}
+				if (contrastOn(value('ds-text-3'), value('ds-bg-4')) < 4.5)
+					v['ds-text-3'] = fitContrast(value('ds-text-3'), value('ds-bg-4'), 4.5);
+			}
 			for (const s of ['ds-scrim']) {
 				const [r, g, b, a] = parse(value(s));
 				const tinted = parse(
@@ -242,8 +274,14 @@ export function generateBrand(tokens, brand) {
 		for (const [key, s] of Object.entries(SEMANTIC))
 			recolor(brand[key], s.anchor, s.fills, s.tints);
 
-		// Exact roles the brand sets itself: never nudged.
-		for (const [r, x] of Object.entries(brand.roles?.[mode] ?? {})) {
+		// Exact roles the brand sets itself: never nudged. A role named at the top of `roles` holds in
+		// every mode; a mode's own entry overrides it.
+		const everyMode = Object.fromEntries(
+			Object.entries(brand.roles ?? {}).filter(
+				([k, x]) => k.startsWith('ds-') && typeof x === 'string'
+			)
+		);
+		for (const [r, x] of Object.entries({ ...everyMode, ...(brand.roles?.[mode] ?? {}) })) {
 			v[r] = x;
 			locks.add(r);
 		}
