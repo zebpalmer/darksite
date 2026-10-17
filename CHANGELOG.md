@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.20.0] — 2026-10-17
+
 ### Added
 
 - `ds-text-heading`: a heading text role, a step brighter than `ds-text-1` in the dark modes (16.3:1
