@@ -17,8 +17,12 @@
 	<p>
 		The search on this header's line is the shell's <code>headerActions</code>: every page's
 		PageHeader renders it, right-aligned, ahead of the page's own actions. Press <code>/</code> to focus
-		it. Below 768px it becomes an icon button that opens a full-width row under the header; Esc closes
-		it.
+		it. Below 768px, or when the header lacks room, it becomes an icon button that opens a full-width
+		row under the header; Esc closes it.
+	</p>
+	<p>
+		A page with no level-1 PageHeader — the Button page, say — shows the same search in a slim bar
+		the shell adds above it, or in the TopBar when the shell has one.
 	</p>
 </div>
 

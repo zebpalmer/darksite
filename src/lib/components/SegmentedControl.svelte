@@ -22,6 +22,8 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
   even with `iconOnly`; a value is a string, number, boolean or `null`, so a tri-state filter is
   `true` / `null` / `false`), `value` (bindable), `onchange(value)`, `label` (the group's name),
   `size` (`dense` | `default`; 38 inside the strip on touch), `full`, `iconOnly`, `class`.
+- Narrower than its options, it shrinks to its container (in a flex row or a grid cell too) and
+  scrolls sideways, with the selected option scrolled into view.
 - In a Field, name the group by the Field's label instead: `id={f.id}
   aria-labelledby={f.labelId} aria-describedby={f.describedBy}` (then `label` may be omitted).
 -->
@@ -61,6 +63,20 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 	// The option that holds the tab stop. Found as an option, not a value, since `null` is a value.
 	const stop = $derived((options.find((o) => o.value === value && !o.disabled) ?? enabled[0])?.value);
 	const buttons: HTMLButtonElement[] = $state([]);
+	let group: HTMLElement | undefined = $state();
+
+	// A strip narrower than its options scrolls: keep the selected one in view. Only the strip
+	// scrolls — never the page, as scrollIntoView could.
+	$effect(() => {
+		const at = options.findIndex((o) => o.value === value);
+		const button = buttons[at];
+		if (!group || !button || group.scrollWidth <= group.clientWidth) return;
+		const box = button.getBoundingClientRect();
+		const left = box.left - group.getBoundingClientRect().left - group.clientLeft + group.scrollLeft;
+		const right = left + box.width;
+		if (left < group.scrollLeft) group.scrollLeft = left;
+		else if (right > group.scrollLeft + group.clientWidth) group.scrollLeft = right - group.clientWidth;
+	});
 
 	function choose(option: SegmentOption<T>) {
 		if (option.disabled) return;
@@ -87,6 +103,7 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 </script>
 
 <div
+	bind:this={group}
 	class="ds-segmented {className}"
 	role="radiogroup"
 	{id}
@@ -124,6 +141,7 @@ move and select, Home/End jump to the ends. Never a dropdown for these, and neve
 <style>
 	.ds-segmented {
 		display: inline-flex;
+		min-width: 0;
 		max-width: 100%;
 		gap: 2px;
 		padding: 2px;

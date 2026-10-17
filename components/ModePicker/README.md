@@ -15,7 +15,9 @@ contrast**. It drives the `mode` store, which applies the choice to the whole pa
 ```
 
 A native select by default, which fits a rail's footer, a TabBar's More sheet or a settings page;
-`variant="segmented"` shows the choices side by side for a settings page with room.
+`variant="segmented"` shows the choices side by side for a settings page with room. Where there is
+less room than six segments need (a 320px phone column, a flex row, a grid cell), it shrinks to its
+container and scrolls sideways, the current mode in view.
 
 To avoid a flash of the wrong mode on load, put `MODE_SCRIPT` — exported by darksite — in a
 `<script>` in `app.html`'s `<head>`: it applies the saved mode before the first paint.

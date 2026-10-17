@@ -24,11 +24,20 @@ first (`preventDefault`), or by passing `searchKey={null}`. The key is the `focu
 attachment, which any other container can use.
 
 A search that should share the line with each page's title, rather than take a row of its own, is
-`AppShell`'s `headerActions` instead.
+`AppShell`'s `headerActions` instead. On a page with no level-1 `PageHeader` — a map, a custom
+work view — the shell shows those header actions here, ahead of the bar's own actions (on a phone,
+as an icon button that opens a full-width row under the bar). Nothing to wire: the bar reads them
+from the shell.
+
+## Room
+
+The actions always sit at the end of the bar, phones included. Short of room, `start` gives way
+first: it shrinks and scrolls sideways, so a row of filter chips there never pushes the actions off
+the bar. What is inside `start` keeps its own size; the cell does the scrolling.
 
 ## What the consumer provides
 
-`start` snippet (a scope selector), `search` snippet (usually an `Input` with a `/` key cap),
+`start` snippet (a scope selector, a row of filter chips), `search` snippet (usually an `Input` with a `/` key cap),
 `actions` snippet (right side), `variant` (`default` 48 | `slim` 40), `sticky`, `label`,
 `searchKey` (default `/`; `null` hands the key to the page).
 

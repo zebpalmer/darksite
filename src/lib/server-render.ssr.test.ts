@@ -80,3 +80,18 @@ describe('server rendering', () => {
 		});
 	}
 });
+
+describe('server rendering the shell', () => {
+	const find = createRawSnippet(() => ({
+		render: () => '<input type="search" aria-label="Find">'
+	}));
+	const items = [{ id: 'a', label: 'Home', href: '/' }];
+
+	it("renders the header actions' fallback bar, which CSS hides beside a level-1 header", () => {
+		const { body } = render(lib.AppShell, {
+			props: { items, current: 'a', headerActions: find, children: page }
+		});
+		expect(body).toContain('ds-appshell-fallback');
+		expect(body).toContain('aria-label="Find"');
+	});
+});

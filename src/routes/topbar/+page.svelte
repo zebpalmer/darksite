@@ -1,6 +1,9 @@
 <script lang="ts">
 	import Plus from '@lucide/svelte/icons/plus';
-	import { Button, KeyCap, PageHeader, TopBar } from '#lib';
+	import { Button, Chip, KeyCap, PageHeader, TopBar } from '#lib';
+
+	const scopes = ['All', 'Open', 'Assigned', 'Blocked', 'Waiting', 'Review', 'Approved', 'Closed'];
+	let scope = $state('All');
 </script>
 
 <svelte:head><title>TopBar · darksite</title></svelte:head>
@@ -23,6 +26,22 @@
 	</TopBar>
 </div>
 
+<h2>A row of chips in start</h2>
+<p>
+	Short of room, <code>start</code> shrinks and scrolls sideways; the actions stay at the end. Drag the
+	frame's corner to narrow it.
+</p>
+<div class="frame resizable">
+	<TopBar>
+		{#snippet start()}
+			{#each scopes as s (s)}<Chip selected={scope === s} onclick={() => (scope = s)}>{s}</Chip
+				>{/each}
+		{/snippet}
+		{#snippet actions()}<Button variant="primary" size="dense" icon={Plus}>New record</Button
+			>{/snippet}
+	</TopBar>
+</div>
+
 <h2>Slim</h2>
 <div class="frame">
 	<TopBar variant="slim" {search} />
@@ -33,6 +52,17 @@
 		margin: var(--ds-space-6) 0 var(--ds-space-3);
 		font-size: var(--ds-text-lg);
 		font-weight: 500;
+	}
+	p {
+		max-width: 640px;
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-md);
+	}
+	.resizable {
+		width: 520px;
+		max-width: 100%;
+		min-width: 240px;
+		resize: horizontal;
 	}
 	.frame {
 		overflow: hidden;

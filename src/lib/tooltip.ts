@@ -4,7 +4,8 @@
 //   <a href="/r/1" {@attach tooltip('Opened 3 times')}>R-00412</a>
 //
 // It shows after a short hover, at once on keyboard focus, and on a long press on a touch screen;
-// it hides on leaving, blur, Esc or a scroll. The text describes the element (`aria-describedby`)
+// it hides on leaving, blur, Esc or a scroll (one shown for keyboard focus stays through a scroll
+// while its element is in view: tabbing to an element below the fold scrolls the page). The text describes the element (`aria-describedby`)
 // unless it is already the element's name, so a screen reader never hears it twice. The bubble is
 // in the top layer, placed beside the element and kept inside the viewport.
 import { autoUpdate, computePosition, flip, offset, shift, type Placement } from '@floating-ui/dom';
@@ -87,6 +88,15 @@ export function tooltip(
 		const onup = (e: PointerEvent) =>
 			e.pointerType !== 'mouse' && (bubble.hidden ? clearTimeout(timer) : later(1500, hide));
 		const onfocus = () => el.matches(':focus-visible') && show();
+		// A scroll hides a hover or touch tooltip. One shown for keyboard focus follows its element
+		// while it is in view: moving focus scrolls the page, often just after the tooltip shows.
+		const onscroll = () => {
+			if (el.matches(':focus-visible')) {
+				const r = el.getBoundingClientRect();
+				if (r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth) return;
+			}
+			hide();
+		};
 		const onkey = (e: KeyboardEvent) => {
 			if (e.key === 'Escape' && !bubble.hidden) {
 				e.stopPropagation();
@@ -102,7 +112,7 @@ export function tooltip(
 		el.addEventListener('focus', onfocus);
 		el.addEventListener('blur', hide);
 		el.addEventListener('keydown', onkey);
-		window.addEventListener('scroll', hide, true);
+		window.addEventListener('scroll', onscroll, true);
 
 		return () => {
 			hide();
@@ -114,7 +124,7 @@ export function tooltip(
 			el.removeEventListener('focus', onfocus);
 			el.removeEventListener('blur', hide);
 			el.removeEventListener('keydown', onkey);
-			window.removeEventListener('scroll', hide, true);
+			window.removeEventListener('scroll', onscroll, true);
 			if (!named) {
 				const rest = (el.getAttribute('aria-describedby') ?? '')
 					.split(' ')

@@ -24,6 +24,8 @@ NavRail — the primary navigation on ds-bg-0, full height, from 768px up (below
 - **Expanded** (208px): 32px rows with icon, label and badge; groups get 11px uppercase titles.
 - Active = ds-bg-4 + ds-text-1 + a 2px accent bar. The item list scrolls on a short window and
   the current item scrolls into view; the footer (account, collapse toggle, version) stays put.
+- `version` shows in the footer in both states. Collapsed, it is centered and truncated to the
+  rail's width, and the rail's tooltip shows it in full on hover.
 - `expanded` is bindable. With `rememberAs`, the choice is remembered for this viewer; with
   nothing stored the rail starts expanded at 1440px and collapsed below. `pinned` hides the
   toggle and holds the rail at `expanded` (`expanded={false} pinned` keeps it always collapsed).
@@ -192,7 +194,17 @@ that list, not disabled.
 				onclick={toggle}
 			/>
 		{/if}
-		{#if version && open}<span class="version">{version}</span>{/if}
+		{#if version}
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<span
+				class="version"
+				onmouseenter={(e) => {
+					const v = e.currentTarget;
+					if (v.scrollWidth > v.clientWidth) showTip(v, version, 300);
+				}}
+				onmouseleave={hideTip}>{version}</span
+			>
+		{/if}
 	</div>
 	{#if tip}
 		<span class="tip" style:top="{tip.top}px" style:left="{tip.left}px" aria-hidden="true">{tip.text}</span>
@@ -396,10 +408,17 @@ that list, not disabled.
 		align-items: flex-start;
 	}
 	.version {
+		max-width: 100%;
+		overflow: hidden;
 		padding: 0 4px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 		color: var(--ds-text-3);
 		font-size: var(--ds-text-xs);
 		font-variant-numeric: tabular-nums;
+	}
+	.ds-navrail:not([data-expanded]) .version {
+		padding: 0;
 	}
 	.tip {
 		position: fixed;

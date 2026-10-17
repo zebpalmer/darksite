@@ -23,11 +23,14 @@ in place.
 - `banner`, `topBar` snippets; `padded` (default true — false hands the column to a work view
   that lays out its own panes); `toaster` (default true); children (the page).
 - `headerActions` snippet — shell-wide controls (usually a global search) on the same line as every
-  page's PageHeader, right-aligned, ahead of the page's own actions. It renders inside PageHeader,
-  so a page with no PageHeader shows none. `headerActionsKey` (default `/`) focuses its first
-  field; `null` turns that off. On phones it collapses to an icon button (`headerActionsIcon`,
-  default a search icon; `headerActionsLabel`, default "Search") that opens a full-width row under
-  the header (the key opens it too); Esc inside the row, or a change of `current`, closes it.
+  page's PageHeader, right-aligned, ahead of the page's own actions. `headerActionsKey` (default
+  `/`) focuses its first field; `null` turns that off. On phones, or when the header lacks room,
+  it collapses to an icon button (`headerActionsIcon`, default a search icon;
+  `headerActionsLabel`, default "Search") that opens a full-width row under the header (the key
+  opens it too); Esc inside the row, or a change of `current`, closes it.
+- A page with no level-1 PageHeader (a map, a custom work view) shows them in the TopBar
+  instead, ahead of its actions — or, with no `topBar`, in a slim bar the shell adds. On a phone
+  they collapse there the same way. `headerActionsFallback={false}` turns that off.
 
 A page that renders a `FullBleed` (a map, a canvas) gets the whole column at every width: no
 padding, no footer, the shell locked to the viewport.
@@ -38,13 +41,14 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 -->
 <script lang="ts">
 	import { strings } from '../strings.svelte.js';
-	import type { Snippet } from 'svelte';
+	import { untrack, type Snippet } from 'svelte';
 	import Search from '@lucide/svelte/icons/search';
 
 	import NavRail, { type RailSlotArgs } from './NavRail.svelte';
 	import TabBar from './TabBar.svelte';
 	import TopNav from './TopNav.svelte';
 	import Toaster from './Toaster.svelte';
+	import TopBar from './TopBar.svelte';
 	import type { NavGroup, NavItem } from '../nav.js';
 	import { media } from '../media.svelte.js';
 	import { setHeaderActions } from '../shell-context.js';
@@ -74,6 +78,9 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		headerActionsIcon?: IconComponent;
 		headerActionsLabel?: string;
 		headerActionsKey?: string | null;
+		/** Where a page with no level-1 PageHeader shows `headerActions`: in the TopBar (default
+		 *  true), or nowhere (false). */
+		headerActionsFallback?: boolean;
 		padded?: boolean;
 		toaster?: boolean;
 		railExpanded?: boolean;
@@ -105,6 +112,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		headerActionsIcon = Search,
 		headerActionsLabel = strings.search,
 		headerActionsKey = '/',
+		headerActionsFallback = true,
 		padded = true,
 		toaster = true,
 		railExpanded = $bindable(),
@@ -115,6 +123,10 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		class: className = '',
 		children
 	}: Props = $props();
+
+	// Level-1 PageHeaders on the page; with none, the TopBar hosts the header actions.
+	let claims = $state(0);
+	const fallbackBar = $derived(!topBar && !!headerActions && headerActionsFallback && claims === 0);
 
 	setHeaderActions({
 		get snippet() {
@@ -134,6 +146,21 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		},
 		get current() {
 			return current;
+		},
+		get fallback() {
+			return headerActionsFallback;
+		},
+		get claimed() {
+			return claims > 0;
+		},
+		// Called from a header's effect: the count is written, never read there.
+		claim() {
+			untrack(() => (claims += 1));
+			let held = true;
+			return () => {
+				if (held) untrack(() => (claims -= 1));
+				held = false;
+			};
 		}
 	});
 </script>
@@ -184,7 +211,11 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 				account={account ? sheetFooter : undefined}
 			/>
 		{/if}
-		{@render topBar?.()}
+		{#if topBar}
+			{@render topBar()}
+		{:else if fallbackBar}
+			<TopBar variant="slim" class="ds-appshell-fallback" />
+		{/if}
 		<main id="ds-main" tabindex="-1" class="main" data-padded={padded ? '' : undefined}>
 			{@render children()}
 		</main>
@@ -263,6 +294,11 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		padding: 0 0 var(--ds-chrome-bottom);
 	}
 	.ds-appshell:has(:global(.ds-fullbleed)) .footer {
+		display: none;
+	}
+	/* Server-rendered markup cannot know whether the page claims the header actions: a page with a
+	   level-1 header hides the shell's fallback bar until the client removes it. */
+	.ds-appshell:has(:global(.ds-pageheader[data-shell-claim])) :global(.ds-appshell-fallback) {
 		display: none;
 	}
 	.footer {

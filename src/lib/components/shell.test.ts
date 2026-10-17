@@ -183,6 +183,15 @@ describe('NavRail', () => {
 	});
 });
 
+describe('NavRail version', () => {
+	it('shows the version collapsed as well as expanded', async () => {
+		const { rerender } = render(NavRail, { items, expanded: false, pinned: true, version: 'v2.4.1' });
+		expect(screen.getByText('v2.4.1')).toBeTruthy();
+		await rerender({ expanded: true });
+		expect(screen.getByText('v2.4.1')).toBeTruthy();
+	});
+});
+
 describe('TabBar', () => {
 	it('shows four tabs and puts the rest behind More', () => {
 		const { container } = render(TabBar, { items, groups, current: 'users' });
@@ -202,6 +211,52 @@ describe('SideNav', () => {
 		const select = screen.getByRole('combobox') as HTMLSelectElement;
 		await fireEvent.change(select, { target: { value: '/audit' } });
 		expect(onnavigate).toHaveBeenCalledWith('/audit');
+	});
+});
+
+describe('SideNav collapsible groups', () => {
+	const sections: NavGroup[] = [
+		{ id: 'admin', label: 'Admin' },
+		{ id: 'data', label: 'Data', collapsed: false },
+		{ id: 'archive', label: 'Archive', collapsed: true }
+	];
+	const pages: NavItem[] = [
+		{ id: 'home', label: 'Home', href: '/' },
+		{ id: 'users', label: 'Users', href: '/users', group: 'admin' },
+		{ id: 'imports', label: 'Imports', href: '/imports', group: 'data' },
+		{ id: 'old', label: 'Old records', href: '/old', group: 'archive' }
+	];
+	const expanded = (name: string) => screen.getByRole('button', { name }).getAttribute('aria-expanded');
+
+	it("starts each group as its collapsed option says, and the current page's group open", () => {
+		render(SideNav, { items: pages, groups: sections, current: 'home', label: 'Sections', collapsible: true });
+		expect(expanded('Admin')).toBe('false');
+		expect(expanded('Data')).toBe('true');
+		expect(expanded('Archive')).toBe('false');
+		// Items outside any group have no toggle and stay listed.
+		expect(screen.getByRole('link', { name: 'Home' })).toBeTruthy();
+		expect(screen.getByRole('link', { name: 'Imports' })).toBeTruthy();
+		expect(screen.queryByRole('link', { name: 'Old records' })).toBeNull();
+	});
+
+	it('opens a group marked collapsed when it holds the current page, and toggles', async () => {
+		render(SideNav, { items: pages, groups: sections, current: 'old', label: 'Sections', collapsible: true });
+		expect(expanded('Archive')).toBe('true');
+		await fireEvent.click(screen.getByRole('button', { name: 'Data' }));
+		expect(expanded('Data')).toBe('false');
+		expect(screen.queryByRole('link', { name: 'Imports' })).toBeNull();
+	});
+
+	it("describes an item with its description", () => {
+		render(SideNav, {
+			items: [{ id: 'keys', label: 'Keys', href: '/keys', description: 'Tokens for scripts and services' }],
+			current: 'keys',
+			label: 'Sections'
+		});
+		const link = screen.getByRole('link', { name: 'Keys' });
+		const tip = document.getElementById(link.getAttribute('aria-describedby')!)!;
+		expect(tip.getAttribute('role')).toBe('tooltip');
+		expect(tip.textContent).toBe('Tokens for scripts and services');
 	});
 });
 

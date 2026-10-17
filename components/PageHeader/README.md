@@ -21,8 +21,28 @@ Put it **first** on the page. Something that must sit above it bleeds the same w
 The title keeps its width and truncates at the lead's edge; **the count is what gives way** on a
 narrow header.
 
-On a header **narrower than 560px** (a phone), when the title does not fit beside the actions —
-the shell's header-actions icon and the page's own — the actions move to a second line,
+## Making room
+
+When the title (and the count and anything after it) do not fit beside the actions on one line, the
+header makes room in steps, at any width, and gives it back as the header widens:
+
+1. The shell's header actions collapse to their icon button (as they always are on a phone).
+2. The `actions` snippet is told `{ compact: true }`: render the icon form of its buttons there.
+
+```svelte
+<PageHeader title="Records" count={1284}>
+  {#snippet actions({ compact })}
+    {#if compact}
+      <Button variant="icon" icon={Download} label="Export" />
+    {:else}
+      <Button variant="ghost" icon={Download}>Export</Button>
+    {/if}
+  {/snippet}
+</PageHeader>
+```
+
+A snippet that ignores `compact` keeps its one form. On a header **narrower than 560px** (a phone),
+when the title still does not fit beside the actions, the actions move to a second line,
 right-aligned, and the title keeps the full first line. A title that fits keeps one line, and the
 count still gives way before anything wraps. A title longer than a phone's whole width still
 truncates; keep titles short.
@@ -32,16 +52,18 @@ truncates; keep titles short.
 `title`, `count` (a number, localized — or preformatted text like "38 this week"), `level` (the
 heading level, default 1), `mono` (the title is an identifier — a serial, a hash, a path, a
 record number — and is set in mono with tabular figures, as identifiers are everywhere else),
-`actions` snippet (search, Views, Sort, density, Filters), `sticky`
+`actions` snippet (search, Views, Sort, density, Filters; receives `{ compact }`), `sticky`
 (sticks to the top of the scrolling pane at `--ds-z-sticky`), `class`, children (inline after the
 title), `shellActions` (default true).
 
 ## The shell's header actions
 
 Inside an `AppShell` with `headerActions`, a level-1 header renders those shell-wide controls ahead
-of its own `actions` — the page's primary button stays right-most — and on phones swaps them for
-an icon button that opens a full-width row under the bar (see the `AppShell` card). The page writes
-nothing for this. `shellActions={false}` leaves them out of one page's header.
+of its own `actions` — the page's primary button stays right-most — and on phones, or when the
+header lacks room, swaps them for an icon button that opens a full-width row under the bar (see the
+`AppShell` card). The page writes nothing for this. `shellActions={false}` leaves them out of one
+page's header. Either way a level-1 header claims them: only a page with no level-1 header gets
+them in the TopBar instead.
 
 ## Don't
 

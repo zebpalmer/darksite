@@ -35,7 +35,8 @@
 <h2>Slots, pinned collapsed</h2>
 <p>
 	<code>expanded=&#123;false&#125; pinned</code> keeps a rail collapsed with no toggle. The search and
-	status slots get the rail's own tooltip; the badge slot replaces each item's count.
+	status slots get the rail's own tooltip; the badge slot replaces each item's count. The version shows
+	in both states; collapsed, a long one is truncated and hovering shows it whole.
 </p>
 {#snippet search({ expanded, tip }: RailSlotArgs)}
 	<Button
@@ -60,10 +61,27 @@
 {/snippet}
 <div class="frames">
 	<div class="frame">
-		<NavRail items={sample} current="records" expanded={false} pinned {search} {status} {badge} />
+		<NavRail
+			items={sample}
+			current="records"
+			expanded={false}
+			pinned
+			{search}
+			{status}
+			{badge}
+			version="v12.40.3-rc.1"
+		/>
 	</div>
 	<div class="frame">
-		<NavRail items={sample} current="records" expanded pinned {search} {status} />
+		<NavRail
+			items={sample}
+			current="records"
+			expanded
+			pinned
+			{search}
+			{status}
+			version="v12.40.3-rc.1"
+		/>
 	</div>
 </div>
 <p>Search pressed {searches} times.</p>
