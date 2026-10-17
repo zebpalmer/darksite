@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.16.0] — 2026-10-16
+
 ### Added
 
 - `AppShell proseAlign` (`start` | `center`): where a document page's `ds-prose` or `ds-reading`
