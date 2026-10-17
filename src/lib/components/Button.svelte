@@ -115,7 +115,7 @@ page, `name` / `value`, `download`, `target`, `rel`, `data-*`).
 	aria-disabled={inert && (href || explained) ? 'true' : undefined}
 	tabindex={href && explained ? (rest.tabindex ?? 0) : rest.tabindex}
 	aria-busy={loading ? 'true' : undefined}
-	aria-pressed={pressed === undefined ? undefined : pressed ? 'true' : 'false'}
+	aria-pressed={pressed === undefined ? rest['aria-pressed'] : pressed ? 'true' : 'false'}
 	aria-label={variant === 'icon' ? (label ?? rest['aria-label']) : rest['aria-label']}
 	aria-keyshortcuts={shortcut}
 	onclick={guard}

@@ -106,6 +106,11 @@ describe('Button', () => {
 		expect(screen.getByRole('button', { name: 'Repeat' }).getAttribute('aria-pressed')).toBe('true');
 	});
 
+	it('passes a bare aria-pressed through, for a toggle that keeps its resting look', () => {
+		render(Button, { label: 'Play', 'aria-pressed': 'true' });
+		expect(screen.getByRole('button', { name: 'Play' }).getAttribute('aria-pressed')).toBe('true');
+	});
+
 	it('passes native link attributes through, for a download or a full page load', () => {
 		render(Button, {
 			href: '/export.csv',

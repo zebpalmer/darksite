@@ -14,6 +14,13 @@ All notable changes to darksite are recorded here. The format follows
 - `Table rowLabel(row)`: the accessible name of a row's link. The link wraps the first cell, so
   without it a row whose first cell is a status or a date was announced by that status or date.
 
+### Fixed
+
+- `Toaster`: the queue sits in a region landmark named "Notifications". It was page content outside
+  every landmark, on every page that renders the shell.
+- `Button`: a bare `aria-pressed` attribute passes through. It was overwritten with nothing unless
+  `pressed` was set, so a toggle could not report its state without the pressed look.
+
 ## [0.17.0] — 2026-10-16
 
 ### Added

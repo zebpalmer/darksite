@@ -91,9 +91,10 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 
 <svelte:window {onkeydown} />
 
-<!-- The queue travels into an open modal; this wrapper keeps its place in the page. -->
+<!-- The queue travels into an open modal; this wrapper keeps its place in the page. The layer is a
+     labeled region, so the queue sits in a landmark like the rest of the page, wherever it is. -->
 <div class="ds-toaster-home">
-	<div class="ds-toaster-layer" {@attach topmost ? toTopmost : undefined}>
+	<section class="ds-toaster-layer" aria-label={strings.notifications} {@attach topmost ? toTopmost : undefined}>
 	<div class="ds-sr-only" role="status" aria-live="polite" aria-atomic="true">{polite}</div>
 	<div class="ds-sr-only" role="alert" aria-live="assertive" aria-atomic="true">{assertive}</div>
 	<ol class="ds-toaster" aria-label={strings.notifications}>
@@ -127,7 +128,7 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 			</li>
 		{/each}
 	</ol>
-	</div>
+	</section>
 </div>
 
 <style>
