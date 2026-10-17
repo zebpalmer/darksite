@@ -14,11 +14,11 @@
 @component
 Steps — numbered steps for getting something done: "Get started", a setup, a how-to's outline. An
 ordered list (screen readers hear the count and position), each step a number, a title, a sentence
-and an optional link. Three or four across when there is room, by the list's own width; one per line
-below that.
+and an optional link, one per line. `variant="cards"` makes each step a tile instead, three or four
+across when there is room, by the list's own width, and one per line below that.
 
 - `steps` (`{ title, text?, href?, linkLabel? }[]`), `step` snippet (custom content for a step;
-  receives `{ step, index }`), `label` (names the list), `class`.
+  receives `{ step, index }`), `label` (names the list), `variant` (`list` | `cards`), `class`.
 -->
 <script lang="ts">
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
@@ -27,13 +27,15 @@ below that.
 		steps: readonly Step[];
 		step?: Snippet<[{ step: Step; index: number }]>;
 		label?: string;
+		/** A plain numbered list (default), or a tile per step. */
+		variant?: 'list' | 'cards';
 		class?: string;
 	}
 
-	let { steps, step, label, class: className = '' }: Props = $props();
+	let { steps, step, label, variant = 'list', class: className = '' }: Props = $props();
 </script>
 
-<div class="ds-steps {className}">
+<div class="ds-steps {className}" data-variant={variant}>
 	<ol aria-label={label}>
 		{#each steps as s, i (i)}
 			<li class="step">
@@ -64,14 +66,19 @@ below that.
 		padding: 0;
 		list-style: none;
 	}
+	[data-variant='list'] ol {
+		gap: 16px;
+	}
 	@container (min-width: 720px) {
-		ol {
+		[data-variant='cards'] ol {
 			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		}
 	}
 	.step {
 		display: flex;
 		gap: 12px;
+	}
+	[data-variant='cards'] .step {
 		padding: 14px;
 		border: 1px solid var(--ds-border-subtle);
 		border-radius: var(--ds-radius-md);

@@ -6,6 +6,26 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `AppShell proseAlign` (`start` | `center`): where a document page's `ds-prose` or `ds-reading`
+  article sits in a column wider than its measure. It defaults to `center` with `nav="top"`, so a
+  document page under a full-width top bar no longer hugs the left edge, and to `start` with the
+  rail, as before.
+- `Steps variant`: `list` (the default) or `cards`.
+
+### Changed
+
+- `Steps` is a plain numbered list by default: a number, a title and a line of text per step, one
+  per line, with no box around each step. The tiles, three or four across, are now
+  `variant="cards"`.
+
+### Fixed
+
+- `Table` headers on sortable columns no longer truncate while the column has room. The sort
+  button's negative side margins made Chromium size the header 8px narrower than its label, so
+  "Status" showed as "St…" even in a wide column.
+
 ## [0.15.0] — 2026-10-16
 
 ### Added
