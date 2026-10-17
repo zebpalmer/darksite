@@ -52,7 +52,7 @@ const GROUNDS = [
 	'ds-text-inverse'
 ];
 const EDGES = ['ds-border-subtle', 'ds-border', 'ds-border-strong', 'ds-sev-off'];
-const TEXTS = ['ds-text-1', 'ds-text-2', 'ds-text-3'];
+const TEXTS = ['ds-text-heading', 'ds-text-1', 'ds-text-2', 'ds-text-3'];
 const TINTS = [
 	...ACCENT_TINTS,
 	...ACCENT_2_TINTS,
@@ -162,10 +162,24 @@ export function generateBrand(tokens, brand) {
 		const locks = new Set();
 
 		// Grounds, edges and text: a gray tint, or explicit surfaces (a page color, a text color).
-		const surface = READING.has(mode)
+		// The reading modes and high contrast keep their own lightness unless the brand names them;
+		// high contrast still takes the dark surface's tint, so it reads as the same brand.
+		const own = READING.has(mode) || mode === 'contrast';
+		const surface = own
 			? brand.surfaces?.[mode]
 			: (brand.surfaces?.[mode] ?? brand.surfaces?.[family]);
-		const neutral = READING.has(mode) && !brand.surfaces?.[mode] ? undefined : brand.neutral;
+		const tintOf = (bg) => {
+			if (!bg) return undefined;
+			const from = oklch(value('ds-bg-1'));
+			const to = oklch(bg);
+			const chroma = ratioOf(from, to);
+			return { hue: to.h, chroma: chroma ?? 1 };
+		};
+		const neutral =
+			READING.has(mode) && !brand.surfaces?.[mode]
+				? undefined
+				: (brand.neutral ??
+					(mode === 'contrast' && !surface ? tintOf(brand.surfaces?.dark?.bg) : undefined));
 		let groundShift;
 		if (surface?.bg) {
 			const from = oklch(value('ds-bg-1'));

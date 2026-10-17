@@ -9,8 +9,8 @@
 				"ds-bg-0": "#10111b",
 				"ds-bg-1": "#161826",
 				"ds-bg-3": "#1f2130",
-				"ds-text-1": "#e9e9ed",
-				"ds-text-2": "#b8bbcc",
+				"ds-text-1": "#d6d6db",
+				"ds-text-2": "#b0b3c4",
 				"ds-accent": "#9184d9",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -82,8 +82,8 @@
 				"ds-bg-0": "#0c121b",
 				"ds-bg-1": "#101a26",
 				"ds-bg-3": "#192330",
-				"ds-text-1": "#e7eaed",
-				"ds-text-2": "#b2bdcc",
+				"ds-text-1": "#d4d7db",
+				"ds-text-2": "#aab5c4",
 				"ds-accent": "#5b8def",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -155,8 +155,8 @@
 				"ds-bg-0": "#0b1414",
 				"ds-bg-1": "#101c1c",
 				"ds-bg-3": "#192526",
-				"ds-text-1": "#e7eaea",
-				"ds-text-2": "#b2bfc0",
+				"ds-text-1": "#d4d7d8",
+				"ds-text-2": "#aab7b8",
 				"ds-accent": "#2bb3a8",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -228,8 +228,8 @@
 				"ds-bg-0": "#0e1310",
 				"ds-bg-1": "#141b17",
 				"ds-bg-3": "#1d2420",
-				"ds-text-1": "#e8eae9",
-				"ds-text-2": "#b6bfb9",
+				"ds-text-1": "#d5d7d6",
+				"ds-text-2": "#aeb7b1",
 				"ds-accent": "#4fb477",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -301,8 +301,8 @@
 				"ds-bg-0": "#16110c",
 				"ds-bg-1": "#1e1811",
 				"ds-bg-3": "#282119",
-				"ds-text-1": "#ebe9e7",
-				"ds-text-2": "#c2bbb2",
+				"ds-text-1": "#d8d6d4",
+				"ds-text-2": "#bab3aa",
 				"ds-accent": "#e0a43a",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -374,8 +374,8 @@
 				"ds-bg-0": "#17100f",
 				"ds-bg-1": "#201615",
 				"ds-bg-3": "#2a1f1d",
-				"ds-text-1": "#ece9e8",
-				"ds-text-2": "#c5b9b7",
+				"ds-text-1": "#d9d6d5",
+				"ds-text-2": "#bdb1af",
 				"ds-accent": "#d6728f",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -447,8 +447,8 @@
 				"ds-bg-0": "#111213",
 				"ds-bg-1": "#18191b",
 				"ds-bg-3": "#212224",
-				"ds-text-1": "#e9e9ea",
-				"ds-text-2": "#bbbcbe",
+				"ds-text-1": "#d6d7d7",
+				"ds-text-2": "#b3b4b6",
 				"ds-accent": "#aab0c0",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -520,8 +520,8 @@
 				"ds-bg-0": "#0b1416",
 				"ds-bg-1": "#0f1b1f",
 				"ds-bg-3": "#172529",
-				"ds-text-1": "#e7eaeb",
-				"ds-text-2": "#b1bfc4",
+				"ds-text-1": "#d3d7d9",
+				"ds-text-2": "#a9b7bc",
 				"ds-accent": "#2bb3a8",
 				"ds-accent-2": "#4f9be6",
 				"ds-success": "#6fbf8e",
@@ -642,17 +642,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#282c35",
-				"ds-bg-1": "#2e3440",
-				"ds-bg-3": "#383e4b",
-				"ds-text-1": "#f6f8ff",
-				"ds-text-2": "#f6f8ff",
+				"ds-bg-0": "#0e121a",
+				"ds-bg-1": "#141924",
+				"ds-bg-3": "#1d222e",
+				"ds-text-1": "#e8e9ed",
+				"ds-text-2": "#dde0e6",
 				"ds-accent": "#73abba",
 				"ds-accent-2": "#ae89a7",
 				"ds-success": "#9ab583",
 				"ds-warning": "#cdae6f",
-				"ds-danger": "#d87880",
-				"ds-rail-bg-0": "#282c35"
+				"ds-danger": "#d7777f",
+				"ds-rail-bg-0": "#0e121a"
 			}
 		}
 	},
@@ -667,7 +667,7 @@
 				"ds-bg-1": "#282a36",
 				"ds-bg-3": "#323440",
 				"ds-text-1": "#f8f8f2",
-				"ds-text-2": "#cacac4",
+				"ds-text-2": "#d4d4cf",
 				"ds-accent": "#bd93f9",
 				"ds-accent-2": "#ff79c6",
 				"ds-success": "#50fa7b",
@@ -715,17 +715,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#21222b",
-				"ds-bg-1": "#282a36",
-				"ds-bg-3": "#323440",
-				"ds-text-1": "#f8f8f2",
-				"ds-text-2": "#eeeee8",
+				"ds-bg-0": "#101119",
+				"ds-bg-1": "#161824",
+				"ds-bg-3": "#1f212d",
+				"ds-text-1": "#e9e9ec",
+				"ds-text-2": "#dedfe6",
 				"ds-accent": "#b288ed",
 				"ds-accent-2": "#e35fac",
 				"ds-success": "#00cd53",
 				"ds-warning": "#b3bb4c",
 				"ds-danger": "#fd5354",
-				"ds-rail-bg-0": "#21222b"
+				"ds-rail-bg-0": "#101119"
 			}
 		}
 	},
@@ -788,17 +788,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#06222a",
-				"ds-bg-1": "#002b36",
-				"ds-bg-3": "#093541",
-				"ds-text-1": "#d3e1e1",
-				"ds-text-2": "#d3e1e1",
+				"ds-bg-0": "#00151c",
+				"ds-bg-1": "#001d26",
+				"ds-bg-3": "#002732",
+				"ds-text-1": "#e3ebee",
+				"ds-text-2": "#d3e3e8",
 				"ds-accent": "#49a8f1",
 				"ds-accent-2": "#37aba1",
 				"ds-success": "#a2b738",
 				"ds-warning": "#d8ab3d",
 				"ds-danger": "#fd554c",
-				"ds-rail-bg-0": "#06222a"
+				"ds-rail-bg-0": "#00151c"
 			}
 		}
 	},
@@ -813,7 +813,7 @@
 				"ds-bg-1": "#282828",
 				"ds-bg-3": "#323232",
 				"ds-text-1": "#ebdbb2",
-				"ds-text-2": "#c3b48c",
+				"ds-text-2": "#c8b890",
 				"ds-accent": "#fe8019",
 				"ds-accent-2": "#8ec07c",
 				"ds-success": "#b8bb26",
@@ -861,17 +861,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#202020",
-				"ds-bg-1": "#282828",
-				"ds-bg-3": "#323232",
-				"ds-text-1": "#efdfb6",
-				"ds-text-2": "#efdfb7",
+				"ds-bg-0": "#121212",
+				"ds-bg-1": "#191919",
+				"ds-bg-3": "#222222",
+				"ds-text-1": "#e9e9e9",
+				"ds-text-2": "#e0e0e0",
 				"ds-accent": "#f67803",
 				"ds-accent-2": "#75a664",
 				"ds-success": "#b0b316",
 				"ds-warning": "#e2a700",
 				"ds-danger": "#ff543e",
-				"ds-rail-bg-0": "#202020"
+				"ds-rail-bg-0": "#121212"
 			}
 		}
 	},
@@ -886,7 +886,7 @@
 				"ds-bg-1": "#1e1e2e",
 				"ds-bg-3": "#272738",
 				"ds-text-1": "#cdd6f4",
-				"ds-text-2": "#a1a9c6",
+				"ds-text-2": "#abb3d0",
 				"ds-accent": "#cba6f7",
 				"ds-accent-2": "#89b4fa",
 				"ds-success": "#a6e3a1",
@@ -934,17 +934,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#171723",
-				"ds-bg-1": "#1e1e2e",
-				"ds-bg-3": "#272738",
-				"ds-text-1": "#cdd6f4",
-				"ds-text-2": "#c8d1ef",
+				"ds-bg-0": "#11111c",
+				"ds-bg-1": "#171727",
+				"ds-bg-3": "#202031",
+				"ds-text-1": "#e9e9ed",
+				"ds-text-2": "#dedfe8",
 				"ds-accent": "#b28ddc",
 				"ds-accent-2": "#6d97db",
 				"ds-success": "#81bd7d",
 				"ds-warning": "#c6b07e",
 				"ds-danger": "#d87390",
-				"ds-rail-bg-0": "#171723"
+				"ds-rail-bg-0": "#11111c"
 			}
 		}
 	},
@@ -959,7 +959,7 @@
 				"ds-bg-1": "#1a1b26",
 				"ds-bg-3": "#232430",
 				"ds-text-1": "#c0caf5",
-				"ds-text-2": "#98a2cb",
+				"ds-text-2": "#9ea8d1",
 				"ds-accent": "#7aa2f7",
 				"ds-accent-2": "#bb9af7",
 				"ds-success": "#9ece6a",
@@ -1007,17 +1007,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#13141c",
-				"ds-bg-1": "#1a1b26",
-				"ds-bg-3": "#232430",
-				"ds-text-1": "#c0caf5",
-				"ds-text-2": "#c0c9f4",
+				"ds-bg-0": "#111119",
+				"ds-bg-1": "#171823",
+				"ds-bg-3": "#20212d",
+				"ds-text-1": "#e9e9ec",
+				"ds-text-2": "#dedfe5",
 				"ds-accent": "#779ef3",
 				"ds-accent-2": "#a382dd",
 				"ds-success": "#8dbc58",
 				"ds-warning": "#d9a862",
 				"ds-danger": "#e76881",
-				"ds-rail-bg-0": "#13141c"
+				"ds-rail-bg-0": "#111119"
 			}
 		}
 	},
@@ -1032,7 +1032,7 @@
 				"ds-bg-1": "#191724",
 				"ds-bg-3": "#22202e",
 				"ds-text-1": "#e0def4",
-				"ds-text-2": "#b3b1c6",
+				"ds-text-2": "#bdbbd0",
 				"ds-accent": "#c4a7e7",
 				"ds-accent-2": "#ebbcba",
 				"ds-success": "#6fbf8e",
@@ -1080,17 +1080,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#12101a",
+				"ds-bg-0": "#12111a",
 				"ds-bg-1": "#191724",
 				"ds-bg-3": "#22202e",
-				"ds-text-1": "#e0def4",
-				"ds-text-2": "#d6d4ea",
+				"ds-text-1": "#e9e9ed",
+				"ds-text-2": "#dfdfe6",
 				"ds-accent": "#ae92d0",
 				"ds-accent-2": "#b68a88",
 				"ds-success": "#6fbf8e",
 				"ds-warning": "#dba85e",
 				"ds-danger": "#e4698c",
-				"ds-rail-bg-0": "#12101a"
+				"ds-rail-bg-0": "#12111a"
 			}
 		}
 	},
@@ -1153,17 +1153,17 @@
 				"ds-rail-bg-0": "#13100c"
 			},
 			"contrast": {
-				"ds-bg-0": "#21242a",
-				"ds-bg-1": "#282c34",
-				"ds-bg-3": "#32363e",
-				"ds-text-1": "#e1e8f5",
-				"ds-text-2": "#e1e8f4",
+				"ds-bg-0": "#0f1217",
+				"ds-bg-1": "#161921",
+				"ds-bg-3": "#1e222a",
+				"ds-text-1": "#e8e9ec",
+				"ds-text-2": "#dee0e4",
 				"ds-accent": "#5aa8e7",
 				"ds-accent-2": "#c072d7",
 				"ds-success": "#8fba70",
 				"ds-warning": "#d1ac68",
 				"ds-danger": "#e26e77",
-				"ds-rail-bg-0": "#21242a"
+				"ds-rail-bg-0": "#0f1217"
 			}
 		}
 	}

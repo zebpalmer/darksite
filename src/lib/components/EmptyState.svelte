@@ -54,7 +54,7 @@ confirmed), a 24px icon, a 16/500 title, one sentence and one action.
 		font-size: var(--ds-text-lg);
 		line-height: var(--ds-lh-lg);
 		font-weight: 500;
-		color: var(--ds-text-1);
+		color: var(--ds-text-heading);
 	}
 	.msg {
 		margin: 0;

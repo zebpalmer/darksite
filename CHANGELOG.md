@@ -6,6 +6,32 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `ds-text-heading`: a heading text role, a step brighter than `ds-text-1` in the dark modes (16.3:1
+  on `ds-bg-1`) and darker in the light ones. `PageHeader`, `Intro`, `EmptyState`, `ErrorPage`,
+  `Pane`, `Sheet` and `Dialog` titles and the `ds-prose` / `ds-reading` headings use it, and the
+  contrast check holds it to 4.5:1 on every ground.
+- `Banner strong`: the tone's solid fill instead of its tint (`ds-accent`, the new
+  `ds-warning-fill`, or `ds-danger-fill`), with everything inside in the fill's contrast color and
+  a secondary Button in `action` drawn as an outline. For a condition nobody may miss, such as a
+  staging site. New roles `ds-warning-fill` and `ds-warning-contrast` (9.5:1).
+- `--ds-chrome-top`: the sticky chrome's height at the top — the TopNav's in a `nav="top"` shell,
+  0 with the rail. A sticky sidebar or map offsets its `top` by it; a sticky `TopBar`, `SideNav`
+  and sticky `PageHeader` now stop below the TopNav instead of sliding under it.
+
+### Changed
+
+- Softer body text in dark mode: `ds-text-1` is 12.2:1 on `ds-bg-1` (was 14.5:1) and `ds-text-2`
+  8.5:1 (was 9.2:1), easier to read at length, with headings carried by `ds-text-heading`. High
+  contrast keeps its brighter text.
+
+### Fixed
+
+- `darksite-theme`: a brand's dark `surfaces` no longer move high contrast's grounds and text to the
+  dark surface's lightness. High contrast keeps its own darker grounds and brighter text, in the
+  surface's tint, unless `surfaces.contrast` names its own.
+
 ## [0.19.0] — 2026-10-17
 
 ### Added

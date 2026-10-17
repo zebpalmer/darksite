@@ -203,7 +203,7 @@ not enough, the actions move to a second line, right-aligned, so the title is no
 	}
 	.sticky {
 		position: sticky;
-		top: var(--ds-topbar-sticky, 0px);
+		top: var(--ds-topbar-sticky, var(--ds-chrome-top, 0px));
 		z-index: var(--ds-z-sticky);
 	}
 	.lead {
@@ -219,7 +219,7 @@ not enough, the actions move to a second line, right-aligned, so the title is no
 		max-width: 100%;
 		margin: 0;
 		overflow: hidden;
-		color: var(--ds-text-1);
+		color: var(--ds-text-heading);
 		font-size: var(--ds-text-xl);
 		line-height: var(--ds-lh-xl);
 		font-weight: 500;

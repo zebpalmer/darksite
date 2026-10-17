@@ -11,6 +11,17 @@ it. 40px, the tone's tint ground, its icon, one sentence and at most one action.
 `info` (accent tint), `warning`, `danger`. `info` and `warning` are `role="status"`; `danger` is
 `role="alert"`.
 
+`strong` swaps the tint for the tone's **solid fill** — `ds-accent`, `ds-warning-fill` or
+`ds-danger-fill` — with everything inside in the fill's contrast color, and a secondary `Button` in
+`action` drawn as an outline. Use it for a condition nobody may miss, such as a staging or test
+site, or an outage; a strong banner on every page soon stops being read.
+
+```svelte
+<Banner id="staging" tone="warning" strong message="This is the staging site.">
+  {#snippet action()}<Button size="dense" href="https://example.com">Go to the live site</Button>{/snippet}
+</Banner>
+```
+
 ## Dismissal
 
 `dismissible` with an `id` adds a × and remembers the dismissal for this viewer (`viewer` scopes it

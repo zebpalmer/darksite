@@ -38,7 +38,7 @@ object leaves out takes its family's color: `night` and `contrast` take `dark`'s
 | `accent` | Primary buttons, the current item, the focus ring, links, selection, tints. The color lands exactly on the accent fill in the modes it names; the hover, pressed, text and tint roles keep their spacing around it. |
 | `accent2` | A second color (`ds-accent-2`, `-text`, `-tint`) for highlights and charts. Never a button, a focus ring or a meaning. |
 | `neutral` | The grays' tint: `{ "hue": 40, "chroma": 0.5 }`. `hue` in degrees (OKLCH); `chroma` a multiple of the default tint, 0 for pure gray. Moves every ground, edge and text role. |
-| `surfaces` | Exact page and text colors per mode: `{ "dark": { "bg": "#2e3440", "text": "#d8dee9" } }`. `bg` is the page (`ds-bg-1`); the other grounds and the edges keep their steps around it. Paper and night keep their warm grounds unless named here. |
+| `surfaces` | Exact page and text colors per mode: `{ "dark": { "bg": "#2e3440", "text": "#d8dee9" } }`. `bg` is the page (`ds-bg-1`); the other grounds and the edges keep their steps around it. Paper and night keep their warm grounds, and high contrast its own darker ones, unless named here. |
 | `chrome` | The navigation's own color: `{ "rail": "#24130d", "bar": "#…" }`. The rail is `NavRail`; the bar is `TopBar` and `TabBar`. Each gets its own grounds, text, edges and accent from the one color, and everything inside it follows. |
 | `success`, `warning`, `danger` | A product's own green, yellow and red, with their text, tints and severity stops. |
 | `fonts` | `{ "sans": "…", "mono": "…", "reading": "…" }`: CSS font stacks. Load the font files yourself. |
@@ -65,5 +65,6 @@ A brand whose colors cannot pass — a `roles` value that fails, say — exits w
 
 Every brand works in all five modes. In the reading modes the grounds stay warm and the text stays
 soft whatever the brand, and the brand's accent, second color and fonts carry over; name `paper` or
-`night` in `surfaces` to change their grounds too. High contrast keeps its own lighter values for a
-plain accent color, so it stays at 7:1.
+`night` in `surfaces` to change their grounds too. High contrast keeps its own grounds and text
+unless `surfaces` names `contrast` (it takes the dark surface's tint, not its lightness), and its
+own lighter values for a plain accent color, so it stays at 7:1.

@@ -70,8 +70,9 @@
   --ds-border-subtle: #242636;
   --ds-border: #313446;
   --ds-border-strong: #4a4e62;
-  --ds-text-1: #e9e9ed;
-  --ds-text-2: #b8bbcc;
+  --ds-text-heading: #f6f6f8;
+  --ds-text-1: #d6d6db;
+  --ds-text-2: #b0b3c4;
   --ds-text-3: #8c90a5;
   --ds-text-inverse: #10111b;
   --ds-accent: var(--color-primary-500);
@@ -89,6 +90,8 @@
   --ds-warning: var(--color-warning-500);
   --ds-warning-text: var(--color-warning-300);
   --ds-warning-tint: var(--color-warning-900);
+  --ds-warning-fill: var(--color-warning-400);
+  --ds-warning-contrast: var(--color-warning-950);
   --ds-danger: var(--color-error-500);
   --ds-danger-fill: var(--color-error-500);
   --ds-danger-text: var(--color-error-300);
@@ -169,6 +172,7 @@
   --ds-border-subtle: #dfe1ea;
   --ds-border: #cdd0dd;
   --ds-border-strong: #a9adbf;
+  --ds-text-heading: #10111b;
   --ds-text-1: #1a1c29;
   --ds-text-2: #40445a;
   --ds-text-3: #5d6178;
@@ -265,6 +269,7 @@
   --ds-border-subtle: #e1d5ba;
   --ds-border: #cfc1a1;
   --ds-border-strong: #a99877;
+  --ds-text-heading: #292017;
   --ds-text-1: #3a2e21;
   --ds-text-2: #57473a;
   --ds-text-3: #6e5c47;
@@ -361,6 +366,7 @@
   --ds-border-subtle: #2b241b;
   --ds-border: #383025;
   --ds-border-strong: #52473a;
+  --ds-text-heading: #f0e7d5;
   --ds-text-1: #e2d4ba;
   --ds-text-2: #c0ae90;
   --ds-text-3: #9c8b70;
@@ -457,6 +463,7 @@
   --ds-border-subtle: #656772;
   --ds-border: #686b78;
   --ds-border-strong: #7d808e;
+  --ds-text-heading: #ffffff;
   --ds-text-1: #e9e9ed;
   --ds-text-2: #dedfe7;
   --ds-text-3: #b3b6c3;
@@ -553,6 +560,7 @@
     --ds-border-subtle: #dfe1ea;
     --ds-border: #cdd0dd;
     --ds-border-strong: #a9adbf;
+    --ds-text-heading: #10111b;
     --ds-text-1: #1a1c29;
     --ds-text-2: #40445a;
     --ds-text-3: #5d6178;
@@ -652,6 +660,7 @@
     --ds-border-subtle: #656772;
     --ds-border: #686b78;
     --ds-border-strong: #7d808e;
+    --ds-text-heading: #ffffff;
     --ds-text-1: #e9e9ed;
     --ds-text-2: #dedfe7;
     --ds-text-3: #b3b6c3;
@@ -778,6 +787,7 @@
   --ds-header-h: 56px;
   --ds-tabbar-h: 56px;
   --ds-chrome-bottom: 0px;
+  --ds-chrome-top: 0px;
   --ds-bp-compact: 520px;
   --ds-bp-phone: 768px;
   --ds-bp-wide: 1200px;

@@ -49,7 +49,7 @@ color — and never on a work or list page, where it would push the work below t
 	}
 	.title {
 		margin: 0;
-		color: var(--ds-text-1);
+		color: var(--ds-text-heading);
 		font-size: var(--ds-text-2xl);
 		line-height: var(--ds-lh-2xl);
 		font-weight: 500;

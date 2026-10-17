@@ -14,6 +14,7 @@ export function buildPairs(severities = SEVERITIES) {
 	const add = (fg, grounds, target, why) =>
 		grounds.forEach((bg) => pairs.push({ fg, bg, target, why }));
 
+	add('ds-text-heading', bgs(1, 2, 3, 4, 5), TEXT, 'headings');
 	add('ds-text-1', bgs(1, 2, 3, 4, 5), TEXT, 'primary text');
 	add('ds-text-2', bgs(1, 2, 3, 4, 5), TEXT, 'secondary text');
 	add('ds-text-3', bgs(1, 2, 3), TEXT, 'muted text (ds-text-2 from ds-bg-4 up)');
@@ -30,6 +31,7 @@ export function buildPairs(severities = SEVERITIES) {
 		TEXT,
 		'label on a filled accent (rest, hover, pressed, key cap)'
 	);
+	add('ds-warning-contrast', ['ds-warning-fill'], TEXT, 'text on a solid caution ground');
 	add(
 		'ds-danger-contrast',
 		['ds-danger-fill', 'ds-danger-strong'],

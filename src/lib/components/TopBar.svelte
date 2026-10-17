@@ -160,9 +160,10 @@ If a control is not relevant on every page of the section, it belongs in that pa
 	[data-variant='slim'] .line {
 		min-height: 40px;
 	}
+	/* Under a sticky TopNav, it sticks below it. */
 	.sticky {
 		position: sticky;
-		top: 0;
+		top: var(--ds-chrome-top, 0px);
 		z-index: var(--ds-z-topbar);
 	}
 	/* The scope cell gives way first: it shrinks and scrolls sideways (a row of chips), with room

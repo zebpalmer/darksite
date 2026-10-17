@@ -5,7 +5,8 @@ an optional TopBar and the page; below 768px the rail gives way to a TabBar. It 
 Toaster and a "Skip to content" link.
 
 It publishes the geometry pages rely on (docs/layout.md): the padded column's `--ds-pad-top` /
-`--ds-pad-x` (PageHeader cancels them to sit flush), and `--ds-chrome-bottom`, the tab bar's
+`--ds-pad-x` (PageHeader cancels them to sit flush), `--ds-chrome-top`, the sticky TopNav's height
+in a top-nav shell (a sticky sidebar or map offsets its `top` by it), and `--ds-chrome-bottom`, the tab bar's
 height on phones, so nothing is hidden under it. Content pages scroll the document; the rail stays
 in place.
 
@@ -392,6 +393,10 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	}
 	.skip:focus-visible {
 		transform: none;
+	}
+	/* The sticky TopNav's height: what a sticky sidebar, map or pane keeps clear at the top. */
+	:global(:root:has(.ds-appshell[data-nav='top'])) {
+		--ds-chrome-top: var(--ds-header-h);
 	}
 	@media (max-width: 767.98px) {
 		/* The tab bar's height, for a rail shell only: a top-nav shell has nothing fixed below. */
