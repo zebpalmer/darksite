@@ -1,6 +1,6 @@
 {
 	"name": "darksite",
-	"version": "0.17.0",
+	"version": "0.18.0",
 	"description": "A dark-first, keyboard-driven design system for operator software, for Svelte 5.",
 	"license": "MIT",
 	"type": "module",

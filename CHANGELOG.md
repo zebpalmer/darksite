@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.18.0] — 2026-10-17
+
 ### Added
 
 - `TableColumn.hideLabel`: the header is read by assistive technology but not shown, for a column
