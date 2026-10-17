@@ -261,6 +261,21 @@ describe('top navigation in a browser', () => {
 		await userEvent.keyboard('{Escape}');
 		expect(document.activeElement).toBe(button);
 	});
+
+	it('lays a sectioned menu out in columns side by side, the footer row under them', async () => {
+		render(TopNavHarness, { sectioned: true });
+		await userEvent.click(screen.getByRole('button', { name: 'Guides' }));
+		await settle();
+		const panel = document.querySelector<HTMLElement>('.panel')!;
+		expect(Math.round(panel.getBoundingClientRect().width)).toBe(3 * 240 + 8);
+		const cols = [...panel.querySelectorAll('.col')].map((c) => c.getBoundingClientRect());
+		expect(cols).toHaveLength(3);
+		expect(cols[0].top).toBe(cols[2].top);
+		expect(cols[1].left).toBeGreaterThan(cols[0].right - 1);
+		const foot = panel.querySelector('.foot')!.getBoundingClientRect();
+		expect(foot.top).toBeGreaterThanOrEqual(Math.max(...cols.map((c) => c.bottom)));
+		expect(panel.contains(document.activeElement)).toBe(true);
+	});
 });
 
 describe('Table column widths in a browser', () => {

@@ -137,6 +137,22 @@ const DEFAULTS = {
 	modePaper: 'Paper',
 	modeNight: 'Night',
 	modeContrast: 'High contrast',
+	/** ThemeToggle's label, naming the mode a press switches to: "Switch to light mode". */
+	switchToMode: (mode: string) => `Switch to ${mode.toLowerCase()} mode`,
+
+	// Search palette
+	searchPlaceholder: 'Search',
+	searchResults: 'Results',
+	searchScope: 'Search in',
+	allResults: 'All',
+	/** A group's link to its own scope: "All 23". */
+	allCount: (n: number) => `All ${n.toLocaleString()}`,
+	resultCount: (n: number) => plural(n, 'result', 'results'),
+	noResults: (query: string) => `No results for "${query}"`,
+	searchFailed: 'Search failed. Try again.',
+	moveHint: 'move',
+	openHint: 'open',
+	closeHint: 'close',
 
 	// Error page
 	goHome: 'Go home',

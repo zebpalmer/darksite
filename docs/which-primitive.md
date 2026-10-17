@@ -20,11 +20,13 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A value that exists nowhere yet | `Chip suggestion isNew` / `NewBadge` | Check names, aliases and spelling variants first, so `new` means genuinely new. |
 | Where a value came from | `SourceBadge` | One source per value — the most reliable that produced it — with its own confidence; the full list goes in the tooltip. |
 | The viewer's dark, light, reading or high-contrast mode | `ModePicker` | Drives the `mode` store; `MODE_SCRIPT` in `app.html` avoids a flash on load. |
+| Flip between dark and light | `ThemeToggle` | One icon button; the label names the action. `mode.init({ fallback })` and `modeScript(fallback)` pick the mode before the viewer does. The full set stays `ModePicker`. |
 | A product's own colors and fonts | A brand: `darksite/brands/<name>.css`, or `npx darksite-theme` | Never hand-written `--ds-*` overrides; the generator covers every role and mode and checks contrast. |
 | Long-form reading | `ds-reading` in a `paper` or `night` region | The reading font at a readable size and measure. |
 | Explain a field, a row or a state | `HelpTip` / `Field tip` | An icon whose tooltip is the note. **No inline sentences.** |
 | Pick one of 2–7 exclusive options | `SegmentedControl` | Density, a view mode, a three-way toggle. **Never a dropdown** for these. |
 | Pick a severity | `SeverityPicker` | Scale order, mark stripes, dashed for suggested. |
+| Search a whole site: people, records, docs | `SearchPalette` | A modal: grouped results, scope chips, ↑/↓ and Enter; rows are links. Opened by a bar Button or a field-shaped button, and `searchShortcut` (`/`, ⌘K). Picking a value in a form is a `Combobox`. |
 | Pick from many, or create | `Combobox` | Owners, assignees, tags. The `Create "…"` row is always last, on ⇧Enter. |
 | A labeled form control | `Field` + `Input` / `Combobox` / a native control | Field wires the id, the help/error text and `aria-describedby`. A group control (`SegmentedControl`, `Rating`, a picker) takes `aria-labelledby={f.labelId}`. |
 | Multi-line text in a form | `Textarea` in a `Field` | The Field contract, like `Input`. |
@@ -98,6 +100,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 |---|---|---|
 | The application frame | `AppShell` | Rail plus content column; publishes the padding, chrome-bottom and top-bar heights. One per app. |
 | Primary navigation, desktop | `NavRail` | 56 collapsed / 208 expanded, grouped, remembered per viewer. |
+| A top bar's group menu with many links | `TopNav` with `NavItem.section` (and `description`) | One column per section under a heading, the rest in a footer row ("All guides"). |
 | Primary navigation, phone | `TabBar` | At most five cells; the fifth opens a `Sheet` with the rest. |
 | Navigation inside a section | `SideNav` | 200px beside the page. A native `<select>` on phones. `collapsible` with a group's `collapsed` to start it closed or open; an item's `description` is its tooltip. |
 | A few sibling views of the same data | `Tabs` (links mode) inline in `PageHeader` | Only when all hold: about six sections at most; each is a view of the same data, not a settings page; and the pages are wide tables or grids that need the full width. Otherwise `SideNav`. |

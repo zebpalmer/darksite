@@ -20,7 +20,12 @@ less room than six segments need (a 320px phone column, a flex row, a grid cell)
 container and scrolls sideways, the current mode in view.
 
 To avoid a flash of the wrong mode on load, put `MODE_SCRIPT` — exported by darksite — in a
-`<script>` in `app.html`'s `<head>`: it applies the saved mode before the first paint.
+`<script>` in `app.html`'s `<head>`: it applies the saved mode before the first paint. For a product
+that starts in one mode rather than following the device, pass the same fallback to both:
+`mode.init({ fallback: 'dark' })` and `modeScript('dark')` (`MODE_SCRIPT` is `modeScript()`).
+
+A product that offers only dark and light can use `ThemeToggle`, one button that flips between
+them, instead.
 
 ## What the consumer provides
 

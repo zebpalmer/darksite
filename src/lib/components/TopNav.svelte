@@ -8,8 +8,11 @@ bar keeps the product and a menu button that opens a Sheet with every destinatio
 the account block.
 
 The menus follow the disclosure-navigation pattern: a button with `aria-expanded` that shows a list
-of real links (so a link opens in a new tab like any other). Esc or a press outside closes a menu
-and returns focus to its button. The current page is `aria-current="page"`, and its group's button
+of real links (so a link opens in a new tab like any other). An item's `description` is a second
+line under its label. A group whose items carry a `section` lays its menu out in one column per
+section, each under its heading, with the group's items that have no section in a row under them
+("All guides"); the phone sheet shows the same headings, without the descriptions. Esc or a press
+outside closes a menu and returns focus to its button. The current page is `aria-current="page"`, and its group's button
 carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so a brand can color it.
 
 - `items`, `groups`, `current` (the one navigation list), `product`, `mark`, `homeHref` (default
@@ -33,7 +36,14 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 	import { ShellFold } from '../shell-fold.svelte.js';
 	import Sheet from './Sheet.svelte';
 	import SheetItem from './SheetItem.svelte';
-	import { badgeSpoken, badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
+	import {
+		badgeSpoken,
+		badgeText,
+		groupItems,
+		sectionItems,
+		type NavGroup,
+		type NavItem
+	} from '../nav.js';
 	import { strings } from '../strings.svelte.js';
 
 	interface Props {
@@ -170,6 +180,25 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 	{/if}
 {/snippet}
 
+<!-- A menu link. With a description, its name stays the label (and the badge), and the
+     description is read as its description, not as part of its name. -->
+{#snippet menuItem(item: NavItem)}
+	{@const descId = item.description ? `${uid}-desc-${item.id}` : undefined}
+	<a
+		href={item.href}
+		class="item"
+		data-described={item.description ? '' : undefined}
+		aria-current={item.id === current ? 'page' : undefined}
+		aria-label={item.description ? item.label + badgeSpoken(badgeText(item.badge)) : undefined}
+		aria-describedby={descId}
+		>{#if item.icon}<item.icon size={16} aria-hidden="true" />{/if}<span class="text"
+			><span class="label">{item.label}</span>{#if item.description}<span id={descId} class="desc"
+					>{item.description}</span
+				>{/if}</span
+		>{@render badgeOf(item)}</a
+	>
+{/snippet}
+
 <header bind:this={headerEl} class="ds-topnav {className}" class:sticky>
 	<div class="line">
 	<a class="brand" href={homeHref}>
@@ -250,25 +279,39 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 </header>
 
 {#if openGroup}
-	{@const section = menus.find((s) => s.group!.id === openGroup)}
-	{#if section}
+	{@const menu = menus.find((s) => s.group!.id === openGroup)}
+	{#if menu}
+		{@const split = sectionItems(menu.items)}
 		<div
 			id="{uid}-{openGroup}"
 			class="panel"
+			data-layout={split.sections.length ? 'sections' : undefined}
+			data-described={menu.items.some((i) => i.description) ? '' : undefined}
+			style:--cols={split.sections.length ? Math.min(split.sections.length, 3) : undefined}
 			popover={topLayer ? 'manual' : undefined}
 			{@attach surface}
 		>
-			<ul>
-				{#each section.items as item (item.id)}
-					<li>
-						<a href={item.href} class="item" aria-current={item.id === current ? 'page' : undefined}
-							>{#if item.icon}<item.icon size={16} aria-hidden="true" />{/if}<span class="text"
-								>{item.label}</span
-							>{@render badgeOf(item)}</a
-						>
-					</li>
-				{/each}
-			</ul>
+			{#if split.sections.length}
+				<div class="cols">
+					{#each split.sections as col, c (col.title)}
+						<div class="col">
+							<p id="{uid}-{openGroup}-s{c}" class="heading">{col.title}</p>
+							<ul aria-labelledby="{uid}-{openGroup}-s{c}">
+								{#each col.items as item (item.id)}<li>{@render menuItem(item)}</li>{/each}
+							</ul>
+						</div>
+					{/each}
+				</div>
+				{#if split.rest.length}
+					<ul class="foot">
+						{#each split.rest as item (item.id)}<li>{@render menuItem(item)}</li>{/each}
+					</ul>
+				{/if}
+			{:else}
+				<ul>
+					{#each menu.items as item (item.id)}<li>{@render menuItem(item)}</li>{/each}
+				</ul>
+			{/if}
 		</div>
 	{/if}
 {/if}
@@ -285,10 +328,26 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 				current={entry.item.id === current}
 			/>
 		{:else}
+			{@const split = sectionItems(entry.section.items)}
 			<p class="sheet-group">{entry.section.group!.label}</p>
-			{#each entry.section.items as item (item.id)}
-				<SheetItem label={item.label} icon={item.icon} href={item.href} current={item.id === current} />
-			{/each}
+			{#if split.sections.length}
+				{#each split.sections as col (col.title)}
+					<p class="sheet-section">{col.title}</p>
+					{#each col.items as item (item.id)}
+						<SheetItem label={item.label} icon={item.icon} href={item.href} current={item.id === current} />
+					{/each}
+				{/each}
+				{#if split.rest.length}
+					<hr class="sheet-rule" />
+					{#each split.rest as item (item.id)}
+						<SheetItem label={item.label} icon={item.icon} href={item.href} current={item.id === current} />
+					{/each}
+				{/if}
+			{:else}
+				{#each entry.section.items as item (item.id)}
+					<SheetItem label={item.label} icon={item.icon} href={item.href} current={item.id === current} />
+				{/each}
+			{/if}
 		{/if}
 	{/each}
 </Sheet>
@@ -476,6 +535,42 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 		padding: 0;
 		list-style: none;
 	}
+	/* Descriptions under the labels: a little more room for the second line. */
+	.panel[data-described] {
+		max-width: min(400px, calc(100vw - 16px));
+	}
+	/* One column per section, at most three across, as wide as the viewport allows. */
+	.panel[data-layout='sections'] {
+		width: min(calc(var(--cols) * 240px + 8px), calc(100vw - 16px));
+		max-width: calc(100vw - 16px);
+		padding: 8px 4px 4px;
+	}
+	.cols {
+		display: grid;
+		grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+		gap: 8px 4px;
+	}
+	.col {
+		min-width: 0;
+	}
+	.heading {
+		margin: 0 8px 4px;
+		color: var(--ds-text-3);
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.06em;
+		line-height: var(--ds-lh-xs);
+		text-transform: uppercase;
+	}
+	/* The group's items without a section: a row under the columns, past a hairline. */
+	.panel ul.foot {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2px 4px;
+		margin-top: 8px;
+		padding-top: 4px;
+		border-top: 1px solid var(--ds-border-subtle);
+	}
 	.item {
 		display: flex;
 		align-items: center;
@@ -498,8 +593,31 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 		background: var(--ds-accent-tint);
 	}
 	.item .text {
+		display: flex;
 		flex: 1;
+		flex-direction: column;
+		gap: 2px;
 		min-width: 0;
+	}
+	.item[data-described] {
+		align-items: flex-start;
+		padding-top: 6px;
+		padding-bottom: 6px;
+	}
+	.item[data-described] :global(svg) {
+		margin-top: 2px;
+	}
+	.desc {
+		color: var(--ds-text-3);
+		font-size: var(--ds-text-sm);
+		line-height: var(--ds-lh-sm);
+	}
+	/* ds-text-3 holds its contrast up to ds-bg-3; the hover and current grounds take the next step. */
+	.item:hover .desc {
+		color: var(--ds-text-2);
+	}
+	.item[aria-current='page'] .desc {
+		color: var(--ds-text-1);
 	}
 	.sheet-group {
 		margin: 12px 0 4px;
@@ -511,6 +629,20 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 	}
 	.sheet-group:first-child {
 		margin-top: 0;
+	}
+	/* A section inside a group: a smaller sub-heading, set in under the group's title. */
+	.sheet-section {
+		margin: 8px 0 0;
+		padding: 0 8px;
+		color: var(--ds-text-3);
+		font-size: var(--ds-text-xs);
+		font-weight: 500;
+		line-height: var(--ds-lh-xs);
+	}
+	.sheet-rule {
+		margin: 8px 8px;
+		border: 0;
+		border-top: 1px solid var(--ds-border-subtle);
 	}
 	@media (pointer: coarse) {
 		.link,
