@@ -4,7 +4,6 @@ const route: Record<string, string> = {
 	ActiveFilters: 'filterrail',
 	SheetItem: 'sheet',
 	ModePicker: 'brands',
-	TopNav: 'overview',
 	Intro: 'overview',
 	Steps: 'overview',
 	LinkCard: 'overview',
@@ -16,7 +15,7 @@ const route: Record<string, string> = {
 
 export const groups: Record<string, string[]> = {
 	Actions: ['Button', 'CopyButton', 'KeyCap', 'KeyLegend', 'Tooltip'],
-	Theming: ['ModePicker'],
+	Theming: ['ModePicker', 'ThemeToggle'],
 	'Page types': ['Intro', 'Steps', 'LinkCard'],
 	Selection: ['Chip', 'SegmentedControl', 'Tabs'],
 	Filtering: ['ActiveFilters', 'FilterRail'],
@@ -48,7 +47,7 @@ export const groups: Record<string, string[]> = {
 		'CodeBlock'
 	],
 	Charts: ['CellBar', 'BarSeries', 'Ring'],
-	Overlays: ['Dialog', 'Menu', 'Popover', 'Sheet', 'SheetItem'],
+	Overlays: ['Dialog', 'Menu', 'Popover', 'SearchPalette', 'Sheet', 'SheetItem'],
 	Feedback: [
 		'EmptyState',
 		'HelpTip',

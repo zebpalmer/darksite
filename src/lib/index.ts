@@ -80,6 +80,8 @@ export { default as BarSeries } from './components/BarSeries.svelte';
 export { default as Ring } from './components/Ring.svelte';
 export { default as Pager } from './components/Pager.svelte';
 export { default as Slider } from './components/Slider.svelte';
+export { default as ThemeToggle } from './components/ThemeToggle.svelte';
+export { default as SearchPalette } from './components/SearchPalette.svelte';
 
 export type { MenuAction, MenuEntry, MenuTriggerAttrs } from './components/Menu.svelte';
 export type { MeterSegment } from './components/Meter.svelte';
@@ -150,8 +152,10 @@ export {
 	badgeSpoken,
 	badgeText,
 	groupItems,
+	sectionItems,
 	type NavGroup,
 	type NavItem,
+	type NavMenuSection,
 	type NavSection
 } from './nav.js';
 export {
@@ -163,6 +167,13 @@ export {
 	type ToastTone
 } from './toast.svelte.js';
 export type { ComboboxItem } from './components/Combobox.svelte';
+export {
+	SEARCH_KEYS,
+	searchShortcut,
+	type SearchFn,
+	type SearchGroup,
+	type SearchResult
+} from './components/SearchPalette.svelte';
 export type { FieldControl } from './components/Field.svelte';
 export type { PopoverTriggerAttrs } from './components/Popover.svelte';
 export type { SegmentOption } from './components/SegmentedControl.svelte';
@@ -201,7 +212,16 @@ export type { RailSlotArgs, TipHandlers } from './components/NavRail.svelte';
 export { resetStrings, setStrings, strings, type Strings } from './strings.svelte.js';
 export type { SelectOption } from './components/Select.svelte';
 export { tooltip, type TooltipOptions } from './tooltip.js';
-export { MODE_SCRIPT, MODES, ModeStore, mode, modeLabel, type Mode } from './mode.svelte.js';
+export {
+	isDarkMode,
+	MODE_SCRIPT,
+	MODES,
+	ModeStore,
+	mode,
+	modeLabel,
+	modeScript,
+	type Mode
+} from './mode.svelte.js';
 export type { Step } from './components/Steps.svelte';
 export type { BarSeriesPoint, BarSeriesSeries } from './components/BarSeries.svelte';
 export type { RingSegment } from './components/Ring.svelte';

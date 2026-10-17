@@ -21,7 +21,14 @@ const props: Record<string, Record<string, unknown>> = {
 	Intro: { title: 'Welcome', lead: 'A sentence.' },
 	LinkCard: { href: '/x', title: 'Docs' },
 	Steps: { steps: [{ title: 'One' }] },
-	TopNav: { items: [{ id: 'a', label: 'Home', href: '/' }], product: 'Acme' },
+	TopNav: {
+		items: [
+			{ id: 'a', label: 'Home', href: '/' },
+			{ id: 'b', label: 'Setup', href: '/setup', group: 'g', section: 'Learn', description: 'How.' }
+		],
+		groups: [{ id: 'g', label: 'Guides' }],
+		product: 'Acme'
+	},
 	FactList: { items: [{ label: 'Owner', value: null }] },
 	FileInput: {},
 	FilterRail: {
@@ -65,7 +72,16 @@ const props: Record<string, Record<string, unknown>> = {
 	},
 	Ring: { segments: [{ label: 'Done', value: 3 }], max: 10, label: 'Progress' },
 	Pager: { url: 'https://example.com/list?page=2', total: 120 },
-	Slider: { value: 40, label: 'Level', ticks: [0, 50, 100], showValue: true }
+	Slider: { value: 40, label: 'Level', ticks: [0, 50, 100], showValue: true },
+	ThemeToggle: { showLabel: 'Appearance' },
+	SearchPalette: {
+		open: true,
+		query: 'riv',
+		search: () => [
+			{ id: 'people', label: 'People', items: [{ id: 'p', title: 'A. Rivera', href: '/p' }] }
+		],
+		empty: page
+	}
 };
 
 describe('server rendering', () => {

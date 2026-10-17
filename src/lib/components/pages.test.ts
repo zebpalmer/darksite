@@ -56,6 +56,89 @@ describe('TopNav', () => {
 		render(TopNav, { items, groups, product: 'Acme', homeHref: '/start' });
 		expect(screen.getByRole('link', { name: 'Acme' }).getAttribute('href')).toBe('/start');
 	});
+
+	const guides: NavItem[] = [
+		{ id: 'news', label: 'News', href: '/news' },
+		{ id: 'start', label: 'Getting started', href: '/start', group: 'guides', section: 'Learn' },
+		{ id: 'all', label: 'All guides', href: '/guides', group: 'guides' },
+		{
+			id: 'setup',
+			label: 'Setup',
+			href: '/setup',
+			group: 'guides',
+			section: 'Learn',
+			description: 'From a blank account to the first record.'
+		},
+		{ id: 'api', label: 'API', href: '/api', group: 'guides', section: 'Reference', badge: 2 },
+		{ id: 'cli', label: 'Command line', href: '/cli', group: 'guides', section: 'Reference' }
+	];
+	const guideGroups: NavGroup[] = [{ id: 'guides', label: 'Guides' }];
+
+	it('lays a sectioned group out in columns under headings, the rest in a footer row', async () => {
+		render(TopNav, { items: guides, groups: guideGroups, current: 'api' });
+		await fireEvent.click(screen.getByRole('button', { name: 'Guides' }));
+		const panel = document.querySelector<HTMLElement>('.panel')!;
+		expect(panel.dataset.layout).toBe('sections');
+		expect(panel.style.getPropertyValue('--cols')).toBe('2');
+		const columns = [...panel.querySelectorAll('.col')].map((col) => ({
+			heading: col.querySelector('.heading')?.textContent,
+			links: [...col.querySelectorAll('a')].map((a) => a.querySelector('.label')?.textContent)
+		}));
+		expect(columns).toEqual([
+			{ heading: 'Learn', links: ['Getting started', 'Setup'] },
+			{ heading: 'Reference', links: ['API', 'Command line'] }
+		]);
+		// Each column's list is named by its heading.
+		expect(within(panel).getByRole('list', { name: 'Reference' })).toBeTruthy();
+		const foot = panel.querySelector('.foot')!;
+		expect([...foot.querySelectorAll('a')].map((a) => a.textContent)).toEqual(['All guides']);
+		expect(within(panel).getByRole('link', { name: /^API/ }).getAttribute('aria-current')).toBe(
+			'page'
+		);
+	});
+
+	it('shows a description under the label, read as the description', async () => {
+		render(TopNav, { items: guides, groups: guideGroups });
+		await fireEvent.click(screen.getByRole('button', { name: 'Guides' }));
+		const setup = screen.getByRole('link', { name: 'Setup' });
+		expect(setup.querySelector('.desc')?.textContent).toBe(
+			'From a blank account to the first record.'
+		);
+		const described = document.getElementById(setup.getAttribute('aria-describedby')!);
+		expect(described?.textContent).toBe('From a blank account to the first record.');
+		expect(document.querySelector('.panel')!.hasAttribute('data-described')).toBe(true);
+	});
+
+	it('keeps a group without sections as one list, descriptions and all', async () => {
+		render(TopNav, {
+			groups,
+			items: [
+				...items,
+				{ id: 'audits', label: 'Audits', href: '/audits', group: 'records', description: 'Every check.' }
+			]
+		});
+		await fireEvent.click(screen.getByRole('button', { name: 'Records' }));
+		const panel = document.querySelector<HTMLElement>('.panel')!;
+		expect(panel.dataset.layout).toBeUndefined();
+		expect(panel.querySelector('.heading')).toBeNull();
+		expect(screen.getByRole('link', { name: 'Audits' }).textContent).toContain('Every check.');
+	});
+
+	it('shows the section headings in the phone sheet, without descriptions', async () => {
+		render(TopNav, { items: guides, groups: guideGroups });
+		await fireEvent.click(screen.getByRole('button', { name: 'Menu' }));
+		const sheet = await screen.findByRole('dialog', { name: 'Menu' });
+		expect([...sheet.querySelectorAll('.sheet-group')].map((p) => p.textContent)).toEqual([
+			'Guides'
+		]);
+		expect([...sheet.querySelectorAll('.sheet-section')].map((p) => p.textContent)).toEqual([
+			'Learn',
+			'Reference'
+		]);
+		const labels = [...sheet.querySelectorAll('a')].map((a) => a.textContent?.trim());
+		expect(labels).toEqual(['News', 'Getting started', 'Setup', 'API', 'Command line', 'All guides']);
+		expect(sheet.textContent).not.toContain('From a blank account');
+	});
 });
 
 describe('AppShell nav="top"', () => {

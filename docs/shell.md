@@ -51,7 +51,9 @@ const visible = $derived(nav.filter((item) => rules[item.id]?.(viewer) ?? true))
   people work in all day, with many destinations — the rail holds a dozen without strain and can
   collapse to icons.
 - **`top`**: a `TopNav` bar across the top, for a product with a few top-level sections. Items
-  without a group are links in the bar; each group becomes a menu of links ("Records ▾"). On phones
+  without a group are links in the bar; each group becomes a menu of links ("Records ▾"); an item's
+  `section` lays its group's menu out in columns under headings, and its `description` is a second
+  line under the link. On phones
   the bar keeps the product name and a menu button that opens a `Sheet` with every destination,
   grouped, and the account block. `navActions` fills the bar's right end (a sign-in, a mode
   picker); the account block sits there too, in its compact form. A global search belongs in
@@ -130,7 +132,9 @@ navigation closes it. A page with no level-1 `PageHeader` shows it in the `TopBa
 slim bar the shell adds); `headerActionsFallback={false}` turns that off. Details are in the
 `AppShell` card.
 
-Give a shell-wide search one home: `headerActions`, a `TopBar` or the rail's search slot.
+Give a shell-wide search one home: `headerActions`, a `TopBar` or the rail's search slot. A search
+across several kinds of thing (people, records, docs) is a `SearchPalette`, opened from a Button in
+the bar and by `searchShortcut`; then the bar's search is its trigger, not a field.
 
 ## Stacking order
 

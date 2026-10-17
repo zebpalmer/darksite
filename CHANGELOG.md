@@ -6,6 +6,33 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `SearchPalette`: one search for a whole site — a modal (native `<dialog>`, in the modal stack)
+  with a large field, results grouped under headings, scope chips with counts ("All · People 4 ·
+  Records 23"), each group capped under All (`limit`, default 5) with "All N" to scope to it, the
+  query marked in each title, and an `empty` snippet before anything is typed. The field is a
+  combobox over a listbox of link rows: ↑/↓ move across the groups, Enter follows the active row,
+  ⌘/Ctrl+Enter opens it in a new tab, Esc closes and returns focus. `search(query, signal)` is
+  debounced and aborts stale requests; "Searching…" shows only after 300ms. Full screen on phones.
+  Types `SearchGroup`, `SearchResult`, `SearchFn`.
+- `searchShortcut(open, keys?)`: opens a search on `/`, ⌘K and Ctrl+K (`SEARCH_KEYS`), standing
+  aside while the user types in a field or a modal is open.
+- `ThemeToggle`: one icon button that flips between two modes (`modes`, default dark and light),
+  a moon in a dark mode and a sun in a light one, labeled with the action ("Switch to light mode").
+  While the mode follows the system, the device's preference decides. `showLabel` adds visible text.
+- `mode.init({ fallback })`: the mode used while nothing is saved (default `system`, as before), and
+  `modeScript(fallback?, storageKey?)`, the matching `app.html` head script. `MODE_SCRIPT` is
+  `modeScript()`; it now also ignores a saved value that is not a mode. `isDarkMode(mode)`.
+- `NavItem.section`: a heading inside its group's `TopNav` menu. A group with sections lays its
+  menu out in one column per section (up to three across), its unsectioned items in a footer row
+  under them; the phone sheet shows the headings too. `sectionItems(items)` splits a group's items
+  the same way.
+- `TopNav` menus show an item's `description` as a second line under its label (not in the phone
+  sheet). The link's name stays its label; the description is its accessible description.
+- `strings`: `switchToMode`, `searchPlaceholder`, `searchResults`, `searchScope`, `allResults`,
+  `allCount`, `resultCount`, `noResults`, `searchFailed`, `moveHint`, `openHint`, `closeHint`.
+
 ## [0.18.0] — 2026-10-17
 
 ### Added

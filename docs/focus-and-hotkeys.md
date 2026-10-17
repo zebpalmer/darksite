@@ -36,6 +36,10 @@ neither — while a punctuation key is its own character (`?`, not `shift+/`).
 container: it focuses the first field inside, under the same etiquette as page hotkeys below.
 `TopBar` and the shell's header actions use it.
 
+**A key that opens a search** — `/`, ⌘K and Ctrl+K for a `SearchPalette` — is `searchShortcut`, under
+the same etiquette, and it also stands aside while a modal is open. Give `/` one owner per page: a
+page with both a `focusShortcut('/')` field and a palette opens the palette on ⌘K only.
+
 **Overlay and page-key etiquette:**
 
 - Page hotkeys are ignored while focus is in an `input`, `textarea`, `select` or editable region,
