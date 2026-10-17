@@ -4,7 +4,11 @@
 	/** One column. `value` defaults to `row[key]`. */
 	export interface TableColumn<T> {
 		key: string;
+		/** The header. Always give one, even for a column that shows none (see `hideLabel`). */
 		label: string;
+		/** Read by assistive technology, not shown: for a column whose cells explain themselves
+		 *  (a row action, a checkbox, a small chart), where a visible header would be clutter. */
+		hideLabel?: boolean;
 		/** `end` for numbers. */
 		align?: 'start' | 'end';
 		/** A CSS width: `'120px'`, `'20%'`, or a range like `'clamp(120px, 30%, 240px)'` (resolved
@@ -101,6 +105,10 @@ belong in the pane's ActionBar.
 		onsort?: (sort: TableSort) => void;
 		/** Makes the whole row a link: pointer click, and Enter on a focused row. */
 		href?: (row: T) => string | undefined;
+		/** The row link's accessible name. The link wraps the first cell, so without this it is
+		 *  named by that cell: give one when the first cell does not say what the row is (a status,
+		 *  a date, an icon). */
+		rowLabel?: (row: T) => string;
 		/** Fallback rendering for any column without its own `cell`. */
 		cell?: Snippet<[{ row: T; column: TableColumn<T>; value: unknown }]>;
 		empty?: Snippet;
@@ -138,6 +146,7 @@ belong in the pane's ActionBar.
 		sort = $bindable(),
 		onsort,
 		href,
+		rowLabel,
 		cell,
 		empty,
 		loading = false,
@@ -388,7 +397,9 @@ belong in the pane's ActionBar.
 					title={!column.cell && !cell && !isMissing(value) ? String(value) : undefined}
 				>
 					{#if ci === 0 && link}
-						<a class="row-link" href={link} tabindex="-1">{@render content(row, column, value)}</a>
+						<a class="row-link" href={link} tabindex="-1" aria-label={rowLabel?.(row)}
+							>{@render content(row, column, value)}</a
+						>
 					{:else}
 						{@render content(row, column, value)}
 					{/if}
@@ -431,7 +442,7 @@ belong in the pane's ActionBar.
 						<span class="head">
 						{#if column.sortable}
 							<button type="button" class="sort" onclick={() => toggleSort(column.key)}>
-								<span>{column.label}</span>
+								<span class:ds-sr-only={column.hideLabel}>{column.label}</span>
 								{#if sort?.key === column.key}
 									{#if sort.direction === 'asc'}<ArrowUp size={16} aria-hidden="true" />{:else}<ArrowDown
 											size={16}
@@ -442,7 +453,7 @@ belong in the pane's ActionBar.
 								{/if}
 							</button>
 						{:else}
-							<span class="label">{column.label}</span>
+							<span class="label" class:ds-sr-only={column.hideLabel}>{column.label}</span>
 						{/if}
 						{#if column.tip}<HelpTip text={column.tip} label={strings.aboutColumn(column.label)} placement="bottom" />{/if}
 						</span>

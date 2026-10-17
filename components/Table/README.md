@@ -20,8 +20,13 @@ including the width of any column that priority has hidden, so rows always reach
 ## Columns
 
 Each column declares `key`, `label`, and optionally `align` (`end` for numbers), `width`,
-`priority`, `mono` (serials, hashes, paths — mono with tabular figures), `sortable`, `tip` (what the column means, as a HelpTip beside the header — for a definition a reader needs, such as "weighted median of the last 7 days"), `value(row)`
+`priority`, `mono` (serials, hashes, paths — mono with tabular figures), `sortable`, `hideLabel`
+(the header is read by assistive technology but not shown, for a column whose cells explain
+themselves: a row action, a checkbox, a small chart), `tip` (what the column means, as a HelpTip beside the header — for a definition a reader needs, such as "weighted median of the last 7 days"), `value(row)`
 (defaults to `row[key]`) and `cell` (a snippet for custom rendering).
+
+Every column has a `label`. A column with no visible header still needs one for a screen reader,
+which announces the header with each cell: set `hideLabel` rather than `label: ''`.
 
 **Priority** drops columns as the *table* narrows — the table's own width, never the viewport:
 priority 3 hides below 720px, priority 2 below 480px, priority 1 never.
@@ -87,7 +92,10 @@ The stripe is a scan aid, never the only signal: the row must say the same thing
 ## Row links and keyboard
 
 `href(row)` makes the whole row navigable through a real link in its first cell: a pointer click
-anywhere in the row follows it, unless the click lands on a control inside the row.
+anywhere in the row follows it, unless the click lands on a control inside the row. The link
+wraps the first cell's content, so that content is its accessible name. When the first cell does
+not say what the row is (a status, a date, an icon), give `rowLabel(row)`, which names the link
+instead.
 
 Rows take focus: **↑ / ↓** move it, **Home / End** jump, **Space** toggles selection, **Enter**
 opens the row. The focused row shows the focus ring inset.
@@ -104,7 +112,7 @@ opens the row. The focused row shows the focus ring inset.
 ## What the consumer provides
 
 `rows`, `columns`, `rowKey(row)`, `label` (the accessible name), `density`, `selectable`,
-`selected` (bindable), `sort` (bindable), `onsort`, `href`, `cell` (a fallback snippet for columns
+`selected` (bindable), `sort` (bindable), `onsort`, `href`, `rowLabel`, `cell` (a fallback snippet for columns
 without their own), `empty`, `loading`, `loadingRows`, `missing`, `minWidth`, `groupBy`,
 `groupLabel`, `group`, `rowTone`, `rowSeverity`, `hideBelow`, `class`.
 

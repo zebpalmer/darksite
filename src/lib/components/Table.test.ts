@@ -91,6 +91,25 @@ describe('Table', () => {
 		expect(r[1].hasAttribute('data-selected')).toBe(true);
 	});
 
+	it('names a header it does not show, for a column whose cells explain themselves', () => {
+		render(Table, { ...base, columns: [...columns, { key: 'id', label: 'Actions', hideLabel: true }] });
+		const header = screen.getByRole('columnheader', { name: 'Actions' });
+		expect(header.querySelector('.ds-sr-only')?.textContent).toBe('Actions');
+	});
+
+	it('names a row link by rowLabel when given, by its first cell otherwise', () => {
+		const { unmount } = render(Table, { ...base, href: (row: Row) => `/records/${row.id}` });
+		expect(within(bodyRows()[0]).getByRole('link', { hidden: true }).getAttribute('aria-label')).toBeNull();
+		unmount();
+		render(Table, {
+			...base,
+			href: (row: Row) => `/records/${row.id}`,
+			rowLabel: (row: Row) => `Record ${row.name}`
+		});
+		const link = bodyRows()[0].querySelector('a.row-link') as HTMLAnchorElement;
+		expect(link.getAttribute('aria-label')).toBe('Record Alpha');
+	});
+
 	it('opens a row link on click and on Enter, but not from a control inside the row', async () => {
 		render(Table, { ...base, selectable: true, href: (row: Row) => `/records/${row.id}` });
 		const link = bodyRows()[0].querySelector('a.row-link') as HTMLAnchorElement;

@@ -6,6 +6,14 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `TableColumn.hideLabel`: the header is read by assistive technology but not shown, for a column
+  whose cells explain themselves. A column with an empty `label` left its header cell without a
+  name.
+- `Table rowLabel(row)`: the accessible name of a row's link. The link wraps the first cell, so
+  without it a row whose first cell is a status or a date was announced by that status or date.
+
 ## [0.17.0] — 2026-10-16
 
 ### Added
