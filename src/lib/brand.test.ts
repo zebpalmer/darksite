@@ -61,6 +61,38 @@ describe('generateBrand', () => {
 		expect(contrast(v('ds-rail-text-1'), v('ds-rail-bg-0'))).toBeGreaterThanOrEqual(4.5);
 	});
 
+	it("keeps high contrast's own grounds when only the dark surface is given, with its tint", () => {
+		const g = generateBrand(tokens, {
+			name: 's',
+			surfaces: { dark: { bg: '#2e3440', text: '#d8dee9' } }
+		});
+		expect(g.resolve('dark')('ds-bg-1')).toBe('#2e3440');
+		const hc = g.resolve('contrast');
+		const base = generateBrand(tokens, { name: 'none' }).resolve('contrast');
+		// Its own lightness, not the dark surface's...
+		expect(Math.abs(oklch(hc('ds-bg-1')).l - oklch(base('ds-bg-1')).l)).toBeLessThan(0.01);
+		expect(hc('ds-text-1')).not.toBe('#d8dee9');
+		// ...in the surface's hue.
+		expect(Math.abs(oklch(hc('ds-bg-1')).h - oklch('#2e3440').h)).toBeLessThan(10);
+		// Named, it is exact.
+		const named = generateBrand(tokens, {
+			name: 'n',
+			surfaces: { dark: { bg: '#2e3440' }, contrast: { bg: '#0b0d12' } }
+		});
+		expect(named.resolve('contrast')('ds-bg-1')).toBe('#0b0d12');
+	});
+
+	it('moves the heading role with the text roles', () => {
+		const g = generateBrand(tokens, {
+			name: 't',
+			surfaces: { dark: { bg: '#2e3440', text: '#d8dee9' } }
+		});
+		const v = g.resolve('dark');
+		expect(contrast(v('ds-text-heading'), v('ds-bg-1'))).toBeGreaterThan(
+			contrast(v('ds-text-1'), v('ds-bg-1'))
+		);
+	});
+
 	it('locks roles the brand sets exactly', () => {
 		const g = generateBrand(tokens, { name: 'l', roles: { dark: { 'ds-bg-1': '#101010' } } });
 		expect(g.resolve('dark')('ds-bg-1')).toBe('#101010');

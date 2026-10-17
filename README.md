@@ -80,8 +80,10 @@ cut from; use them to define a new role, never directly in a component.
 
 - Grounds stack `ds-bg-0` (rail, canvas) → `ds-bg-1` (page) → `ds-bg-2` (panels, bars) →
   `ds-bg-3` (inputs, overlays) → `ds-bg-4` (hover, raised) → `ds-bg-5` (pressed, applied tokens).
-- Text hierarchy is `ds-text-1` / `ds-text-2` / `ds-text-3` — **never opacity**. Opacity does one
-  job: disabled, at 45%.
+- Text hierarchy is `ds-text-heading` / `ds-text-1` / `ds-text-2` / `ds-text-3` — **never
+  opacity**. Headings (page titles, Intro, prose headings, dialog and sheet titles) sit a step
+  above the body in `ds-text-heading`; the body in dark is a softer 12:1, easier to read at length.
+  Opacity does one job: disabled, at 45%.
 - `ds-accent` is for marks, borders, small tinted grounds and the one primary button per view. Do
   not flood a surface with it. Use `ds-accent-text` when the accent has to be body-size text.
 - Borders carry the structure: `ds-border-subtle` inside a surface, `ds-border` on controls,
@@ -131,7 +133,7 @@ Every ratio here is computed, and `scripts/check-contrast.mjs` re-checks every d
 every mode as part of `stratt lint`. A color change that breaks a pair fails the build. Every
 prebuilt brand, and every brand a product generates, is held to the same pairs (see "Brands").
 
-**Text meets 4.5:1 everywhere this system puts it** in every mode — `ds-text-1/2/3` on the
+**Text meets 4.5:1 everywhere this system puts it** in every mode — `ds-text-heading` and `ds-text-1/2/3` on the
 grounds they are documented for, every `-text` role on the page and on its own tint, every severity
 ink on its ground, and every label on a filled accent or danger ground at rest, hover and press.
 `ds-text-3` stops at `ds-bg-3`; use `ds-text-2` from `ds-bg-4` up.
@@ -399,6 +401,7 @@ the live custom property so it follows the active theme:
 	--color-bg-3: var(--ds-bg-3);
 	--color-bg-4: var(--ds-bg-4);
 	--color-bg-5: var(--ds-bg-5);
+	--color-text-heading: var(--ds-text-heading);
 	--color-text-1: var(--ds-text-1);
 	--color-text-2: var(--ds-text-2);
 	--color-text-3: var(--ds-text-3);

@@ -110,10 +110,10 @@ A few sibling views of the same data that need the full width use Tabs instead (
 <style>
 	.ds-sidenav {
 		position: sticky;
-		top: var(--ds-topbar-h, 0px);
+		top: calc(var(--ds-chrome-top, 0px) + var(--ds-topbar-h, 0px));
 		flex: none;
 		width: 200px;
-		max-height: calc(100dvh - var(--ds-topbar-h, 0px));
+		max-height: calc(100dvh - var(--ds-chrome-top, 0px) - var(--ds-topbar-h, 0px));
 		overflow-y: auto;
 		padding: 8px 0;
 	}

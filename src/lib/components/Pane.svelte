@@ -131,7 +131,7 @@ PageHeader.
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		color: var(--ds-text-1);
+		color: var(--ds-text-heading);
 		font-size: var(--ds-text-md);
 		line-height: var(--ds-lh-md);
 		font-weight: 500;

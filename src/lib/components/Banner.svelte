@@ -6,6 +6,9 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 
 - `tone`: `info` · `warning` · `danger`, each with its icon. One sentence (`message` or children)
   and at most one `action` (a link or a Button).
+- `strong`: the tone's solid fill instead of its tint, for a condition that must not be missed
+  (a staging site, an outage). Everything inside takes the fill's contrast color, and a Button in
+  `action` is outlined.
 - `id` + `dismissible`: a dismissed banner stays dismissed for this viewer (`viewer` scopes it to
   a signed-in user). A `danger` banner is never dismissible while its condition holds — show it
   until the condition clears.
@@ -30,6 +33,8 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 	interface Props {
 		id: string;
 		tone?: 'info' | 'warning' | 'danger';
+		/** The tone's solid fill instead of its tint. */
+		strong?: boolean;
 		message?: string;
 		dismissible?: boolean;
 		/** Dismissed already, as the server knows it (a cookie): no flash before hydration. Bindable. */
@@ -45,6 +50,7 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 	let {
 		id,
 		tone = 'info',
+		strong = false,
 		message,
 		dismissible = false,
 		dismissed = $bindable(false),
@@ -73,7 +79,12 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 </script>
 
 {#if !dismissed}
-	<div class="ds-banner {className}" data-tone={tone} role={tone === 'danger' ? 'alert' : 'status'}>
+	<div
+		class="ds-banner {className}"
+		data-tone={tone}
+		data-strong={strong ? '' : undefined}
+		role={tone === 'danger' ? 'alert' : 'status'}
+	>
 		<span class="icon"><Icon size={16} aria-hidden="true" /></span>
 		<p class="msg">{#if children}{@render children()}{:else}{message}{/if}</p>
 		{#if action}<span class="action">{@render action()}</span>{/if}
@@ -112,6 +123,43 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 	}
 	.ds-banner[data-tone='danger'] .icon {
 		color: var(--ds-danger-text);
+	}
+	/* Strong: the tone's solid fill. The text roles inside become its contrast color, so the
+	   message, the icon, a link and the dismiss button follow; a secondary Button turns into an
+	   outline of that color. */
+	.ds-banner[data-strong] {
+		--ds-text-1: var(--on);
+		--ds-text-2: var(--on);
+		--ds-text-3: var(--on);
+		--ds-border: var(--on);
+		--ds-border-strong: var(--on);
+		--ds-focus: var(--on);
+		--ds-bg-4: color-mix(in srgb, var(--on) 10%, transparent);
+		--ds-bg-5: color-mix(in srgb, var(--on) 18%, transparent);
+		border-bottom-color: transparent;
+		background: var(--fill);
+		color: var(--on);
+	}
+	.ds-banner[data-strong] .icon {
+		color: var(--on);
+	}
+	.ds-banner[data-strong][data-tone='info'] {
+		--fill: var(--ds-accent);
+		--on: var(--ds-accent-contrast);
+	}
+	.ds-banner[data-strong][data-tone='warning'] {
+		--fill: var(--ds-warning-fill);
+		--on: var(--ds-warning-contrast);
+	}
+	.ds-banner[data-strong][data-tone='danger'] {
+		--fill: var(--ds-danger-fill);
+		--on: var(--ds-danger-contrast);
+	}
+	.ds-banner[data-strong] .action :global(.ds-btn[data-variant='secondary']) {
+		background: transparent;
+	}
+	.ds-banner[data-strong] .action :global(.ds-btn[data-variant='secondary']:hover) {
+		background: var(--ds-bg-4);
 	}
 	.icon {
 		display: inline-flex;

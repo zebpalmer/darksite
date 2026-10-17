@@ -26,6 +26,23 @@
 	Full width above the TopBar, pushing content down. A danger banner cannot be dismissed while its
 	condition holds.
 </p>
+<div class="col">
+	<Banner id="demo-strong-warn" tone="warning" strong message="This is the staging site.">
+		{#snippet action()}<Button size="dense">Go to the live site</Button>{/snippet}
+	</Banner>
+	<Banner
+		id="demo-strong-info"
+		tone="info"
+		strong
+		message="Scheduled upgrade tonight at 22:00."
+		dismissible
+	/>
+	<Banner id="demo-strong-danger" tone="danger" strong message="Sign-in is unavailable." />
+</div>
+<p>
+	<code>strong</code>: the tone's solid fill, for a condition nobody may miss. The action is an
+	outline in the fill's contrast color.
+</p>
 
 <style>
 	h1 {

@@ -162,6 +162,7 @@ behind does not scroll while it is open.
 	}
 	h2 {
 		margin: 0;
+		color: var(--ds-text-heading);
 		font-size: var(--ds-text-lg);
 		line-height: var(--ds-lh-lg);
 		font-weight: 500;
