@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.15.0] — 2026-10-16
+
 ### Added
 
 - `PageHeader` makes room at any width, not only on phones: when the title and the actions do not
