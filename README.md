@@ -234,7 +234,9 @@ Load the two stylesheets once, in the root layout, then import components:
 
 `tokens.css` declares every token as a CSS custom property. `base.css` holds the global rules the
 components rely on: box sizing, the focus ring, reduced motion, the 16px touch font size, the
-`.ds-control` look and the shared keyframes. To re-theme a product, override `--ds-*` properties in
+`.ds-control` look, the shared keyframes, and three classes for pages of text: `ds-prose` (help and
+how-tos), `ds-reading` (long-form reading in the reading font) and `ds-article` (a post on a public
+site, with `ds-article-wide` for what breaks out of its text column). To re-theme a product, override `--ds-*` properties in
 its own stylesheet, after these two imports — no component changes.
 
 A site upgrades by changing the version it pins. For a genuine one-off divergence, copy that one

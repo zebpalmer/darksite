@@ -3,13 +3,15 @@
 **Confirmations only** — a question that blocks the action the user just asked for:
 delete these records, discard this draft, "Remove both?", "No severity set". Not for forms and
 not for reference info; those are `Sheet` and `Popover`. On phones it presents as a bottom sheet.
+The one exception is the **hero** (below): a welcome or sign-up moment.
 
 Built on a dialog primitive that gives you: focus trap, Esc, scroll lock, focus returns to the
 trigger, and the role — `alertdialog` for a danger question, `dialog` for a default-tone
 confirmation or one that asks for a note (the `role` prop overrides). The content mounts **only while open**, so a Dialog opened over a
 Sheet is not left `aria-hidden` by the Sheet's modal layer.
 
-`ds-bg-3` at `ds-radius-lg` with `ds-elev-3`, 400px wide, 16px padding.
+`ds-bg-3` at `ds-radius-lg` with `ds-elev-3`, 400px wide, 16px padding. The title is
+`ds-text-heading` (falling back to `ds-text-1`).
 
 ## What the consumer provides
 
@@ -17,7 +19,8 @@ Sheet is not left `aria-hidden` by the Sheet's modal layer.
   body).
 - `confirmLabel` (default "Confirm"), `confirmingLabel` (an "-ing" verb while the async
   `onconfirm` runs: "Deleting"), `cancelLabel` (default "Cancel").
-- `tone` — `danger` (a filled `danger-solid` confirm; the default) or `default` (primary).
+- `tone` — `danger` (a filled `danger-solid` confirm; the default) or `default` (primary; the
+  default for a hero).
 - `onconfirm()` — may return any value or a promise: the dialog closes when it resolves and stays
   open with the error shown if it throws. `oncancel()`.
 - `dirty` — the body holds unsaved input (read app-wide as `modals.dirty`). `onbeforeclose()` runs
@@ -31,8 +34,33 @@ Sheet is not left `aria-hidden` by the Sheet's modal layer.
   body**.
 - `confirmDisabled` (default false) — the confirm waits for the body, as when a bulk delete makes
   the user type `confirm`.
-- `size` — `default` (400px) or `wide` (up to 1040px, scrolling) for a side-by-side comparison.
-  Never for a form.
+- `size` — `default` (400px), `wide` (up to 1040px, scrolling) for a side-by-side comparison
+  (never for a form), or `hero` (520px, centered; below).
+
+## The hero
+
+`size="hero"` is for a welcome or sign-up moment: the first visit to a product, an invitation to
+subscribe, the start of a trial. A heading, a sentence or two, and either a short form (an email
+address, a name) or just the two actions. It keeps everything else a Dialog does — the top layer,
+the modal stack, the focus trap, Esc, focus returning to the trigger.
+
+- 520px wide with 32px padding; the title at `ds-text-2xl`, the description at `ds-text-lg`, both
+  centered, and the actions centered under them. A form in the body keeps its labels on the left.
+- `tone` defaults to `default`, so the confirm is a primary button and the role is `dialog`.
+- Below 768px it is a full-width bottom sheet like `Sheet`'s: a grab handle, the top corners
+  rounded, the slower rise, the actions stacked full width, and the safe area kept clear.
+- The cancel button is the way out: label it for the moment ("Not now"), not "Cancel".
+
+```svelte
+<Dialog bind:open size="hero" title="Get the weekly digest"
+  description="One email a week with what changed, and nothing else."
+  confirmLabel="Subscribe" cancelLabel="Not now" initialFocus="field"
+  confirmDisabled={!valid} onconfirm={() => subscribe(email)}>
+  <Field label="Email">
+    {#snippet children(f)}<Input bind:value={email} id={f.id} type="email" />{/snippet}
+  </Field>
+</Dialog>
+```
 
 ## A confirmation that asks for a note
 
@@ -62,6 +90,8 @@ longer note). More than two fields is a form, and a form is a `Sheet`.
 
 ## Don't
 
-- Don't use a Dialog for a form or for information. One or two note fields is the limit.
+- Don't use a Dialog for a form or for information. One or two note fields is the limit, a hero's
+  short form included.
+- Don't open a hero on every visit, or over a work view; it is for a moment that happens once.
 - Don't put a Dialog over a work surface that could answer inline.
 - Don't use `danger-solid` anywhere else.

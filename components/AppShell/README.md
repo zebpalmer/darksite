@@ -38,7 +38,8 @@ and the More sheet's; receives `{ compact }`), `version`, `rememberAs` (remember
 for this viewer), `primaryTabs` (the tab bar's four ids), `banner` and `topBar` snippets,
 `children` (the page), `padded` (default true; false hands the whole column to a work view),
 `proseAlign` (`center` or `start`: where a document page's `ds-prose` / `ds-reading` article sits
-in a column wider than its measure; default `center` with `nav="top"`, `start` with the rail),
+in a column wider than its measure; default `center` with `nav="top"`, `start` with the rail; a
+`ds-article` always centers itself),
 `contentWidth` (`true` for 1060px, a number of pixels or a CSS length: caps the page content and
 centers it, with the TopNav, TopBar and footer contents at the same width; a page with a `ds-wide`
 element uses `--ds-content-wide` instead, and FullBleed and WorkView pages take the whole column),

@@ -111,3 +111,14 @@ describe('server rendering the shell', () => {
 		expect(body).toContain('aria-label="Find"');
 	});
 });
+
+describe('server rendering a hero dialog', () => {
+	it('renders an open hero with its grab handle and a primary confirm', () => {
+		const { body } = render(lib.Dialog, {
+			props: { open: true, size: 'hero', title: 'Welcome', confirmLabel: 'Get started' }
+		});
+		expect(body).toContain('data-size="hero"');
+		expect(body).toContain('class="grab');
+		expect(body).toContain('data-variant="primary"');
+	});
+});

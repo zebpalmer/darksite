@@ -3,7 +3,7 @@
 import '../tokens.css';
 import '../base.css';
 import { describe, expect, it } from 'vitest';
-import { userEvent } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 import { render, screen } from '@testing-library/svelte';
 import OverlayHarness from '../../tests/browser/OverlayHarness.svelte';
 import TableHarness from '../../tests/browser/TableHarness.svelte';
@@ -40,6 +40,50 @@ describe('Dialog in a browser', () => {
 		await settle();
 		expect(screen.queryByRole('alertdialog')).toBeNull();
 		expect(document.activeElement).toBe(trigger);
+	});
+});
+
+describe('Dialog hero in a browser', () => {
+	// The dialog element, not the panel: the panel carries the motion, so its box is mid-animation.
+	const panel = (dialog: HTMLElement) => dialog.getBoundingClientRect();
+
+	it('is modal, centered at 520px on a desktop, and returns focus on Esc', async () => {
+		render(OverlayHarness);
+		const trigger = screen.getByRole('button', { name: 'Sign up' });
+		await userEvent.click(trigger);
+		const dialog = await screen.findByRole('dialog', { name: 'Welcome' });
+		expect(dialog.matches(':modal')).toBe(true);
+		await settle();
+		expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Email' }));
+		const box = panel(dialog);
+		expect(Math.round(box.width)).toBe(520);
+		expect(Math.abs(box.left - (window.innerWidth - box.right))).toBeLessThanOrEqual(1);
+		expect(Math.abs(box.top - (window.innerHeight - box.bottom))).toBeLessThanOrEqual(1);
+		const title = dialog.querySelector('.title')!;
+		expect(getComputedStyle(title).textAlign).toBe('center');
+		expect(getComputedStyle(title).fontSize).toBe('24px');
+		await userEvent.keyboard('{Escape}');
+		await settle();
+		expect(screen.queryByRole('dialog', { name: 'Welcome' })).toBeNull();
+		expect(document.activeElement).toBe(trigger);
+	});
+
+	it('is a full-width bottom sheet with a grab handle on a phone', async () => {
+		await page.viewport(375, 700);
+		try {
+			render(OverlayHarness);
+			await userEvent.click(screen.getByRole('button', { name: 'Sign up' }));
+			const dialog = await screen.findByRole('dialog', { name: 'Welcome' });
+			await settle();
+			const box = panel(dialog);
+			expect(Math.round(box.left)).toBe(0);
+			expect(Math.round(box.width)).toBe(375);
+			expect(Math.round(box.bottom)).toBe(700);
+			const grab = dialog.querySelector('.grab')!;
+			expect(getComputedStyle(grab).display).toBe('block');
+		} finally {
+			await page.viewport(1280, 800);
+		}
 	});
 });
 

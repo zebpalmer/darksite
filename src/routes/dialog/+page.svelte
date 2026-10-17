@@ -6,6 +6,9 @@
 	let word = $state('');
 	let archiving = $state(false);
 	let note = $state('');
+	let welcome = $state(false);
+	let email = $state('');
+	const emailValid = $derived(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()));
 	const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 </script>
 
@@ -20,6 +23,14 @@
 		<Button onclick={() => ((note = ''), (archiving = true))}>Archive with a note</Button>
 	</div>
 	<p>Confirmations only. Focus starts on Cancel; Esc cancels; focus returns to the button.</p>
+	<h2>Hero</h2>
+	<div class="row">
+		<Button variant="primary" onclick={() => ((email = ''), (welcome = true))}>Sign up</Button>
+	</div>
+	<p>
+		<code>size="hero"</code>: a welcome or sign-up moment. 520px and centered on a desktop, a bottom
+		sheet on a phone.
+	</p>
 </div>
 
 <Dialog
@@ -67,6 +78,30 @@
 	<Field label="Note" required>
 		{#snippet children(f)}
 			<Input bind:value={note} id={f.id} aria-describedby={f.describedBy} invalid={f.invalid} />
+		{/snippet}
+	</Field>
+</Dialog>
+<Dialog
+	bind:open={welcome}
+	size="hero"
+	title="Get the weekly digest"
+	description="One email a week with what changed, and nothing else. Leave whenever you like."
+	confirmLabel="Subscribe"
+	cancelLabel="Not now"
+	confirmDisabled={!emailValid}
+	initialFocus="field"
+	onconfirm={() => void toasts.success('Subscribed')}
+>
+	<Field label="Email">
+		{#snippet children(f)}
+			<Input
+				bind:value={email}
+				id={f.id}
+				type="email"
+				autocomplete="email"
+				placeholder="name@example.com"
+				aria-describedby={f.describedBy}
+			/>
 		{/snippet}
 	</Field>
 </Dialog>

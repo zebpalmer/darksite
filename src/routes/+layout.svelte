@@ -21,6 +21,7 @@
 	import Palette from '@lucide/svelte/icons/palette';
 	import House from '@lucide/svelte/icons/house';
 	import FileText from '@lucide/svelte/icons/file-text';
+	import Newspaper from '@lucide/svelte/icons/newspaper';
 	import Map from '@lucide/svelte/icons/map';
 	import SquareMousePointer from '@lucide/svelte/icons/square-mouse-pointer';
 	import {
@@ -87,6 +88,7 @@
 		{ id: 'toaster', label: 'Toaster', href: '/toaster', icon: Bell, group: 'shell' },
 		{ id: 'overview', label: 'Overview', href: '/overview', icon: House, group: 'pages' },
 		{ id: 'document', label: 'Document', href: '/document', icon: FileText, group: 'pages' },
+		{ id: 'article', label: 'Article', href: '/article', icon: Newspaper, group: 'pages' },
 		{ id: 'fullbleed', label: 'Full bleed', href: '/fullbleed', icon: Map, group: 'pages' }
 	];
 	const items = $derived(base.map((i) => ({ ...i, badge: demo.badges[i.id] ?? null })));
