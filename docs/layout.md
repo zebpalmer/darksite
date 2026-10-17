@@ -26,8 +26,10 @@ page never does, because it pushes the work below the fold.
 
 **5. Document page.** Help, a how-to, a method note: prose. `PageHeader`, then an `<article
 class="ds-prose">` — headings, paragraphs, lists and inline code at a readable measure. Long-form
-reading (a story, a report) uses `ds-reading` instead, with the paper or night mode. Sentences are
-the content here; the "labels, not sentences" rule is about controls and work surfaces.
+reading (a story, a report) uses `ds-reading` instead, with the paper or night mode. Under a
+top bar (`nav="top"`) the article is centered in the column; beside a rail it starts at the
+column's edge. `AppShell proseAlign` sets either for the whole product. Sentences are the content
+here; the "labels, not sentences" rule is about controls and work surfaces.
 
 **6. Full-bleed page.** A map, a canvas, a diagram that takes the whole column: `FullBleed`. No
 padding and no footer, the shell locked to the viewport at every width, so it fills exactly what

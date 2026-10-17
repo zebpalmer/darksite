@@ -37,6 +37,8 @@ It is the one component allowed to ask about the viewport ([`layout.md`](../../d
 and the More sheet's; receives `{ compact }`), `version`, `rememberAs` (remember the rail's state
 for this viewer), `primaryTabs` (the tab bar's four ids), `banner` and `topBar` snippets,
 `children` (the page), `padded` (default true; false hands the whole column to a work view),
+`proseAlign` (`center` or `start`: where a document page's `ds-prose` / `ds-reading` article sits
+in a column wider than its measure; default `center` with `nav="top"`, `start` with the rail),
 `toaster` (default true), `railExpanded` (bindable), and the rail's slots — `railSearch`,
 `railStatus`, `railBadge` and `railPinned`, passed to `NavRail` as `search`, `status`, `badge` and
 `pinned`.

@@ -596,8 +596,8 @@ belong in the pane's ActionBar.
 		align-items: center;
 		gap: 4px;
 		max-width: 100%;
-		margin: 0 -4px;
-		padding: 2px 4px;
+		min-width: 0;
+		padding: 2px 0;
 		border: 0;
 		border-radius: var(--ds-radius-xs);
 		background: transparent;

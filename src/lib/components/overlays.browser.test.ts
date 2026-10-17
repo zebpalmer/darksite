@@ -13,6 +13,8 @@ import TooltipHarness from '../../tests/browser/TooltipHarness.svelte';
 import BrandHarness from '../../tests/browser/BrandHarness.svelte';
 import TopNavHarness from '../../tests/browser/TopNavHarness.svelte';
 import WidthHarness from '../../tests/browser/WidthHarness.svelte';
+import HeadHarness from '../../tests/browser/HeadHarness.svelte';
+import ProseHarness from '../../tests/browser/ProseHarness.svelte';
 import '../brands/teal.css';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -277,5 +279,54 @@ describe('Table column widths in a browser', () => {
 			expect(Math.round(th.getBoundingClientRect().width), `${width} at ${tableWidth}px`).toBe(expected);
 			unmount();
 		}
+	});
+});
+
+describe('Table headers in a browser', () => {
+	const labels = () =>
+		[...document.querySelectorAll('th')].map((th) => {
+			const label = th.querySelector<HTMLElement>('.sort span, .label')!;
+			return { text: label.textContent, cut: label.scrollWidth > label.clientWidth };
+		});
+
+	it('truncates a sortable header only when its column is narrower than the label', async () => {
+		const wide = render(HeadHarness);
+		await settle();
+		expect(labels().filter((l) => l.cut)).toEqual([]);
+		wide.unmount();
+
+		render(HeadHarness, { widths: { score: '96px', state: '120px' } });
+		await settle();
+		expect(labels()).toEqual([
+			{ text: 'Name', cut: false },
+			{ text: 'Reliability', cut: true },
+			{ text: 'Status', cut: false }
+		]);
+	});
+});
+
+describe('document prose in a browser', () => {
+	const place = () => {
+		const main = document.querySelector('#ds-main')!.getBoundingClientRect();
+		const prose = document.querySelector('.ds-prose')!.getBoundingClientRect();
+		return { left: prose.left - main.left, right: main.right - prose.right };
+	};
+
+	it('centers the article under a top bar and starts it beside a rail', async () => {
+		const top = render(ProseHarness, { nav: 'top' });
+		await settle();
+		const centered = place();
+		expect(centered.left).toBeGreaterThan(100);
+		expect(Math.abs(centered.left - centered.right)).toBeLessThanOrEqual(1);
+		top.unmount();
+
+		const rail = render(ProseHarness, { nav: 'rail' });
+		await settle();
+		expect(place().left).toBeLessThan(40);
+		rail.unmount();
+
+		render(ProseHarness, { nav: 'top', proseAlign: 'start' });
+		await settle();
+		expect(place().left).toBeLessThan(40);
 	});
 });

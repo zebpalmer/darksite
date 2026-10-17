@@ -22,6 +22,9 @@ in place.
   `badge` slots and `pinned`; `railExpanded` (bindable).
 - `banner`, `topBar` snippets; `padded` (default true — false hands the column to a work view
   that lays out its own panes); `toaster` (default true); children (the page).
+- `proseAlign` — where a document page's `ds-prose` or `ds-reading` article sits in a column wider
+  than its measure: `center` (the default with `nav="top"`, where the column spans the screen) or
+  `start` (the default with the rail).
 - `headerActions` snippet — shell-wide controls (usually a global search) on the same line as every
   page's PageHeader, right-aligned, ahead of the page's own actions. `headerActionsKey` (default
   `/`) focuses its first field; `null` turns that off. On phones, or when the header lacks room,
@@ -82,6 +85,9 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		 *  true), or nowhere (false). */
 		headerActionsFallback?: boolean;
 		padded?: boolean;
+		/** Where a document page's prose sits in the column. Default `center` with `nav="top"`,
+		 *  `start` with the rail. */
+		proseAlign?: 'start' | 'center';
 		toaster?: boolean;
 		railExpanded?: boolean;
 		railSearch?: Snippet<[RailSlotArgs]>;
@@ -114,6 +120,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		headerActionsKey = '/',
 		headerActionsFallback = true,
 		padded = true,
+		proseAlign,
 		toaster = true,
 		railExpanded = $bindable(),
 		railSearch,
@@ -123,6 +130,8 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		class: className = '',
 		children
 	}: Props = $props();
+
+	const prose = $derived(proseAlign ?? (nav === 'top' ? 'center' : 'start'));
 
 	// Level-1 PageHeaders on the page; with none, the TopBar hosts the header actions.
 	let claims = $state(0);
@@ -177,7 +186,7 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 	{@render account?.({ compact: true })}
 {/snippet}
 
-<div class="ds-appshell {className}" data-nav={nav}>
+<div class="ds-appshell {className}" data-nav={nav} data-prose={prose}>
 	<a class="skip" href="#ds-main">{strings.skipToContent}</a>
 	{#if nav === 'rail'}<div class="rail">
 		<NavRail
@@ -292,6 +301,10 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		flex-direction: column;
 		min-height: 0;
 		padding: 0 0 var(--ds-chrome-bottom);
+	}
+	/* A document page's article, centered in a column wider than its measure. */
+	[data-prose='center'] .main > :global(:is(.ds-prose, .ds-reading)) {
+		margin-inline: auto;
 	}
 	.ds-appshell:has(:global(.ds-fullbleed)) .footer {
 		display: none;

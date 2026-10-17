@@ -94,6 +94,15 @@ describe('page types', () => {
 		expect(screen.getByRole('link', { name: 'Search' }).getAttribute('href')).toBe('/find');
 	});
 
+	it('Steps is a plain list by default, and tiles with variant="cards"', () => {
+		const steps = [{ title: 'Pick a site' }, { title: 'Run a check' }];
+		const { container, unmount } = render(Steps, { steps });
+		expect(container.querySelector('.ds-steps')!.getAttribute('data-variant')).toBe('list');
+		unmount();
+		const cards = render(Steps, { steps, variant: 'cards' });
+		expect(cards.container.querySelector('.ds-steps')!.getAttribute('data-variant')).toBe('cards');
+	});
+
 	it('LinkCard is one link, and says when it opens a new tab', () => {
 		render(LinkCard, { href: 'https://example.com', title: 'Docs', text: 'How it works.', external: true });
 		const link = screen.getByRole('link', { name: /Docs/ });

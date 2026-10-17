@@ -64,7 +64,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A person or an organization | `EntityCard` in a `Grid min={280}` | A row with a 56px avatar. |
 | The top of a page | `PageHeader` | Title, count, actions. No breadcrumbs, no hero. |
 | The start of a product or a section | `Intro`, then `Steps` and `LinkCard`s in a `Grid min={260}` | The overview page type: a sentence or two, up to two actions. Never on a work or list page. |
-| Numbered steps to get started | `Steps` | An ordered list; three or four across when there is room. |
+| Numbered steps to get started | `Steps` | An ordered list, one step per line; `variant="cards"` for tiles three or four across. |
 | A destination on an overview page | `LinkCard` | A whole-card link: icon, title, a sentence, an arrow. |
 | Help, a how-to, a method note | `PageHeader` + `<article class="ds-prose">` | The document page type: prose at a readable measure. |
 | A map or a canvas that fills the page | `FullBleed` | No padding, no footer, the shell locked to the viewport. |
