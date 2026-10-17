@@ -6,22 +6,30 @@ one meta line that breaks the number down. ds-bg-2 with a subtle edge; no shadow
 - `label`, `value` (a number is localized; `null`, `undefined` or `''` shows the Missing mark,
   without the unit), `unit`, `of` (renders "of N"), `missing` (the mark), `meta` (text or a
   snippet — one line, never a sentence), `href` (the whole tile becomes a link), `severity` (a 3px
-  leading stripe and a SeverityBadge in the meta line — the only way to color a Stat), `variant`
-  (`default` | `headline`: the value at 28px and the one weight above 500, with the label under
-  it — a public page's key figures).
+  leading stripe and a SeverityBadge in the meta line), `variant` (`default` | `headline`: the
+  value at 28px and the one weight above 500, with the label under it — a public page's key
+  figures).
+- `scale` + `level`: a stop on an app's own scale (`defineScale`), shown the way a severity is —
+  the stop's 3px leading stripe (dashed for the scale's unknown stop) and a ScaleBadge in the meta
+  line. Leave `value` out and the stop's name is the value ("Status: Good"), with no badge. A level
+  that is unset or not on the scale shows no stripe and no badge. `severity` wins over a level.
+  These two are the only ways to color a Stat.
 
 Put several in a StatRow (`max={5}` for a row of five).
 -->
-<script lang="ts">
+<script lang="ts" generics="V extends string = string">
 	import type { Snippet } from 'svelte';
 	import Missing from './Missing.svelte';
+	import ScaleBadge from './ScaleBadge.svelte';
 	import SeverityBadge from './SeverityBadge.svelte';
+	import type { Scale } from '../scale.js';
 	import { severityVars, type Severity } from '../severity.js';
 
 	interface Props {
 		label: string;
-		/** `null`, `undefined` or `''` shows the Missing mark. */
-		value: number | string | null | undefined;
+		/** `null`, `undefined` or `''` shows the Missing mark. Left out beside a `level`, the stop's
+		 *  name is the value. */
+		value?: number | string | null;
 		unit?: string;
 		of?: number | string;
 		/** What a missing value shows. */
@@ -29,6 +37,10 @@ Put several in a StatRow (`max={5}` for a row of five).
 		meta?: string | Snippet;
 		href?: string;
 		severity?: Severity | null;
+		/** An app's own ordered scale, from `defineScale`, that `level` is a stop on. */
+		scale?: Scale<V>;
+		/** A stop on `scale`: its leading stripe, and a ScaleBadge beside a value. */
+		level?: V | null;
 		/** `headline`: a bigger, heavier value with the label under it. */
 		variant?: 'default' | 'headline';
 		class?: string;
@@ -43,13 +55,20 @@ Put several in a StatRow (`max={5}` for a row of five).
 		meta,
 		href,
 		severity = null,
+		scale,
+		level = null,
 		variant = 'default',
 		class: className = ''
 	}: Props = $props();
 
 	const fmt = (v: number | string) => (typeof v === 'number' ? v.toLocaleString() : v);
-	const absent = $derived(value === null || value === undefined || value === '');
-	const mark = $derived(severity ? severityVars(severity).mark : undefined);
+	// A level on the scale, unless a severity already colors the tile.
+	const stop = $derived(!severity && scale ? scale.stop(level) : null);
+	// Without a value of its own, the tile's value is the stop's name.
+	const named = $derived(!!stop && value === undefined);
+	const absent = $derived(!named && (value === null || value === undefined || value === ''));
+	const mark = $derived(severity ? severityVars(severity).mark : stop?.mark);
+	const shown = $derived(named ? stop!.label : absent ? '' : fmt(value as number | string));
 </script>
 
 <svelte:element
@@ -57,20 +76,26 @@ Put several in a StatRow (`max={5}` for a row of five).
 	{href}
 	class="ds-stat {className}"
 	data-severity={severity ?? undefined}
+	data-level={stop?.value}
+	data-unknown={stop && scale?.isUnknown(stop.value) ? '' : undefined}
 	data-variant={variant}
 	style:--mark={mark}
 >
 	<span class="label">{label}</span>
 	<span class="figure">
 		<span class="value"
-			>{#if absent}<Missing mark={missing} />{:else}{fmt(value as number | string)}{/if}</span
+			>{#if absent}<Missing mark={missing} />{:else}{shown}{/if}</span
 		>
 		{#if unit && !absent}<span class="unit">{unit}</span>{/if}
 		{#if of !== undefined}<span class="unit">of {fmt(of)}</span>{/if}
 	</span>
-	{#if meta || severity}
+	{#if meta || severity || (stop && !named)}
 		<span class="meta">
-			{#if severity}<SeverityBadge {severity} size="sm" />{/if}
+			{#if severity}<SeverityBadge {severity} size="sm" />{:else if stop && scale && !named}<ScaleBadge
+					{scale}
+					value={stop.value}
+					size="sm"
+				/>{/if}
 			{#if typeof meta === 'function'}{@render meta()}{:else if meta}<span class="text">{meta}</span>{/if}
 		</span>
 	{/if}
@@ -90,9 +115,23 @@ Put several in a StatRow (`max={5}` for a row of five).
 		text-decoration: none;
 		transition: background-color var(--ds-dur-fast) var(--ds-ease-out);
 	}
-	.ds-stat[data-severity] {
+	.ds-stat[data-severity],
+	.ds-stat[data-level] {
 		box-shadow: inset 3px 0 0 var(--mark);
 		padding-left: 17px;
+	}
+	/* The scale's unknown stop: a dashed stripe, so it never reads as a position on the scale. */
+	.ds-stat[data-unknown] {
+		position: relative;
+		overflow: hidden;
+		box-shadow: none;
+	}
+	.ds-stat[data-unknown]::before {
+		content: '';
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: 3px;
+		background: repeating-linear-gradient(to bottom, var(--mark) 0 3px, transparent 3px 6px);
 	}
 	a.ds-stat:hover {
 		background: var(--ds-bg-3);

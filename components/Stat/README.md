@@ -10,7 +10,17 @@ icon, no sparkline.
 - **As a link** — `href` makes the whole tile a link: hover `ds-bg-3`, the focus ring. A stat that
   links nowhere should be rare.
 - **Attention** — `severity` adds that stop's 3px leading stripe and a `SeverityBadge` in the meta
-  line. It is the only way to color a Stat.
+  line.
+- **A level on the app's own scale** — `scale` (from `defineScale`) and `level` (a stop on it) add
+  that stop's 3px leading stripe, the same way: dashed for the scale's unknown stop, which has no
+  place on the ramp. Beside a `value` of its own, the stop's `ScaleBadge` goes in the meta line
+  ("Coverage 92% · Likely"). **Leave `value` out and the stop's name is the value**: a "Status"
+  stat reads "Good" on the stop's stripe, with no badge to say it twice. The name is always
+  written, so the color is never the only signal. A level that is unset (`null`) or not on the
+  scale shows no stripe and no badge, and a tile with no value of its own then shows the missing
+  mark. `severity` wins over a level; give a tile one or the other.
+
+  Severity and a scale level are the only ways to color a Stat.
 - **A row** — put several in a `StatRow`: two to four across by the row's own width (2 below 560px,
   3 below 800px, then 4). Give it a `label` to name the group. For a row of five — four counts and
   their total — set `max={5}`: 2 below 560px, 3 below 960px, then all five, so the fifth never
@@ -28,11 +38,11 @@ unit; `missing` changes the mark. Zero is a value, not a missing one.
 ## What the consumer provides
 
 `label`, `value`, `unit`, `of`, `missing`, `meta` (text or a snippet), `href`, `severity`,
-`variant` (`default` | `headline`), `class`. On `StatRow`: `label`, `max` (`4` default | `3` |
+`scale` and `level`, `variant` (`default` | `headline`), `class`. On `StatRow`: `label`, `max` (`4` default | `3` |
 `5`), `class`.
 
 ## Don't
 
 - Don't put two numbers in `value`.
 - Don't write a sentence in `meta`.
-- Don't color a Stat any other way than `severity`.
+- Don't color a Stat any other way than `severity` or a scale `level`.

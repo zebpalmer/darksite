@@ -7,6 +7,7 @@ import { page, userEvent } from 'vitest/browser';
 import { render, screen, within } from '@testing-library/svelte';
 import BarHarness from '../../tests/browser/BarHarness.svelte';
 import HeaderRoomHarness from '../../tests/browser/HeaderRoomHarness.svelte';
+import HeaderChipsHarness from '../../tests/browser/HeaderChipsHarness.svelte';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 const box = (el: Element) => el.getBoundingClientRect();
@@ -70,6 +71,56 @@ describe('PageHeader room in a browser', () => {
 		screen.getByTestId('narrow').style.width = '1000px';
 		for (let i = 0; i < 4; i++) await settle();
 		expect(state('narrow')).toEqual(state('wide'));
+	});
+});
+
+describe('PageHeader chips in a browser', () => {
+	const parts = (id: string) => {
+		const frame = screen.getByTestId(id);
+		const header = frame.querySelector<HTMLElement>('.ds-pageheader')!;
+		return {
+			frame,
+			header,
+			title: header.querySelector<HTMLElement>('.title')!,
+			chips: [...header.querySelectorAll<HTMLElement>('.ds-chip')]
+		};
+	};
+
+	it('wraps the chips under the title at 375px, without widening the header', async () => {
+		render(HeaderChipsHarness);
+		await settle();
+		await settle();
+		for (const id of ['phone', 'phone-bare', 'phone-long']) {
+			const { frame, header, title, chips } = parts(id);
+			expect(header.scrollWidth, id).toBeLessThanOrEqual(header.clientWidth);
+			expect(box(header).right, id).toBeLessThanOrEqual(box(frame).right + 0.5);
+			expect(chips, id).toHaveLength(2);
+			for (const chip of chips) {
+				expect(box(chip).top, id).toBeGreaterThanOrEqual(box(title).bottom);
+				expect(box(chip).right, id).toBeLessThanOrEqual(box(header).right);
+			}
+			// The title stays one line: as tall as its line height.
+			expect(box(title).height, id).toBe(parseFloat(getComputedStyle(title).lineHeight));
+		}
+		// A title longer than the header still truncates on its one line.
+		const long = parts('phone-long').title;
+		expect(long.scrollWidth).toBeGreaterThan(long.clientWidth);
+		// The actions keep folding: compact, then on their own line under the lead.
+		const phone = within(screen.getByTestId('phone'));
+		expect(phone.getByRole('button', { name: 'New record' }).textContent?.trim()).toBe('');
+		const lead = box(part('phone', '.lead'));
+		expect(box(part('phone', '.actions')).top).toBeGreaterThanOrEqual(lead.bottom);
+		expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth);
+	});
+
+	it('keeps the chips beside the title, on the one 56px line, when there is room', async () => {
+		render(HeaderChipsHarness);
+		await settle();
+		await settle();
+		const { header, title, chips } = parts('wide');
+		for (const chip of chips) expect(box(chip).top).toBeLessThan(box(title).bottom);
+		expect(Math.round(box(header).height)).toBe(56);
+		expect(title.scrollWidth).toBeLessThanOrEqual(title.clientWidth);
 	});
 });
 

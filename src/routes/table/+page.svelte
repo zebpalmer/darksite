@@ -38,6 +38,7 @@
 	let loading = $state(false);
 	let grouped = $state(false);
 	let marked = $state(false);
+	let striped = $state(false);
 
 	const rows = $derived(
 		[...all].sort((a, b) => {
@@ -66,6 +67,7 @@
 		>Group by status</Button
 	>
 	<Button size="dense" pressed={marked} onclick={() => (marked = !marked)}>Row marks</Button>
+	<Button size="dense" pressed={striped} onclick={() => (striped = !striped)}>Striped</Button>
 	<span class="meta">{selected.size} selected</span>
 </div>
 <div class="pane">
@@ -84,6 +86,7 @@
 		rowTone={marked
 			? (r) => (r.status === 'On hold' ? 'warning' : r.status === 'Ready' ? 'success' : null)
 			: undefined}
+		{striped}
 	/>
 </div>
 <p>
@@ -92,13 +95,14 @@
 </p>
 
 <div class="wide">
-	<Pane title="Wide table, earlier drops" meta="hideBelow 3: 960 · 2: 640">
+	<Pane title="Wide table, earlier drops" meta="hideBelow 3: 960 · 2: 640 · striped">
 		<Table
 			{rows}
 			{columns}
 			rowKey={(r) => r.id}
 			label="Records, earlier drops"
 			hideBelow={{ 2: 640, 3: 960 }}
+			striped
 		/>
 	</Pane>
 </div>

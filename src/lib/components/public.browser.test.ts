@@ -25,6 +25,29 @@ describe('CodeBlock in a browser', () => {
 	});
 });
 
+describe('CodeBlock comfy in a browser', () => {
+	it('sets larger mono text and a 32px copy button centered on the first line, inside its width', async () => {
+		render(PublicHarness);
+		await settle();
+		const frame = part('code-comfy', '.frame');
+		const pre = part('code-comfy', 'pre') as HTMLElement;
+		const copy = box(part('code-comfy', 'button'));
+		const style = getComputedStyle(pre);
+		expect(style.fontSize).toBe('16px');
+		expect(style.lineHeight).toBe('26px');
+		expect(Math.round(copy.width)).toBe(32);
+		expect(Math.round(copy.height)).toBe(32);
+		const firstLine = box(pre).top + parseFloat(style.paddingTop) + 13;
+		expect(Math.abs(copy.top + copy.height / 2 - firstLine)).toBeLessThanOrEqual(1);
+		expect(copy.left).toBeGreaterThanOrEqual(box(pre).right - 0.5);
+		expect(copy.right).toBeLessThanOrEqual(box(frame).right);
+		expect(box(frame).width).toBeLessThanOrEqual(300);
+		expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth);
+		// The default block keeps its 24px button.
+		expect(Math.round(box(part('code', 'button')).width)).toBe(24);
+	});
+});
+
 describe('Notice in a browser', () => {
 	it('puts the action beside the body when there is room, and under it when narrow', async () => {
 		render(PublicHarness);

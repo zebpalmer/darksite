@@ -43,6 +43,20 @@
 			copy={false}
 		/>
 	</div>
+
+	<h2>On a reading page</h2>
+	<article class="ds-reading">
+		<p>
+			Long-form text is set at 18px. Beside it, a comfy CodeBlock has larger mono text, more padding
+			and a copy button to match.
+		</p>
+		<CodeBlock code={command} label="Shell" size="comfy" />
+		<p class="value">
+			Record <span class="reading-mono">R-00412</span>
+			<CopyButton value="R-00412" inline size="comfy" label="Copy identifier" />
+		</p>
+		<CopyButton value="https://example.com/r/R-00412" label="Copy link" size="comfy" />
+	</article>
 </div>
 
 <style>
@@ -58,5 +72,10 @@
 	}
 	.wide {
 		max-width: 560px;
+	}
+	.reading-mono {
+		font-family: var(--font-mono);
+		font-size: var(--ds-text-lg);
+		font-variant-numeric: tabular-nums;
 	}
 </style>

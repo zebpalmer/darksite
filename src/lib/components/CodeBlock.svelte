@@ -9,7 +9,9 @@ An inline `CopyButton` sits in its own column at the top right, never over the t
 
 - `code` (the text), `label` (a caption above it — a file name, "Shell"; also the scroller's
   accessible name, default "Code"), `copy` (default true), `copyLabel` (default "Copy"),
-  `wrap` (wrap long lines instead of scrolling; for prose-like output), `class`.
+  `wrap` (wrap long lines instead of scrolling; for prose-like output), `size` (`default` |
+  `comfy`: 16px mono on 26px lines with more padding and a 32px copy button, to sit beside 18px
+  `ds-reading` text), `class`.
 
 No syntax highlighting: color in this system carries meaning, and token colors would not.
 -->
@@ -23,6 +25,8 @@ No syntax highlighting: color in this system carries meaning, and token colors w
 		copy?: boolean;
 		copyLabel?: string;
 		wrap?: boolean;
+		/** `comfy`: larger text, padding and copy button, for a reading page (`ds-reading`). */
+		size?: 'default' | 'comfy';
 		class?: string;
 	}
 
@@ -32,16 +36,17 @@ No syntax highlighting: color in this system carries meaning, and token colors w
 		copy = true,
 		copyLabel = strings.copy,
 		wrap = false,
+		size = 'default',
 		class: className = ''
 	}: Props = $props();
 </script>
 
-<figure class="ds-codeblock {className}" data-wrap={wrap ? '' : undefined}>
+<figure class="ds-codeblock {className}" data-wrap={wrap ? '' : undefined} data-size={size}>
 	{#if label}<figcaption>{label}</figcaption>{/if}
 	<div class="frame">
 		<!-- svelte-ignore a11y_no_noninteractive_tabindex (a scroller must take focus to scroll by keyboard) -->
 		<pre tabindex="0" role="region" aria-label={label ?? strings.code}><code>{code}</code></pre>
-		{#if copy}<span class="copy"><CopyButton value={code} label={copyLabel} inline /></span>{/if}
+		{#if copy}<span class="copy"><CopyButton value={code} label={copyLabel} inline {size} /></span>{/if}
 	</div>
 </figure>
 
@@ -95,5 +100,22 @@ No syntax highlighting: color in this system carries meaning, and token colors w
 	.copy {
 		display: inline-flex;
 		padding: 8px 8px 0 4px;
+	}
+	/* Comfy: beside 18px reading text. The copy button's center stays on the first line's. */
+	[data-size='comfy'] figcaption {
+		margin-bottom: 8px;
+		font-size: var(--ds-text-sm);
+		line-height: var(--ds-lh-sm);
+	}
+	[data-size='comfy'] pre {
+		padding: 14px 0 14px 16px;
+		font-size: var(--ds-text-lg);
+		line-height: 26px;
+	}
+	[data-size='comfy'] code {
+		padding-right: 16px;
+	}
+	[data-size='comfy'] .copy {
+		padding: 11px 10px 0 4px;
 	}
 </style>

@@ -45,7 +45,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Edit a record | `Sheet side="right"` | A drawer at ≥768px, a bottom sheet below. Footer: Cancel (secondary) then Save (primary), right-aligned. |
 | Confirm after the fact | `toasts.push({ action })` | Brief; an action toast shows an m:ss countdown. Never more than two. A long-lived undo is not a toast. |
 | Sections of one thing | `Tabs` | Counts inline; links mode for route sections. |
-| A headline number | `Stat` in a `StatRow` | One value, one meta line. `severity` is the only color. |
+| A headline number | `Stat` in a `StatRow` | One value, one meta line. `severity` or a scale `level` is the only color. |
+| A status on the app's own scale, as a headline | `Stat scale level` | The stop's name is the value, on its stripe; beside a value of its own, a `ScaleBadge` in the meta line. |
 | A proportion | `Meter` | Up to three segments, categorical colors, a legend. Not for loading. A standalone whole is a `Ring`. |
 | A history of changes | `Timeline` | Sentences, relative times, batches, a recent slice with "Show all". |
 | A static state | `StatusBadge` | Lifecycle, holds, markers. Never severity colors; never clickable. |
@@ -56,6 +57,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Rows and columns of records | `Table` | Sort, selection, row links, priority columns. Long lists end in "Load more" (a `Pager` when each page needs a URL). |
 | The end of a long table or list | `LoadMore` | "Showing 50 of 295" and a Load more button; rows append; keyboard focus moves into the new rows. |
 | Records in groups, one set of columns | `Table groupBy` | Header rows with counts inside one table — not a Pane and a Table per group. |
+| A ledger: rows read across many figures | `Table striped` | Every second row a faint stripe, restarting in each group. Most tables need only their dividers. |
 | A row that needs to stand out | `Table rowTone` / `rowSeverity` | A 3px leading stripe; the row still says it in a badge. Exceptions only. |
 | A wide table beside a rail | `Table hideBelow` | Move the priority 2 / 3 thresholds so it drops columns sooner. |
 | A secondary block that can fold away | `Pane collapsible` | A disclosure in the heading; `collapseBelow` starts it closed on a narrow column. |
@@ -86,6 +88,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Something the reader of this page should know | `Notice` | In the content: info, success, warning, danger; one action; dismissal remembered like a Banner's. System-wide is a `Banner`. |
 | Copy a value | `CopyButton` (`inline` beside a mono value) | Says "Copied" and announces it; falls back without the Clipboard API. No toast. |
 | A command, a snippet, an API response | `CodeBlock` | Mono, scrolls sideways, a copy button in its own column. No syntax colors. |
+| A command on a reading page | `CodeBlock size="comfy"` | Sized to sit beside 18px `ds-reading` text; `CopyButton size="comfy"` beside a value there. |
 | Compare rows by one number | `CellBar` in a `Table` cell | One scale for the column; the value stays text. |
 | A few values over time | `BarSeries` | Stacked, up to six categorical series; tooltip, keyboard, a data table behind it. No axes, no zoom. |
 | Parts of one whole, standing alone | `Ring` | Up to six parts, the total in the middle; on one line it is a `Meter`. |

@@ -11,11 +11,13 @@ Two forms:
 - **Button** (default): a `Button` with a copy icon and its label — "Copy", "Copy link".
 - **`inline`**: a 24px icon button to sit beside a mono value (an identifier, a hash, a command);
   `label` is its accessible name and tooltip ("Copy serial"). Its hit area grows to 44px on touch
-  without moving the text around it.
+  without moving the text around it. `size="comfy"` makes it 32px with an 18px icon, beside
+  reading-sized text (`ds-reading`, a comfy CodeBlock).
 
 - `value` (a string, or a function returning one, read at the moment of copying), `label`
   (default "Copy"), `copiedLabel` (default "Copied"), `inline`, `variant` (`secondary` | `ghost`,
-  the button form), `size` (the button form), `resetAfter` (ms, default 2000), `oncopy(ok)`,
+  the button form), `size` (as `Button` for the button form; `comfy` also sizes the inline form),
+  `resetAfter` (ms, default 2000), `oncopy(ok)`,
   `disabled`, `class`.
 -->
 <script lang="ts">
@@ -112,12 +114,13 @@ Two forms:
 		<button
 			type="button"
 			class="inline"
+			data-size={size === 'comfy' ? 'comfy' : undefined}
 			aria-label={shown}
 			{disabled}
 			onclick={copy}
 			{@attach tooltip(shown)}
 		>
-			<Icon size={16} aria-hidden="true" />
+			<Icon size={size === 'comfy' ? 18 : 16} aria-hidden="true" />
 		</button>
 	{:else}
 		<Button {variant} {size} icon={Icon} {disabled} onclick={copy}>{shown}</Button>
@@ -149,6 +152,11 @@ Two forms:
 			background-color var(--ds-dur-fast) var(--ds-ease-out),
 			color var(--ds-dur-fast) var(--ds-ease-out);
 	}
+	.inline[data-size='comfy'] {
+		width: 32px;
+		height: 32px;
+		border-radius: var(--ds-radius-sm);
+	}
 	.inline:hover:not(:disabled) {
 		background: var(--ds-bg-4);
 		color: var(--ds-text-1);
@@ -169,6 +177,9 @@ Two forms:
 			content: '';
 			position: absolute;
 			inset: -10px;
+		}
+		.inline[data-size='comfy']::before {
+			inset: -6px;
 		}
 	}
 </style>

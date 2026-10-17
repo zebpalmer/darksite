@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Download from '@lucide/svelte/icons/download';
 	import Plus from '@lucide/svelte/icons/plus';
-	import { Button, PageHeader } from '#lib';
+	import { Button, Chip, PageHeader } from '#lib';
 </script>
 
 <svelte:head><title>PageHeader · darksite</title></svelte:head>
@@ -29,6 +29,23 @@
 				<Button variant="icon" icon={Plus} label="New record" />
 			{:else}
 				<Button variant="ghost" icon={Download}>Export</Button>
+				<Button variant="primary" icon={Plus}>New record</Button>
+			{/if}
+		{/snippet}
+	</PageHeader>
+</div>
+<p>
+	Chips after the title wrap onto a line under it when the header has no room for them; the title
+	keeps its one line. Narrow the frame to see it.
+</p>
+<div class="frame">
+	<PageHeader title="Records awaiting a second review" count={38}>
+		<Chip>Field team</Chip>
+		<Chip>On hold</Chip>
+		{#snippet actions({ compact })}
+			{#if compact}
+				<Button variant="icon" icon={Plus} label="New record" />
+			{:else}
 				<Button variant="primary" icon={Plus}>New record</Button>
 			{/if}
 		{/snippet}
