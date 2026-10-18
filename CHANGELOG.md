@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.21.0] — 2026-10-17
+
 ### Added
 
 - `ds-article`: the title is fluid in the article's width, 32px growing to 52px, and
