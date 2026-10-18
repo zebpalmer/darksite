@@ -33,25 +33,57 @@ here; the "labels, not sentences" rule is about controls and work surfaces.
 
 A post on a public site — a blog or news article, a write-up — uses `<article class="ds-article">`
 instead: the interface font at 18px in a 720px text column, inside a 1120px wide column. The
-article's own `<header>` takes the place of the PageHeader: the `h1` title, a
-`<p class="ds-article-summary">` of a sentence or two, and a `<p class="ds-article-meta">` line (the
-date, the reading time), all in the text column on the body's left edge. A figure, a table or a
-code block marked `ds-article-wide` breaks out to the wide column; a component goes in a `<div>` or
-`<figure>` that carries the class. The article always centers itself, whatever `proseAlign` says,
-and both columns shrink to what the column has: under a 1060px `contentWidth` the wide column is
-1060px, and on a phone both are the padded column.
+article's own `<header>` takes the place of the PageHeader, all in the text column on the body's
+left edge: an optional `ds-article-kicker` (a section or a category, 13px at 500 in `ds-accent-text`;
+add `ds-article-kicker-caps` for 12px small capitals, set `--ds-article-kicker-color` to
+`var(--ds-text-2)` to mute it), the `h1` title, a `<p class="ds-article-summary">` of a sentence or
+two, and a `<p class="ds-article-meta">` line (the author, the date, the reading time). The meta draws
+its own "·" separators: write each item as one element (a `<span>`, a `<time>`; a link goes inside
+its item) and no separators. An item stays whole, and a line breaks before a separator, never
+between it and its item, so no line starts or ends with one.
+
+The title is fluid in the article's width: 32px up to a 560px article, growing to 52px at 1110px,
+and `ds-text-2xl` when the article is narrower than 520px. It is the one text in the system above
+32px. `--ds-article-title-size` replaces the wide size. When the header opens the article it has
+space above it, 24px growing to 48px with the article's width; `--ds-article-header-space` replaces
+it.
+
+A figure, a table or a code block marked `ds-article-wide` breaks out to the wide column; a
+component goes in a `<div>` or `<figure>` that carries the class. A component placed directly in the
+article — a `CodeBlock`, a `Notice` — takes the article's rhythm like any block. The article always
+centers itself, whatever `proseAlign` says, and both columns shrink to what the column has: under a
+1060px `contentWidth` the wide column is 1060px, and on a phone both are the padded column.
 
 ```svelte
 <article class="ds-article">
   <header>
+    <p class="ds-article-kicker"><a href="/guides">Guides</a></p>
     <h1>Title</h1>
     <p class="ds-article-summary">A sentence or two.</p>
-    <p class="ds-article-meta"><time datetime="2026-10-04">October 4, 2026</time><span>6 min read</span></p>
+    <p class="ds-article-meta">
+      <span>By A. Rivera</span>
+      <time datetime="2026-10-04">October 4, 2026</time>
+      <span>6 min read</span>
+    </p>
   </header>
   <p>Body…</p>
+  <CodeBlock size="comfy" label="Shell" code="tool run" />
   <figure class="ds-article-wide"><img src="…" alt="…" /><figcaption>…</figcaption></figure>
 </article>
 ```
+
+**Ghost content.** A post from the Ghost CMS opts in with `class="ds-article ds-article-ghost"`, its
+HTML placed directly in the article after the header (`{@html post.html}`), so each card is a child
+of the article's grid. The class maps the card markup Ghost's editor (Koenig) writes: an image card
+(`kg-image-card`) sits in the text column, `kg-width-wide` takes the wide column and `kg-width-full`
+the whole page column, with its caption kept to the text column; a gallery (`kg-gallery-card`) is
+rows of images at equal shares of the width, as tall as the row's tallest; a bookmark
+(`kg-bookmark-card`) is a bordered link card with its thumbnail beside the text, above it in a
+narrow article; a callout (`kg-callout-card`) is a tinted box, its color mapped to the accent,
+success, warning or danger tint; an embed (`kg-embed-card`) is centered, and a player fills the text
+column at 16:9. Captions are Ghost's bare `<figcaption>`s. The `kg-*` rules match only inside
+`ds-article-ghost`. Under it the article spans the page column, and its wide column stays centered at
+1120px. Other Ghost cards (buttons, toggles, signup forms) are not mapped.
 
 **6. Full-bleed page.** A map, a canvas, a diagram that takes the whole column: `FullBleed`. No
 padding and no footer, the shell locked to the viewport at every width, so it fills exactly what

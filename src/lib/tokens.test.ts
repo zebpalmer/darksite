@@ -129,3 +129,15 @@ describe('base.css cascade layer', () => {
 		expect(base.indexOf('@keyframes')).toBeGreaterThan(close);
 	});
 });
+
+describe('base.css Ghost mapping', () => {
+	it('matches kg-* classes only inside an opted-in ds-article-ghost', () => {
+		const rules = base.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{};]+)\{/g);
+		const selectors = [...rules]
+			.map((m) => m[1].trim())
+			.filter((s) => s.includes('kg-'))
+			.flatMap((s) => s.split(/,(?![^(]*\))/).map((part) => part.trim()));
+		expect(selectors.length).toBeGreaterThan(10);
+		for (const selector of selectors) expect(selector).toMatch(/^\.ds-article-ghost /);
+	});
+});

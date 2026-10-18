@@ -140,14 +140,22 @@
 	   in a 720px text column, centered in a 1120px wide column that a figure, a table or a code
 	   block marked `ds-article-wide` breaks out to. Both columns shrink to fit a narrower page
 	   column (a capped content width, a phone); the page or the shell supplies the gutter. The
-	   article's `<header>` (the title, a `ds-article-summary` and a `ds-article-meta` line) sits in
-	   the text column, on the body's left edge.
+	   article's `<header>` (a `ds-article-kicker`, the title, a `ds-article-summary` and a
+	   `ds-article-meta` line) sits in the text column, on the body's left edge.
 
 	   A grid, not margins, places the children, so a component's own margins cannot move it off
-	   the column; the spacing is top margins only, since grid items' margins do not collapse. */
+	   the column; the spacing is top margins only, since grid items' margins do not collapse.
+
+	   The title and the space above the header are fluid in the article's own width (`cqi`, the
+	   article is its own container), not the viewport's: the article is what the title has to fit,
+	   and it is narrower than the viewport beside a rail, under a capped `contentWidth` or in a
+	   pane. The title is 32px up to a 560px article and grows to 52px at 1110px; it is the one text
+	   in the system above 32px. */
 	.ds-article {
 		--article-text: var(--ds-article-text-width, 720px);
 		--article-wide: var(--ds-article-wide-width, 1120px);
+		--article-title: var(--ds-article-title-size, clamp(32px, 12px + 3.6cqi, 52px));
+		--article-header-space: var(--ds-article-header-space, clamp(24px, 4.3cqi, 48px));
 		container: ds-article / inline-size;
 		display: grid;
 		grid-template-columns:
@@ -176,8 +184,10 @@
 	}
 	.ds-article h1 {
 		margin: 0;
-		font-size: var(--ds-text-3xl);
-		line-height: var(--ds-lh-3xl);
+		font-size: var(--article-title);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
 	}
 	.ds-article h2 {
 		font-size: var(--ds-text-2xl);
@@ -217,14 +227,62 @@
 		font-size: var(--ds-text-xl);
 		line-height: 1.5;
 	}
+	/* Space above the header, when it opens the article. */
+	.ds-article > header:first-child {
+		padding-top: var(--article-header-space);
+	}
+	/* A section or a category above the title. `ds-article-kicker-caps` sets it in small capitals;
+	   `--ds-article-kicker-color` mutes it (`var(--ds-text-2)`). */
+	.ds-article-kicker {
+		display: block;
+		margin: 0 0 12px;
+		color: var(--ds-article-kicker-color, var(--ds-accent-text));
+		font-size: var(--ds-text-sm);
+		font-weight: 500;
+		line-height: var(--ds-lh-sm);
+	}
+	.ds-article-kicker-caps {
+		font-size: var(--ds-text-xs);
+		line-height: var(--ds-lh-xs);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.ds-article-kicker a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.ds-article-kicker a:hover {
+		text-decoration: underline;
+	}
+	/* The meta line draws its own separators: every item carries a "·" before it, so a line breaks
+	   before a separator and never between it and its item. The line sits one separator's width
+	   to the left and is clipped there, which hides the separator that starts each line, and the
+	   first item's; the text keeps the body's left edge. Each item is one element, kept whole. */
 	.ds-article-meta {
+		--meta-sep: 20px;
 		display: flex;
 		flex-wrap: wrap;
-		gap: 4px 16px;
+		row-gap: 4px;
 		margin: 16px 0 0;
+		margin-inline-start: calc(-1 * var(--meta-sep));
+		clip-path: inset(-8px -8px -8px calc(var(--meta-sep) - 4px));
 		color: var(--ds-text-2);
 		font-size: var(--ds-text-md);
 		line-height: var(--ds-lh-md);
+	}
+	.ds-article-meta:dir(rtl) {
+		clip-path: inset(-8px calc(var(--meta-sep) - 4px) -8px -8px);
+	}
+	.ds-article-meta > * {
+		white-space: nowrap;
+	}
+	.ds-article-meta > *::before {
+		content: '·';
+		content: '·' / '';
+		display: inline-block;
+		width: var(--meta-sep);
+		color: var(--ds-text-3);
+		text-align: center;
 	}
 	/* The element rules below match bare elements only (no class), as written by hand or by a
 	   Markdown renderer, so a component placed in the article keeps its own look. */
@@ -319,6 +377,217 @@
 		}
 		.ds-article-summary {
 			font-size: 18px;
+		}
+	}
+
+	/* Ghost content, opt-in: `class="ds-article ds-article-ghost"` maps the card markup that the
+	   Ghost CMS editor (Koenig) writes, its `kg-*` classes, onto the article. The post's HTML goes
+	   straight into the article after its header, so each card is a child of the grid. The article
+	   then spans the page column, with a full track either side of the wide column, which stays
+	   centered at its width: `kg-width-wide` takes the wide column, `kg-width-full` the full one. */
+	.ds-article.ds-article-ghost {
+		grid-template-columns:
+			[full-start] minmax(0, 1fr)
+			[wide-start] minmax(0, calc((var(--article-wide) - var(--article-text)) / 2))
+			[text-start] min(var(--article-text), 100%)
+			[text-end] minmax(0, calc((var(--article-wide) - var(--article-text)) / 2))
+			[wide-end] minmax(0, 1fr)
+			[full-end];
+		width: 100%;
+	}
+	.ds-article-ghost > .kg-width-wide {
+		grid-column: wide;
+	}
+	.ds-article-ghost > .kg-width-full {
+		grid-column: full;
+	}
+	/* A caption under a full-width card keeps to the text column. */
+	.ds-article-ghost > .kg-width-full > figcaption {
+		max-width: var(--article-text);
+		margin-inline: auto;
+	}
+	.ds-article-ghost .kg-image {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		margin-inline: auto;
+		border-radius: var(--ds-radius-md);
+	}
+	.ds-article-ghost :is(.kg-width-wide, .kg-width-full) .kg-image {
+		width: 100%;
+	}
+	.ds-article-ghost .kg-width-full .kg-image {
+		border-radius: 0;
+	}
+	/* A gallery: rows of images, each row as tall as its tallest image at an equal share of the
+	   width, the others cropped to it. A theme script that sets each image's `flex` from its
+	   aspect ratio still applies, since its inline style wins. */
+	.ds-article-ghost .kg-gallery-container {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+	.ds-article-ghost .kg-gallery-row {
+		display: flex;
+		gap: 8px;
+	}
+	.ds-article-ghost .kg-gallery-image {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+	.ds-article-ghost .kg-gallery-image > a {
+		display: block;
+		height: 100%;
+	}
+	.ds-article-ghost .kg-gallery-image img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: var(--ds-radius-sm);
+	}
+	/* A bookmark: a bordered link card, the text beside a thumbnail. */
+	.ds-article-ghost .kg-bookmark-container {
+		display: flex;
+		min-width: 0;
+		overflow: hidden;
+		border: 1px solid var(--ds-border-subtle);
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-bg-2);
+		color: var(--ds-text-1);
+		text-decoration: none;
+		transition: background-color var(--ds-dur-fast) var(--ds-ease-out);
+	}
+	.ds-article-ghost .kg-bookmark-container:hover {
+		background: var(--ds-bg-3);
+	}
+	.ds-article-ghost .kg-bookmark-content {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 6px;
+		min-width: 0;
+		padding: 16px 20px;
+	}
+	.ds-article-ghost .kg-bookmark-title {
+		color: var(--ds-text-heading, var(--ds-text-1));
+		font-size: var(--ds-text-lg);
+		font-weight: 500;
+		line-height: var(--ds-lh-lg);
+	}
+	.ds-article-ghost .kg-bookmark-description {
+		display: -webkit-box;
+		overflow: hidden;
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+	}
+	.ds-article-ghost .kg-bookmark-metadata {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		min-width: 0;
+		margin-top: 4px;
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-sm);
+		line-height: var(--ds-lh-sm);
+	}
+	.ds-article-ghost .kg-bookmark-icon {
+		flex: none;
+		width: 20px;
+		height: 20px;
+		border-radius: var(--ds-radius-xs);
+	}
+	.ds-article-ghost .kg-bookmark-metadata > span {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.ds-article-ghost .kg-bookmark-metadata > span + span::before {
+		content: '·';
+		content: '·' / '';
+		margin-right: 8px;
+		color: var(--ds-text-3);
+	}
+	.ds-article-ghost .kg-bookmark-thumbnail {
+		position: relative;
+		flex: 0 0 min(33%, 240px);
+		background-position: center;
+		background-size: cover;
+	}
+	.ds-article-ghost .kg-bookmark-thumbnail img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	/* A callout: a tinted box, the emoji beside the text. Ghost's colors map to the tints. */
+	.ds-article-ghost .kg-callout-card {
+		display: flex;
+		gap: 12px;
+		padding: 16px 20px;
+		border: 1px solid transparent;
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-accent-tint);
+		color: var(--ds-text-1);
+	}
+	.ds-article-ghost .kg-callout-card-grey {
+		background: var(--ds-bg-2);
+	}
+	.ds-article-ghost .kg-callout-card-white {
+		border-color: var(--ds-border-subtle);
+		background: transparent;
+	}
+	.ds-article-ghost .kg-callout-card-green {
+		background: var(--ds-success-tint);
+	}
+	.ds-article-ghost .kg-callout-card-yellow {
+		background: var(--ds-warning-tint);
+	}
+	.ds-article-ghost .kg-callout-card-red {
+		background: var(--ds-danger-tint);
+	}
+	.ds-article-ghost :is(.kg-callout-card-pink, .kg-callout-card-purple) {
+		background: var(--ds-accent-2-tint);
+	}
+	.ds-article-ghost .kg-callout-emoji {
+		flex: none;
+		font-size: 20px;
+		line-height: 1.44;
+	}
+	.ds-article-ghost .kg-callout-text {
+		min-width: 0;
+	}
+	/* An embed: centered, never wider than its column; a player fills the column at 16:9. */
+	.ds-article-ghost .kg-embed-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.ds-article-ghost .kg-embed-card > * {
+		max-width: 100%;
+	}
+	.ds-article-ghost .kg-embed-card > iframe {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		border: 0;
+	}
+	.ds-article-ghost .kg-embed-card > figcaption {
+		align-self: stretch;
+	}
+	@container ds-article (max-width: 520px) {
+		.ds-article-ghost .kg-bookmark-container {
+			flex-direction: column-reverse;
+		}
+		.ds-article-ghost .kg-bookmark-thumbnail {
+			flex: none;
+			aspect-ratio: 2 / 1;
 		}
 	}
 

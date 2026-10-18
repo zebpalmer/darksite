@@ -94,7 +94,8 @@ cut from; use them to define a new role, never directly in a component.
 **Type.** `sans` is Geist, `mono` is Geist Mono. **12px is the floor and 500 is the ceiling** —
 there is no bold in this system, and a utility class asking for one should resolve to 500. The one
 weight above it is the headline-number role (28px at 650), used only by `Stat variant="headline"`
-for a public page's key figures. The one
+for a public page's key figures. The largest size is `ds-text-3xl` (32px); the one text above it is
+a `ds-article` title, fluid up to 52px. The one
 text below 12px is the 11px uppercase group title in navigation, where capitals and letter-spacing
 carry the legibility. Set
 titles in `page-title` / `card-title`, body in `body`, labels in `label`, meta and counts in
@@ -238,7 +239,8 @@ Load the two stylesheets once, in the root layout, then import components:
 components rely on: box sizing, the focus ring, reduced motion, the 16px touch font size, the
 `.ds-control` look, the shared keyframes, and three classes for pages of text: `ds-prose` (help and
 how-tos), `ds-reading` (long-form reading in the reading font) and `ds-article` (a post on a public
-site, with `ds-article-wide` for what breaks out of its text column). To re-theme a product, override `--ds-*` properties in
+site, with `ds-article-wide` for what breaks out of its text column, and `ds-article-ghost` for a
+post from the Ghost CMS). To re-theme a product, override `--ds-*` properties in
 its own stylesheet, after these two imports — no component changes.
 
 A site upgrades by changing the version it pins. For a genuine one-off divergence, copy that one
@@ -385,7 +387,10 @@ layer listed after `ds.base`, or by staying unlayered:
 
 Three things in `base.css` are unlayered on purpose: the focus ring, the reduced-motion duration
 overrides, and the keyframes. The component styles themselves are scoped by Svelte and unlayered,
-so a utility class does not restyle a darksite component; use its props and variants instead.
+so a utility class does not restyle a darksite component; use its props and variants instead. The
+exception is the margin reset on a component whose root is a `<figure>` (`CodeBlock`, `BarSeries`,
+`Ring`): it sits in `ds.base` at zero specificity, so it only clears the browser's figure margin and
+the page sets the space around the block (a `ds-article`'s rhythm, a margin utility).
 
 Then align Tailwind to these tokens rather than beside them: expose each `ds-*` color role as a
 utility color, map the type scale to `ds-text-*` / `ds-lh-*`, cap every weight utility at 500, and

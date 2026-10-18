@@ -17,9 +17,13 @@ block scrolls. `label` adds a caption above the block (12px `ds-text-3`): a file
 
 ## On a reading page
 
-`size="comfy"` sits beside 18px long-form text (`ds-reading`): 16px mono on 26px lines, 14px by
-16px of padding, a 13px caption, and a comfy inline `CopyButton` (32px, an 18px icon) whose center
-stays on the first line's. The default size suits the 14px of an operator screen and `ds-prose`.
+`size="comfy"` sits beside 18px long-form text (`ds-reading`, `ds-article`): 16px mono on 26px
+lines, 14px by 16px of padding, a 13px caption, and a comfy inline `CopyButton` (32px, an 18px
+icon) whose center stays on the first line's. The default size suits the 14px of an operator screen and `ds-prose`.
+
+Placed directly in a `ds-article`, it takes the article's rhythm: its own margin reset sits in the
+`ds.base` layer at zero specificity, so it clears only the browser's figure margin, and the page's
+rules set the space around it. No wrapper is needed.
 
 ## Color
 

@@ -190,12 +190,19 @@ Fewer than three periods is a `Meter` or a `Stat`; a proportion of one whole is 
 </figure>
 
 <style>
+	/* The root's margin reset sits in darksite's base layer at zero specificity, so it only clears
+	   the browser's figure margin: the page's own rules, such as the article's rhythm, set the
+	   space around the block. */
+	@layer ds.base {
+		:where(.ds-barseries) {
+			margin: 0;
+		}
+	}
 	.ds-barseries {
 		display: flex;
 		flex-direction: column;
 		gap: 6px;
 		min-width: 0;
-		margin: 0;
 	}
 	.plot {
 		position: relative;
