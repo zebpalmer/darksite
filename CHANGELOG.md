@@ -6,6 +6,49 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `ds-article`: the title is fluid in the article's width, 32px growing to 52px, and
+  `--ds-article-title-size` sets it; it is the one text above 32px. The header has fluid space
+  above it, 24px to 48px (`--ds-article-header-space`).
+- `ds-article-kicker`: a section or category label above an article's title, in `ds-accent-text`;
+  `ds-article-kicker-caps` sets it in small capitals and `--ds-article-kicker-color` mutes it.
+- `ds-article-ghost`: an opt-in mapping of the Ghost CMS's card markup onto `ds-article`.
+  `kg-width-wide` takes the wide column and `kg-width-full` the page column; galleries, bookmark
+  cards, callouts and embeds are styled. The gallery has a Ghost content page.
+- `Dialog size="hero"`: a `mark` snippet for an icon or logo, centered above the title. It is
+  decorative (`aria-hidden`) unless `markLabel` names it, which makes it an image. Only the hero
+  shows a mark.
+- `Stat levels`: a count per stop on `scale` (`{ level, value }[]`, exported as `StatLevel`), shown
+  in the meta line as a `ScaleBadge` and a count each ("Medium 2 · Critical 4"). Entries follow the
+  scale's order with unknown last and wrap whole in a narrow tile. They replace the meta line's
+  single badge; the stripe still comes from `severity` or `level`, and a `meta` follows last.
+- Brand `roles`: a `ds-*` entry at the top of `roles` holds in every mode, and a mode's own map
+  overrides it there, so a color fixed in every mode is written once.
+
+### Changed
+
+- `darksite-theme`: on a brand's own ground (`surfaces.*.bg`), the text roles are re-fitted to
+  their designed contrast — 16.3:1 headings, 12.2:1 body, 8.5:1 secondary and 5.6:1 muted in dark —
+  instead of keeping their lightness, so a darker or lighter page no longer pushes text brighter or
+  dimmer than designed; muted text also holds 4.5:1 on `ds-bg-4`. A `surfaces.*.text` stays exact.
+  Prebuilt schemes with their own grounds (Nord, Dracula and others) change slightly.
+- `darksite-theme`: high contrast's ground follows a darker dark surface down and never sits above
+  it, so high contrast is never the paler of the two.
+- `Dialog size="hero"`: the actions stack full width on every viewport, the primary on top and
+  Cancel a quiet ghost button under it, with the same name, Esc and scrim behavior; Tab reaches the
+  primary first. Other sizes are unchanged.
+- `ds-article-meta` draws its own "·" separators, attached to the item that follows, and never
+  starts a line with one: write each item as one element and drop separator spans.
+- `CodeBlock`, `BarSeries` and `Ring` reset their root margin in the `ds.base` layer at zero
+  specificity, so the page's rules set the space around them.
+- `Table striped` mixes its stripe in OKLab.
+
+### Fixed
+
+- A `CodeBlock` (or `BarSeries`, `Ring`) placed directly in a `ds-article` now takes the article's
+  rhythm instead of sitting flush against the block above it.
+
 ## [0.20.0] — 2026-10-17
 
 ### Added

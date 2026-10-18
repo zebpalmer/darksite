@@ -115,7 +115,7 @@
 	</div>
 
 	<div class="kg-card kg-callout-card kg-callout-card-grey">
-		<div class="kg-callout-text">A grey callout sits on the raised ground instead.</div>
+		<div class="kg-callout-text">A gray callout sits on the raised ground instead.</div>
 	</div>
 
 	<figure class="kg-card kg-embed-card kg-card-hascaption">
