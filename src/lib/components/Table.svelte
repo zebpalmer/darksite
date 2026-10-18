@@ -656,7 +656,7 @@ belong in the pane's ActionBar.
 	/* Striped: a ledger's zebra rows, a faint mix of the row divider into the table's ground. Hover
 	   steps up to ds-bg-3 so it still shows on a stripe, and a selected row keeps its tint. */
 	.ds-table[data-striped] tbody tr[data-stripe] td {
-		background: color-mix(in srgb, var(--ds-border-subtle) 45%, var(--ds-table-bg, var(--ds-bg-1)));
+		background: color-mix(in oklab, var(--ds-border-subtle) 45%, var(--ds-table-bg, var(--ds-bg-1)));
 	}
 	.ds-table[data-striped] tbody tr:not(.empty, .skeleton):hover td {
 		background: var(--ds-bg-3);

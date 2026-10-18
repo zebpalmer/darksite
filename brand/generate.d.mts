@@ -21,8 +21,9 @@ export interface Brand {
 	/** The navigation chrome's own color: the rail, and the top bar and tab bar. */
 	chrome?: { rail?: BrandColor; bar?: BrandColor };
 	fonts?: { sans?: string; mono?: string; reading?: string };
-	/** Exact role values per mode, never adjusted (they still have to pass). */
-	roles?: Partial<Record<string, Record<string, string>>>;
+	/** Exact role values, never adjusted (they still have to pass): `{ "ds-…": "#…" }` at the top
+	 *  holds in every mode, and a mode's own map (`{ dark: { "ds-…": "#…" } }`) overrides it. */
+	roles?: Record<string, string | Record<string, string>>;
 	label?: string;
 	note?: string;
 	scheme?: boolean;

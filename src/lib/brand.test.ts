@@ -82,6 +82,40 @@ describe('generateBrand', () => {
 		expect(named.resolve('contrast')('ds-bg-1')).toBe('#0b0d12');
 	});
 
+	it('re-fits the text roles to their designed contrast on a ground of the brand', () => {
+		const g = generateBrand(tokens, { name: 'd', surfaces: { dark: { bg: '#0a0e13' } } });
+		const v = g.resolve('dark');
+		const base = generateBrand(tokens, { name: 'none' }).resolve('dark');
+		for (const r of ['ds-text-heading', 'ds-text-1', 'ds-text-2', 'ds-text-3']) {
+			const want = contrast(base(r), base('ds-bg-1'));
+			expect(contrast(v(r), v('ds-bg-1')), r).toBeGreaterThanOrEqual(want - 0.05);
+			expect(contrast(v(r), v('ds-bg-1')), r).toBeLessThan(want + 0.15);
+		}
+		expect(contrast(v('ds-text-3'), v('ds-bg-4'))).toBeGreaterThanOrEqual(4.5);
+		expect(g.failures).toEqual([]);
+	});
+
+	it('never gives high contrast a paler ground than the dark mode', () => {
+		const g = generateBrand(tokens, { name: 'd', surfaces: { dark: { bg: '#0a0e13' } } });
+		const dark = oklch(g.resolve('dark')('ds-bg-1')).l;
+		expect(oklch(g.resolve('contrast')('ds-bg-1')).l).toBeLessThanOrEqual(dark + 0.001);
+	});
+
+	it('holds a role named at the top of roles in every mode, unless a mode names its own', () => {
+		const g = generateBrand(tokens, {
+			name: 'r',
+			roles: {
+				'ds-warning-fill': '#f7d038',
+				'ds-warning-contrast': '#1a1500',
+				light: { 'ds-warning-fill': '#e8c020' }
+			}
+		});
+		for (const m of ['dark', 'paper', 'night', 'contrast'])
+			expect(g.resolve(m)('ds-warning-fill'), m).toBe('#f7d038');
+		expect(g.resolve('light')('ds-warning-fill')).toBe('#e8c020');
+		expect(g.resolve('light')('ds-warning-contrast')).toBe('#1a1500');
+	});
+
 	it('moves the heading role with the text roles', () => {
 		const g = generateBrand(tokens, {
 			name: 't',
