@@ -151,3 +151,30 @@ describe('server rendering a Stat broken down by level', () => {
 		expect(body.match(/class="entry/g)).toHaveLength(2);
 	});
 });
+
+describe('server rendering Ghost content', () => {
+	it('renders the Ghost sample page, its attachment doing nothing on the server', async () => {
+		const { default: GhostPage } = await import('../routes/article/ghost/+page.svelte');
+		const { body } = render(GhostPage);
+		for (const card of [
+			'kg-toggle-card',
+			'kg-header-card kg-v2',
+			'kg-signup-card',
+			'kg-cta-card',
+			'kg-product-card',
+			'kg-file-card',
+			'kg-audio-card',
+			'kg-video-card'
+		])
+			expect(body).toContain(card);
+		// The server leaves the markup as Ghost wrote it: no enhancement, toggles not marked.
+		expect(body).not.toContain('data-ds-toggle');
+		expect(body).toContain('data-kg-toggle-state="close"');
+		expect(body).not.toContain('aria-expanded');
+	});
+
+	it('returns no cleanup from ghostCards without a document', () => {
+		const attachment = lib.ghostCards({ authorColors: true });
+		expect(attachment({} as HTMLElement)).toBeUndefined();
+	});
+});

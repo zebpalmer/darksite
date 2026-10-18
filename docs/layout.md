@@ -74,16 +74,70 @@ centers itself, whatever `proseAlign` says, and both columns shrink to what the 
 
 **Ghost content.** A post from the Ghost CMS opts in with `class="ds-article ds-article-ghost"`, its
 HTML placed directly in the article after the header (`{@html post.html}`), so each card is a child
-of the article's grid. The class maps the card markup Ghost's editor (Koenig) writes: an image card
-(`kg-image-card`) sits in the text column, `kg-width-wide` takes the wide column and `kg-width-full`
-the whole page column, with its caption kept to the text column; a gallery (`kg-gallery-card`) is
-rows of images at equal shares of the width, as tall as the row's tallest; a bookmark
-(`kg-bookmark-card`) is a bordered link card with its thumbnail beside the text, above it in a
-narrow article; a callout (`kg-callout-card`) is a tinted box, its color mapped to the accent,
-success, warning or danger tint; an embed (`kg-embed-card`) is centered, and a player fills the text
-column at 16:9. Captions are Ghost's bare `<figcaption>`s. The `kg-*` rules match only inside
-`ds-article-ghost`. Under it the article spans the page column, and its wide column stays centered at
-1120px. Other Ghost cards (buttons, toggles, signup forms) are not mapped.
+of the article's grid. The class maps the card markup Ghost's editor (Koenig) writes for the web, its
+`kg-*` classes, onto darksite's roles; the rules match only inside `ds-article-ghost`. Under it the
+article spans the page column, and its wide column stays centered at 1120px: `kg-width-wide` takes
+the wide column, `kg-width-full` the whole page column, with a caption or a band's text kept to the
+text column. Captions are Ghost's bare `<figcaption>`s; paragraphs, headings, lists, quotes, code
+blocks and the divider (`<hr>`) are bare elements the article already styles.
+
+- **Image** (`kg-image-card`): in the text column, or wide or full.
+- **Gallery** (`kg-gallery-card`): justified rows, each image whole at its own aspect ratio; without
+  the script, equal shares cropped to the row's tallest image.
+- **Bookmark** (`kg-bookmark-card`) and **file** (`kg-file-card`): bordered rows, a bookmark's
+  thumbnail beside its text (above it in a narrow article), a file's name and size beside a download
+  icon.
+- **Callout** (`kg-callout-card`) and **call to action** (`kg-cta-card`): Ghost's colors map to the
+  tints (blue the accent tint, green, yellow and red the success, warning and danger tints, pink and
+  purple the second color's, gray the raised ground, white and none open). A call to action is a row
+  (`kg-cta-minimal`) or stacked (`kg-cta-immersive`), with its sponsor label, image and button.
+- **Button** (`kg-button-card`) and the buttons in the other cards: Button's look at the comfy size,
+  primary for Ghost's accent and secondary otherwise, 44px under a coarse pointer.
+- **Header** (`kg-header-card`, both versions) and **signup** (`kg-signup-card`): a band. Its ground
+  follows Ghost's style: dark the deepest ground, light the raised one, accent the accent tint, an
+  image under the media scrim with its text in `ds-on-media`. v1's sizes set its space; v2 and signup
+  take Ghost's widths and the split layout (an image beside the text, after it when swapped, above it
+  in a narrow article). The signup form's states are classes the site's script sets on the form:
+  `loading`, `success` (the message replaces the field) and `error` (the field marked, the message
+  shown). Ghost renders the signup card hidden (`style="display: none"`) for its own script to show
+  and submit; a site that wires the form itself shows it. darksite only styles it.
+- **Product** (`kg-product-card`): a bordered card at most 560px wide: image, title, star rating,
+  description and a full-width button.
+- **Toggle** (`kg-toggle-card`): a bordered box whose heading opens its content.
+- **Audio and video** (`kg-audio-card`, `kg-video-card`): the browser's own controls; Ghost's player,
+  which needs Ghost's script, is always hidden.
+- **Embed** (`kg-embed-card`) and **Transistor** (`kg-transistor-card`): a player fills the text
+  column at its own aspect ratio (16:9 without the script); one sized in percent keeps its height.
+- **Alternate quote** (`kg-blockquote-alt`): large and centered. **Code card** (`kg-code-card`): the
+  code block with a caption.
+
+Ghost's own card script (`cards.min.js`) is not loaded on a headless site, so the cards' behavior
+comes from one opt-in attachment, `ghostCards`:
+
+```svelte
+<script>
+  import { ghostCards } from 'darksite';
+</script>
+
+<article class="ds-article ds-article-ghost" {@attach ghostCards}>
+  <header>…</header>
+  {@html post.html}
+</article>
+```
+
+It makes each toggle's heading a disclosure button (`aria-expanded`, `aria-controls`, Enter and
+Space) that opens and closes the card through Ghost's `data-kg-toggle-state`; turns on the native
+controls of audio and video; sets each gallery image's share of its row and each embed's aspect
+ratio from their width and height; names a product rating as one image ("4 of 5 stars", from
+`strings.stars`); and drops the colors Ghost's editor writes inline on header (v2), signup and
+call-to-action cards, so they take darksite's roles in every mode, keeping a card's dark or light
+background as its tone. `ghostCards({ authorColors: true })` keeps the editor's colors instead. It
+watches the article, so content replaced later is enhanced too, undoes everything when it is
+removed, and does nothing on the server. Without it the content still reads: a toggle stays open,
+since base.css hides closed content only on a toggle the attachment has enhanced.
+
+Not covered: the paywall, email and email call-to-action cards, NFT cards, and raw HTML and Markdown
+cards, whose markup is the author's own.
 
 **6. Full-bleed page.** A map, a canvas, a diagram that takes the whole column: `FullBleed`. No
 padding and no footer, the shell locked to the viewport at every width, so it fills exactly what

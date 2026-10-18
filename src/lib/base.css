@@ -419,9 +419,10 @@
 	.ds-article-ghost .kg-width-full .kg-image {
 		border-radius: 0;
 	}
-	/* A gallery: rows of images, each row as tall as its tallest image at an equal share of the
-	   width, the others cropped to it. A theme script that sets each image's `flex` from its
-	   aspect ratio still applies, since its inline style wins. */
+	/* A gallery: rows of images. The `ghostCards` attachment gives each image its share of the row
+	   from its width and height (`--ds-ghost-share`), so every image in a row shows whole at one
+	   height: justified rows. Without it each takes an equal share, the row as tall as its tallest
+	   image and the others cropped to it. A theme script's inline `flex` still wins. */
 	.ds-article-ghost .kg-gallery-container {
 		display: flex;
 		flex-direction: column;
@@ -432,7 +433,7 @@
 		gap: 8px;
 	}
 	.ds-article-ghost .kg-gallery-image {
-		flex: 1 1 0;
+		flex: var(--ds-ghost-share, 1) 1 0;
 		min-width: 0;
 	}
 	.ds-article-ghost .kg-gallery-image > a {
@@ -563,7 +564,10 @@
 	.ds-article-ghost .kg-callout-text {
 		min-width: 0;
 	}
-	/* An embed: centered, never wider than its column; a player fills the column at 16:9. */
+	/* An embed: centered, never wider than its column. A player fills the column at its own aspect
+	   ratio, which `ghostCards` reads from the iframe's width and height (`--ds-ghost-ratio`), and
+	   at 16:9, a video's, without it. An iframe sized in percent (a podcast player's
+	   `width="100%" height="180"`) keeps its own height. */
 	.ds-article-ghost .kg-embed-card {
 		display: flex;
 		flex-direction: column;
@@ -573,13 +577,848 @@
 		max-width: 100%;
 	}
 	.ds-article-ghost .kg-embed-card > iframe {
+		border: 0;
+	}
+	/* The article's figure rule sets `height: auto`; a player sized in percent takes its height
+	   attribute back. */
+	.ds-article-ghost .kg-embed-card > iframe[width$='%'],
+	.ds-article-ghost .kg-transistor-card > iframe[height] {
+		height: revert-layer;
+	}
+	.ds-article-ghost .kg-embed-card > iframe:not([width$='%']) {
 		width: 100%;
 		height: auto;
-		aspect-ratio: 16 / 9;
-		border: 0;
+		aspect-ratio: var(--ds-ghost-ratio, 16 / 9);
 	}
 	.ds-article-ghost .kg-embed-card > figcaption {
 		align-self: stretch;
+	}
+	/* A Transistor podcast card: its player fills the column at the height Ghost gives it. */
+	.ds-article-ghost .kg-transistor-card {
+		display: flex;
+		justify-content: center;
+	}
+	.ds-article-ghost .kg-transistor-card > iframe {
+		max-width: 100%;
+		border: 0;
+		border-radius: var(--ds-radius-md);
+	}
+	/* Buttons: the button card's `kg-btn` and the buttons in the header, product, call-to-action and
+	   signup cards look like Button at the comfy size, secondary by default and primary where
+	   Ghost asks for its accent; 44px under a coarse pointer. A long label wraps. */
+	.ds-article-ghost
+		:is(
+			.kg-btn,
+			.kg-header-card-button,
+			.kg-product-card-button,
+			.kg-cta-button,
+			.kg-signup-card-button
+		) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		max-width: 100%;
+		min-height: var(--ds-h-comfy);
+		margin: 0;
+		padding: 6px 14px;
+		border: 1px solid var(--ds-border-strong);
+		border-radius: var(--ds-radius-sm);
+		background: var(--ds-bg-4);
+		color: var(--ds-text-1);
+		font-family: var(--font-sans);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+		font-weight: 400;
+		text-align: center;
+		text-decoration: none;
+		cursor: pointer;
+		transition:
+			background-color var(--ds-dur-fast) var(--ds-ease-out),
+			border-color var(--ds-dur-fast) var(--ds-ease-out);
+	}
+	.ds-article-ghost
+		:is(
+			.kg-btn,
+			.kg-header-card-button,
+			.kg-product-card-button,
+			.kg-cta-button,
+			.kg-signup-card-button
+		):is(:hover, :active) {
+		background: var(--ds-bg-5);
+	}
+	.ds-article-ghost .kg-btn-accent,
+	.ds-article-ghost .kg-header-card:not(.kg-v2) .kg-header-card-button,
+	.ds-article-ghost .kg-header-card-button.kg-style-accent,
+	.ds-article-ghost .kg-product-card-btn-accent,
+	.ds-article-ghost .kg-cta-button.kg-style-accent,
+	.ds-article-ghost .kg-signup-card-button.kg-style-accent {
+		border-color: transparent;
+		background: var(--ds-accent);
+		color: var(--ds-accent-contrast);
+		font-weight: 500;
+	}
+	.ds-article-ghost .kg-btn-accent:hover,
+	.ds-article-ghost .kg-header-card:not(.kg-v2) .kg-header-card-button:hover,
+	.ds-article-ghost .kg-header-card-button.kg-style-accent:hover,
+	.ds-article-ghost .kg-product-card-btn-accent:hover,
+	.ds-article-ghost .kg-cta-button.kg-style-accent:hover,
+	.ds-article-ghost .kg-signup-card-button.kg-style-accent:hover {
+		background: var(--ds-accent-strong);
+	}
+	.ds-article-ghost .kg-btn-accent:active,
+	.ds-article-ghost .kg-header-card:not(.kg-v2) .kg-header-card-button:active,
+	.ds-article-ghost .kg-header-card-button.kg-style-accent:active,
+	.ds-article-ghost .kg-product-card-btn-accent:active,
+	.ds-article-ghost .kg-cta-button.kg-style-accent:active,
+	.ds-article-ghost .kg-signup-card-button.kg-style-accent:active {
+		background: var(--ds-accent-text);
+	}
+	@media (pointer: coarse) {
+		.ds-article-ghost
+			:is(
+				.kg-btn,
+				.kg-header-card-button,
+				.kg-product-card-button,
+				.kg-cta-button,
+				.kg-signup-card-button,
+				.kg-signup-card-input
+			) {
+			min-height: var(--ds-h-touch);
+		}
+	}
+	/* A button card: one button, on the left or centered (`kg-align-center`). */
+	.ds-article-ghost .kg-button-card {
+		display: flex;
+		justify-content: flex-start;
+	}
+	.ds-article-ghost .kg-button-card.kg-align-center {
+		justify-content: center;
+	}
+
+	/* Header and signup cards: a band with a heading, a subheading and a button or a form. Its
+	   ground follows Ghost's style: `kg-style-dark` the deepest ground, `kg-style-light` (and the
+	   default) the raised one, `kg-style-accent` the accent tint, and an image (`kg-style-image`, or
+	   a `<picture>` behind the content) under the media scrim, its text in `ds-on-media`. A v2
+	   card's own background is read as one of the first two (`data-ds-tone`, set by `ghostCards`).
+	   A full-width band keeps its text to the text column. */
+	.ds-article-ghost :is(.kg-header-card, .kg-signup-card) {
+		--band-text: var(--ds-text-heading);
+		--band-muted: var(--ds-text-2);
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		border-radius: var(--ds-radius-md);
+		background-color: var(--ds-bg-3);
+		color: var(--band-text);
+	}
+	.ds-article-ghost > .kg-width-full:is(.kg-header-card, .kg-signup-card) {
+		border-radius: 0;
+	}
+	.ds-article-ghost
+		:is(.kg-header-card, .kg-signup-card):is(.kg-style-dark, [data-ds-tone='dark']) {
+		background-color: var(--ds-bg-0);
+	}
+	.ds-article-ghost :is(.kg-header-card, .kg-signup-card).kg-style-accent {
+		background-color: var(--ds-accent-tint);
+	}
+	.ds-article-ghost .kg-header-card.kg-style-image,
+	.ds-article-ghost .kg-header-card:has(> picture),
+	.ds-article-ghost .kg-signup-card:has(> picture) {
+		--band-text: var(--ds-on-media);
+		--band-muted: var(--ds-on-media);
+		background-color: var(--ds-bg-0);
+		background-position: center;
+		background-size: cover;
+	}
+	.ds-article-ghost .kg-header-card.kg-style-image::after,
+	.ds-article-ghost .kg-header-card:has(> picture)::after,
+	.ds-article-ghost .kg-signup-card:has(> picture)::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: var(--ds-media-scrim);
+		pointer-events: none;
+	}
+	.ds-article-ghost :is(.kg-header-card, .kg-signup-card) > picture {
+		position: absolute;
+		inset: 0;
+		z-index: -2;
+	}
+	.ds-article-ghost :is(.kg-header-card-image, .kg-signup-card-image) {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	/* Header v1: the heading, subheading and button directly in the card, centered. Its size
+	   (`kg-size-small`, `-medium`, `-large`) sets the space around them. */
+	.ds-article-ghost .kg-header-card:not(.kg-v2) {
+		--band-space: clamp(48px, 10cqi, 104px);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: var(--band-space) max(24px, (100% - var(--article-text)) / 2);
+		text-align: center;
+	}
+	.ds-article-ghost .kg-header-card.kg-size-small:not(.kg-v2) {
+		--band-space: clamp(32px, 6cqi, 56px);
+	}
+	.ds-article-ghost .kg-header-card.kg-size-large:not(.kg-v2) {
+		--band-space: clamp(64px, 15cqi, 160px);
+	}
+	.ds-article-ghost :is(.kg-header-card-header, .kg-header-card-heading, .kg-signup-card-heading) {
+		margin: 0;
+		color: var(--band-text);
+		font-size: var(--ds-text-3xl);
+		font-weight: 500;
+		line-height: var(--ds-lh-3xl);
+		text-wrap: balance;
+	}
+	.ds-article-ghost .kg-header-card.kg-size-small .kg-header-card-header,
+	.ds-article-ghost :is(.kg-header-card, .kg-signup-card):not(.kg-width-wide, .kg-width-full) h2 {
+		font-size: var(--ds-text-2xl);
+		line-height: var(--ds-lh-2xl);
+	}
+	.ds-article-ghost
+		:is(.kg-header-card-subheader, .kg-header-card-subheading, .kg-signup-card-subheading) {
+		max-width: 40em;
+		margin: 12px 0 0;
+		color: var(--band-muted);
+		font-size: var(--ds-text-xl);
+		font-weight: 400;
+		line-height: var(--ds-lh-xl);
+	}
+	.ds-article-ghost .kg-header-card.kg-size-small .kg-header-card-subheader {
+		font-size: var(--ds-text-lg);
+		line-height: var(--ds-lh-lg);
+	}
+	.ds-article-ghost .kg-header-card .kg-header-card-button {
+		margin-top: 24px;
+	}
+	/* Header v2 and signup: the text in `kg-header-card-text` / `kg-signup-card-text`, left or
+	   centered (`kg-align-center`); `kg-layout-split` puts an image beside it, after it when
+	   `kg-swapped`, whole when `kg-content-wide`. */
+	.ds-article-ghost :is(.kg-header-card-content, .kg-signup-card-content) {
+		width: 100%;
+	}
+	.ds-article-ghost :is(.kg-header-card-text, .kg-signup-card-text) {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
+		min-width: 0;
+		height: 100%;
+		padding: clamp(32px, 7cqi, 72px) clamp(20px, 5cqi, 56px);
+		text-align: start;
+	}
+	.ds-article-ghost .kg-width-wide :is(.kg-header-card-text, .kg-signup-card-text) {
+		padding: clamp(40px, 9cqi, 104px) clamp(24px, 7cqi, 96px);
+	}
+	.ds-article-ghost
+		.kg-width-full:not(.kg-layout-split)
+		:is(.kg-header-card-text, .kg-signup-card-text) {
+		padding: clamp(48px, 11cqi, 128px) max(24px, (100% - var(--article-text)) / 2);
+	}
+	.ds-article-ghost :is(.kg-header-card-text, .kg-signup-card-text).kg-align-center {
+		align-items: center;
+		text-align: center;
+	}
+	.ds-article-ghost .kg-layout-split :is(.kg-header-card-content, .kg-signup-card-content) {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+	.ds-article-ghost
+		.kg-layout-split
+		:is(.kg-header-card-content, .kg-signup-card-content)
+		> picture {
+		display: block;
+		min-height: 100%;
+	}
+	.ds-article-ghost .kg-layout-split :is(.kg-header-card-image, .kg-signup-card-image) {
+		height: 0;
+		min-height: 100%;
+	}
+	.ds-article-ghost
+		.kg-layout-split.kg-content-wide
+		:is(.kg-header-card-image, .kg-signup-card-image) {
+		height: 100%;
+		padding: 48px 0;
+		object-fit: contain;
+	}
+	.ds-article-ghost .kg-swapped :is(.kg-header-card-text, .kg-signup-card-text) {
+		order: -1;
+	}
+	.ds-article-ghost .kg-header-card.kg-v2 .kg-header-card-button {
+		margin-top: 24px;
+	}
+	/* The signup form: an email field and its button, which wrap onto two lines in a narrow card.
+	   Ghost's states are classes on the form, which the site's own script sets: `loading` covers
+	   the label with Ghost's dots, `success` replaces the field with `kg-signup-card-success`, and
+	   `error` marks the field and shows `kg-signup-card-error`. Ghost renders the card hidden
+	   (`style="display: none"`), for its script to show; a site that wires the form shows it. */
+	.ds-article-ghost .kg-signup-card-form {
+		width: 100%;
+		max-width: 480px;
+		margin: 24px 0 0;
+	}
+	.ds-article-ghost .kg-signup-card-fields {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.ds-article-ghost .kg-signup-card-input {
+		flex: 1 1 200px;
+		min-width: 0;
+		height: var(--ds-h-comfy);
+		margin: 0;
+		padding: 0 12px;
+		border: 1px solid var(--ds-border);
+		border-radius: var(--ds-radius-sm);
+		background: var(--ds-bg-1);
+		color: var(--ds-text-1);
+		font-family: var(--font-sans);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+		transition: border-color var(--ds-dur-fast) var(--ds-ease-out);
+	}
+	.ds-article-ghost .kg-signup-card-input::placeholder {
+		color: var(--ds-text-3);
+	}
+	.ds-article-ghost .kg-signup-card-input:hover {
+		border-color: var(--ds-border-strong);
+	}
+	.ds-article-ghost .kg-signup-card-input:focus {
+		border-color: var(--ds-accent);
+	}
+	.ds-article-ghost .kg-signup-card-button {
+		position: relative;
+		flex: none;
+	}
+	.ds-article-ghost .kg-signup-card-button-loading {
+		position: absolute;
+		inset: 0;
+		display: none;
+		align-items: center;
+		justify-content: center;
+	}
+	.ds-article-ghost .kg-signup-card-button-loading svg {
+		width: 20px;
+		height: 20px;
+	}
+	.ds-article-ghost .kg-signup-card-form.loading .kg-signup-card-button {
+		cursor: progress;
+	}
+	.ds-article-ghost .kg-signup-card-form.loading .kg-signup-card-button-default {
+		color: transparent;
+	}
+	.ds-article-ghost .kg-signup-card-form.loading .kg-signup-card-button-loading {
+		display: flex;
+	}
+	.ds-article-ghost :is(.kg-signup-card-success, .kg-signup-card-error) {
+		display: none;
+		color: var(--band-text);
+	}
+	.ds-article-ghost .kg-signup-card-form.success .kg-signup-card-fields {
+		display: none;
+	}
+	.ds-article-ghost .kg-signup-card-form.success .kg-signup-card-success {
+		display: block;
+		font-size: var(--ds-text-lg);
+		font-weight: 500;
+		line-height: var(--ds-lh-lg);
+	}
+	.ds-article-ghost .kg-signup-card-form.error .kg-signup-card-input {
+		border-color: var(--ds-danger);
+	}
+	.ds-article-ghost .kg-signup-card-form.error .kg-signup-card-error {
+		display: block;
+		margin-top: 8px;
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+	}
+	.ds-article-ghost .kg-signup-card-disclaimer {
+		margin: 12px 0 0;
+		color: var(--band-muted);
+		font-size: var(--ds-text-sm);
+		line-height: var(--ds-lh-sm);
+	}
+	.ds-article-ghost .kg-signup-card-form.success + .kg-signup-card-disclaimer {
+		display: none;
+	}
+
+	/* A file card: a bordered download row, like a bookmark: the title, caption and file name and
+	   size beside a download icon. */
+	.ds-article-ghost .kg-file-card-container {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		min-width: 0;
+		padding: 16px 20px;
+		border: 1px solid var(--ds-border-subtle);
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-bg-2);
+		color: var(--ds-text-1);
+		text-decoration: none;
+		transition: background-color var(--ds-dur-fast) var(--ds-ease-out);
+	}
+	.ds-article-ghost .kg-file-card-container:hover {
+		background: var(--ds-bg-3);
+	}
+	.ds-article-ghost .kg-file-card-contents {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
+	}
+	.ds-article-ghost .kg-file-card-title {
+		color: var(--ds-text-heading, var(--ds-text-1));
+		font-size: var(--ds-text-lg);
+		font-weight: 500;
+		line-height: var(--ds-lh-lg);
+	}
+	.ds-article-ghost .kg-file-card-caption {
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-md);
+		line-height: var(--ds-lh-md);
+	}
+	.ds-article-ghost :is(.kg-file-card-title, .kg-file-card-caption):empty {
+		display: none;
+	}
+	.ds-article-ghost .kg-file-card-metadata {
+		display: flex;
+		gap: 8px;
+		min-width: 0;
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-sm);
+		line-height: var(--ds-lh-sm);
+	}
+	.ds-article-ghost .kg-file-card-filename {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.ds-article-ghost .kg-file-card-filesize {
+		flex: none;
+	}
+	.ds-article-ghost .kg-file-card-filesize:not(:empty)::before {
+		content: '·';
+		content: '·' / '';
+		margin-right: 8px;
+		color: var(--ds-text-3);
+	}
+	.ds-article-ghost .kg-file-card-icon {
+		display: flex;
+		flex: none;
+		color: var(--ds-text-2);
+	}
+	.ds-article-ghost .kg-file-card-icon svg {
+		width: 28px;
+		height: 28px;
+	}
+
+	/* A product card: a bordered card at most 560px wide and centered: the image, title, star
+	   rating (the active stars in the accent, the rest outlined), description and a full-width
+	   button. */
+	.ds-article-ghost .kg-product-card {
+		justify-self: center;
+		width: 100%;
+		max-width: 560px;
+	}
+	.ds-article-ghost .kg-product-card-container {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 20px;
+		border: 1px solid var(--ds-border-subtle);
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-bg-2);
+		color: var(--ds-text-1);
+	}
+	.ds-article-ghost .kg-product-card-image {
+		display: block;
+		width: 100%;
+		height: auto;
+		margin-bottom: 4px;
+		border-radius: var(--ds-radius-sm);
+	}
+	.ds-article-ghost .kg-product-card-title {
+		margin: 0;
+		color: var(--ds-text-heading, var(--ds-text-1));
+		font-size: var(--ds-text-xl);
+		font-weight: 500;
+		line-height: var(--ds-lh-xl);
+	}
+	.ds-article-ghost .kg-product-card-rating {
+		display: flex;
+		gap: 2px;
+		color: var(--ds-text-3);
+	}
+	.ds-article-ghost .kg-product-card-rating-star {
+		display: inline-flex;
+		width: 20px;
+		height: 20px;
+	}
+	.ds-article-ghost .kg-product-card-rating-star svg {
+		width: 100%;
+		height: 100%;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.5px;
+		stroke-linejoin: round;
+		vector-effect: non-scaling-stroke;
+	}
+	.ds-article-ghost .kg-product-card-rating-active {
+		color: var(--ds-accent);
+	}
+	.ds-article-ghost .kg-product-card-rating-active svg {
+		fill: currentColor;
+	}
+	.ds-article-ghost .kg-product-card-description {
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-lg);
+		line-height: 1.55;
+	}
+	.ds-article-ghost .kg-product-card-description > * {
+		margin: 0;
+	}
+	.ds-article-ghost .kg-product-card-description > * + * {
+		margin-top: 12px;
+	}
+	.ds-article-ghost .kg-product-card-button {
+		width: 100%;
+		margin-top: 4px;
+	}
+
+	/* A call-to-action card: an optional sponsor label over the text, an image and a button, in a
+	   row (`kg-cta-minimal`, the image a 64px square) or stacked (`kg-cta-immersive`, centered with
+	   `kg-cta-centered`). Its backgrounds map to the tints, as the callout's do; `none` is open,
+	   between dividers unless `kg-cta-no-dividers`. */
+	.ds-article-ghost .kg-cta-card {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		overflow: hidden;
+		border: 1px solid transparent;
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-bg-2);
+		color: var(--ds-text-1);
+	}
+	.ds-article-ghost .kg-cta-bg-white {
+		border-color: var(--ds-border-subtle);
+		background: transparent;
+	}
+	.ds-article-ghost .kg-cta-bg-blue {
+		background: var(--ds-accent-tint);
+	}
+	.ds-article-ghost .kg-cta-bg-green {
+		background: var(--ds-success-tint);
+	}
+	.ds-article-ghost .kg-cta-bg-yellow {
+		background: var(--ds-warning-tint);
+	}
+	.ds-article-ghost .kg-cta-bg-red {
+		background: var(--ds-danger-tint);
+	}
+	.ds-article-ghost :is(.kg-cta-bg-pink, .kg-cta-bg-purple) {
+		background: var(--ds-accent-2-tint);
+	}
+	.ds-article-ghost .kg-cta-bg-none {
+		border: 0;
+		border-block: 1px solid var(--ds-border-subtle);
+		border-radius: 0;
+		background: transparent;
+	}
+	.ds-article-ghost .kg-cta-bg-none.kg-cta-no-dividers {
+		border-block: 0;
+	}
+	.ds-article-ghost .kg-cta-sponsor-label-wrapper {
+		margin: 0 20px;
+		padding: 10px 0;
+		border-bottom: 1px solid var(--ds-border-subtle);
+	}
+	.ds-article-ghost .kg-cta-bg-none .kg-cta-sponsor-label-wrapper {
+		margin: 0;
+	}
+	.ds-article-ghost .kg-cta-no-dividers .kg-cta-sponsor-label-wrapper {
+		border-bottom: 0;
+	}
+	.ds-article-ghost .kg-cta-sponsor-label {
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-xs);
+		font-weight: 500;
+		line-height: var(--ds-lh-xs);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.ds-article-ghost .kg-cta-sponsor-label > * {
+		margin: 0;
+	}
+	.ds-article-ghost .kg-cta-sponsor-label a {
+		color: inherit;
+	}
+	.ds-article-ghost .kg-cta-content {
+		display: flex;
+		gap: 20px;
+		min-width: 0;
+		padding: 20px;
+	}
+	.ds-article-ghost .kg-cta-bg-none .kg-cta-content {
+		padding-inline: 0;
+	}
+	.ds-article-ghost .kg-cta-bg-none.kg-cta-no-dividers .kg-cta-content {
+		padding: 0;
+	}
+	.ds-article-ghost .kg-cta-minimal .kg-cta-content {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+	.ds-article-ghost .kg-cta-immersive .kg-cta-content {
+		flex-direction: column;
+	}
+	.ds-article-ghost .kg-cta-image-container {
+		flex: none;
+	}
+	.ds-article-ghost .kg-cta-image-container img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: var(--ds-radius-sm);
+		object-fit: cover;
+	}
+	.ds-article-ghost .kg-cta-minimal .kg-cta-image-container img {
+		width: 64px;
+		height: 64px;
+	}
+	.ds-article-ghost .kg-cta-content-inner {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 16px;
+		min-width: 0;
+	}
+	.ds-article-ghost .kg-cta-immersive.kg-cta-centered .kg-cta-content-inner {
+		align-items: center;
+		text-align: center;
+	}
+	.ds-article-ghost .kg-cta-text > * {
+		margin: 0;
+	}
+	.ds-article-ghost .kg-cta-text > * + * {
+		margin-top: 12px;
+	}
+	.ds-article-ghost .kg-cta-text a {
+		color: inherit;
+	}
+	/* Links in the accent where its text color passes on the ground: open, gray and blue. */
+	.ds-article-ghost
+		.kg-cta-link-accent:is(.kg-cta-bg-none, .kg-cta-bg-white, .kg-cta-bg-grey, .kg-cta-bg-blue)
+		:is(.kg-cta-text, .kg-cta-sponsor-label)
+		a {
+		color: var(--ds-accent-text);
+	}
+	.ds-article-ghost .kg-cta-immersive.kg-cta-has-img .kg-cta-button {
+		width: 100%;
+	}
+
+	/* A toggle card: a bordered box whose heading opens and closes its content. `ghostCards` makes
+	   the heading a disclosure button; until it does, the content shows, and Ghost's icon button,
+	   which does nothing without a script, is hidden. */
+	.ds-article-ghost .kg-toggle-card {
+		padding: 16px 20px;
+		border: 1px solid var(--ds-border-subtle);
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-bg-2);
+		color: var(--ds-text-1);
+	}
+	.ds-article-ghost .kg-toggle-heading {
+		display: flex;
+		align-items: flex-start;
+		gap: 12px;
+	}
+	.ds-article-ghost .kg-toggle-card[data-ds-toggle] .kg-toggle-heading {
+		cursor: pointer;
+	}
+	.ds-article-ghost .kg-toggle-heading-text {
+		flex: 1;
+		min-width: 0;
+		margin: 0;
+		color: var(--ds-text-heading, var(--ds-text-1));
+		font-size: var(--ds-text-xl);
+		font-weight: 500;
+		line-height: var(--ds-lh-xl);
+	}
+	.ds-article-ghost .kg-toggle-heading-text > button {
+		display: block;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: var(--ds-radius-xs);
+		background: none;
+		color: inherit;
+		font: inherit;
+		letter-spacing: inherit;
+		text-align: start;
+		cursor: pointer;
+	}
+	.ds-article-ghost .kg-toggle-card-icon {
+		display: none;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 26px;
+		height: 26px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: var(--ds-radius-sm);
+		background: none;
+		color: var(--ds-text-2);
+		cursor: pointer;
+	}
+	.ds-article-ghost .kg-toggle-card[data-ds-toggle] .kg-toggle-card-icon {
+		display: inline-flex;
+	}
+	.ds-article-ghost .kg-toggle-card-icon svg {
+		width: 14px;
+		height: 14px;
+		transition: transform var(--ds-dur-base) var(--ds-ease-out);
+	}
+	.ds-article-ghost .kg-toggle-card-icon svg path {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.5px;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		vector-effect: non-scaling-stroke;
+	}
+	.ds-article-ghost .kg-toggle-card[data-kg-toggle-state='open'] .kg-toggle-card-icon svg {
+		transform: rotate(180deg);
+	}
+	.ds-article-ghost .kg-toggle-content {
+		margin-top: 12px;
+	}
+	.ds-article-ghost .kg-toggle-content > * {
+		margin: 0;
+	}
+	.ds-article-ghost .kg-toggle-content > * + * {
+		margin-top: 12px;
+	}
+	.ds-article-ghost
+		.kg-toggle-card[data-ds-toggle][data-kg-toggle-state='close']
+		> .kg-toggle-content {
+		display: none;
+	}
+
+	/* Audio and video cards play in the browser's own controls, which `ghostCards` turns on. Ghost's
+	   custom player needs Ghost's script, so it is always hidden. An audio card is a bordered row:
+	   the thumbnail (or Ghost's placeholder) beside the title and the player. */
+	.ds-article-ghost .kg-audio-card {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		min-width: 0;
+		padding: 12px;
+		border: 1px solid var(--ds-border-subtle);
+		border-radius: var(--ds-radius-md);
+		background: var(--ds-bg-2);
+		color: var(--ds-text-1);
+	}
+	.ds-article-ghost .kg-audio-thumbnail {
+		flex: none;
+		width: 64px;
+		height: 64px;
+		border-radius: var(--ds-radius-sm);
+		object-fit: cover;
+	}
+	.ds-article-ghost .kg-audio-thumbnail.placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--ds-bg-4);
+		color: var(--ds-text-2);
+	}
+	.ds-article-ghost .kg-audio-thumbnail.placeholder svg {
+		fill: currentColor;
+	}
+	.ds-article-ghost .kg-audio-card .kg-audio-hide {
+		display: none;
+	}
+	.ds-article-ghost .kg-audio-player-container {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 8px;
+		min-width: 0;
+	}
+	.ds-article-ghost .kg-audio-title {
+		order: -1;
+		color: var(--ds-text-heading, var(--ds-text-1));
+		font-size: var(--ds-text-lg);
+		font-weight: 500;
+		line-height: var(--ds-lh-lg);
+	}
+	.ds-article-ghost .kg-audio-title:empty {
+		display: none;
+	}
+	.ds-article-ghost :is(.kg-audio-player, .kg-video-overlay, .kg-video-player-container) {
+		display: none;
+	}
+	.ds-article-ghost .kg-audio-card audio {
+		display: block;
+		width: 100%;
+		accent-color: var(--ds-accent);
+	}
+	.ds-article-ghost .kg-video-container {
+		position: relative;
+	}
+	.ds-article-ghost .kg-video-card video {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: var(--ds-radius-md);
+		accent-color: var(--ds-accent);
+	}
+	.ds-article-ghost .kg-width-full video {
+		border-radius: 0;
+	}
+
+	/* The alternate quote (`kg-blockquote-alt`): large and centered, without the rule. */
+	.ds-article-ghost blockquote.kg-blockquote-alt {
+		margin-inline: 0;
+		padding: 0 clamp(0px, 5cqi, 48px);
+		border: 0;
+		color: var(--ds-text-heading, var(--ds-text-1));
+		font-size: var(--ds-text-2xl);
+		line-height: 1.45;
+		text-align: center;
+		text-wrap: balance;
+	}
+	/* A code card: the article's code block with a caption under it. */
+	.ds-article-ghost .kg-code-card > pre {
+		margin: 0;
+	}
+	/* A narrow article: a split band stacks its image above its text. */
+	@container ds-article (max-width: 600px) {
+		.ds-article-ghost .kg-layout-split :is(.kg-header-card-content, .kg-signup-card-content) {
+			grid-template-columns: 1fr;
+		}
+		.ds-article-ghost
+			.kg-layout-split
+			:is(.kg-header-card-content, .kg-signup-card-content)
+			> picture {
+			min-height: 0;
+			aspect-ratio: 3 / 2;
+		}
+		.ds-article-ghost .kg-layout-split :is(.kg-header-card-image, .kg-signup-card-image) {
+			height: 100%;
+			min-height: 0;
+		}
 	}
 	@container ds-article (max-width: 520px) {
 		.ds-article-ghost .kg-bookmark-container {
@@ -588,6 +1427,22 @@
 		.ds-article-ghost .kg-bookmark-thumbnail {
 			flex: none;
 			aspect-ratio: 2 / 1;
+		}
+		.ds-article-ghost .kg-cta-minimal .kg-cta-content {
+			flex-direction: column;
+		}
+		.ds-article-ghost
+			:is(.kg-header-card-header, .kg-header-card-heading, .kg-signup-card-heading) {
+			font-size: var(--ds-text-2xl);
+			line-height: var(--ds-lh-2xl);
+		}
+		.ds-article-ghost
+			:is(.kg-header-card-subheader, .kg-header-card-subheading, .kg-signup-card-subheading) {
+			font-size: var(--ds-text-lg);
+			line-height: var(--ds-lh-lg);
+		}
+		.ds-article-ghost blockquote.kg-blockquote-alt {
+			font-size: var(--ds-text-xl);
 		}
 	}
 

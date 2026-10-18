@@ -213,6 +213,7 @@ export type { RailSlotArgs, TipHandlers } from './components/NavRail.svelte';
 export { resetStrings, setStrings, strings, type Strings } from './strings.svelte.js';
 export type { SelectOption } from './components/Select.svelte';
 export { tooltip, type TooltipOptions } from './tooltip.js';
+export { ghostCards, type GhostCardsOptions } from './ghost.js';
 export {
 	isDarkMode,
 	MODE_SCRIPT,

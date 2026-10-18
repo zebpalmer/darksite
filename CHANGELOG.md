@@ -6,6 +6,28 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `ds-article-ghost` covers every card Ghost renders on the web: buttons (Button's look, primary for
+  Ghost's accent), header cards v1 and v2 (bands in the dark, light, accent and image styles, sizes,
+  widths and the split layout, text over an image on the media scrim), file, product (star rating),
+  call-to-action (layouts, sponsor label, backgrounds on the tints), signup (layouts, the form and
+  its `loading`, `success` and `error` states), toggle, audio, video and Transistor cards, the
+  alternate quote (`kg-blockquote-alt`) and the code card. The Ghost content page shows each one.
+- `ghostCards`: an opt-in attachment for a post rendered headlessly, without Ghost's card script.
+  It makes toggle headings disclosure buttons, turns on native audio and video controls, justifies
+  gallery rows and sizes embeds from their width and height, names product ratings, and maps the
+  colors Ghost's editor writes inline onto darksite's roles (`authorColors: true` keeps them). It
+  re-runs on replaced content, cleans up after itself and does nothing on the server.
+
+### Changed
+
+- `ds-article-ghost` embeds take their own aspect ratio from the iframe's width and height (with
+  `ghostCards`; 16:9 without it), and a player sized in percent keeps its height, instead of every
+  embed being forced to 16:9.
+- `ds-article-ghost` galleries are justified rows with `ghostCards`: each image whole at its own
+  aspect ratio. Equal shares remain the fallback without it.
+
 ## [0.21.0] — 2026-10-17
 
 ### Added

@@ -138,6 +138,6 @@ describe('base.css Ghost mapping', () => {
 			.filter((s) => s.includes('kg-'))
 			.flatMap((s) => s.split(/,(?![^(]*\))/).map((part) => part.trim()));
 		expect(selectors.length).toBeGreaterThan(10);
-		for (const selector of selectors) expect(selector).toMatch(/^\.ds-article-ghost /);
+		for (const selector of selectors) expect(selector).toMatch(/^\.ds-article-ghost\s/);
 	});
 });
