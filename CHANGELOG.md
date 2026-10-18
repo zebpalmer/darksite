@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.22.0] — 2026-10-17
+
 ### Added
 
 - `ds-article-ghost` covers every card Ghost renders on the web: buttons (Button's look, primary for
