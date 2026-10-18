@@ -57,6 +57,17 @@ export function buildPairs(severities = SEVERITIES) {
 	add('ds-accent-2', bgs(1, 2, 3, 4), MARK, 'second color mark');
 	add('ds-accent-2-text', bgs(1, 2, 3), TEXT, 'second color text');
 	add('ds-text-1', ['ds-accent-2-tint'], TEXT, 'text on the second color tint');
+	// Ghost content (`ds-article-ghost`): a dark header band on the deepest ground, an accent band,
+	// a call-to-action's sponsor label on its tint and its accent links on gray.
+	add('ds-text-heading', ['ds-bg-0', 'ds-accent-tint'], TEXT, 'heading on a Ghost band');
+	add('ds-text-2', ['ds-bg-0', 'ds-accent-tint'], TEXT, 'subheading on a Ghost band');
+	add(
+		'ds-text-2',
+		['ds-success-tint', 'ds-warning-tint', 'ds-danger-tint', 'ds-accent-2-tint'],
+		TEXT,
+		'secondary text on a tinted ground'
+	);
+	add('ds-accent-text', ['ds-bg-2'], TEXT, 'accent link on the raised ground');
 	// The navigation chrome: its own grounds, text and accent, wherever a brand puts them.
 	// The rail sits on bg-0 with hover bg-2 and the current item on bg-4; the bars sit on bg-2.
 	const chrome = (x, ground, raised) => {
