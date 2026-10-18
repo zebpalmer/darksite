@@ -1,3 +1,11 @@
+<script lang="ts" module>
+	/** One stop's count in a Stat's meta line: "High 2". */
+	export interface StatLevel<V extends string = string> {
+		level: V;
+		value: number | string;
+	}
+</script>
+
 <!--
 @component
 Stat — a headline number: a label, the value (24/500, tabular), an optional unit or "of N", and
@@ -14,6 +22,11 @@ one meta line that breaks the number down. ds-bg-2 with a subtle edge; no shadow
   line. Leave `value` out and the stop's name is the value ("Status: Good"), with no badge. A level
   that is unset or not on the scale shows no stripe and no badge. `severity` wins over a level.
   These two are the only ways to color a Stat.
+- `scale` + `levels`: a breakdown by stop — `{ level, value }[]`, each a ScaleBadge with its count
+  in the meta line ("Medium 2 · Critical 4"), in scale order (unknown last), wrapping onto a second
+  line in a narrow tile rather than hiding a count. They replace the meta line's single badge;
+  the stripe still comes from `severity` or `level` alone (pass `scale.highest(…)` for the worst).
+  A `meta` follows them as the last entry. Pass `severityScale` to count severities.
 
 Put several in a StatRow (`max={5}` for a row of five).
 -->
@@ -41,6 +54,8 @@ Put several in a StatRow (`max={5}` for a row of five).
 		scale?: Scale<V>;
 		/** A stop on `scale`: its leading stripe, and a ScaleBadge beside a value. */
 		level?: V | null;
+		/** A count per stop on `scale`, shown in the meta line in scale order. */
+		levels?: readonly StatLevel<V>[];
 		/** `headline`: a bigger, heavier value with the label under it. */
 		variant?: 'default' | 'headline';
 		class?: string;
@@ -57,6 +72,7 @@ Put several in a StatRow (`max={5}` for a row of five).
 		severity = null,
 		scale,
 		level = null,
+		levels,
 		variant = 'default',
 		class: className = ''
 	}: Props = $props();
@@ -69,6 +85,12 @@ Put several in a StatRow (`max={5}` for a row of five).
 	const absent = $derived(!named && (value === null || value === undefined || value === ''));
 	const mark = $derived(severity ? severityVars(severity).mark : stop?.mark);
 	const shown = $derived(named ? stop!.label : absent ? '' : fmt(value as number | string));
+	// The breakdown: the entries on the scale, in its order, with the unknown stop last.
+	const counts = $derived.by(() => {
+		if (!scale || !levels) return [];
+		const at = (v: V) => (scale.isUnknown(v) ? Infinity : scale.rank(v));
+		return levels.filter((l) => scale.has(l.level)).sort((a, b) => at(a.level) - at(b.level));
+	});
 </script>
 
 <svelte:element
@@ -89,7 +111,27 @@ Put several in a StatRow (`max={5}` for a row of five).
 		{#if unit && !absent}<span class="unit">{unit}</span>{/if}
 		{#if of !== undefined}<span class="unit">of {fmt(of)}</span>{/if}
 	</span>
-	{#if meta || severity || (stop && !named)}
+	{#if counts.length && scale}
+		<span class="meta">
+			<!-- Each line's first separator sits in the clipped gutter, so a wrapped line starts clean. -->
+			<span class="levels"
+				><span class="entries">
+					{#each counts as c, i (i)}
+						<span class="entry"
+							><ScaleBadge {scale} value={c.level} size="sm" /><span class="count">{fmt(c.value)}</span
+							></span
+						>
+					{/each}
+					{#if meta}
+						<span class="entry rest"
+							>{#if typeof meta === 'function'}{@render meta()}{:else}<span class="text">{meta}</span
+								>{/if}</span
+						>
+					{/if}
+				</span></span
+			>
+		</span>
+	{:else if meta || severity || (stop && !named)}
 		<span class="meta">
 			{#if severity}<SeverityBadge {severity} size="sm" />{:else if stop && scale && !named}<ScaleBadge
 					{scale}
@@ -182,6 +224,48 @@ Put several in a StatRow (`max={5}` for a row of five).
 		color: var(--ds-text-3);
 		font-size: var(--ds-text-xs);
 		line-height: var(--ds-lh-xs);
+	}
+	/* A breakdown by level. The entries wrap; each starts with a dot in a 15px gutter, and the row is
+	   pulled 15px left inside a clipping box, so the first entry on every line loses its dot. */
+	.levels {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow: hidden;
+	}
+	.entries {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		row-gap: 4px;
+		margin-left: -15px;
+	}
+	.entry {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		min-width: 0;
+		padding-left: 15px;
+		white-space: nowrap;
+	}
+	.entry::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 6px;
+		width: 3px;
+		height: 3px;
+		margin-top: -1.5px;
+		border-radius: 50%;
+		background: currentColor;
+	}
+	.count {
+		color: var(--ds-text-2);
+		font-variant-numeric: tabular-nums;
+	}
+	.rest {
+		flex: 0 1 auto;
+		overflow: hidden;
 	}
 	.text {
 		min-width: 0;

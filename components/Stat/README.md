@@ -21,6 +21,28 @@ icon, no sparkline.
   mark. `severity` wins over a level; give a tile one or the other.
 
   Severity and a scale level are the only ways to color a Stat.
+- **A breakdown by level** — `scale` and `levels`, a list of `{ level, value }`, put a count per
+  stop in the meta line: a tile "Needs attention: 6" reads "Medium 2 · Critical 4", each entry the
+  stop's `ScaleBadge` and its count (`ds-text-2`, tabular), separated by a dot. Every badge names its
+  stop, so the color is never the only signal.
+  - **Order** comes from the scale, not the call site: lowest first, the unknown stop last. An
+    entry whose level is not on the scale is dropped. A count of zero is shown, so leave a level
+    out when it has none, unless the zero is the news.
+  - **In a narrow tile** the entries wrap onto a second line, whole — a count is never cut off or
+    truncated — and no line starts with a dot.
+  - **The stripe** still comes from `severity` or `level` alone, never from the list: say which stop
+    the tile stands for. For the worst one present, pass
+    `level={scale.highest(levels.map((l) => l.level))}`.
+  - `levels` **replace** the meta line's single badge (the severity's or the level's), since the
+    list already shows that stop.
+  - A `meta` follows the entries as the last one ("· since 09:00"), and it is the one that
+    truncates.
+  - To count severities, pass `scale={severityScale}`.
+
+  ```svelte
+  <Stat label="Needs attention" value={6} scale={severityScale} level="critical"
+    levels={[{ level: 'medium', value: 2 }, { level: 'critical', value: 4 }]} />
+  ```
 - **A row** — put several in a `StatRow`: two to four across by the row's own width (2 below 560px,
   3 below 800px, then 4). Give it a `label` to name the group. For a row of five — four counts and
   their total — set `max={5}`: 2 below 560px, 3 below 960px, then all five, so the fifth never
@@ -38,7 +60,7 @@ unit; `missing` changes the mark. Zero is a value, not a missing one.
 ## What the consumer provides
 
 `label`, `value`, `unit`, `of`, `missing`, `meta` (text or a snippet), `href`, `severity`,
-`scale` and `level`, `variant` (`default` | `headline`), `class`. On `StatRow`: `label`, `max` (`4` default | `3` |
+`scale` and `level`, `levels` (`StatLevel[]`: `{ level, value }`), `variant` (`default` | `headline`), `class`. On `StatRow`: `label`, `max` (`4` default | `3` |
 `5`), `class`.
 
 ## Don't
@@ -46,3 +68,5 @@ unit; `missing` changes the mark. Zero is a value, not a missing one.
 - Don't put two numbers in `value`.
 - Don't write a sentence in `meta`.
 - Don't color a Stat any other way than `severity` or a scale `level`.
+- Don't break a count down in `meta` text when it is by level; that is `levels`, so each stop is
+  named and drawn the same way everywhere.

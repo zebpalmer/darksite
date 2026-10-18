@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Stat, StatRow } from '#lib';
+	import { Stat, StatRow, severityScale } from '#lib';
 	import { confidence } from '../scale-demo.js';
 	import '../scale-demo.css';
 </script>
@@ -30,6 +30,48 @@
 	A level on the app's own scale (<code>scale</code> and <code>level</code>): the stop's stripe,
 	dashed for unknown. Without a value, the stop's name is the value; beside one, its badge is in the
 	meta line. An unset level shows the missing mark.
+</p>
+<StatRow label="Attention">
+	<Stat
+		label="Needs attention"
+		value={6}
+		scale={severityScale}
+		level="critical"
+		levels={[
+			{ level: 'critical', value: 4 },
+			{ level: 'medium', value: 2 }
+		]}
+		href="/table"
+	/>
+	<Stat
+		label="Open findings"
+		value={31}
+		scale={severityScale}
+		level="high"
+		levels={[
+			{ level: 'low', value: 12 },
+			{ level: 'medium', value: 9 },
+			{ level: 'high', value: 7 },
+			{ level: 'info', value: 3 }
+		]}
+		meta="this week"
+	/>
+	<Stat
+		class="confidence"
+		label="Assessed"
+		value={58}
+		scale={confidence}
+		levels={[
+			{ level: 'unknown', value: 5 },
+			{ level: 'c7', value: 41 },
+			{ level: 'c3', value: 12 }
+		]}
+	/>
+</StatRow>
+<p>
+	A breakdown by level (<code>scale</code> and <code>levels</code>): a badge and a count per stop,
+	in scale order with unknown last. In a narrow tile the entries wrap whole. The stripe is the
+	<code>level</code>'s, or none.
 </p>
 <StatRow label="By stage" max={5}>
 	<Stat label="Queued" value={42} />
