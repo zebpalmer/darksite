@@ -73,7 +73,8 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Numbered steps to get started | `Steps` | An ordered list, one step per line; `variant="cards"` for tiles three or four across. |
 | A destination on an overview page | `LinkCard` | A whole-card link: icon, title, a sentence, an arrow. |
 | Help, a how-to, a method note | `PageHeader` + `<article class="ds-prose">` | The document page type: prose at a readable measure. |
-| A post on a public site: a blog or news article | `<article class="ds-article">` | Its own header (title, `ds-article-summary`, `ds-article-meta`) instead of a PageHeader; 720px text, `ds-article-wide` breaks out to 1120px. |
+| A post on a public site: a blog or news article | `<article class="ds-article">` | Its own header (`ds-article-kicker`, title, `ds-article-summary`, `ds-article-meta`) instead of a PageHeader; 720px text, `ds-article-wide` breaks out to 1120px. |
+| A post from the Ghost CMS | `<article class="ds-article ds-article-ghost">` | Opt-in: maps Ghost's `kg-*` image, gallery, bookmark, callout and embed cards, `kg-width-wide` and `kg-width-full`. |
 | A map or a canvas that fills the page | `FullBleed` | No padding, no footer, the shell locked to the viewport. |
 | Actions belonging to a pane | `ActionBar` | The pane's last child; never an overlay. |
 | Nothing to show | `EmptyState` | One sentence, **one** action. |

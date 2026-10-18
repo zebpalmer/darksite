@@ -6,6 +6,7 @@
 <svelte:head><title>Article page · darksite</title></svelte:head>
 <article class="ds-article">
 	<header>
+		<p class="ds-article-kicker"><a href="/article">Guides</a></p>
 		<h1>Writing release notes people read</h1>
 		<p class="ds-article-summary">
 			Most release notes are a list of commits with the hashes taken off. A few habits turn them
@@ -14,6 +15,7 @@
 		<p class="ds-article-meta">
 			<span>By A. Rivera</span>
 			<time datetime="2026-10-04">October 4, 2026</time>
+			<span>Updated October 14, 2026</span>
 			<span>6 min read</span>
 		</p>
 	</header>
@@ -100,14 +102,16 @@
 		When the step is a command, show the command. A reader copies it far more reliably than they
 		follow a sentence describing it.
 	</p>
-	<div class="ds-article-wide">
-		<CodeBlock code="tool config rename export.limit export.max_rows" label="Shell" />
-	</div>
+	<CodeBlock size="comfy" code="tool config rename export.limit export.max_rows" label="Shell" />
 
 	<h2>Keep it short enough to finish</h2>
 	<p>
 		The best test of a release note is whether someone reads it to the end. Cut the entries nobody
 		outside the team would miss, link to the full history for the rest, and let the note be short. A
 		reader who finishes it trusts the next one.
+	</p>
+	<p>
+		This page is written by hand. The same layout takes a post from the Ghost CMS as it arrives:
+		<a href="/article/ghost">the Ghost content sample</a> shows its cards.
 	</p>
 </article>

@@ -214,13 +214,20 @@ A proportion on one line, in a row or a table, is a `Meter`; values over time ar
 </figure>
 
 <style>
+	/* The root's margin reset sits in darksite's base layer at zero specificity, so it only clears
+	   the browser's figure margin: the page's own rules, such as the article's rhythm, set the
+	   space around the block. */
+	@layer ds.base {
+		:where(.ds-ring) {
+			margin: 0;
+		}
+	}
 	.ds-ring {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 12px 20px;
 		min-width: 0;
-		margin: 0;
 	}
 	.plot {
 		position: relative;
