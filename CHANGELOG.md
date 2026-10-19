@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.22.1] — 2026-10-18
+
 ### Fixed
 
 - `Table`: after a sort or filter reordered the rows, a click outside a row's link, Enter on a row,
