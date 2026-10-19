@@ -6,6 +6,12 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- `Table`: after a sort or filter reordered the rows, a click outside a row's link, Enter on a row,
+  and the arrow keys could open or focus a different row — the one first rendered at that
+  position. Rows are now found where they are, not through an array bound to their first index.
+
 ## [0.22.0] — 2026-10-17
 
 ### Added

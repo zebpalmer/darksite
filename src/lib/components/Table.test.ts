@@ -128,6 +128,28 @@ describe('Table', () => {
 		expect(clicked).toHaveBeenCalledTimes(2);
 	});
 
+	it('opens and moves through the rows as shown after a reorder, not as first rendered', async () => {
+		const { rerender } = render(Table, { ...base, href: (row: Row) => `/records/${row.id}` });
+		await rerender({ rows: [...rows].reverse() });
+		const opened: string[] = [];
+		const record = (e: Event) => {
+			e.preventDefault();
+			opened.push((e.currentTarget as HTMLAnchorElement).getAttribute('href')!);
+		};
+		for (const a of document.querySelectorAll<HTMLAnchorElement>('a.row-link')) a.addEventListener('click', record);
+		const last = bodyRows()[2];
+		const want = last.querySelector('a.row-link')!.getAttribute('href');
+		await fireEvent.click(within(last).getAllByRole('cell')[1]);
+		expect(opened).toEqual([want]);
+		last.focus();
+		await fireEvent.keyDown(last, { key: 'Enter' });
+		expect(opened).toEqual([want, want]);
+		await fireEvent.keyDown(last, { key: 'ArrowUp' });
+		expect(document.activeElement).toBe(bodyRows()[1]);
+		await fireEvent.keyDown(bodyRows()[1], { key: 'ArrowUp' });
+		expect(document.activeElement).toBe(bodyRows()[0]);
+	});
+
 	it('is busy with skeleton rows while loading, and shows an empty state with no rows', () => {
 		const { unmount } = render(Table, { ...base, loading: true, loadingRows: 4 });
 		expect(screen.getByRole('table').getAttribute('aria-busy')).toBe('true');

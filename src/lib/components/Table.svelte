@@ -168,7 +168,6 @@ belong in the pane's ActionBar.
 
 	let focusIndex = $state(0);
 	let lastClicked: number | null = null;
-	const rowEls: HTMLTableRowElement[] = $state([]);
 
 	const groups = $derived(groupBy ? groupRows(rows, groupBy) : null);
 	// The rows in display order: grouped rows are shown group by group.
@@ -303,19 +302,21 @@ belong in the pane's ActionBar.
 		return target instanceof Element && !!target.closest('a, button, input, label, select, textarea');
 	}
 
-	function openRow(index: number) {
-		rowEls[index]?.querySelector<HTMLAnchorElement>('a.row-link')?.click();
+	// Rows are found in the DOM, never by an array bound to each row's index: keyed rows move when
+	// a sort or filter reorders them, and an index-bound element would still be the old row there.
+	function openRow(row: HTMLElement) {
+		row.querySelector<HTMLAnchorElement>('a.row-link')?.click();
 	}
 
-	function onRowClick(event: MouseEvent, index: number) {
+	function onRowClick(event: MouseEvent) {
 		if (isInteractive(event.target)) return;
-		openRow(index);
+		openRow(event.currentTarget as HTMLElement);
 	}
 
 	function focusRow(index: number) {
 		const i = Math.max(0, Math.min(view.length - 1, index));
 		focusIndex = i;
-		rowEls[i]?.focus();
+		tableEl?.querySelectorAll<HTMLElement>('tr[data-row]')[i]?.focus();
 	}
 
 	function onRowKeydown(event: KeyboardEvent, index: number) {
@@ -346,7 +347,7 @@ belong in the pane's ActionBar.
 			case 'Enter':
 				if (!href) return;
 				event.preventDefault();
-				openRow(index);
+				openRow(event.currentTarget as HTMLElement);
 				break;
 		}
 	}
@@ -369,7 +370,7 @@ belong in the pane's ActionBar.
 	{@const link = href?.(row)}
 	{@const mark = markOf(row)}
 	<tr
-		bind:this={rowEls[index]}
+		data-row
 		tabindex={index === stopIndex ? 0 : -1}
 		data-selected={selectable && chosen.has(keys[index]) ? '' : undefined}
 		data-link={link ? '' : undefined}
@@ -377,7 +378,7 @@ belong in the pane's ActionBar.
 		data-stripe={striped && nth % 2 === 1 ? '' : undefined}
 		data-tone={rowSeverity?.(row) ?? rowTone?.(row) ?? undefined}
 		style:--row-mark={mark}
-		onclick={(event) => onRowClick(event, index)}
+		onclick={onRowClick}
 		onkeydown={(event) => onRowKeydown(event, index)}
 		onfocus={() => (focusIndex = index)}
 	>
