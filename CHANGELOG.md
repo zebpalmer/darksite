@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.23.0] — 2026-10-24
+
 ### Added
 
 - `NavRail expandAt`: the width in px at which a rail with nothing stored starts expanded (default
