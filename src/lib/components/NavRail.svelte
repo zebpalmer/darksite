@@ -26,9 +26,13 @@ NavRail — the primary navigation on ds-bg-0, full height, from 768px up (below
   the current item scrolls into view; the footer (account, collapse toggle, version) stays put.
 - `version` shows in the footer in both states. Collapsed, it is centered and truncated to the
   rail's width, and the rail's tooltip shows it in full on hover.
-- `expanded` is bindable. With `rememberAs`, the choice is remembered for this viewer; with
-  nothing stored the rail starts expanded at 1440px and collapsed below. `pinned` hides the
-  toggle and holds the rail at `expanded` (`expanded={false} pinned` keeps it always collapsed).
+- `expanded` is bindable. With `rememberAs`, the choice is remembered for this viewer under
+  `darksite:rail:<rememberAs>`, or under a full `storageKey` (which wins) to keep a key the product
+  already uses. With nothing stored the rail starts expanded at `expandAt` (default 1440px) and
+  collapsed below; `expandAt={false}` starts it collapsed at any width, toggle kept. `pinned` hides
+  the toggle and holds the rail at `expanded` (`expanded={false} pinned` keeps it always collapsed).
+- Widths are `--ds-rail-w` (56px) and `--ds-rail-w-expanded` (208px); a product may override the
+  expanded width. Keep the collapsed width at 56px so the 40×36 items fit.
 - Slots, each given `{ expanded, tip }` — `tip(label)` returns handlers that show the rail's own
   tooltip while it is collapsed: `search` (under the brand; collapsed, an icon button that opens
   the app's search), `status` (in the footer, above the toggle: a connection or sync state).
@@ -54,6 +58,8 @@ that list, not disabled.
 		current?: string;
 		expanded?: boolean;
 		rememberAs?: string;
+		storageKey?: string;
+		expandAt?: number | false;
 		product?: string;
 		mark?: Snippet;
 		footer?: Snippet<[{ expanded: boolean }]>;
@@ -72,6 +78,8 @@ that list, not disabled.
 		current,
 		expanded = $bindable(),
 		rememberAs,
+		storageKey,
+		expandAt = 1440,
 		product,
 		mark,
 		footer,
@@ -86,7 +94,7 @@ that list, not disabled.
 
 	const sections = $derived(groupItems(items, groups));
 	const open = $derived(expanded ?? false);
-	const storageKey = $derived(rememberAs ? `darksite:rail:${rememberAs}` : null);
+	const key = $derived(storageKey || (rememberAs ? `darksite:rail:${rememberAs}` : null));
 
 	let listEl: HTMLElement | undefined = $state();
 	// The width animates only for a toggle, never for the first state the client settles on.
@@ -98,11 +106,14 @@ that list, not disabled.
 		if (expanded === undefined) {
 			let stored: string | null = null;
 			try {
-				stored = storageKey ? localStorage.getItem(storageKey) : null;
+				stored = key ? localStorage.getItem(key) : null;
 			} catch {
 				/* storage unavailable */
 			}
-			expanded = stored !== null ? stored === '1' : (window.matchMedia?.('(min-width: 1440px)').matches ?? false);
+			expanded =
+				stored !== null
+					? stored === '1'
+					: expandAt !== false && (window.matchMedia?.(`(min-width: ${expandAt}px)`).matches ?? false);
 		}
 		listEl?.querySelector('[aria-current="page"]')?.scrollIntoView?.({ block: 'nearest' });
 		requestAnimationFrame(() => requestAnimationFrame(() => (ready = true)));
@@ -112,7 +123,7 @@ that list, not disabled.
 		expanded = !open;
 		tip = null;
 		try {
-			if (storageKey) localStorage.setItem(storageKey, expanded ? '1' : '0');
+			if (key) localStorage.setItem(key, expanded ? '1' : '0');
 		} catch {
 			/* storage unavailable: remembered for this page view only */
 		}

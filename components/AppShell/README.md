@@ -9,7 +9,9 @@ It is the one component allowed to ask about the viewport ([`layout.md`](../../d
 ## What it owns
 
 - **The grid:** `grid-template-columns: auto 1fr`, the rail sized by `ds-rail-w` or
-  `ds-rail-w-expanded`, the column taking the rest. No maximum width.
+  `ds-rail-w-expanded`, the column taking the rest. No maximum width. A product may override
+  `--ds-rail-w-expanded` (a 240px rail for longer labels); keep `--ds-rail-w` at 56px so the
+  collapsed 40×36 items fit.
 - **The padding contract:** the padded column publishes `--ds-pad-top` and `--ds-pad-x` so
   `PageHeader` can cancel them and sit flush. A page that lays out its own panes sets both to
   `0px`.
@@ -47,9 +49,9 @@ in a column wider than its measure; default `center` with `nav="top"`, `start` w
 `contentWidth` (`true` for 1060px, a number of pixels or a CSS length: caps the page content and
 centers it, with the TopNav, TopBar and footer contents at the same width; a page with a `ds-wide`
 element uses `--ds-content-wide` instead, and FullBleed and WorkView pages take the whole column),
-`toaster` (default true), `railExpanded` (bindable), and the rail's slots — `railSearch`,
-`railStatus`, `railBadge` and `railPinned`, passed to `NavRail` as `search`, `status`, `badge` and
-`pinned`.
+`toaster` (default true), `railExpanded` (bindable), and the rail's slots and settings —
+`railSearch`, `railStatus`, `railBadge`, `railPinned`, `railExpandAt` and `railStorageKey`, passed
+to `NavRail` as `search`, `status`, `badge`, `pinned`, `expandAt` and `storageKey`.
 
 ## Header actions
 

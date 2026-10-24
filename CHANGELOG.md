@@ -6,6 +6,20 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `NavRail expandAt`: the width in px at which a rail with nothing stored starts expanded (default
+  1440, as before); `false` starts it collapsed at any width and, unlike `pinned`, keeps the
+  toggle. `AppShell` passes it as `railExpandAt`.
+- `NavRail storageKey`: a full storage key for the remembered state, taking precedence over
+  `rememberAs` (`darksite:rail:<rememberAs>`), so a product that already remembers this choice
+  keeps its key and viewers keep their setting. `AppShell` passes it as `railStorageKey`.
+
+### Changed
+
+- The `NavRail` and `AppShell` cards and `shell.md` name `--ds-rail-w-expanded` as an override
+  point (a wider rail for longer labels); the collapsed `--ds-rail-w` stays at 56px.
+
 ## [0.22.1] — 2026-10-18
 
 ### Fixed

@@ -19,8 +19,9 @@ in place.
 - `product` and `mark` (the brand at the top of the rail), `account` snippet (the rail's footer
   and the More sheet's footer; receives `{ compact }`), `version`, `rememberAs` (remember the
   rail's state for this viewer), `primaryTabs` (the tab bar's four cells).
-- `railSearch`, `railStatus`, `railBadge`, `railPinned` — the NavRail's `search`, `status` and
-  `badge` slots and `pinned`; `railExpanded` (bindable).
+- `railSearch`, `railStatus`, `railBadge`, `railPinned`, `railExpandAt`, `railStorageKey` — the
+  NavRail's `search`, `status` and `badge` slots, `pinned`, `expandAt` and `storageKey`;
+  `railExpanded` (bindable).
 - `banner`, `topBar` snippets; `padded` (default true — false hands the column to a work view
   that lays out its own panes); `toaster` (default true); children (the page).
 - `proseAlign` — where a document page's `ds-prose` or `ds-reading` article sits in a column wider
@@ -104,6 +105,8 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		railStatus?: Snippet<[RailSlotArgs]>;
 		railBadge?: Snippet<[{ item: NavItem; expanded: boolean }]>;
 		railPinned?: boolean;
+		railExpandAt?: number | false;
+		railStorageKey?: string;
 		class?: string;
 		children: Snippet;
 	}
@@ -138,6 +141,8 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 		railStatus,
 		railBadge,
 		railPinned = false,
+		railExpandAt = 1440,
+		railStorageKey,
 		class: className = '',
 		children
 	}: Props = $props();
@@ -232,6 +237,8 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 			status={railStatus}
 			badge={railBadge}
 			pinned={railPinned}
+			expandAt={railExpandAt}
+			storageKey={railStorageKey}
 			footer={account ? railFooter : undefined}
 		/>
 	</div>{/if}

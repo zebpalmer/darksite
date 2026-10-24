@@ -15,9 +15,26 @@ group headings never disagree.
   product's name beside its mark at the top.
 - The width animates over `ds-dur-base`, and not at all under reduced motion.
 
-The state is **remembered per viewer**. With nothing stored it starts expanded at `ds-bp-rail` and
-collapsed below, so a laptop is tidy and a wide display is legible without anyone configuring
-either.
+### Changing the widths
+
+The two widths are the override point. A product may set `--ds-rail-w-expanded` (on `:root` or the
+shell) to widen the expanded rail for longer labels — 240px, say. Leave `--ds-rail-w` at 56px: the
+collapsed rail's 40×36 items and the badge at their corner are drawn to fit it.
+
+```css
+:root { --ds-rail-w-expanded: 240px; }
+```
+
+The state is **remembered per viewer**. With nothing stored it starts expanded at `expandAt`
+(default 1440px, `ds-bp-rail`) and collapsed below, so a laptop is tidy and a wide display is
+legible without anyone configuring either. A product picks its own breakpoint with `expandAt`
+(a width in px); `expandAt={false}` starts the rail collapsed at any width — unlike `pinned`, the
+toggle stays, and the viewer's choice is still remembered.
+
+`rememberAs="main"` stores the choice under `darksite:rail:main`. A product that already remembers
+this choice under its own key passes the whole key as `storageKey` (it wins over `rememberAs`), so
+viewers keep their setting when the product moves to this rail. The stored value is `'1'` for
+expanded and `'0'` for collapsed.
 
 The stored state is only known in the browser, so a server-rendered page paints the rail collapsed
 and settles after hydration — without animating, since only a toggle animates. To paint the right
@@ -76,7 +93,10 @@ and hovering it shows the whole string in the rail's tooltip; a screen reader re
 
 `items` (`NavItem[]`: `{ id, label, href, icon?, group?, badge? }`, where `badge` is a count or
 `true` for a dot), `groups` (ordered `{ id, label }`), `current` (the active id), `expanded`
-(bindable), `pinned`, `rememberAs` (a key; the state is kept in this viewer's browser), `product` and `mark`
+(bindable), `pinned`, `rememberAs` (a key; the state is kept in this viewer's browser under
+`darksite:rail:<rememberAs>`), `storageKey` (a full storage key, which wins over `rememberAs`),
+`expandAt` (the width in px at which a rail with nothing stored starts expanded, default 1440;
+`false` for collapsed at any width), `product` and `mark`
 (the brand at the top), `footer` snippet (receives `{ expanded }`), `search`, `status` and `badge` snippets, `version`, `label` (the
 `<nav>`'s name, default "Primary"). Inside `AppShell` you pass these to the shell instead.
 

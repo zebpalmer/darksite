@@ -77,9 +77,14 @@ product is public: a public site can have a rail, and an admin tool with four se
 - **Groups** are separated by a hairline and, when expanded, an 11px uppercase `ds-text-3` label.
 - The item list **scrolls** on a short window and the current item scrolls into view; the bottom
   block — notifications, the account avatar, the collapse toggle, the build version — stays put.
-- The collapse state is **remembered per viewer**. With no stored preference it starts expanded at
-  `ds-bp-rail` and collapsed below. Width animates over `ds-dur-base`, and not at all under
-  reduced motion.
+- **Widths are the override point.** A product may set `--ds-rail-w-expanded` to widen the
+  expanded rail for longer labels (240px, say). The collapsed `--ds-rail-w` stays at 56px, so the
+  40×36 items still fit.
+- The collapse state is **remembered per viewer** (`rememberAs`, or a full `storageKey` to keep a
+  key the product already uses). With no stored preference it starts expanded at `expandAt`
+  (default `ds-bp-rail`, 1440px) and collapsed below; `expandAt={false}` starts it collapsed at any
+  width and keeps the toggle. Width animates over `ds-dur-base`, and not at all under reduced
+  motion.
 - **Always collapsed:** a product that wants the 56px rail everywhere passes `expanded={false}`
   with `pinned` (on `AppShell`, `railExpanded={false} railPinned`) and no `rememberAs`. `pinned`
   removes the toggle, so the viewer cannot widen it either.

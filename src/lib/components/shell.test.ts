@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/svelte';
+import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
+import { createRawSnippet } from 'svelte';
+import AppShell from './AppShell.svelte';
 import NavRail from './NavRail.svelte';
 import PageHeader from './PageHeader.svelte';
 import SheetItem from './SheetItem.svelte';
@@ -189,6 +191,74 @@ describe('NavRail version', () => {
 		expect(screen.getByText('v2.4.1')).toBeTruthy();
 		await rerender({ expanded: true });
 		expect(screen.getByText('v2.4.1')).toBeTruthy();
+	});
+});
+
+describe('NavRail starting state', () => {
+	let queries: string[] = [];
+	let wide = true;
+	beforeEach(() => {
+		queries = [];
+		wide = true;
+		localStorage.clear();
+		vi.stubGlobal('matchMedia', (query: string) => {
+			queries.push(query);
+			return { matches: wide, media: query, addEventListener() {}, removeEventListener() {} };
+		});
+	});
+	afterEach(() => {
+		vi.unstubAllGlobals();
+		localStorage.clear();
+	});
+
+	const toggleName = () => screen.getByRole('button', { name: /navigation$/ }).getAttribute('aria-label');
+
+	it('starts expanded at 1440px by default', () => {
+		render(NavRail, { items });
+		expect(queries).toContain('(min-width: 1440px)');
+		expect(toggleName()).toBe('Collapse navigation');
+	});
+
+	it('takes its own breakpoint from expandAt', () => {
+		wide = false;
+		render(NavRail, { items, expandAt: 1200 });
+		expect(queries).toContain('(min-width: 1200px)');
+		expect(queries).not.toContain('(min-width: 1440px)');
+		expect(toggleName()).toBe('Expand navigation');
+	});
+
+	it('starts collapsed at any width with expandAt={false}, keeping the toggle', async () => {
+		render(NavRail, { items, expandAt: false, rememberAs: 'main' });
+		expect(toggleName()).toBe('Expand navigation');
+		await fireEvent.click(screen.getByRole('button', { name: 'Expand navigation' }));
+		expect(toggleName()).toBe('Collapse navigation');
+		expect(localStorage.getItem('darksite:rail:main')).toBe('1');
+	});
+
+	it('prefers a stored choice over expandAt', () => {
+		localStorage.setItem('darksite:rail:main', '1');
+		render(NavRail, { items, expandAt: false, rememberAs: 'main' });
+		expect(toggleName()).toBe('Collapse navigation');
+	});
+
+	it('reads and writes a full storageKey, which wins over rememberAs', async () => {
+		localStorage.setItem('app.sidebar', '0');
+		localStorage.setItem('darksite:rail:main', '1');
+		render(NavRail, { items, storageKey: 'app.sidebar', rememberAs: 'main' });
+		expect(toggleName()).toBe('Expand navigation');
+		await fireEvent.click(screen.getByRole('button', { name: 'Expand navigation' }));
+		expect(localStorage.getItem('app.sidebar')).toBe('1');
+		expect(localStorage.getItem('darksite:rail:main')).toBe('1');
+	});
+
+	it('is passed through by AppShell as railExpandAt and railStorageKey', () => {
+		const children = createRawSnippet(() => ({ render: () => '<p>Page</p>' }));
+		localStorage.setItem('app.sidebar', '1');
+		render(AppShell, { items, toaster: false, railExpandAt: false, railStorageKey: 'app.sidebar', children });
+		expect(toggleName()).toBe('Collapse navigation');
+		cleanup();
+		render(AppShell, { items, toaster: false, railExpandAt: false, children });
+		expect(toggleName()).toBe('Expand navigation');
 	});
 });
 

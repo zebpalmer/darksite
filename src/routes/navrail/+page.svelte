@@ -11,6 +11,11 @@
 		{ id: 'records', label: 'Records', href: '/navrail', icon: Boxes, badge: 4 },
 		{ id: 'reports', label: 'Reports', href: '/navrail', icon: ChartColumn }
 	];
+	const long: NavItem[] = [
+		{ id: 'home', label: 'Home', href: '/navrail', icon: House },
+		{ id: 'records', label: 'Records awaiting review', href: '/navrail', icon: Boxes, badge: 12 },
+		{ id: 'reports', label: 'Quarterly summary reports', href: '/navrail', icon: ChartColumn }
+	];
 	let searches = $state(0);
 
 	function setBadge(value: number | boolean | null) {
@@ -85,6 +90,20 @@
 	</div>
 </div>
 <p>Search pressed {searches} times.</p>
+
+<h2>Starting state and width</h2>
+<p>
+	With nothing stored, a rail starts expanded at <code>expandAt</code> (1440px by default) and
+	collapsed below; <code>expandAt=&#123;false&#125;</code> starts it collapsed at any width and
+	keeps the toggle. <code>storageKey</code> remembers the choice under a key the product already
+	uses. The expanded width is <code>--ds-rail-w-expanded</code>, which a product may widen for
+	longer labels; the collapsed width stays 56px.
+</p>
+<div class="frames">
+	<div class="frame" style="--ds-rail-w-expanded: 240px">
+		<NavRail items={long} current="records" expanded pinned />
+	</div>
+</div>
 
 <style>
 	.frames {
