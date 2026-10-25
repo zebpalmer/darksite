@@ -10,20 +10,20 @@ multi-ecosystem-groups:
       interval: weekly
 updates:
   - package-ecosystem: npm
-    directory: "/"
-    patterns: ["*"]
+    directory: '/'
+    patterns: ['*']
     multi-ecosystem-group: dependencies
     rebase-strategy: disabled
     groups:
       security:
         applies-to: security-updates
-        patterns: ["*"]
+        patterns: ['*']
   - package-ecosystem: github-actions
-    directory: "/"
-    patterns: ["*"]
+    directory: '/'
+    patterns: ['*']
     multi-ecosystem-group: dependencies
     rebase-strategy: disabled
     groups:
       security:
         applies-to: security-updates
-        patterns: ["*"]
+        patterns: ['*']
