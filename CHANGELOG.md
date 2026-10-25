@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.23.1] — 2026-10-24
+
 ### Fixed
 
 - `PageHeader` on a phone could stop folding before its `actions` were told `{ compact: true }`:
