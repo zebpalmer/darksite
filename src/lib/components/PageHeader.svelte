@@ -11,7 +11,9 @@ Put it first on the page. The title keeps its width; the count gives way on a na
 When the title and the actions do not fit on one line, the header makes room in steps, at any
 width: first the shell's header actions collapse to their icon button, then the `actions` snippet
 is told `{ compact: true }` (render icon buttons there). Under 560px of header, if that is still
-not enough, the actions move to a second line, right-aligned, so the title is not cut short.
+not enough, the actions move to a second line, right-aligned, so the title is not cut short, and
+wrap there if they are wider than the header. The steps are taken in one pass on a phone too,
+where the first changes nothing on screen.
 Content after the title (chips, a status) wraps onto a further line under the title when the lead
 has no room for it; the title keeps its one line.
 
@@ -26,7 +28,7 @@ has no room for it; the title keeps its one line.
   level-1 header claims them either way, so the shell does not also show them in a TopBar.
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { flushSync, type Snippet } from 'svelte';
 
 	import Button from './Button.svelte';
 	import { focusShortcut } from '../hotkeys.js';
@@ -90,9 +92,21 @@ has no room for it; the title keeps its one line.
 	// The actions' width last seen at each stage. A stage not seen yet is tried, then measured.
 	const seen: (number | undefined)[] = [];
 
-	function measure() {
-		if (!el || !leadEl || !actionsEl) return;
-		seen[stage] = actionsEl.offsetWidth;
+	// The actions' width on one line, even where a narrow header lets them wrap.
+	function natural(node: HTMLElement) {
+		const { flex, width } = node.style;
+		node.style.flex = 'none';
+		node.style.width = 'max-content';
+		const out = node.offsetWidth;
+		node.style.flex = flex;
+		node.style.width = width;
+		return out;
+	}
+
+	// The stage the header needs now, measured at the current one.
+	function next(): number | undefined {
+		if (!el || !leadEl || !actionsEl) return undefined;
+		seen[stage] = natural(actionsEl);
 		const style = getComputedStyle(el);
 		const room = el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
 		const gap = parseFloat(style.columnGap) || 0;
@@ -103,8 +117,19 @@ has no room for it; the title keeps its one line.
 		// A phone always collapses the shell's actions; without them there is no stage 1.
 		const stages = !shellSnippet ? [0, 2] : shell?.phone ? [1, 2] : [0, 1, 2];
 		const fits = (s: number) => seen[s] === undefined || lead + gap + seen[s]! + 1 <= room;
-		const next = stages.find(fits) ?? stages[stages.length - 1];
-		if (next !== stage) stage = next;
+		return stages.find(fits) ?? stages[stages.length - 1];
+	}
+
+	// Steps through the stages in one go, measuring each, until one fits or none is left. It does
+	// not wait for the observer: a step that changes nothing on screen (the shell's actions on a
+	// phone are collapsed already) resizes nothing, so the observer would never call it again.
+	function measure() {
+		for (let i = 0; i < 3; i++) {
+			const want = next();
+			if (want === undefined || want === stage) return;
+			stage = want;
+			flushSync();
+		}
 	}
 
 	$effect(() => {
@@ -277,8 +302,15 @@ has no room for it; the title keeps its one line.
 			width: 0;
 			max-width: max-content;
 		}
+		/* On their own line, actions that are still wider than the header wrap, right-aligned,
+		   rather than run past its edge. */
 		.actions {
+			flex: 0 1 auto;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+			min-width: 0;
 			padding-block: 6px;
+			row-gap: 8px;
 		}
 	}
 	.actions :global(.ds-pageheader-toggle[aria-expanded='true']) {

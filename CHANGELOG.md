@@ -6,6 +6,18 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- `PageHeader` on a phone could stop folding before its `actions` were told `{ compact: true }`:
+  the shell's actions are an icon button there already, so the first step changed nothing on
+  screen, nothing was resized, and the header never measured again. A header that mounted with a
+  title and several actions kept their full form and ran past a 320px page. The header now takes
+  the steps it needs in one measured pass, without waiting for a resize, so it reaches `compact`
+  at every width down to 320px (with 44px touch targets too) and settles in one frame instead of
+  one per step.
+- `PageHeader` under 560px: actions still wider than the header on their own line wrap onto a
+  further right-aligned line instead of running past its edge.
+
 ## [0.23.0] — 2026-10-24
 
 ### Added

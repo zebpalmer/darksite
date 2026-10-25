@@ -50,9 +50,16 @@ header makes room in steps, at any width, and gives it back as the header widens
 
 A snippet that ignores `compact` keeps its one form. On a header **narrower than 560px** (a phone),
 when the title still does not fit beside the actions, the actions move to a second line,
-right-aligned, and the title keeps the full first line. A title that fits keeps one line, and the
-count still gives way before anything wraps. A title longer than a phone's whole width still
-truncates; keep titles short.
+right-aligned, and the title keeps the full first line. Actions still wider than the header wrap
+onto a further right-aligned line rather than run past its edge. A title that fits keeps one line,
+and the count still gives way before anything wraps. A title longer than a phone's whole width
+still truncates; keep titles short.
+
+The header takes every step it needs in one pass, each measured, so it reaches `compact` at any
+width down to 320px, with 44px touch targets — including on a phone, where the shell's actions are
+an icon button already and step 1 changes nothing on screen. Nothing in the header runs past the
+page. Mount it with its actions as they will be; the steps are found again whenever the header,
+its title or its actions change size.
 
 ## What the consumer provides
 

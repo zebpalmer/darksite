@@ -3,11 +3,12 @@
 import '../tokens.css';
 import '../base.css';
 import { afterEach, describe, expect, it } from 'vitest';
-import { page, userEvent } from 'vitest/browser';
+import { cdp, page, userEvent } from 'vitest/browser';
 import { render, screen, within } from '@testing-library/svelte';
 import BarHarness from '../../tests/browser/BarHarness.svelte';
 import HeaderRoomHarness from '../../tests/browser/HeaderRoomHarness.svelte';
 import HeaderChipsHarness from '../../tests/browser/HeaderChipsHarness.svelte';
+import HeaderPhoneHarness from '../../tests/browser/HeaderPhoneHarness.svelte';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 const box = (el: Element) => el.getBoundingClientRect();
@@ -71,6 +72,69 @@ describe('PageHeader room in a browser', () => {
 		screen.getByTestId('narrow').style.width = '1000px';
 		for (let i = 0; i < 4; i++) await settle();
 		expect(state('narrow')).toEqual(state('wide'));
+	});
+});
+
+describe('PageHeader on a phone, in a browser', () => {
+	// Touch emulation makes Chromium match (pointer: coarse): every button is 44px.
+	const touch = (enabled: boolean) =>
+		cdp().send('Emulation.setTouchEmulationEnabled', enabled ? { enabled, maxTouchPoints: 5 } : { enabled });
+	afterEach(async () => {
+		await touch(false);
+	});
+
+	const check = (id: string, label: string) => {
+		const frame = screen.getByTestId(id);
+		const header = part(id, '.ds-pageheader');
+		const title = part(id, '.title');
+		const right = box(header).right;
+		// Nothing runs past the header, the frame or the page.
+		expect(header.scrollWidth, label).toBeLessThanOrEqual(header.clientWidth);
+		expect(right, label).toBeLessThanOrEqual(box(frame).right + 0.5);
+		for (const button of header.querySelectorAll('button')) {
+			expect(box(button).right, `${label}: ${button.getAttribute('aria-label') ?? button.textContent}`).toBeLessThanOrEqual(
+				right + 0.5
+			);
+		}
+		expect(document.documentElement.scrollWidth, label).toBeLessThanOrEqual(window.innerWidth);
+		// The title keeps its one line.
+		expect(box(title).height, label).toBe(parseFloat(getComputedStyle(title).lineHeight));
+		const actions = within(header);
+		return {
+			toggle: actions.queryByRole('button', { name: 'Search' }) !== null,
+			compact: actions.getByRole('button', { name: 'Export' }).textContent?.trim() === ''
+		};
+	};
+
+	for (const width of [320, 375, 390]) {
+		for (const coarse of [true, false]) {
+			it(`folds a title and several actions to compact at ${width}px${coarse ? ', 44px targets' : ''}`, async () => {
+				await touch(coarse);
+				await page.viewport(width, 800);
+				render(HeaderPhoneHarness);
+				await settle();
+				await settle();
+				expect(matchMedia('(pointer: coarse)').matches).toBe(coarse);
+				for (const id of ['several', 'many']) {
+					expect(check(id, `${id} at ${width}px`), id).toEqual({ toggle: true, compact: true });
+				}
+			});
+		}
+	}
+
+	it('keeps the full form where it fits, and folds when the header narrows', async () => {
+		await touch(true);
+		await page.viewport(1280, 800);
+		render(HeaderPhoneHarness, { phone: false, width: '1000px' });
+		await settle();
+		await settle();
+		expect(check('several', 'wide')).toEqual({ toggle: false, compact: false });
+		screen.getByTestId('several').style.width = '320px';
+		for (let i = 0; i < 4; i++) await settle();
+		expect(check('several', 'narrowed')).toEqual({ toggle: true, compact: true });
+		screen.getByTestId('several').style.width = '1000px';
+		for (let i = 0; i < 4; i++) await settle();
+		expect(check('several', 'widened')).toEqual({ toggle: false, compact: false });
 	});
 });
 
