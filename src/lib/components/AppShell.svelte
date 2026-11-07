@@ -421,4 +421,27 @@ view fills what the Banner and TopBar leave and the document does not scroll.
 			--ds-pad-x: 16px;
 		}
 	}
+	/* Printing takes the page alone: no rail or tab bar, no height locked to the viewport, and no
+	   room kept at the foot for a bar that is not there. */
+	@media print {
+		:global(:root:has(.ds-appshell[data-nav])) {
+			--ds-chrome-top: 0px;
+			--ds-chrome-bottom: 0px;
+		}
+		.ds-appshell,
+		.ds-appshell:has(:global(.ds-workview)),
+		.ds-appshell:has(:global(.ds-fullbleed)) {
+			display: block;
+			height: auto;
+			min-height: 0;
+			overflow: visible;
+		}
+		.rail,
+		.skip {
+			display: none;
+		}
+		.footer {
+			margin-bottom: 0;
+		}
+	}
 </style>

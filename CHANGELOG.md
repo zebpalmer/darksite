@@ -6,6 +6,30 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `ChoiceTiles`: pick one of a set of things that each carry a line of state — the unit to work on,
+  the site to report from. A radio group of tiles laid out by its own width (`min`, default 160px),
+  each with a label, one meta line, an optional icon and an optional `StatusBadge`; one tab stop,
+  arrow keys move and select, 56px with a meta line and at least 44px on touch.
+- `CodeCallout`: a short code shown large to be written down, read aloud or typed on another
+  device. Mono at 48px (36px under 240px of its own width), weight 500, the instruction as a label
+  and one meta line; screen readers hear it one character at a time; `copy` adds a CopyButton and
+  `accent` a leading stripe. The one text above 32px outside an article title.
+- `ConnectionStatus`: the app's link to its server, for the top bar or the rail's `status` slot —
+  offline, reconnecting, syncing, changes waiting, or changes the server refused (a panel listing
+  each with its reason, Dismiss and an optional Retry). Renders nothing while all is connected and
+  sent; follows `navigator.onLine` when the app passes no `online`; one polite live region.
+- `Card aspect` (`16:9` default, `4:3`, `1:1`, `3:4`, `2:3`) and `Card fit` (`cover` default, or
+  `contain` to show the whole picture — a product shot, a cover, a scan).
+- Print: pages print in the light theme wherever a mode was set, including from a brand; the
+  shell's rail, tab bar, top bar, top navigation, banners, action bar, toasts and tooltips stay off
+  paper, and `AppShell` drops its locked heights. `ds-print-hidden` and `ds-print-only` mark the
+  rest. `tokens.json` names the print theme (`color.printTheme`).
+- A heading font: `--font-heading` (the `sans` stack unless a brand sets `fonts.heading`) for page, detail, section, dialog, sheet, pane, empty-state, intro and error-page titles, and prose and article headings.
+- `mode.init({ themeColor: true })` keeps `<meta name="theme-color">` on the page ground of the mode
+  showing, following the device's light and contrast preferences; `applyThemeColor()` does it once.
+
 ## [0.23.1] — 2026-10-24
 
 ### Fixed

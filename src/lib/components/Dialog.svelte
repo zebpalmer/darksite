@@ -284,6 +284,7 @@ waits until the note is valid. Buttons in children must be `type="button"` (Butt
 	.title {
 		margin: 0;
 		color: var(--ds-text-heading, var(--ds-text-1));
+		font-family: var(--font-heading);
 		font-size: var(--ds-text-lg);
 		line-height: var(--ds-lh-lg);
 		font-weight: 500;

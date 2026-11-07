@@ -33,6 +33,7 @@ const DEFAULTS = {
 	copy: 'Copy',
 	copied: 'Copied',
 	copyFailed: 'Copy failed',
+	copyCode: 'Copy code',
 	code: 'Code',
 	total: 'Total',
 	/** A value against its whole: "12 of 40". */
@@ -153,6 +154,20 @@ const DEFAULTS = {
 	moveHint: 'move',
 	openHint: 'open',
 	closeHint: 'close',
+
+	// Connection status
+	connection: 'Connection',
+	offline: 'Offline',
+	reconnecting: 'Reconnecting',
+	syncing: 'Syncing',
+	/** Changes saved on this device, waiting to be sent: "3 waiting". */
+	waiting: (n: number) => `${n.toLocaleString()} waiting`,
+	/** Changes the server refused: "2 not saved". */
+	notSavedCount: (n: number) => `${n.toLocaleString()} not saved`,
+	notSaved: 'Not saved',
+	retry: 'Retry',
+	/** What a screen reader hears: "Offline, 3 changes waiting to sync". */
+	changesWaiting: (n: number) => `${plural(n, 'change', 'changes')} waiting to sync`,
 
 	// Error page
 	goHome: 'Go home',

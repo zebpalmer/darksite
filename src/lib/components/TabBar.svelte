@@ -208,4 +208,10 @@ Pages must leave room for it: AppShell publishes its height as `--ds-chrome-bott
 		padding-top: 12px;
 		border-top: 1px solid var(--ds-border-subtle);
 	}
+	/* Chrome, not content: it stays off paper. */
+	@media print {
+		.ds-tabbar {
+			display: none;
+		}
+	}
 </style>

@@ -10,6 +10,7 @@ export { default as Avatar } from './components/Avatar.svelte';
 export { default as Banner } from './components/Banner.svelte';
 export { default as Button } from './components/Button.svelte';
 export { default as Card } from './components/Card.svelte';
+export { default as ChoiceTiles } from './components/ChoiceTiles.svelte';
 export { default as Checkbox } from './components/Checkbox.svelte';
 export { default as Chip } from './components/Chip.svelte';
 export { default as Combobox } from './components/Combobox.svelte';
@@ -74,6 +75,8 @@ export { default as Steps } from './components/Steps.svelte';
 export { default as LinkCard } from './components/LinkCard.svelte';
 export { default as CopyButton } from './components/CopyButton.svelte';
 export { default as CodeBlock } from './components/CodeBlock.svelte';
+export { default as CodeCallout } from './components/CodeCallout.svelte';
+export { default as ConnectionStatus } from './components/ConnectionStatus.svelte';
 export { default as Notice } from './components/Notice.svelte';
 export { default as CellBar } from './components/CellBar.svelte';
 export { default as BarSeries } from './components/BarSeries.svelte';
@@ -215,6 +218,7 @@ export type { SelectOption } from './components/Select.svelte';
 export { tooltip, type TooltipOptions } from './tooltip.js';
 export { ghostCards, type GhostCardsOptions } from './ghost.js';
 export {
+	applyThemeColor,
 	isDarkMode,
 	MODE_SCRIPT,
 	MODES,
@@ -224,6 +228,9 @@ export {
 	modeScript,
 	type Mode
 } from './mode.svelte.js';
+export type { CardAspect } from './components/Card.svelte';
+export type { ChoiceTile } from './components/ChoiceTiles.svelte';
+export type { ConnectionFailure } from './components/ConnectionStatus.svelte';
 export type { Step } from './components/Steps.svelte';
 export type { BarSeriesPoint, BarSeriesSeries } from './components/BarSeries.svelte';
 export type { RingSegment } from './components/Ring.svelte';

@@ -24,8 +24,10 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Flip between dark and light | `ThemeToggle` | One icon button; the label names the action. `mode.init({ fallback })` and `modeScript(fallback)` pick the mode before the viewer does. The full set stays `ModePicker`. |
 | A product's own colors and fonts | A brand: `darksite/brands/<name>.css`, or `npx darksite-theme` | Never hand-written `--ds-*` overrides; the generator covers every role and mode and checks contrast. |
 | Long-form reading | `ds-reading` in a `paper` or `night` region | The reading font at a readable size and measure. |
+| Printing a page | Nothing: it prints light, without the shell | `ds-print-hidden` keeps filters and actions off paper; `ds-print-only` shows a line on paper alone. |
 | Explain a field, a row or a state | `HelpTip` / `Field tip` | An icon whose tooltip is the note. **No inline sentences.** |
 | Pick one of 2–7 exclusive options | `SegmentedControl` | Density, a view mode, a three-way toggle. **Never a dropdown** for these. |
+| Pick one of a set of things, each with a state to read | `ChoiceTiles` | A radio group of tiles by its own width: name, one meta line, an optional `StatusBadge`. The unit to work on, the site to report from. |
 | Pick a severity | `SeverityPicker` | Scale order, mark stripes, dashed for suggested. |
 | Search a whole site: people, records, docs | `SearchPalette` | A modal: grouped results, scope chips, ↑/↓ and Enter; rows are links. Opened by a bar Button or a field-shaped button, and `searchShortcut` (`/`, ⌘K). Picking a value in a form is a `Combobox`. |
 | Pick from many, or create | `Combobox` | Owners, assignees, tags. The `Create "…"` row is always last, on ⇧Enter. |
@@ -42,11 +44,13 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Filter by free text, or by one of many | `FilterRail` section `type: 'text'` / `type: 'search'` | Text applies on Enter or blur; search is a Combobox with chips. Unlisted URL values stay, with `labelFor`. |
 | A whole work view | `WorkView` | PageHeader, a rail beside the results, the results as the one scroller, an ActionBar. Sizes itself inside `AppShell`. |
 | A system-wide condition | `Banner` | Above the TopBar, pushing content down. Danger is never dismissible. |
+| The app's link to its server: offline, reconnecting, changes waiting or refused | `ConnectionStatus` | In the TopBar's actions or the rail's `status` slot; nothing while all is connected and sent. Refused changes open a list to dismiss or retry. |
 | Filters, sort, any choice on touch | `Sheet` + `SheetItem` | Replaces Popover and Dialog under 768px. 44px rows. |
 | Edit a record | `Sheet side="right"` | A drawer at ≥768px, a bottom sheet below. Footer: Cancel (secondary) then Save (primary), right-aligned. |
 | Confirm after the fact | `toasts.push({ action })` | Brief; an action toast shows an m:ss countdown. Never more than two. A long-lived undo is not a toast. |
 | Sections of one thing | `Tabs` | Counts inline; links mode for route sections. |
 | A headline number | `Stat` in a `StatRow` | One value, one meta line. `severity` or a scale `level` is the only color. |
+| A code to write down, read aloud or type on another device | `CodeCallout` | Mono at 48px, read one character at a time; `copy` adds a CopyButton. An identifier read on screen is mono text with an inline `CopyButton`. |
 | A status on the app's own scale, as a headline | `Stat scale level` | The stop's name is the value, on its stripe; beside a value of its own, a `ScaleBadge` in the meta line. |
 | A headline count broken down by level | `Stat scale levels` | "Medium 2 · Critical 4": a `ScaleBadge` and a count per stop in the meta line, in scale order, wrapping whole in a narrow tile. The stripe stays `level`'s or `severity`'s. |
 | A proportion | `Meter` | Up to three segments, categorical colors, a legend. Not for loading. A standalone whole is a `Ring`. |
@@ -66,6 +70,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | A state with a due date | `StatusBadge until` | "· in 3 days", "· 2 days overdue"; danger once overdue unless a tone is given. |
 | A page about one identifier | `PageHeader mono` | The title in mono, like every other identifier. |
 | A piece of media (the optional media set) | `Card` in a `Grid` | No card chrome — the thumbnail **is** the card. |
+| A product shot, a cover or a scan in a grid | `Card aspect fit="contain"` | `4:3`, `1:1`, `3:4` or `2:3`, one aspect per grid; `contain` shows the whole picture. |
 | Images at their own aspect ratio | `JustifiedGrid` | Rows that fill the width, no crop. |
 | A person or an organization | `EntityCard` in a `Grid min={280}` | A row with a 56px avatar. |
 | The top of a page | `PageHeader` | Title, count, actions. No breadcrumbs, no hero. |

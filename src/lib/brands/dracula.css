@@ -438,3 +438,86 @@
   }
 
 }
+
+@media print {
+  :root[data-brand="dracula"]:not([data-ds-theme]):not([data-theme="dark"]):not([data-theme="light"]):not([data-theme="paper"]):not([data-theme="night"]):not([data-theme="contrast"]),
+  :root[data-brand="dracula"],
+  :root[data-brand="dracula"][data-theme="dark"]:not([data-ds-theme]),
+  :root[data-brand="dracula"] [data-theme="dark"]:not([data-ds-theme]),
+  :root[data-brand="dracula"][data-ds-theme="dark"],
+  :root[data-brand="dracula"] [data-ds-theme="dark"],
+  :root[data-brand="dracula"][data-theme="light"]:not([data-ds-theme]),
+  :root[data-brand="dracula"] [data-theme="light"]:not([data-ds-theme]),
+  :root[data-brand="dracula"][data-ds-theme="light"],
+  :root[data-brand="dracula"] [data-ds-theme="light"],
+  :root[data-brand="dracula"][data-theme="paper"]:not([data-ds-theme]),
+  :root[data-brand="dracula"] [data-theme="paper"]:not([data-ds-theme]),
+  :root[data-brand="dracula"][data-ds-theme="paper"],
+  :root[data-brand="dracula"] [data-ds-theme="paper"],
+  :root[data-brand="dracula"][data-theme="night"]:not([data-ds-theme]),
+  :root[data-brand="dracula"] [data-theme="night"]:not([data-ds-theme]),
+  :root[data-brand="dracula"][data-ds-theme="night"],
+  :root[data-brand="dracula"] [data-ds-theme="night"],
+  :root[data-brand="dracula"][data-theme="contrast"]:not([data-ds-theme]),
+  :root[data-brand="dracula"] [data-theme="contrast"]:not([data-ds-theme]),
+  :root[data-brand="dracula"][data-ds-theme="contrast"],
+  :root[data-brand="dracula"] [data-ds-theme="contrast"] {
+    --ds-accent: #6e43a2;
+    --ds-accent-2: #9e1a70;
+    --ds-accent-2-text: #9e1a70;
+    --ds-accent-2-tint: #f9dfec;
+    --ds-accent-contrast: #f4f5f9;
+    --ds-accent-key: #4e3074;
+    --ds-accent-key-edge: #322247;
+    --ds-accent-mixed: #a773eb;
+    --ds-accent-strong: #4e3074;
+    --ds-accent-text: #6e43a2;
+    --ds-accent-tint: #ede3ff;
+    --ds-accent-tint-hover: #ddc9ff;
+    --ds-bg-0: #e4e5ec;
+    --ds-bg-1: #eff0f5;
+    --ds-bg-2: #f4f5f9;
+    --ds-bg-3: #fafafd;
+    --ds-bg-4: #e9eaf0;
+    --ds-bg-5: #dddfe9;
+    --ds-border: #ced0da;
+    --ds-border-strong: #aaadbc;
+    --ds-border-subtle: #e0e1e8;
+    --ds-cat-1: #185592;
+    --ds-cat-3: #175c64;
+    --ds-danger: #e1363c;
+    --ds-danger-contrast: #10111b;
+    --ds-danger-fill: #f95958;
+    --ds-danger-strong: #ff8079;
+    --ds-danger-text: #b7001e;
+    --ds-danger-tint: #ffdedb;
+    --ds-elev-1: 0 0 0 1px #e0e1e8;
+    --ds-elev-2: 0 0 0 1px #ced0da, 0 6px 18px rgba(26, 28, 41, 0.08);
+    --ds-elev-3: 0 0 0 1px #ced0da, 0 16px 40px rgba(26, 28, 41, 0.14);
+    --ds-focus: #8f5ad0;
+    --ds-focus-ring: 0 0 0 2px #eff0f5, 0 0 0 4px #8f5ad0;
+    --ds-scrim: rgba(26, 28, 39, 0.5);
+    --ds-sev-high: #e1363c;
+    --ds-sev-high-bg: #ffdedb;
+    --ds-sev-high-ink: #b7001e;
+    --ds-sev-low: #007d2f;
+    --ds-sev-low-bg: #c4faca;
+    --ds-sev-low-ink: #00732b;
+    --ds-sev-medium: #6c7100;
+    --ds-sev-medium-bg: #ebf1bf;
+    --ds-sev-medium-ink: #5e6200;
+    --ds-sev-off: #ced0da;
+    --ds-success: #007d2f;
+    --ds-success-text: #00732b;
+    --ds-success-tint: #c4faca;
+    --ds-text-1: #1a1c27;
+    --ds-text-2: #414456;
+    --ds-text-3: #5e6174;
+    --ds-text-heading: #101119;
+    --ds-text-inverse: #f4f5f9;
+    --ds-warning: #6c7100;
+    --ds-warning-text: #5e6200;
+    --ds-warning-tint: #ebf1bf;
+  }
+
+}

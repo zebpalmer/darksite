@@ -178,4 +178,10 @@ TopBar, inside the shell, pushing content down — never overlaying it.
 		color: var(--ds-text-1);
 		font-weight: 500;
 	}
+	/* Chrome, not content: it stays off paper. */
+	@media print {
+		.ds-banner {
+			display: none;
+		}
+	}
 </style>

@@ -27,6 +27,32 @@ describe('color math', () => {
 });
 
 describe('generateBrand', () => {
+	it('prints in the print theme, over every mode the brand colors', () => {
+		const css = brandCss(tokens, generateBrand(tokens, { name: 'x', accent: '#2bb3a8' }));
+		const print = css.slice(css.indexOf('@media print'));
+		expect(css.indexOf('@media print')).toBeGreaterThan(css.lastIndexOf('@media (prefers'));
+		for (const t of tokens.color.themes) expect(print).toContain(`:root [data-ds-theme="${t.id}"]`);
+		expect(print).toContain(':root:not([data-ds-theme])');
+	});
+
+	it('passes a heading font through, which the title roles read', () => {
+		const css = brandCss(
+			tokens,
+			generateBrand(tokens, {
+				name: 'serif-titles',
+				fonts: { heading: "Optima, Candara, 'Noto Sans', sans-serif" }
+			})
+		);
+		expect(css).toContain("--font-heading: Optima, Candara, 'Noto Sans', sans-serif;");
+		const pageTitle = tokens.type.groups
+			.flatMap((g) =>
+				g.styles.map((s) => ({ ...s, family: ('family' in s && s.family) || g.family }))
+			)
+			.find((s) => s.name === 'page-title');
+		expect(pageTitle?.family).toBe('heading');
+		expect(tokens.type.families.heading).toBe('var(--font-sans)');
+	});
+
 	it('builds every prebuilt brand with every contrast pair passing', () => {
 		for (const p of presets) expect(generateBrand(tokens, p).failures, p.name).toEqual([]);
 	});

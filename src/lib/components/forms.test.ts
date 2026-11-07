@@ -420,6 +420,18 @@ describe('Avatar', () => {
 });
 
 describe('Card', () => {
+	it('takes the thumbnail shape and fit it is given, 16:9 cover by default', () => {
+		const { container, unmount } = render(Card, { href: '/a', title: 'Default', thumbnail: 'a.png' });
+		const thumb = () => container.querySelector<HTMLElement>('.thumb')!;
+		expect(thumb().style.aspectRatio).toBe('16 / 9');
+		expect(thumb().dataset.fit).toBe('cover');
+		unmount();
+		const second = render(Card, { href: '/b', title: 'Item', thumbnail: 'b.png', aspect: '4:3', fit: 'contain' });
+		const t = second.container.querySelector<HTMLElement>('.thumb')!;
+		expect(t.style.aspectRatio).toBe('4 / 3');
+		expect(t.dataset.fit).toBe('contain');
+	});
+
 	it('passes role, ARIA and handlers to its link, for a select mode', async () => {
 		const onclick = vi.fn((e: MouseEvent) => e.preventDefault());
 		const onkeydown = vi.fn();

@@ -24,6 +24,12 @@ To avoid a flash of the wrong mode on load, put `MODE_SCRIPT` — exported by da
 that starts in one mode rather than following the device, pass the same fallback to both:
 `mode.init({ fallback: 'dark' })` and `modeScript('dark')` (`MODE_SCRIPT` is `modeScript()`).
 
+A phone's status bar and the browser's own chrome take their color from
+`<meta name="theme-color">`. `mode.init({ themeColor: true })` keeps that tag on the page ground
+(`--ds-bg-1`) of the mode showing, and follows the device when its light or contrast preference
+changes. Put the tag in `app.html` with the default mode's ground so the first paint matches too.
+`applyThemeColor()` does the same once, for an app that manages modes itself.
+
 A product that offers only dark and light can use `ThemeToggle`, one button that flips between
 them, instead.
 

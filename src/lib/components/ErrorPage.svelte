@@ -156,6 +156,7 @@ and at most two actions (Try again, Go home). One centered column, vertically ce
 	.title {
 		margin: 0;
 		color: var(--ds-text-heading);
+		font-family: var(--font-heading);
 		font-size: var(--ds-text-xl);
 		font-weight: 500;
 		line-height: var(--ds-lh-xl);

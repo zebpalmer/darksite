@@ -5,6 +5,7 @@
 //   mode.init({ fallback: 'dark' });   // the mode used while nothing is saved (default: system)
 //   mode.set('paper');                 // apply, save in this browser, tell subscribers
 //   mode.subscribe((m) => saveToAccount(m));   // keep it per account too
+//   mode.init({ themeColor: true });   // also keep <meta name="theme-color"> on the page ground
 //
 // It sets `data-ds-theme` on <html> (which wins over `data-theme`, so it never fights another
 // library's attribute) and removes it for `system`. To avoid a flash of the wrong mode on load, put
@@ -54,15 +55,40 @@ export function isDarkMode(m: Exclude<Mode, 'system'>): boolean {
 	return m === 'dark' || m === 'night' || m === 'contrast';
 }
 
+/**
+ * Points `<meta name="theme-color">` at the page ground (`--ds-bg-1`) of the mode showing now, so a
+ * phone's status bar and the browser's own chrome match the page. Does nothing when the page has no
+ * such meta tag. `mode.init({ themeColor: true })` calls it on every change.
+ */
+export function applyThemeColor(root?: HTMLElement): void {
+	if (typeof document === 'undefined') return;
+	const el = root ?? document.documentElement;
+	const doc = el.ownerDocument;
+	const meta = doc.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+	const ground = doc.defaultView?.getComputedStyle(el).getPropertyValue('--ds-bg-1').trim();
+	if (meta && ground) meta.content = ground;
+}
+
+// The device preferences that change which ground `system` (or an explicit `dark`) shows.
+const SCHEME_QUERIES = ['(prefers-color-scheme: light)', '(prefers-contrast: more)'];
+
 export class ModeStore {
 	current = $state<Mode>('system');
 	#key = DEFAULT_KEY;
 	#listeners = new Set<(m: Mode) => void>();
+	#themeColor = false;
+	#watching = false;
 
 	/** Read the saved choice (or `initial`, say from the viewer's account) and apply it. With
-	 *  neither, `fallback` applies (default `system`, which follows the device). */
-	init(options: { storageKey?: string; initial?: Mode; fallback?: Mode } = {}) {
+	 *  neither, `fallback` applies (default `system`, which follows the device). `themeColor`
+	 *  keeps `<meta name="theme-color">` on the page ground of the mode showing, including when
+	 *  the device's scheme or contrast preference changes. */
+	init(
+		options: { storageKey?: string; initial?: Mode; fallback?: Mode; themeColor?: boolean } = {}
+	) {
 		if (options.storageKey) this.#key = options.storageKey;
+		if (options.themeColor !== undefined) this.#themeColor = options.themeColor;
+		if (this.#themeColor) this.#watchScheme();
 		let saved: string | null = null;
 		try {
 			saved = localStorage.getItem(this.#key);
@@ -97,6 +123,17 @@ export class ModeStore {
 		const root = document.documentElement;
 		if (m === 'system') root.removeAttribute('data-ds-theme');
 		else root.setAttribute('data-ds-theme', m);
+		if (this.#themeColor) applyThemeColor(root);
+	}
+
+	// Once per store: the listeners live as long as the page.
+	#watchScheme() {
+		if (this.#watching || typeof window === 'undefined' || !window.matchMedia) return;
+		this.#watching = true;
+		for (const q of SCHEME_QUERIES)
+			window.matchMedia(q).addEventListener?.('change', () => {
+				if (this.#themeColor) applyThemeColor();
+			});
 	}
 }
 

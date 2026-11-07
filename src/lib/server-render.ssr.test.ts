@@ -14,6 +14,16 @@ const props: Record<string, Record<string, unknown>> = {
 	Banner: { id: 'b', message: 'Maintenance tonight', dismissible: true },
 	Card: { href: '/r/1', title: 'Record', duration: 90 },
 	Chip: { label: 'Urgent' },
+	ChoiceTiles: {
+		options: [
+			{ value: 'a', label: 'Unit A', meta: 'Idle' },
+			{ value: 'b', label: 'Unit B', status: { label: 'In use', tone: 'accent' } }
+		],
+		value: 'a',
+		label: 'Unit'
+	},
+	ConnectionStatus: { online: false, queued: 3 },
+	CodeCallout: { code: 'R412', label: 'Write on the label', copy: true },
 	Combobox: { items: [{ value: '1', label: 'North' }], label: 'Site' },
 	EmptyState: { title: 'Nothing here' },
 	EntityCard: { href: '/p/1', name: 'Grace Hopper' },

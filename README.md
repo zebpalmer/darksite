@@ -94,13 +94,15 @@ cut from; use them to define a new role, never directly in a component.
 **Type.** `sans` is Geist, `mono` is Geist Mono. **12px is the floor and 500 is the ceiling** —
 there is no bold in this system, and a utility class asking for one should resolve to 500. The one
 weight above it is the headline-number role (28px at 650), used only by `Stat variant="headline"`
-for a public page's key figures. The largest size is `ds-text-3xl` (32px); the one text above it is
-a `ds-article` title, fluid up to 52px. The one
+for a public page's key figures. The largest size is `ds-text-3xl` (32px); the texts above it are a
+`ds-article` title, fluid up to 52px, and a `CodeCallout`'s code at 48px, a code someone copies by
+hand. The one
 text below 12px is the 11px uppercase group title in navigation, where capitals and letter-spacing
 carry the legibility. Set
 titles in `page-title` / `card-title`, body in `body`, labels in `label`, meta and counts in
 `meta` or `micro`. Paths, identifiers, hashes, durations, key caps and countdowns go in
-`mono-control` / `mono-micro` with `font-variant-numeric: tabular-nums`.
+`mono-control` / `mono-micro` with `font-variant-numeric: tabular-nums`. Titles — page, detail, section, dialog, sheet, pane, empty-state, intro and error-page titles, and prose and article headings — read `--font-heading`, which is `sans` unless a brand
+sets its own (see "Brands").
 
 **Space and shape.** A 4px base: `ds-space-1` … `ds-space-16`. Radii climb with the size of the
 thing — `ds-radius-xs` on badges and key caps, `ds-radius-sm` on controls, chips and thumbnails,
@@ -284,8 +286,15 @@ sets `color-scheme`, so native scrollbars and form controls match it.
 drives the `mode` store, which sets the attribute on `<html>` and remembers the choice in the
 browser; `mode.subscribe(fn)` also hands each choice to the app, to keep it with the viewer's
 account. Call `mode.init()` once in the root layout, and put `MODE_SCRIPT` in a `<script>` in
-`app.html`'s `<head>` so the saved mode applies before the first paint. For long-form text, the
+`app.html`'s `<head>` so the saved mode applies before the first paint. `mode.init({ themeColor:
+true })` also keeps `<meta name="theme-color">` on the mode's page ground, so a phone's status bar
+matches. For long-form text, the
 `ds-reading` class sets the reading font (`--font-reading`) at a comfortable size and measure.
+
+**Printing** uses the light mode whatever the viewer chose, on the whole page and on any part of
+it set to another mode, and the shell's chrome — rail, tab bar, top bar, banners, the action bar,
+toasts — stays off paper. Mark anything else that should not print with `ds-print-hidden`, and
+anything that should appear on paper alone with `ds-print-only`.
 
 ### Brands
 

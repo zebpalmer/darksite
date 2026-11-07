@@ -456,6 +456,14 @@ export function brandCss(tokens, generated, scope = ':root') {
 		block(sel, t.id, '  ');
 		lines.push('}', '');
 	}
+	// Printing takes the print theme wherever a mode was set, as tokens.css does.
+	const print = tokens.color.printTheme;
+	if (print && Object.keys(generated.modes[print] ?? {}).length) {
+		const unchosen = `${scope}:not([data-ds-theme])${ids.map((id) => `:not([data-theme="${id}"])`).join('')}`;
+		lines.push('@media print {');
+		block([unchosen, scope, ...ids.flatMap((id) => explicit(id).flatMap(both))], print, '  ');
+		lines.push('}', '');
+	}
 	const fonts = Object.entries(generated.fonts).filter(([, x]) => x);
 	if (fonts.length) {
 		lines.push(`${scope} {`);

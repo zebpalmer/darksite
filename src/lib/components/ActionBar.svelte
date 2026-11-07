@@ -71,4 +71,10 @@ Primary action right-most; a `<span class="grow"></span>` splits the left and ri
 		height: 24px;
 		background: var(--ds-border);
 	}
+	/* Chrome, not content: it stays off paper. */
+	@media print {
+		.ds-actionbar {
+			display: none;
+		}
+	}
 </style>

@@ -665,4 +665,10 @@ carries the accent mark. The bar sits on the chrome's bar roles (`ds-bar-*`), so
 			display: none;
 		}
 	}
+	/* Chrome, not content: it stays off paper. */
+	@media print {
+		.ds-topnav {
+			display: none;
+		}
+	}
 </style>

@@ -3,7 +3,7 @@ import { flushSync } from 'svelte';
 import { fireEvent, render, screen } from '@testing-library/svelte';
 import ModePicker from './components/ModePicker.svelte';
 import ThemeToggle from './components/ThemeToggle.svelte';
-import { MODE_SCRIPT, ModeStore, modeScript } from './mode.svelte.js';
+import { MODE_SCRIPT, ModeStore, applyThemeColor, modeScript } from './mode.svelte.js';
 import { resetStrings, setStrings } from './strings.svelte.js';
 
 afterEach(() => {
@@ -48,6 +48,42 @@ describe('ModeStore', () => {
 		localStorage.setItem('darksite:mode', 'not-a-mode');
 		store.init();
 		expect(store.current).toBe('system');
+	});
+});
+
+describe('theme color', () => {
+	const meta = () => document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+
+	afterEach(() => {
+		meta()?.remove();
+		document.documentElement.style.removeProperty('--ds-bg-1');
+	});
+
+	it('points <meta name="theme-color"> at the page ground', () => {
+		document.head.insertAdjacentHTML('beforeend', '<meta name="theme-color" content="#000000">');
+		document.documentElement.style.setProperty('--ds-bg-1', '#f4efe6');
+		applyThemeColor();
+		expect(meta()?.content).toBe('#f4efe6');
+	});
+
+	it('does nothing without the tag', () => {
+		document.documentElement.style.setProperty('--ds-bg-1', '#f4efe6');
+		expect(() => applyThemeColor()).not.toThrow();
+		expect(meta()).toBeNull();
+	});
+
+	it('follows every mode change once `init` asks for it, and not before', () => {
+		document.head.insertAdjacentHTML('beforeend', '<meta name="theme-color" content="#000000">');
+		const root = document.documentElement;
+		const store = new ModeStore();
+		root.style.setProperty('--ds-bg-1', '#111111');
+		store.set('dark');
+		expect(meta()?.content).toBe('#000000');
+		store.init({ themeColor: true });
+		expect(meta()?.content).toBe('#111111');
+		root.style.setProperty('--ds-bg-1', '#eeeeee');
+		store.set('light');
+		expect(meta()?.content).toBe('#eeeeee');
 	});
 });
 

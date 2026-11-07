@@ -33,7 +33,8 @@ function specificity(selector: string) {
 const themeIds = tokens.color.themes.map((t) => t.id);
 const all = rules(css);
 const plain = all.filter((r) => !r.media);
-const media = all.filter((r) => r.media);
+// The rules that follow the viewer's system; print is its own case, tested below.
+const media = all.filter((r) => r.media && r.media !== '@media print');
 
 describe('tokens.css theme selection', () => {
 	it('matches every theme through data-theme and data-ds-theme', () => {
@@ -139,5 +140,30 @@ describe('base.css Ghost mapping', () => {
 			.flatMap((s) => s.split(/,(?![^(]*\))/).map((part) => part.trim()));
 		expect(selectors.length).toBeGreaterThan(10);
 		for (const selector of selectors) expect(selector).toMatch(/^\.ds-article-ghost\s/);
+	});
+});
+
+describe('print', () => {
+	const print = all.find((r) => r.media === '@media print');
+	const printTheme = tokens.color.printTheme;
+
+	it('prints in the print theme wherever any mode was chosen, with every selector that sets one', () => {
+		expect(print).toBeDefined();
+		expect(print!.body).toContain(`color-scheme: light`);
+		const chosen = all.filter((r) => r !== print && r.body.includes('color-scheme'));
+		const selectors = new Set(chosen.flatMap((r) => r.selectors));
+		for (const sel of selectors) expect(print!.selectors, sel).toContain(sel);
+		expect(all.indexOf(print!)).toBeGreaterThan(Math.max(...chosen.map((r) => all.indexOf(r))));
+	});
+
+	it("takes the print theme's own grounds", () => {
+		const lightRule = plain.find((r) => r.selectors.includes(`[data-ds-theme="${printTheme}"]`))!;
+		const ground = (body: string) => body.match(/--ds-bg-1: ([^;]+);/)?.[1];
+		expect(ground(print!.body)).toBe(ground(lightRule.body));
+	});
+
+	it('gives base.css the print utilities', () => {
+		expect(base).toContain('.ds-print-only');
+		expect(base).toMatch(/@media print \{[\s\S]*\.ds-print-hidden/);
 	});
 });

@@ -256,6 +256,7 @@ has no room for it; the title keeps its one line.
 		margin: 0;
 		overflow: hidden;
 		color: var(--ds-text-heading);
+		font-family: var(--font-heading);
 		font-size: var(--ds-text-xl);
 		line-height: var(--ds-lh-xl);
 		font-weight: 500;

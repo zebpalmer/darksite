@@ -61,6 +61,53 @@
 			meta="Falls back too"
 		/>
 	</Grid>
+	<h2>Shapes and fit</h2>
+	<p>
+		<code>aspect</code> sets the thumbnail's shape, one per grid; <code>fit="contain"</code> shows the
+		whole picture — a product shot, a cover, a scan — on the tile's own ground.
+	</p>
+	<Grid label="Item cards, 4:3">
+		<Card
+			href="#g"
+			title="Spare filter, type C"
+			thumbnail={thumb(8, 240, 300)}
+			aspect="4:3"
+			fit="contain"
+			meta="Stores · 12 on hand"
+		/>
+		<Card
+			href="#h"
+			title="Gasket kit"
+			thumbnail={thumb(9, 320, 200)}
+			aspect="4:3"
+			fit="contain"
+			meta="Stores · 3 on hand"
+		/>
+		<Card
+			href="#i"
+			title="No picture yet"
+			aspect="4:3"
+			fit="contain"
+			meta="Falls back to an icon tile"
+		/>
+	</Grid>
+	<Grid label="Covers, 3:4">
+		<Card
+			href="#j"
+			title="Manual, rev 4"
+			thumbnail={thumb(10, 220, 300)}
+			aspect="3:4"
+			meta="Cover, cropped"
+		/>
+		<Card
+			href="#k"
+			title="Field guide"
+			thumbnail={thumb(11, 300, 300)}
+			aspect="3:4"
+			fit="contain"
+			meta="Square scan, contained"
+		/>
+	</Grid>
 	<h2>Select mode</h2>
 	<Grid label="Selectable cards">
 		{#each picks as p (p.id)}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createRawSnippet } from 'svelte';
 import { render, screen } from '@testing-library/svelte';
 import ActionBar from './ActionBar.svelte';
+import CodeCallout from './CodeCallout.svelte';
 import EmptyState from './EmptyState.svelte';
 import EntityCard from './EntityCard.svelte';
 import KeyCap from './KeyCap.svelte';
@@ -12,6 +13,22 @@ import StatRow from './StatRow.svelte';
 const text = (html: string) => createRawSnippet(() => ({ render: () => html }));
 
 describe('small components', () => {
+	it('CodeCallout is a group named by its instruction, read one character at a time', () => {
+		render(CodeCallout, { code: 'R412', label: 'Write on the label', meta: 'Issued 09:12', copy: true });
+		const group = screen.getByRole('group', { name: 'Write on the label' });
+		expect(group.querySelector('.code')?.getAttribute('aria-hidden')).toBe('true');
+		expect(group.querySelector('.ds-sr-only')?.textContent).toBe('R 4 1 2');
+		expect(screen.getByRole('button', { name: 'Copy code' })).toBeTruthy();
+		expect(screen.getByText('Issued 09:12')).toBeTruthy();
+	});
+
+	it('CodeCallout without a label is named "Code", and copies only when asked', () => {
+		render(CodeCallout, { code: '7Q', accent: true });
+		const group = screen.getByRole('group', { name: 'Code' });
+		expect(group.hasAttribute('data-accent')).toBe(true);
+		expect(screen.queryByRole('button')).toBeNull();
+	});
+
 	it('ActionBar is a named group of actions', () => {
 		render(ActionBar, { label: 'Review actions', children: text('<button>Approve</button>') });
 		const bar = screen.getByRole('group', { name: 'Review actions' });

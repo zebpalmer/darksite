@@ -17,7 +17,7 @@ export const groups: Record<string, string[]> = {
 	Actions: ['Button', 'CopyButton', 'KeyCap', 'KeyLegend', 'Tooltip'],
 	Theming: ['ModePicker', 'ThemeToggle'],
 	'Page types': ['Intro', 'Steps', 'LinkCard'],
-	Selection: ['Chip', 'SegmentedControl', 'Tabs'],
+	Selection: ['Chip', 'ChoiceTiles', 'SegmentedControl', 'Tabs'],
 	Filtering: ['ActiveFilters', 'FilterRail'],
 	Scales: ['ScaleBadge', 'ScalePicker', 'SeverityBadge', 'SeverityPicker'],
 	Forms: [
@@ -44,7 +44,8 @@ export const groups: Record<string, string[]> = {
 		'Missing',
 		'LoadMore',
 		'Pager',
-		'CodeBlock'
+		'CodeBlock',
+		'CodeCallout'
 	],
 	Charts: ['CellBar', 'BarSeries', 'Ring'],
 	Overlays: ['Dialog', 'Menu', 'Popover', 'SearchPalette', 'Sheet', 'SheetItem'],
@@ -57,7 +58,8 @@ export const groups: Record<string, string[]> = {
 		'SourceBadge',
 		'Spinner',
 		'Toaster',
-		'ErrorPage'
+		'ErrorPage',
+		'ConnectionStatus'
 	],
 	Content: ['Avatar', 'EntityCard'],
 	// Optional: for products whose content is images and video.

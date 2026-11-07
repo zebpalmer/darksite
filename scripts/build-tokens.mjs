@@ -75,6 +75,14 @@ for (const theme of t.color.themes.filter((x) => x.media)) {
 	out.push('}', '');
 }
 
+// Paper is white: printing takes the print theme (light) wherever the page or a part of it set
+// another mode. The block repeats every selector above, so it wins by coming last.
+if (t.color.printTheme) {
+	out.push('@media print {');
+	block([unchosen, ':root', ...themes.flatMap(explicit)], t.color.printTheme, '  ');
+	out.push('}', '');
+}
+
 out.push(':root {');
 for (const fam of plainFamilies)
 	for (const tok of t[fam]?.tokens ?? []) out.push(`  --${tok.name}: ${tok.value};`);

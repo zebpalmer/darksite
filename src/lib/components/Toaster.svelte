@@ -251,4 +251,10 @@ usable above the modal instead of turning inert behind it. `topmost={false}` opt
 		background: var(--ds-accent);
 		transition: width 250ms linear;
 	}
+	/* Chrome, not content: it stays off paper. */
+	@media print {
+		.ds-toaster-layer {
+			display: none;
+		}
+	}
 </style>

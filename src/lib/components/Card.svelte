@@ -1,18 +1,26 @@
 <!--
 @component
-Card — the media card for a video or a gallery. No card chrome: the 16:9 thumbnail is the card and
-the text sits under it. Put cards in a Grid or a horizontal row.
+Card — the media card for a video, a gallery or a pictured item. No card chrome: the thumbnail
+(16:9 unless `aspect` says otherwise) is the card and the text sits under it. Put cards in a Grid or
+a horizontal row.
 
 Overlays: severity bottom-left, duration (or an image count) bottom-right on a scrim pill, a
 favorite heart top-right, a 3px progress bar along the bottom. A missing or broken thumbnail falls
 back to a ds-bg-3 tile with an icon. The title and one meta line truncate; a `rating` (1–5) shows
 as ★ n, display only.
 
-- `href`, `title`, `thumbnail`, `kind` (`video` | `gallery`), `severity`, `duration` (seconds),
+- `href`, `title`, `thumbnail`, `aspect` (`16:9` | `4:3` | `1:1` | `3:4` | `2:3`), `fit` (`cover`, or
+  `contain` to show the whole picture — a product shot, a cover, a scan), `kind` (`video` |
+  `gallery`), `severity`, `duration` (seconds),
   `imageCount`, `favorite`, `progress` (0–1), `rating`, `meta`, `overlay` snippet, `class`, and
   every other `<a>` attribute and handler on the link (`role`, `aria-*`, `data-*`, `onclick`,
   `onkeydown`, `target`), so a select mode can make the card a checkbox.
 -->
+<script lang="ts" module>
+	/** A Card's thumbnail shape, width:height. */
+	export type CardAspect = '16:9' | '4:3' | '1:1' | '3:4' | '2:3';
+</script>
+
 <script lang="ts">
 	import { strings } from '../strings.svelte.js';
 	import type { Snippet } from 'svelte';
@@ -31,6 +39,8 @@ as ★ n, display only.
 		href: string;
 		title: string;
 		thumbnail?: string | null;
+		aspect?: CardAspect;
+		fit?: 'cover' | 'contain';
 		kind?: 'video' | 'gallery';
 		severity?: Severity | null;
 		duration?: number | null;
@@ -47,6 +57,8 @@ as ★ n, display only.
 		href,
 		title,
 		thumbnail,
+		aspect = '16:9',
+		fit = 'cover',
 		kind = 'video',
 		severity,
 		duration,
@@ -67,7 +79,7 @@ as ★ n, display only.
 </script>
 
 <a {href} class="ds-card {className}" {...rest}>
-	<span class="thumb">
+	<span class="thumb" style:aspect-ratio={aspect.replace(':', ' / ')} data-fit={fit}>
 		{#if showImage}
 			<img src={thumbnail} alt="" loading="lazy" onerror={() => (failed = thumbnail ?? null)} />
 		{:else}
@@ -113,7 +125,6 @@ as ★ n, display only.
 	.thumb {
 		position: relative;
 		display: block;
-		aspect-ratio: 16 / 9;
 		overflow: hidden;
 		border-radius: var(--ds-radius-sm);
 		background: var(--ds-bg-3);
@@ -123,6 +134,11 @@ as ★ n, display only.
 		height: 100%;
 		object-fit: cover;
 		transition: transform var(--ds-dur-base) var(--ds-ease-out);
+	}
+	/* The whole picture, centered on the tile's own ground with a little room around it. */
+	[data-fit='contain'] img {
+		padding: 6px;
+		object-fit: contain;
 	}
 	.ds-card:hover img {
 		transform: scale(1.03);

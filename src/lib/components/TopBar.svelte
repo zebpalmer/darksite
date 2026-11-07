@@ -238,4 +238,10 @@ If a control is not relevant on every page of the section, it belongs in that pa
 			display: none;
 		}
 	}
+	/* Chrome, not content: it stays off paper. */
+	@media print {
+		.ds-topbar {
+			display: none;
+		}
+	}
 </style>
