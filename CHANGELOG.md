@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.24.0] — 2026-11-07
+
 ### Added
 
 - `ChoiceTiles`: pick one of a set of things that each carry a line of state — the unit to work on,
