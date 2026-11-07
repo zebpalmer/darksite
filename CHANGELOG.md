@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.24.1] — 2026-11-07
+
 ### Fixed
 
 - A collapsible `Pane` cut its own title short ("Fram…" for "Frame log"): the toggle's negative
