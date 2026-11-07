@@ -94,3 +94,24 @@ describe('topmost above a fixed modal that is not a dialog', () => {
 		expect(notice.parentElement).toBe(document.querySelector('.home'));
 	});
 });
+
+describe('Pane collapsible title in a browser', () => {
+	it('sizes the title to the whole text, so a short title is never cut off', async () => {
+		const { default: Pane } = await import('./Pane.svelte');
+		const { createRawSnippet } = await import('svelte');
+		render(Pane, {
+			title: 'Frame log',
+			meta: '0',
+			collapsible: true,
+			open: false,
+			children: createRawSnippet(() => ({ render: () => '<p>Body</p>' }))
+		});
+		await settle();
+		const text = document.querySelector('.ds-pane .toggle .text') as HTMLElement;
+		expect(text.scrollWidth).toBeLessThanOrEqual(text.clientWidth);
+		// The toggle's hover ground still reaches 6px past the title text on each side.
+		const toggle = document.querySelector('.ds-pane .toggle') as HTMLElement;
+		const header = document.querySelector('.ds-pane header') as HTMLElement;
+		expect(Math.round(box(header).left + parseFloat(getComputedStyle(header).paddingLeft) - box(toggle).left)).toBe(6);
+	});
+});

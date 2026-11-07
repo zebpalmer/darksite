@@ -142,8 +142,12 @@ PageHeader.
 		font-size: var(--ds-text-sm);
 		white-space: nowrap;
 	}
+	/* The toggle's hover ground reaches 6px past the title on each side. The heading takes the
+	   negative margin, not the button: a button with one is 12px wider than the room its parent
+	   sizes for, and the title text was cut off to fit. */
 	[data-collapsible] .title {
 		display: flex;
+		margin-inline: -6px;
 		overflow: visible;
 	}
 	[data-collapsible]:not([data-open]) header {
@@ -155,7 +159,6 @@ PageHeader.
 		gap: 6px;
 		max-width: 100%;
 		min-height: 32px;
-		margin: 0 -6px;
 		padding: 0 6px;
 		border: 0;
 		border-radius: var(--ds-radius-sm);

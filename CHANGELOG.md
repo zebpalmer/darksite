@@ -6,6 +6,12 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A collapsible `Pane` cut its own title short ("Fram…" for "Frame log"): the toggle's negative
+  margin made the button 12px wider than the room its heading sized for. The heading takes the
+  margin now; the hover ground still reaches 6px past the text.
+
 ## [0.24.0] — 2026-11-07
 
 ### Added
