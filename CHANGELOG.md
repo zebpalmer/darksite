@@ -6,6 +6,20 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `NavItem.badgeTone`: `neutral` (default, as before), `warning` or `danger`, for an item's badge in
+  `SideNav`. Warning and danger use the state roles' text on their tint, which the contrast check
+  already covers in every mode. A dot badge (`badge: true`) now shows, as a small mark in the same tone; it rendered nothing before.
+- A collapsed `SideNav` group shows its items' badges on its toggle: the sum of their numeric
+  badges, in the highest tone among them (danger, then warning, then neutral). Dots do not sum, and
+  a sum of zero shows nothing.
+
+### Fixed
+
+- `SideNav` on a phone dropped its badges: the select's options now read `Label (5)`, or
+  `Label (new)` for a dot.
+
 ## [0.25.0] — 2026-11-11
 
 ### Added

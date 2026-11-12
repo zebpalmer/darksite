@@ -159,6 +159,7 @@ export {
 	sectionItems,
 	type NavGroup,
 	type NavItem,
+	type BadgeTone,
 	type NavMenuSection,
 	type NavSection
 } from './nav.js';

@@ -8,15 +8,21 @@ Below 768px it is a full-width native `<select>` with optgroups: the one control
 renders well. Choosing a page calls `onnavigate(href)` — pass the router's navigation (SvelteKit's
 `goto`); without it the browser loads the page.
 
-- `items` (`NavItem[]` with `group`; an item's `description` is its tooltip), `groups` (a group's
+- `items` (`NavItem[]` with `group`; an item's `description` is its tooltip; `badge` is a count or a
+  dot and `badgeTone` its color: neutral, warning or danger), `groups` (a group's
   `collapsed` sets how it starts), `current`, `label`, `collapsible` (each group is a disclosure;
   one without the current page starts closed unless its `collapsed` is false), `onnavigate`.
+
+A collapsed group's toggle shows the sum of its items' numeric badges, in the highest tone among
+them; a dot does not count and a sum of zero shows nothing. The phone select appends a badge to its
+option's label: "Label (5)", "Label (new)".
 
 A few sibling views of the same data that need the full width use Tabs instead (which-primitive).
 -->
 <script lang="ts">
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import { badgeSpoken, badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
+	import { badgeSpoken, badgeText, groupBadge, groupItems, type NavGroup, type NavItem } from '../nav.js';
+	import { strings } from '../strings.svelte.js';
 	import { tooltip } from '../tooltip.js';
 
 	interface Props {
@@ -45,6 +51,12 @@ A few sibling views of the same data that need the full width use Tabs instead (
 			? list.some((i) => i.id === current) || group?.collapsed === false
 			: !closed[id]);
 
+	// A native option has no room for markup: the badge is appended to its label as text.
+	function optionLabel(item: NavItem) {
+		const text = badgeText(item.badge);
+		return text === null ? item.label : `${item.label} (${text === '' ? strings.newBadge : text})`;
+	}
+
 	function go(href: string) {
 		if (!href) return;
 		if (onnavigate) onnavigate(href);
@@ -56,6 +68,7 @@ A few sibling views of the same data that need the full width use Tabs instead (
 	{#each sections as section (section.group?.id ?? '_')}
 		{@const id = section.group?.id ?? '_'}
 		{@const open = isOpen(id, section.group, section.items)}
+		{@const sum = open ? null : groupBadge(section.items)}
 		{#if section.group}
 			{#if collapsible}
 				<button
@@ -65,7 +78,9 @@ A few sibling views of the same data that need the full width use Tabs instead (
 					aria-controls="{uid}-{id}"
 					onclick={() => (closed[id] = open)}
 				>
-					<ChevronRight size={12} aria-hidden="true" />{section.group.label}
+					<ChevronRight size={12} aria-hidden="true" /><span class="title">{section.group.label}</span>
+					{#if sum}<span class="badge" data-tone={sum.tone} aria-hidden="true">{sum.text}</span
+						><span class="ds-sr-only">{badgeSpoken(sum.text)}</span>{/if}
 				</button>
 			{:else}
 				<div class="group" id="{uid}-{id}-title">{section.group.label}</div>
@@ -83,7 +98,12 @@ A few sibling views of the same data that need the full width use Tabs instead (
 							{@attach tooltip(item.description, { placement: 'right' })}
 						>
 							<span class="label">{item.label}</span>
-							{#if badge}<span class="badge" aria-hidden="true">{badge}</span>{/if}
+							{#if badge !== null}<span
+									class="badge"
+									data-tone={item.badgeTone ?? 'neutral'}
+									data-dot={badge === '' ? '' : undefined}
+									aria-hidden="true">{badge}</span
+								>{/if}
 							{#if badge !== null}<span class="ds-sr-only">{badgeSpoken(badge)}</span>{/if}
 						</a>
 					</li>
@@ -98,10 +118,10 @@ A few sibling views of the same data that need the full width use Tabs instead (
 		{#each sections as section (section.group?.id ?? '_')}
 			{#if section.group}
 				<optgroup label={section.group.label}>
-					{#each section.items as item (item.id)}<option value={item.href}>{item.label}</option>{/each}
+					{#each section.items as item (item.id)}<option value={item.href}>{optionLabel(item)}</option>{/each}
 				</optgroup>
 			{:else}
-				{#each section.items as item (item.id)}<option value={item.href}>{item.label}</option>{/each}
+				{#each section.items as item (item.id)}<option value={item.href}>{optionLabel(item)}</option>{/each}
 			{/if}
 		{/each}
 	</select>
@@ -191,10 +211,42 @@ A few sibling views of the same data that need the full width use Tabs instead (
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+	.title {
+		flex: 1;
+		min-width: 0;
+	}
 	.badge {
 		color: var(--ds-text-3);
 		font-size: var(--ds-text-xs);
 		font-variant-numeric: tabular-nums;
+	}
+	.badge[data-tone='warning'],
+	.badge[data-tone='danger'] {
+		padding: 0 6px;
+		border-radius: var(--ds-radius-sm);
+		letter-spacing: 0;
+		text-transform: none;
+	}
+	.badge[data-tone='warning'] {
+		background: var(--ds-warning-tint);
+		color: var(--ds-warning-text);
+	}
+	.badge[data-tone='danger'] {
+		background: var(--ds-danger-tint);
+		color: var(--ds-danger-text);
+	}
+	.badge[data-dot] {
+		width: 8px;
+		height: 8px;
+		padding: 0;
+		border-radius: 50%;
+		background: var(--ds-text-3);
+	}
+	.badge[data-dot][data-tone='warning'] {
+		background: var(--ds-warning);
+	}
+	.badge[data-dot][data-tone='danger'] {
+		background: var(--ds-danger);
 	}
 	.ds-sidenav-phone {
 		display: none;

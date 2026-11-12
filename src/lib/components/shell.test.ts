@@ -8,7 +8,7 @@ import SheetItem from './SheetItem.svelte';
 import SideNav from './SideNav.svelte';
 import TabBar from './TabBar.svelte';
 import Toaster from './Toaster.svelte';
-import { badgeText, groupItems, type NavGroup, type NavItem } from '../nav.js';
+import { badgeText, groupBadge, groupItems, type NavGroup, type NavItem } from '../nav.js';
 import { matchesKey } from '../keycap.js';
 import { ToastStore } from '../toast.svelte.js';
 import TopBarHarness from '../../tests/TopBarHarness.svelte';
@@ -327,6 +327,60 @@ describe('SideNav collapsible groups', () => {
 		const tip = document.getElementById(link.getAttribute('aria-describedby')!)!;
 		expect(tip.getAttribute('role')).toBe('tooltip');
 		expect(tip.textContent).toBe('Tokens for scripts and services');
+	});
+});
+
+describe('SideNav badges', () => {
+	const sections: NavGroup[] = [{ id: 'a', label: 'Alerts' }];
+	const pages: NavItem[] = [
+		{ id: 'home', label: 'Home', href: '/' },
+		{ id: 'one', label: 'One', href: '/one', group: 'a', badge: 3 },
+		{ id: 'two', label: 'Two', href: '/two', group: 'a', badge: 2, badgeTone: 'danger' },
+		{ id: 'three', label: 'Three', href: '/three', group: 'a', badge: true, badgeTone: 'danger' }
+	];
+
+	it('tones an item badge, neutral by default', () => {
+		render(SideNav, { items: pages, groups: sections, current: 'home', label: 'Sections' });
+		const badges = [...document.querySelectorAll('.ds-sidenav .badge')];
+		expect(badges.map((b) => b.getAttribute('data-tone'))).toEqual(['neutral', 'danger', 'danger']);
+	});
+
+	it('appends the badge to the phone select option label', () => {
+		render(SideNav, { items: pages, groups: sections, current: 'home', label: 'Sections' });
+		const opts = [...document.querySelectorAll('option')].map((o) => o.textContent);
+		expect(opts).toEqual(['Home', 'One (3)', 'Two (2)', 'Three (new)']);
+	});
+
+	it('sums numeric badges on a collapsed group toggle, in the highest tone', async () => {
+		render(SideNav, { items: pages, groups: sections, current: 'home', label: 'Sections', collapsible: true });
+		const toggle = screen.getByRole('button', { name: /Alerts/ });
+		const badge = toggle.querySelector('.badge')!;
+		expect(badge.textContent).toBe('5');
+		expect(badge.getAttribute('data-tone')).toBe('danger');
+		expect(toggle.textContent).toContain(', 5');
+		await fireEvent.click(toggle);
+		expect(screen.getByRole('button', { name: /Alerts/ }).querySelector('.badge')).toBeNull();
+	});
+
+	it('shows nothing on a collapsed group at zero or with only dots', () => {
+		const quiet: NavItem[] = [
+			{ id: 'x', label: 'X', href: '/x', group: 'a', badge: 0 },
+			{ id: 'y', label: 'Y', href: '/y', group: 'a', badge: true }
+		];
+		render(SideNav, { items: quiet, groups: sections, current: 'none', label: 'Sections', collapsible: true });
+		expect(screen.getByRole('button', { name: 'Alerts' }).querySelector('.badge')).toBeNull();
+	});
+
+	it('groupBadge picks danger over warning over neutral, and caps at 99+', () => {
+		expect(
+			groupBadge([
+				{ id: 'a', label: 'A', href: '/', badge: 1, badgeTone: 'warning' },
+				{ id: 'b', label: 'B', href: '/', badge: 1 }
+			])
+		).toEqual({ count: 2, text: '2', tone: 'warning' });
+		expect(groupBadge([{ id: 'a', label: 'A', href: '/', badge: 120 }])?.text).toBe('99+');
+		// A zero badge's tone does not count.
+		expect(groupBadge([{ id: 'a', label: 'A', href: '/', badge: 0, badgeTone: 'danger' }])).toBeNull();
 	});
 });
 

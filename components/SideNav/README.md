@@ -23,6 +23,21 @@ const groups: NavGroup[] = [
 ];
 ```
 
+## Badges
+
+An item's `badge` is a count (`12`, shown `99+` past 99) or `true` for a dot. `badgeTone` colors it:
+`neutral` (default, muted text), `warning` or `danger` (the state roles' text on their tint, which
+the contrast check covers in every mode). Use a tone for a count that asks for attention, not for
+decoration.
+
+- **Collapsed groups.** While a collapsible group is closed, its toggle shows the **sum of its
+  items' numeric badges**, in the **highest tone among the items that count** (danger, then
+  warning, then neutral). A dot does not sum, an item with `0` does not count, and a sum of zero
+  shows nothing. Open the group and the toggle's badge gives way to the items' own.
+- **Phone select.** A native option cannot hold markup, so the badge is appended to its label:
+  `Alerts (5)`, `Alerts (new)` for a dot. Tone is not shown there.
+- **Screen readers.** A badge is read as a count after the name (`Alerts, 5`), never as part of it.
+
 ## Descriptions
 
 An item's `description` is a sentence about the destination, shown as its tooltip on hover, focus

@@ -41,6 +41,36 @@
 			description: 'Every record, as a file'
 		}
 	];
+	const badged: NavItem[] = [
+		{ id: 'queue', label: 'Queue', href: '#queue', group: 'workspace', badge: 4 },
+		{
+			id: 'review',
+			label: 'Review',
+			href: '#review',
+			group: 'workspace',
+			badge: 2,
+			badgeTone: 'warning'
+		},
+		{
+			id: 'failed',
+			label: 'Failed',
+			href: '#failed',
+			group: 'workspace',
+			badge: 1,
+			badgeTone: 'danger'
+		},
+		{ id: 'inbox', label: 'Inbox', href: '#inbox', group: 'people', badge: 3 },
+		{
+			id: 'invites',
+			label: 'Invites',
+			href: '#invites',
+			group: 'people',
+			badge: 2,
+			badgeTone: 'warning'
+		},
+		{ id: 'drafts', label: 'Drafts', href: '#drafts', group: 'advanced', badge: true },
+		{ id: 'logs', label: 'Logs', href: '#logs', group: 'advanced', badge: 7 }
+	];
 	const items: NavItem[] = [
 		{ id: 'general', label: 'General', href: '#general', group: 'workspace' },
 		{ id: 'notifications', label: 'Notifications', href: '#notifications', group: 'workspace' },
@@ -88,6 +118,23 @@
 				Workspace and People start open (<code>collapsed: false</code>), Advanced closed (<code
 					>collapsed: true</code
 				>). Each item's <code>description</code> is its tooltip.
+			</p>
+		</div>
+		<h3>Badge tones, and a collapsed group's sum</h3>
+		<div class="demo">
+			<SideNav
+				items={badged}
+				groups={folding.map((g) => ({ ...g, collapsed: true }))}
+				current="none"
+				label="Settings sections, badges"
+				collapsible
+				onnavigate={(href) => (location.hash = href)}
+			/>
+			<p>
+				<code>badgeTone</code> is <code>neutral</code>, <code>warning</code> or <code>danger</code>.
+				A closed group shows the sum of its items' numeric badges in the highest tone among them:
+				Workspace 7 in danger, People 5 in warning. Advanced holds a dot and a neutral 7. A phone
+				select appends the count: "Queue (4)".
 			</p>
 		</div>
 	</section>

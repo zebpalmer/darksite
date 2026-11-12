@@ -115,7 +115,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Primary navigation, desktop | `NavRail` | 56 collapsed / 208 expanded (the expanded width may be overridden), grouped, remembered per viewer; `expandAt` sets where it starts expanded. |
 | A top bar's group menu with many links | `TopNav` with `NavItem.section` (and `description`) | One column per section under a heading, the rest in a footer row ("All guides"). |
 | Primary navigation, phone | `TabBar` | At most five cells; the fifth opens a `Sheet` with the rest. |
-| Navigation inside a section | `SideNav` | 200px beside the page. A native `<select>` on phones. `collapsible` with a group's `collapsed` to start it closed or open; an item's `description` is its tooltip. |
+| Navigation inside a section | `SideNav` | 200px beside the page. A native `<select>` on phones. `collapsible` with a group's `collapsed` to start it closed or open; an item's `description` is its tooltip; `badge` with `badgeTone` (neutral, warning, danger), summed on a collapsed group's toggle. |
 | A few sibling views of the same data | `Tabs` (links mode) inline in `PageHeader` | Only when all hold: about six sections at most; each is a view of the same data, not a settings page; and the pages are wide tables or grids that need the full width. Otherwise `SideNav`. |
 | Something on every page of a section | `TopBar` | Search, a global create action, a scope selector or a row of chips in `start` (it scrolls when short of room). Page-specific actions go in `PageHeader` instead. |
 | A page's own title and actions | `PageHeader` | Always flush; `TopBar` sits above it, outside the padded column. |

@@ -1,6 +1,8 @@
 import { strings } from './strings.svelte.js';
 import type { IconComponent } from './types.js';
 
+export type BadgeTone = 'neutral' | 'warning' | 'danger';
+
 /** One destination. Every navigation surface — rail, tab bar, More sheet, side nav — reads the
  *  same list, so they never drift apart. */
 export interface NavItem {
@@ -12,6 +14,8 @@ export interface NavItem {
 	group?: string;
 	/** A count, or `true` for a dot. */
 	badge?: number | boolean | null;
+	/** The badge's color: `neutral` (default), `warning` or `danger`. */
+	badgeTone?: BadgeTone;
 	/** A sentence about the destination: SideNav shows it as the item's tooltip, TopNav as a
 	 *  second line under the label in its group's menu. */
 	description?: string;
@@ -88,4 +92,24 @@ export function sectionItems(items: readonly NavItem[]): {
 		else sections.push({ title: item.section, items: [item] });
 	}
 	return { sections, rest };
+}
+
+const TONE_RANK: Record<BadgeTone, number> = { neutral: 0, warning: 1, danger: 2 };
+
+/** What a collapsed group shows for its items: the sum of their numeric badges and the highest
+ *  tone among the items that count (danger, then warning, then neutral). A dot (`true`), `0`,
+ *  `false` and `null` do not count; a sum of zero shows nothing (`null`). */
+export function groupBadge(
+	items: readonly NavItem[]
+): { count: number; text: string; tone: BadgeTone } | null {
+	let count = 0;
+	let tone: BadgeTone = 'neutral';
+	for (const item of items) {
+		if (typeof item.badge !== 'number' || !(item.badge > 0)) continue;
+		count += item.badge;
+		const t = item.badgeTone ?? 'neutral';
+		if (TONE_RANK[t] > TONE_RANK[tone]) tone = t;
+	}
+	const text = badgeText(count);
+	return text === null ? null : { count, text, tone };
 }
