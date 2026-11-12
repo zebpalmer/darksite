@@ -6,6 +6,13 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `Sheet size`: `md` (default, the widths so far: up to 640px from the bottom, 440px from the
+  right), `lg` (960px) or `full` (1400px). It sets the bottom sheet's maximum width and the right
+  drawer's width, never past the viewport; a wide drawer keeps a 32px strip of scrim beside it.
+  Under 768px every size is the bottom sheet, as before.
+
 ### Fixed
 
 - The collapsed `NavRail`'s tooltip could be covered by page content: the shell's sticky rail is

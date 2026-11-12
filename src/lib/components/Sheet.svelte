@@ -1,7 +1,7 @@
 <!--
 @component
 Sheet — the bottom sheet: filters, sort, and every choice on touch. `side="right"` is the edit
-drawer (440px, full height) from 768px up, and still a bottom sheet below that.
+drawer (440px by default, full height) from 768px up, and still a bottom sheet below that.
 
 Built on the native modal `<dialog>`: focus is trapped inside, Esc closes, the page behind cannot
 be reached, and focus returns to where it was. A press on the scrim closes it too. The page
@@ -12,6 +12,9 @@ behind does not scroll while it is open.
 - `open` (bindable), `title` (the heading and accessible name), `description`, `onclose()`,
   `footer` snippet (a right-aligned row: secondary actions, then the primary, last), `maxHeight`
   (default `78dvh`), `side` (`bottom` | `right`), children (the body, which scrolls).
+- `size` — how wide it may grow: `md` (default: a bottom sheet up to 640px, the right drawer
+  440px), `lg` (960px) or `full` (1400px). Never wider than the viewport; the right drawer keeps a
+  32px strip of scrim beside it. Under 768px every size is the bottom sheet, full width on a phone.
 -->
 <script lang="ts">
 	import { strings } from '../strings.svelte.js';
@@ -30,6 +33,8 @@ behind does not scroll while it is open.
 		footer?: Snippet;
 		maxHeight?: string;
 		side?: 'bottom' | 'right';
+		/** How wide it may grow: `md` (default), `lg` (960px) or `full` (1400px). */
+		size?: 'md' | 'lg' | 'full';
 		class?: string;
 		children: Snippet;
 	}
@@ -44,6 +49,7 @@ behind does not scroll while it is open.
 		footer,
 		maxHeight = '78dvh',
 		side = 'bottom',
+		size = 'md',
 		class: className = '',
 		children
 	}: Props = $props();
@@ -85,6 +91,7 @@ behind does not scroll while it is open.
 		{@attach surface}
 		class="ds-sheet {className}"
 		data-side={side}
+		data-size={size}
 		style:--sheet-max={maxHeight}
 		aria-labelledby="{uid}-title"
 		aria-describedby={description ? `${uid}-desc` : undefined}
@@ -126,6 +133,12 @@ behind does not scroll while it is open.
 		border: 0;
 		background: transparent;
 		color: var(--ds-text-1);
+	}
+	.ds-sheet[data-size='lg'] {
+		width: min(960px, 100%);
+	}
+	.ds-sheet[data-size='full'] {
+		width: min(1400px, 100%);
 	}
 	.ds-sheet::backdrop {
 		background: var(--ds-scrim);
@@ -197,6 +210,13 @@ behind does not scroll while it is open.
 			height: 100%;
 			max-height: none;
 			margin: 0;
+		}
+		/* A wide drawer leaves a strip of scrim beside it, to see the page and to press to close. */
+		.ds-sheet[data-side='right'][data-size='lg'] {
+			width: min(960px, calc(100% - 32px));
+		}
+		.ds-sheet[data-side='right'][data-size='full'] {
+			width: min(1400px, calc(100% - 32px));
 		}
 		.ds-sheet[data-side='right'] .panel {
 			height: 100%;

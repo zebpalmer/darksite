@@ -47,6 +47,7 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | The app's link to its server: offline, reconnecting, changes waiting or refused | `ConnectionStatus` | In the TopBar's actions or the rail's `status` slot; nothing while all is connected and sent. Refused changes open a list to dismiss or retry. |
 | Filters, sort, any choice on touch | `Sheet` + `SheetItem` | Replaces Popover and Dialog under 768px. 44px rows. |
 | Edit a record | `Sheet side="right"` | A drawer at ≥768px, a bottom sheet below. Footer: Cancel (secondary) then Save (primary), right-aligned. |
+| A wide form, a table or a preview in a sheet | `Sheet size="lg"` or `"full"` | 960px or 1400px, never past the viewport; a wide right drawer keeps a strip of scrim. Still a bottom sheet under 768px. |
 | Confirm after the fact | `toasts.push({ action })` | Brief; an action toast shows an m:ss countdown. Never more than two. A long-lived undo is not a toast. |
 | Sections of one thing | `Tabs` | Counts inline; links mode for route sections. |
 | A headline number | `Stat` in a `StatRow` | One value, one meta line. `severity` or a scale `level` is the only color. |

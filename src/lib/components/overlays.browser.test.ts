@@ -2,7 +2,8 @@
 // that jsdom cannot model.
 import '../tokens.css';
 import '../base.css';
-import { describe, expect, it } from 'vitest';
+import { createRawSnippet } from 'svelte';
+import { afterEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { render, screen } from '@testing-library/svelte';
 import OverlayHarness from '../../tests/browser/OverlayHarness.svelte';
@@ -19,6 +20,7 @@ import ProseHarness from '../../tests/browser/ProseHarness.svelte';
 import SiteHarness from '../../tests/browser/SiteHarness.svelte';
 import StatLevelsHarness from '../../tests/browser/StatLevelsHarness.svelte';
 import '../brands/teal.css';
+import Sheet from './Sheet.svelte';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
@@ -154,6 +156,44 @@ describe('Sheet in a browser', () => {
 		await userEvent.keyboard('{Escape}');
 		await settle();
 		expect(document.activeElement).toBe(trigger);
+	});
+});
+
+describe('Sheet size in a browser', () => {
+	const body = createRawSnippet(() => ({ render: () => '<p>Body</p>' }));
+	const width = async (side: 'bottom' | 'right', size?: 'md' | 'lg' | 'full') => {
+		const { unmount } = render(Sheet, { open: true, title: 'Sized', side, size, children: body });
+		await settle();
+		const sheet = screen.getByRole('dialog', { name: 'Sized' }).getBoundingClientRect();
+		unmount();
+		return { width: Math.round(sheet.width), right: Math.round(sheet.right) };
+	};
+
+	afterEach(async () => {
+		await page.viewport(1280, 800);
+	});
+
+	it('grows the bottom sheet to 640, 960 or 1400px, never past the viewport', async () => {
+		expect((await width('bottom')).width).toBe(640);
+		expect((await width('bottom', 'md')).width).toBe(640);
+		expect((await width('bottom', 'lg')).width).toBe(960);
+		expect((await width('bottom', 'full')).width).toBe(1280);
+	});
+
+	it('grows the right drawer to 440, 960 or 1400px, keeping a strip of scrim', async () => {
+		expect(await width('right')).toEqual({ width: 440, right: 1280 });
+		expect(await width('right', 'lg')).toEqual({ width: 960, right: 1280 });
+		expect(await width('right', 'full')).toEqual({ width: 1248, right: 1280 });
+		await page.viewport(1600, 900);
+		expect((await width('right', 'full')).width).toBe(1400);
+	});
+
+	it('is a full-width bottom sheet on a phone at every size', async () => {
+		await page.viewport(375, 700);
+		for (const size of ['md', 'lg', 'full'] as const) {
+			const sheet = await width('right', size);
+			expect(sheet, size).toEqual({ width: 375, right: 375 });
+		}
 	});
 });
 

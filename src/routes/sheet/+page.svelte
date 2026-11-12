@@ -1,9 +1,22 @@
 <script lang="ts">
-	import { Button, Dialog, Sheet, SheetItem, modals } from '#lib';
+	import { Button, Dialog, Sheet, SheetItem, Table, modals, type TableColumn } from '#lib';
 	const sorts = ['Newest first', 'Longest first', 'Highest severity'];
 	let sort = $state('Newest first');
 	let bottom = $state(false);
 	let right = $state(false);
+	let wide = $state<{ side: 'bottom' | 'right'; size: 'lg' | 'full' } | null>(null);
+	type Row = { id: string; status: string; owner: string; updated: string };
+	const rows: Row[] = [
+		{ id: 'R-00412', status: 'Open', owner: 'A. Rivera', updated: '2 hours ago' },
+		{ id: 'R-00413', status: 'Closed', owner: 'Ada Lovelace', updated: 'Yesterday' },
+		{ id: 'R-00414', status: 'Open', owner: 'Grace Hopper', updated: 'Last week' }
+	];
+	const columns: TableColumn<Row>[] = [
+		{ key: 'id', label: 'Record', mono: true },
+		{ key: 'status', label: 'Status' },
+		{ key: 'owner', label: 'Owner' },
+		{ key: 'updated', label: 'Updated' }
+	];
 	let title = $state('Site walkthrough, north wing');
 	let saved = $state('Site walkthrough, north wing');
 	let asking = $state(false);
@@ -69,10 +82,40 @@
 	first. App-wide, <code>modals.dirty</code> is {modals.dirty}.
 </p>
 
+<h2>Size</h2>
+<p>
+	<code>size</code> lets a sheet grow for a wide form, a table or a preview: <code>md</code> (the
+	default: 640px from the bottom, 440px from the right), <code>lg</code> (960px) or
+	<code>full</code> (1400px). It never passes the viewport, a wide drawer keeps a strip of scrim, and
+	under 768px every size is the bottom sheet.
+</p>
+<div class="row">
+	<Button onclick={() => (wide = { side: 'bottom', size: 'lg' })}>Bottom, lg</Button>
+	<Button onclick={() => (wide = { side: 'bottom', size: 'full' })}>Bottom, full</Button>
+	<Button onclick={() => (wide = { side: 'right', size: 'lg' })}>Right, lg</Button>
+	<Button onclick={() => (wide = { side: 'right', size: 'full' })}>Right, full</Button>
+</div>
+{#if wide}
+	<Sheet
+		open
+		title="Compare records"
+		side={wide.side}
+		size={wide.size}
+		onclose={() => (wide = null)}
+	>
+		<Table {rows} {columns} rowKey={(r) => r.id} label="Records" />
+	</Sheet>
+{/if}
+
 <style>
 	h1 {
 		margin: 0 0 var(--ds-space-6);
 		font-size: var(--ds-text-xl);
+		font-weight: 500;
+	}
+	h2 {
+		margin: var(--ds-space-6) 0 var(--ds-space-3);
+		font-size: var(--ds-text-lg);
 		font-weight: 500;
 	}
 	.row {
