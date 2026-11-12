@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.27.0] — 2026-11-12
+
 ### Added
 
 - `Tracker`: where a multi-step process stands, one row of segments. `steps` (labels, or
