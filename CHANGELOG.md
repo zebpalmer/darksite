@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.26.0] — 2026-11-12
+
 ### Added
 
 - `NavItem.badgeTone`: `neutral` (default, as before), `warning` or `danger`, for an item's badge in
