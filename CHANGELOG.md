@@ -6,6 +6,18 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `Tracker`: where a multi-step process stands, one row of segments. `steps` (labels, or
+  `{ label, title }` for a tooltip per step), `current` (0-based), `state` (`active`, `stopped` in
+  `stoppedTone` `danger` or `warning`, or `done`, which completes every step). The list is named by
+  its summary ("Step 3 of 6: Downloading", from `strings.trackerStep`), the current step has
+  `aria-current="step"`, and in a container under 540px only the current step's label shows, with no
+  horizontal scroll at 320px.
+- `SectionHeader`: a section's heading with a count and optional actions, on `PageHeader`'s rhythm.
+  `title`, `count` (hidden when undefined, shown at 0), `level` (`2` default or `3`), `tone` for the
+  count (`neutral`, `warning`, `danger`), an `actions` snippet and an `id` for the section's label.
+
 ## [0.26.0] — 2026-11-12
 
 ### Added

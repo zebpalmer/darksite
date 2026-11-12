@@ -75,8 +75,10 @@ Pick from this table before reaching for anything new. Every row is a decision a
 | Images at their own aspect ratio | `JustifiedGrid` | Rows that fill the width, no crop. |
 | A person or an organization | `EntityCard` in a `Grid min={280}` | A row with a 56px avatar. |
 | The top of a page | `PageHeader` | Title, count, actions. No breadcrumbs, no hero. |
+| A section's heading within a page | `SectionHeader` | A level-2 (or 3) title, a count (`tone` warning or danger when it needs attention) and optional actions, on the page header's rhythm. A fold-away block is a `Pane`. |
 | The start of a product or a section | `Intro`, then `Steps` and `LinkCard`s in a `Grid min={260}` | The overview page type: a sentence or two, up to two actions. Never on a work or list page. |
 | Numbered steps to get started | `Steps` | An ordered list, one step per line; `variant="cards"` for tiles three or four across. |
+| Where a multi-step process stands | `Tracker` | One row of segments: past steps complete, the current one marked (`state="stopped"` in danger or warning, `done` completes all). Only the current label on a narrow container. A how-to is `Steps`. |
 | A destination on an overview page | `LinkCard` | A whole-card link: icon, title, a sentence, an arrow. |
 | Help, a how-to, a method note | `PageHeader` + `<article class="ds-prose">` | The document page type: prose at a readable measure. |
 | A post on a public site: a blog or news article | `<article class="ds-article">` | Its own header (`ds-article-kicker`, title, `ds-article-summary`, `ds-article-meta`) instead of a PageHeader; 720px text, `ds-article-wide` breaks out to 1120px. |

@@ -31,6 +31,8 @@ const props: Record<string, Record<string, unknown>> = {
 	Intro: { title: 'Welcome', lead: 'A sentence.' },
 	LinkCard: { href: '/x', title: 'Docs' },
 	Steps: { steps: [{ title: 'One' }] },
+	Tracker: { steps: ['Asked', 'Checked', 'Done'], current: 1 },
+	SectionHeader: { title: 'Needs review', count: 0 },
 	TopNav: {
 		items: [
 			{ id: 'a', label: 'Home', href: '/' },

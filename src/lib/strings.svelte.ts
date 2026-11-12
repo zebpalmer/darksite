@@ -87,6 +87,16 @@ const DEFAULTS = {
 		(to === 0 ? '0' : `${from.toLocaleString()} to ${to.toLocaleString()}`) +
 		(total === null || total === undefined ? '' : ` of ${total.toLocaleString()}`),
 
+	// Tracker
+	/** Tracker's summary, its list's name: "Step 3 of 6: Downloading". */
+	trackerStep: (n: number, total: number, label: string) => `Step ${n} of ${total}: ${label}`,
+	/** Tracker's summary once every step is complete: "All 6 steps complete". */
+	trackerDone: (total: number) => `All ${total} steps complete`,
+	/** Said after a step's name: a step passed. */
+	trackerComplete: 'complete',
+	/** Said after the current step's name when the process has stopped there. */
+	trackerStopped: 'stopped',
+
 	// Table
 	selectRow: 'Select row',
 	selectAllRows: 'Select all rows',

@@ -45,7 +45,8 @@ export const groups: Record<string, string[]> = {
 		'LoadMore',
 		'Pager',
 		'CodeBlock',
-		'CodeCallout'
+		'CodeCallout',
+		'Tracker'
 	],
 	Charts: ['CellBar', 'BarSeries', 'Ring'],
 	Overlays: ['Dialog', 'Menu', 'Popover', 'SearchPalette', 'Sheet', 'SheetItem'],
@@ -64,7 +65,7 @@ export const groups: Record<string, string[]> = {
 	Content: ['Avatar', 'EntityCard'],
 	// Optional: for products whose content is images and video.
 	Media: ['Card', 'Carousel', 'JustifiedGrid', 'Lightbox'],
-	Layout: ['ActionBar', 'Grid', 'PageHeader', 'Pane', 'WorkView', 'FullBleed'],
+	Layout: ['ActionBar', 'Grid', 'PageHeader', 'SectionHeader', 'Pane', 'WorkView', 'FullBleed'],
 	Shell: ['AppShell', 'NavRail', 'SideNav', 'TabBar', 'TopBar', 'TopNav']
 };
 
