@@ -197,6 +197,41 @@ describe('Sheet size in a browser', () => {
 	});
 });
 
+describe('Sheet fill in a browser', () => {
+	const fillBody = createRawSnippet(() => ({
+		render: () => '<div class="kid" style="height:100%;overflow:auto">x</div>'
+	}));
+	const kidHeight = async (side: 'bottom' | 'right', fill: boolean) => {
+		const { unmount } = render(Sheet, {
+			open: true,
+			title: 'Filled',
+			side,
+			fill,
+			children: fillBody
+		});
+		await settle();
+		const dialog = screen.getByRole('dialog', { name: 'Filled' });
+		const kid = dialog.querySelector('.kid')!.getBoundingClientRect().height;
+		const body = dialog.querySelector('.body') as HTMLElement;
+		const cs = getComputedStyle(body);
+		const inner = body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+		unmount();
+		return { kid: Math.round(kid), inner: Math.round(inner) };
+	};
+
+	it('gives a child the body height, in a drawer and in a bottom sheet', async () => {
+		for (const side of ['right', 'bottom'] as const) {
+			const { kid, inner } = await kidHeight(side, true);
+			expect(kid, side).toBe(inner);
+			expect(kid, side).toBeGreaterThan(200);
+		}
+	});
+
+	it('is as tall as its content without fill', async () => {
+		expect((await kidHeight('bottom', false)).kid).toBeLessThan(60);
+	});
+});
+
 describe('Menu in a browser', () => {
 	it('opens in the top layer beside its trigger and moves with the arrows', async () => {
 		render(OverlayHarness);

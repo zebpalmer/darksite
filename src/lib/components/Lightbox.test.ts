@@ -108,4 +108,39 @@ describe('Lightbox', () => {
 		expect(viewer().textContent).toContain('Caption for Sample 2');
 		expect(screen.getByRole('button', { name: 'Download' })).toBeTruthy();
 	});
+
+	it('keys={false} drops the key bindings and the key hints, and Esc still closes', async () => {
+		const { default: Keyless } = await import('../../tests/LightboxKeysHarness.svelte');
+		render(Keyless);
+		await fireEvent.click(screen.getByRole('button', { name: 'Open viewer' }));
+		await tick();
+		await fireEvent.keyDown(viewer(), { key: 'ArrowRight' });
+		expect(shown()).toBe('0');
+		expect(viewer().querySelector('[aria-keyshortcuts]')).toBeNull();
+		await fireEvent(viewer(), new Event('cancel', { cancelable: true }));
+		expect(screen.queryByRole('dialog')).toBeNull();
+	});
+
+	it('keeps the keys by default', async () => {
+		await openAt();
+		await fireEvent.keyDown(viewer(), { key: 'ArrowRight' });
+		expect(shown()).toBe('1');
+		expect(viewer().querySelector('[aria-keyshortcuts]')).not.toBeNull();
+	});
+
+	it('inset leaves a margin that a press closes, and a press on the content does not', async () => {
+		const { default: Inset } = await import('../../tests/LightboxKeysHarness.svelte');
+		render(Inset, { inset: 24, keys: true });
+		await fireEvent.click(screen.getByRole('button', { name: 'Open viewer' }));
+		await tick();
+		expect(viewer().getAttribute('data-inset')).toBe('');
+		expect(viewer().style.getPropertyValue('--lb-inset')).toBe('24px');
+		const frame = viewer().querySelector('.frame')!;
+		await fireEvent.pointerDown(frame);
+		await fireEvent.click(frame);
+		expect(screen.queryByRole('dialog')).not.toBeNull();
+		await fireEvent.pointerDown(viewer());
+		await fireEvent.click(viewer());
+		expect(screen.queryByRole('dialog')).toBeNull();
+	});
 });

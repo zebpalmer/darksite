@@ -11,7 +11,10 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 
 - `items` (`{ src, alt, width?, height? }`), `open` (bindable), `index` (bindable), `label` (the
   dialog's name, default "Image viewer"), `loop`, `zoom` (default true), `maxZoom` (default 4),
-  `onclose()`, `finalFocus`, `caption` snippet and `actions` snippet — both `(item, index)` —
+  `inset` (a margin of scrim around the content, a CSS length or a number of pixels; a press on
+  the margin closes it; default none, full screen), `keys` (default true; `false` drops the
+  ← → Home End + − 0 keys and the key caps on the buttons, and Esc still closes), `onclose()`,
+  `finalFocus`, `caption` snippet and `actions` snippet — both `(item, index)` —
   `class`.
 -->
 <script lang="ts" module>
@@ -47,6 +50,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 		loop?: boolean;
 		zoom?: boolean;
 		maxZoom?: number;
+		inset?: number | string;
+		keys?: boolean;
 		onclose?: () => void;
 		finalFocus?: HTMLElement | null;
 		caption?: Snippet<[LightboxItem, number]>;
@@ -62,6 +67,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 		loop = false,
 		zoom: zoomable = true,
 		maxZoom = 4,
+		inset = 0,
+		keys = true,
 		onclose,
 		finalFocus = null,
 		caption,
@@ -258,6 +265,12 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 		return () => node.removeEventListener('wheel', handler);
 	}
 
+	// ── the scrim margin ──────────────────────────────────────────────────
+
+	const margin = $derived(typeof inset === 'number' ? `${inset}px` : inset);
+	const inseted = $derived(!!inset && inset !== '0' && inset !== '0px');
+	let pressedMargin = false;
+
 	// ── keyboard ──────────────────────────────────────────────────────────
 
 	function onkeydown(event: KeyboardEvent) {
@@ -321,13 +334,22 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 		aria-label={label}
 		aria-modal="true"
 		tabindex="-1"
-		{onkeydown}
+		data-inset={inseted ? '' : undefined}
+		style:--lb-inset={inseted ? margin : undefined}
+		onkeydown={keys ? onkeydown : undefined}
+		onpointerdown={(event) => (pressedMargin = inseted && event.target === event.currentTarget)}
+		onclick={(event) => {
+			// Only a press that starts and ends on the margin closes it.
+			if (pressedMargin && event.target === event.currentTarget) close();
+			pressedMargin = false;
+		}}
 		oncancel={(event) => {
 			event.preventDefault();
 			close();
 		}}
 		{@attach surface}
 	>
+		<div class="frame">
 		<div class="bar top">
 			<p class="counter" aria-live="polite" aria-atomic="true">
 				{#if total}{(at + 1).toLocaleString()} of {total.toLocaleString()}{:else}No images{/if}
@@ -339,8 +361,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 					variant="icon"
 					icon={Minus}
 					label={strings.zoomOut}
-					title="{strings.zoomOut} (−)"
-					keycap="-"
+					title={keys ? `${strings.zoomOut} (−)` : undefined}
+					keycap={keys ? '-' : undefined}
 					disabled={scale <= 1}
 					onclick={() => zoomTo(scale / 1.5)}
 				/>
@@ -348,13 +370,14 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 					variant="icon"
 					icon={Plus}
 					label={strings.zoomIn}
-					title="{strings.zoomIn} (+)"
-					keycap="plus"
+					title={keys ? `${strings.zoomIn} (+)` : undefined}
+					keycap={keys ? 'plus' : undefined}
 					disabled={scale >= maxZoom}
 					onclick={() => zoomTo(scale * 1.5)}
 				/>
 			{/if}
-			<Button variant="icon" icon={X} label={strings.close} title="{strings.close} (Esc)" keycap="escape" onclick={close} />
+			<Button variant="icon" icon={X} label={strings.close} title={keys ? `${strings.close} (Esc)` : undefined}
+				keycap={keys ? 'escape' : undefined} onclick={close} />
 		</div>
 
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -397,8 +420,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 					variant="icon"
 					icon={ChevronLeft}
 					label={strings.previousImage}
-					title="{strings.previousImage} (←)"
-					keycap="arrowleft"
+					title={keys ? `${strings.previousImage} (←)` : undefined}
+					keycap={keys ? 'arrowleft' : undefined}
 					disabled={!hasPrev}
 					onclick={() => go(-1)}
 				/>
@@ -407,8 +430,8 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 					variant="icon"
 					icon={ChevronRight}
 					label={strings.nextImage}
-					title="{strings.nextImage} (→)"
-					keycap="arrowright"
+					title={keys ? `${strings.nextImage} (→)` : undefined}
+					keycap={keys ? 'arrowright' : undefined}
 					disabled={!hasNext}
 					onclick={() => go(1)}
 				/>
@@ -416,6 +439,7 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 		</div>
 
 		{#if item && caption}<div class="bar bottom">{@render caption(item, at)}</div>{/if}
+		</div>
 	</dialog>
 {/if}
 
@@ -423,20 +447,32 @@ preloaded. A counter ("3 of 12") is announced as it changes.
 	.ds-lightbox {
 		position: fixed;
 		inset: 0;
-		display: grid;
-		grid-template-rows: auto minmax(0, 1fr) auto;
 		width: 100vw;
 		height: 100vh;
 		height: 100dvh;
 		max-width: none;
 		max-height: none;
 		margin: 0;
-		padding: 0;
+		padding: var(--lb-inset, 0px);
 		border: 0;
-		background: var(--ds-bg-0);
+		background: transparent;
 		color: var(--ds-text-1);
 		overscroll-behavior: contain;
 		animation: ds-fade var(--ds-dur-base) var(--ds-ease-out);
+	}
+	/* The content: the whole dialog, or what is left inside an inset's scrim margin. */
+	.frame {
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr) auto;
+		width: 100%;
+		height: 100%;
+		min-height: 0;
+		overflow: hidden;
+		background: var(--ds-bg-0);
+	}
+	[data-inset] .frame {
+		border-radius: var(--ds-radius-md);
+		box-shadow: var(--ds-elev-3);
 	}
 	.ds-lightbox:focus {
 		outline: none;

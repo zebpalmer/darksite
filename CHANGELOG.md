@@ -17,6 +17,14 @@ All notable changes to darksite are recorded here. The format follows
 - `SectionHeader`: a section's heading with a count and optional actions, on `PageHeader`'s rhythm.
   `title`, `count` (hidden when undefined, shown at 0), `level` (`2` default or `3`), `tone` for the
   count (`neutral`, `warning`, `danger`), an `actions` snippet and an `id` for the section's label.
+- `Chip appearance="outline"`: a toggle's off state quieter, transparent with a gray edge and gray
+  text. `isNew` in a toggle (not only a suggestion) now has a dashed edge: accent when on, a stronger
+  gray when off, with its `NewBadge` gray as well.
+- `Lightbox inset`: a margin of scrim (a CSS length or pixels) around the content, where a press
+  closes it. `Lightbox keys={false}`: no ← → Home End + − 0 bindings and no key caps or key hints on
+  its buttons; Esc still closes.
+- `Sheet fill`: the body stops scrolling and becomes a column, so its only child (or one with
+  `flex: 1; min-height: 0`) takes its full height, for two-column content with its own scroll areas.
 
 ## [0.26.0] — 2026-11-12
 

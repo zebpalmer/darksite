@@ -9,6 +9,10 @@ Toggle a label or category, show an active filter, carry an applied token, or of
   Off is `ds-bg-3` with a `ds-border` edge; on is `ds-accent-tint` with a `ds-accent` border;
   `'mixed'` (a bulk selection where only some items have it) keeps the neutral ground and takes a
   `ds-accent-mixed` edge.
+  `appearance="outline"` quiets the off state for a value that is left out: transparent, a
+  `ds-border` edge, `ds-text-3` text (hover is as before). On, mixed and the rest are unchanged.
+  `isNew` on a toggle gives it a dashed edge: accent when on, `ds-border-strong` when off, with the
+  `NewBadge` gray too.
 - **removable** — `removable` + `onremove` + `removeLabel`: a label plus a 22px × button (32 on
   touch). `variant="token"` is the applied-token look — `ds-bg-5`, no border. Pass `onclick` as
   well and the label becomes a second button beside the ×, so a partial bulk token can add to all
@@ -21,7 +25,7 @@ Toggle a label or category, show an active filter, carry an applied token, or of
 
 ## Extras
 
-`keycap` (a hotkey hint on a keyboard-driven view), `count` (12px `ds-text-3`, for filters), `icon` (a leading
+`appearance` (`default` | `outline`), `keycap` (a hotkey hint on a keyboard-driven view), `count` (12px `ds-text-3`, for filters), `icon` (a leading
 Lucide icon at 14px), `disabled`, `title`, `bodyProps` (spread last onto the label button, so the
 label can be a Popover trigger while × stays its own button), `tone="warning"` (amber tint, border
 and text over any state, for a value that fails a rule), children = the label.

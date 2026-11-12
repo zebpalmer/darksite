@@ -33,6 +33,19 @@ full width on a phone.
 <Sheet bind:open title="Compare versions" side="right" size="lg">…</Sheet>
 ```
 
+## `fill`
+
+By default the body scrolls and the sheet is as tall as its content. `fill` makes the body a
+column that does not scroll: its only child (or one that sets `flex: 1; min-height: 0`) takes the
+body's full height, for two-column content whose columns scroll on their own. A bottom sheet is
+then `maxHeight` tall.
+
+```svelte
+<Sheet bind:open title="Review" side="right" size="full" fill>
+	<div class="columns">…</div>
+</Sheet>
+```
+
 ## The footer convention
 
 The `footer` snippet is a right-aligned flex row: put buttons straight in it (never an `ActionBar`
@@ -43,7 +56,7 @@ the alignment when a sheet wants a full-width "Show 42 records".
 
 `open` (bindable), `title` (the visible heading and the accessible name), `description`,
 `onclose()`, `footer` snippet, `maxHeight` (default `78dvh`; ignored when `side="right"`), `side`
-(`bottom` default | `right`), `size` (`md` default | `lg` | `full`), children (the body, which
+(`bottom` default | `right`), `size` (`md` default | `lg` | `full`), `fill`, children (the body, which
 scrolls).
 
 ## Unsaved edits

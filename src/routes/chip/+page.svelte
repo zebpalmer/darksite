@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Chip } from '#lib';
+	let outA = $state(false);
+	let newOn = $state(true);
 	let on = $state(true);
 	let tokens = $state(['Archived', 'Field team']);
 </script>
@@ -13,6 +15,13 @@
 	<Chip selected={false} keycap="q" onclick={() => {}}>Internal</Chip>
 	<Chip selected={false} count={248} onclick={() => {}}>Shared</Chip>
 	<Chip tone="warning" selected={false} onclick={() => {}}>Escalations</Chip>
+</div>
+<div class="row">
+	<Chip appearance="outline" selected={outA} onclick={() => (outA = !outA)}>Outline, off</Chip>
+	<Chip appearance="outline" selected onclick={() => {}}>Outline, on</Chip>
+	<Chip isNew selected={newOn} onclick={() => (newOn = !newOn)}>New, toggle</Chip>
+	<Chip isNew selected={false} onclick={() => {}}>New, off</Chip>
+	<Chip isNew appearance="outline" selected={false} onclick={() => {}}>New, outline off</Chip>
 </div>
 <div class="row">
 	{#each tokens as t (t)}<Chip

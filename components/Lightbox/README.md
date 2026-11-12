@@ -56,11 +56,20 @@ zeroed under reduced motion.
 Each button carries its key in `aria-keyshortcuts` and in its tooltip. Keys stand aside while focus
 is in a text field in the `actions` toolbar.
 
+`keys={false}` turns the keys off for a viewer that has its own: no ← → Home End + − 0 bindings and
+no key caps or key hints on the buttons. Esc still closes (the dialog's own cancel).
+
+## `inset`
+
+`inset="32px"` (or a number of pixels) leaves a margin of scrim around the viewer, and the content
+becomes a rounded panel inside it. A press that starts and ends on the margin closes the viewer, as
+on a `Sheet`'s scrim. Default: none, the full screen.
+
 ## What the consumer provides
 
 `items` — `{ src, alt, width?, height? }` (`width` and `height` reserve the box before the image
 loads) — `open` (bindable), `index` (bindable), `label` (the dialog's accessible name, default
-"Image viewer"), `loop`, `zoom`, `maxZoom`, `onclose()`, `finalFocus`, `caption` snippet and
+"Image viewer"), `loop`, `zoom`, `maxZoom`, `inset`, `keys`, `onclose()`, `finalFocus`, `caption` snippet and
 `actions` snippet (icon buttons for the toolbar) — both receive `(item, index)` — `class`.
 
 ## Don't

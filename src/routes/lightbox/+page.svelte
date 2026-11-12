@@ -26,19 +26,23 @@
 	let index = $state(0);
 	let loop = $state(false);
 	let details = $state(false);
+	let inset = $state(false);
+	let keys = $state(true);
 </script>
 
 <svelte:head><title>Lightbox · darksite</title></svelte:head>
 <PageHeader title="Lightbox" count={items.length}>
 	{#snippet actions()}
 		<Switch label="Loop" bind:checked={loop} />
+		<Switch label="Inset" bind:checked={inset} />
+		<Switch label="Keys" bind:checked={keys} />
 	{/snippet}
 </PageHeader>
 <div class="demo">
 	<p>
-		Open any image. ← and → step, + and − zoom, 0 fits, Esc closes and returns focus here.
-		Double-click to zoom and drag to pan; on touch, swipe, pinch, double-tap, or swipe down to
-		close.
+		Open any image. ← and → step, + and − zoom, 0 fits, Esc closes and returns focus here. Inset
+		leaves a margin of scrim to press; Keys off drops the keys and key caps. Double-click to zoom
+		and drag to pan; on touch, swipe, pinch, double-tap, or swipe down to close.
 	</p>
 	<JustifiedGrid
 		items={photos}
@@ -63,7 +67,7 @@
 	</JustifiedGrid>
 </div>
 
-<Lightbox {items} bind:open bind:index {loop}>
+<Lightbox {items} bind:open bind:index {loop} inset={inset ? 32 : 0} {keys}>
 	{#snippet caption(item)}{item.alt}{#if details}
 			· {item.width} × {item.height} px{/if}{/snippet}
 	{#snippet actions()}

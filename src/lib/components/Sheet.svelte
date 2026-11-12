@@ -15,6 +15,9 @@ behind does not scroll while it is open.
 - `size` — how wide it may grow: `md` (default: a bottom sheet up to 640px, the right drawer
   440px), `lg` (960px) or `full` (1400px). Never wider than the viewport; the right drawer keeps a
   32px strip of scrim beside it. Under 768px every size is the bottom sheet, full width on a phone.
+- `fill` — the body does not scroll: it is a column, and a child that sets `flex: 1; min-height: 0`
+  (or is the only child) takes its full height, for two-column content with its own scroll areas.
+  A bottom sheet is then `maxHeight` tall rather than as tall as its content.
 -->
 <script lang="ts">
 	import { strings } from '../strings.svelte.js';
@@ -35,6 +38,8 @@ behind does not scroll while it is open.
 		side?: 'bottom' | 'right';
 		/** How wide it may grow: `md` (default), `lg` (960px) or `full` (1400px). */
 		size?: 'md' | 'lg' | 'full';
+		/** The body is a column a child can fill, and does not scroll itself. */
+		fill?: boolean;
 		class?: string;
 		children: Snippet;
 	}
@@ -50,6 +55,7 @@ behind does not scroll while it is open.
 		maxHeight = '78dvh',
 		side = 'bottom',
 		size = 'md',
+		fill = false,
 		class: className = '',
 		children
 	}: Props = $props();
@@ -92,6 +98,7 @@ behind does not scroll while it is open.
 		class="ds-sheet {className}"
 		data-side={side}
 		data-size={size}
+		data-fill={fill ? '' : undefined}
 		style:--sheet-max={maxHeight}
 		aria-labelledby="{uid}-title"
 		aria-describedby={description ? `${uid}-desc` : undefined}
@@ -194,6 +201,18 @@ behind does not scroll while it is open.
 		overscroll-behavior: contain;
 		padding: 0 16px 16px;
 	}
+	[data-fill] .panel {
+		height: var(--sheet-max);
+	}
+	[data-fill] .body {
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+	[data-fill] .body > :global(:only-child) {
+		flex: 1;
+		min-height: 0;
+	}
 	.foot {
 		display: flex;
 		align-items: center;
@@ -218,7 +237,8 @@ behind does not scroll while it is open.
 		.ds-sheet[data-side='right'][data-size='full'] {
 			width: min(1400px, calc(100% - 32px));
 		}
-		.ds-sheet[data-side='right'] .panel {
+		.ds-sheet[data-side='right'] .panel,
+		.ds-sheet[data-side='right'][data-fill] .panel {
 			height: 100%;
 			max-height: none;
 			border-radius: var(--ds-radius-lg) 0 0 var(--ds-radius-lg);

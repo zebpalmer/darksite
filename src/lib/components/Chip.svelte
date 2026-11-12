@@ -6,7 +6,10 @@ tall, 44 on touch (with an 8px gap between chips there).
 Modes, picked by props:
 - **toggle** — `selected` (`true` | `false` | `'mixed'`) with `onclick`: a `<button aria-pressed>`.
   Off is ds-bg-3 with a ds-border edge; on is ds-accent-tint with a ds-accent edge; mixed (only
-  some of a bulk selection have it) takes a ds-accent-mixed edge.
+  some of a bulk selection have it) takes a ds-accent-mixed edge. `appearance="outline"` makes the
+  off look quieter: transparent, a gray edge, gray text (a value left out); on is unchanged.
+  `isNew` in a toggle has a dashed edge: accent when on, a stronger gray when off, with its
+  NewBadge gray too.
 - **removable** — `removable` with `onremove` and `removeLabel`: the label plus its own × button
   (22px, 32 on touch). `variant="token"` is the applied-token look. With `onclick` as well, the
   label becomes a second button beside the ×.
@@ -40,6 +43,8 @@ rule), `bodyProps` (spread onto the label button, so it can trigger a Popover or
 		source?: string;
 		confidence?: number | null;
 		variant?: 'default' | 'token';
+		/** `outline`: a toggle's off state is transparent, with a gray edge and gray text. */
+		appearance?: 'default' | 'outline';
 		tone?: 'default' | 'warning';
 		keycap?: string | readonly string[];
 		count?: number | string | null;
@@ -62,6 +67,7 @@ rule), `bodyProps` (spread onto the label button, so it can trigger a Popover or
 		source,
 		confidence = null,
 		variant = 'default',
+		appearance = 'default',
 		tone = 'default',
 		keycap,
 		count = null,
@@ -100,6 +106,7 @@ rule), `bodyProps` (spread onto the label button, so it can trigger a Popover or
 		class="ds-chip {className}"
 		data-state={state}
 		data-variant={variant}
+		data-appearance={appearance === 'outline' ? 'outline' : undefined}
 		data-tone={tone === 'default' ? undefined : tone}
 		data-new={isNew ? '' : undefined}
 		aria-pressed={pressed}
@@ -191,6 +198,27 @@ rule), `bodyProps` (spread onto the label button, so it can trigger a Popover or
 	}
 	.ds-chip[data-state='suggested'][data-new] {
 		border-color: var(--ds-accent);
+	}
+	.ds-chip[data-appearance='outline'][data-state='off'] {
+		background: transparent;
+		border-color: var(--ds-border);
+		color: var(--ds-text-3);
+	}
+	button.ds-chip[data-appearance='outline'][data-state='off']:not(:disabled):hover {
+		background: var(--ds-bg-4);
+		border-color: var(--ds-border-strong);
+		color: var(--ds-text-1);
+	}
+	/* A new value in a toggle: dashed. The on state keeps its accent edge. */
+	button.ds-chip[data-new]:not([data-state='suggested']) {
+		border-style: dashed;
+	}
+	button.ds-chip[data-new][data-state='off'] {
+		border-color: var(--ds-border-strong);
+	}
+	button.ds-chip[data-new][data-state='off'] :global(.ds-new) {
+		border-color: currentColor;
+		color: var(--ds-text-3);
 	}
 	.ds-chip[data-variant='token'] {
 		background: var(--ds-bg-5);

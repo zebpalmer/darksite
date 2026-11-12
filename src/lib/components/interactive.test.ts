@@ -9,6 +9,25 @@ import type { FilterSection } from '../filters.js';
 import type { TimelineEntry } from './Timeline.svelte';
 
 describe('Chip', () => {
+	it('outline appearance and a new toggle are marked for their styles', () => {
+		const { container } = render(Chip, {
+			selected: false,
+			appearance: 'outline',
+			isNew: true,
+			onclick: () => {}
+		});
+		const chip = container.querySelector('button.ds-chip')!;
+		expect(chip.getAttribute('data-appearance')).toBe('outline');
+		expect(chip.hasAttribute('data-new')).toBe(true);
+		expect(chip.getAttribute('data-state')).toBe('off');
+		expect(chip.querySelector('.ds-new')).toBeTruthy();
+	});
+
+	it('has no appearance mark by default', () => {
+		const { container } = render(Chip, { selected: true, onclick: () => {} });
+		expect(container.querySelector('.ds-chip')!.hasAttribute('data-appearance')).toBe(false);
+	});
+
 	it('is a toggle that reports mixed', () => {
 		render(Chip, { selected: 'mixed', onclick: () => {} });
 		expect(screen.getByRole('button').getAttribute('aria-pressed')).toBe('mixed');

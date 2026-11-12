@@ -4,6 +4,7 @@
 	let sort = $state('Newest first');
 	let bottom = $state(false);
 	let right = $state(false);
+	let filled = $state(false);
 	let wide = $state<{ side: 'bottom' | 'right'; size: 'lg' | 'full' } | null>(null);
 	type Row = { id: string; status: string; owner: string; updated: string };
 	const rows: Row[] = [
@@ -28,7 +29,18 @@
 <div class="row">
 	<Button onclick={() => (bottom = true)}>Sort</Button>
 	<Button onclick={() => (right = true)}>Edit record</Button>
+	<Button onclick={() => (filled = true)}>Two columns (fill)</Button>
 </div>
+<Sheet bind:open={filled} title="Compare" side="right" size="full" fill>
+	<div class="cols">
+		{#each ['Current', 'Proposed'] as c (c)}
+			<div class="col" tabindex="-1">
+				<h3>{c}</h3>
+				{#each { length: 40 } as _, i (i)}<p class="line">Line {i + 1}</p>{/each}
+			</div>
+		{/each}
+	</div>
+</Sheet>
 <Sheet bind:open={bottom} title="Sort">
 	{#each sorts as s (s)}
 		<SheetItem
@@ -117,6 +129,28 @@
 		margin: var(--ds-space-6) 0 var(--ds-space-3);
 		font-size: var(--ds-text-lg);
 		font-weight: 500;
+	}
+	.cols {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--ds-space-4);
+		height: 100%;
+	}
+	.col {
+		min-height: 0;
+		overflow-y: auto;
+	}
+	.col h3 {
+		margin: 0 0 var(--ds-space-2);
+		font-size: var(--ds-text-md);
+		font-weight: 500;
+	}
+	.line {
+		margin: 0;
+		padding: var(--ds-space-1) 0;
+		border-bottom: 1px solid var(--ds-border-subtle);
+		color: var(--ds-text-2);
+		font-size: var(--ds-text-sm);
 	}
 	.row {
 		display: flex;
