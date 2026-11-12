@@ -19,8 +19,11 @@
 @component
 NavRail — the primary navigation on ds-bg-0, full height, from 768px up (below that, TabBar).
 
-- **Collapsed** (56px): 40×36 icon items; the label shows as one fixed-position tooltip — fixed,
-  so a scrolling list never clips it — after 300ms on hover and at once on keyboard focus.
+- **Collapsed** (56px): 40×36 icon items; the label shows as one tooltip in the browser's top
+  layer (a manual popover), so neither a scrolling list nor any stacking on the page can clip or
+  cover it, after 300ms on hover and at once on keyboard focus. A scroll hides a hover tooltip; one
+  shown for keyboard focus follows its item while the item is in view. Without the Popover API it
+  falls back to a fixed tooltip at `--ds-z-tooltip`.
 - **Expanded** (208px): 32px rows with icon, label and badge; groups get 11px uppercase titles.
 - Active = ds-bg-4 + ds-text-1 + a 2px accent bar. The item list scrolls on a short window and
   the current item scrolls into view; the footer (account, collapse toggle, version) stays put.
@@ -101,6 +104,11 @@ that list, not disabled.
 	let ready = $state(false);
 	let tip = $state<{ text: string; top: number; left: number } | null>(null);
 	let tipTimer: ReturnType<typeof setTimeout> | undefined;
+	// What the tooltip is shown for, so a scroll can move it with its item or hide it.
+	let tipAnchor: HTMLElement | null = null;
+	let tipFocused = false;
+	// The top layer (Popover API) lifts the tooltip over every stacking context on the page.
+	const topLayer = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
 
 	onMount(() => {
 		if (expanded === undefined) {
@@ -129,26 +137,70 @@ that list, not disabled.
 		}
 	}
 
-	function showTip(el: HTMLElement, text: string, delay: number) {
+	function beside(el: HTMLElement) {
+		const r = el.getBoundingClientRect();
+		return { top: r.top + r.height / 2, left: r.right + 8 };
+	}
+
+	/** Hover shows the tooltip after 300ms; keyboard focus shows it at once. */
+	function showTip(el: HTMLElement, text: string, focused = false) {
 		if (open) return;
 		clearTimeout(tipTimer);
-		tipTimer = setTimeout(() => {
-			const r = el.getBoundingClientRect();
-			tip = { text, top: r.top + r.height / 2, left: r.right + 8 };
-		}, delay);
+		tipTimer = setTimeout(
+			() => {
+				tipAnchor = el;
+				tipFocused = focused;
+				tip = { text, ...beside(el) };
+			},
+			focused ? 0 : 300
+		);
 	}
 
 	function hideTip() {
 		clearTimeout(tipTimer);
 		tip = null;
+		tipAnchor = null;
+	}
+
+	/** A scroll hides a hover tooltip. One shown for keyboard focus follows its element while it is
+	 *  in view: moving focus scrolls the item list, often just after the tooltip shows. */
+	function onScroll() {
+		const el = tipAnchor;
+		if (!tip || !el) return;
+		if (tipFocused) {
+			const r = el.getBoundingClientRect();
+			const view = listEl?.contains(el)
+				? listEl.getBoundingClientRect()
+				: { top: 0, bottom: innerHeight };
+			if (r.bottom > view.top && r.top < view.bottom) {
+				tip = { ...tip, ...beside(el) };
+				return;
+			}
+		}
+		hideTip();
+	}
+
+	$effect(() => {
+		if (!tip) return;
+		window.addEventListener('scroll', onScroll, true);
+		return () => window.removeEventListener('scroll', onScroll, true);
+	});
+
+	/** Shows the tooltip in the top layer while it is mounted. */
+	function toTopLayer(node: HTMLElement) {
+		if (!topLayer) return;
+		node.showPopover();
+		return () => {
+			if (node.matches(':popover-open')) node.hidePopover();
+		};
 	}
 
 	/** Handlers that give a slotted control the rail's collapsed tooltip. */
 	function tipFor(text: string): TipHandlers {
 		return {
-			onmouseenter: (e) => showTip(e.currentTarget as HTMLElement, text, 300),
+			onmouseenter: (e) => showTip(e.currentTarget as HTMLElement, text),
 			onmouseleave: hideTip,
-			onfocus: (e) => showTip(e.currentTarget as HTMLElement, text, 0),
+			onfocus: (e) => showTip(e.currentTarget as HTMLElement, text, true),
 			onblur: hideTip
 		};
 	}
@@ -175,9 +227,9 @@ that list, not disabled.
 							href={item.href}
 							class="item"
 							aria-current={item.id === current ? 'page' : undefined}
-							onmouseenter={(e) => showTip(e.currentTarget, item.label, 300)}
+							onmouseenter={(e) => showTip(e.currentTarget, item.label)}
 							onmouseleave={hideTip}
-							onfocus={(e) => showTip(e.currentTarget, item.label, 0)}
+							onfocus={(e) => showTip(e.currentTarget, item.label, true)}
 							onblur={hideTip}
 						>
 							{#if item.icon}<item.icon size={open ? 18 : 20} aria-hidden="true" />{/if}
@@ -211,14 +263,21 @@ that list, not disabled.
 				class="version"
 				onmouseenter={(e) => {
 					const v = e.currentTarget;
-					if (v.scrollWidth > v.clientWidth) showTip(v, version, 300);
+					if (v.scrollWidth > v.clientWidth) showTip(v, version);
 				}}
 				onmouseleave={hideTip}>{version}</span
 			>
 		{/if}
 	</div>
 	{#if tip}
-		<span class="tip" style:top="{tip.top}px" style:left="{tip.left}px" aria-hidden="true">{tip.text}</span>
+		<span
+			class="tip"
+			popover={topLayer ? 'manual' : undefined}
+			style:top="{tip.top}px"
+			style:left="{tip.left}px"
+			aria-hidden="true"
+			{@attach toTopLayer}>{tip.text}</span
+		>
 	{/if}
 </nav>
 
@@ -431,11 +490,17 @@ that list, not disabled.
 	.ds-navrail:not([data-expanded]) .version {
 		padding: 0;
 	}
+	/* In the top layer when the browser has the Popover API; the z-index is the fallback's. The
+	   inset, margin, border and overflow undo the browser's popover defaults. */
 	.tip {
 		position: fixed;
+		inset: auto;
 		z-index: var(--ds-z-tooltip);
 		transform: translateY(-50%);
+		margin: 0;
 		padding: 4px 8px;
+		overflow: visible;
+		border: 0;
 		border-radius: var(--ds-radius-xs);
 		background: var(--ds-bg-4);
 		box-shadow: var(--ds-elev-2);
@@ -460,5 +525,11 @@ that list, not disabled.
 	}
 	.item[aria-current='page'] .badge {
 		color: var(--ds-text-2);
+	}
+	/* Kept off paper, like every tooltip, wherever the top layer puts it. */
+	@media print {
+		.tip {
+			display: none;
+		}
 	}
 </style>

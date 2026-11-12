@@ -9,6 +9,7 @@ import BarHarness from '../../tests/browser/BarHarness.svelte';
 import HeaderRoomHarness from '../../tests/browser/HeaderRoomHarness.svelte';
 import HeaderChipsHarness from '../../tests/browser/HeaderChipsHarness.svelte';
 import HeaderPhoneHarness from '../../tests/browser/HeaderPhoneHarness.svelte';
+import RailTipHarness from '../../tests/browser/RailTipHarness.svelte';
 
 const settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 const box = (el: Element) => el.getBoundingClientRect();
@@ -222,5 +223,71 @@ describe('NavRail version in a browser', () => {
 		await userEvent.hover(version);
 		await new Promise((r) => setTimeout(r, 400));
 		expect(part('rail', '.tip').textContent).toBe('v12.40.3-rc.1');
+	});
+});
+
+describe('NavRail tooltip in a browser', () => {
+	const tipEl = () => document.querySelector<HTMLElement>('.ds-navrail .tip');
+	// What paints at the tooltip's center: the tooltip, if nothing covers it. It ignores the pointer,
+	// so it takes hits just for the check.
+	const onTop = (tip: HTMLElement) => {
+		const r = box(tip);
+		tip.style.pointerEvents = 'auto';
+		const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+		tip.style.pointerEvents = '';
+		return hit === tip;
+	};
+
+	it("shows above a positioned, layered card in the main column, in the top layer", async () => {
+		render(RailTipHarness);
+		await settle();
+		const link = screen.getByRole('link', { name: 'Home' });
+		const cover = box(screen.getByTestId('cover'));
+		await userEvent.hover(link);
+		await new Promise((r) => setTimeout(r, 400));
+		const tip = tipEl()!;
+		expect(tip.textContent).toBe('Home');
+		expect(tip.matches(':popover-open')).toBe(true);
+		expect(tip.getAttribute('aria-hidden')).toBe('true');
+		// Beside the item, over the card.
+		expect(Math.round(box(tip).left)).toBe(Math.round(box(link).right + 8));
+		expect(box(tip).left).toBeGreaterThanOrEqual(cover.left);
+		expect(onTop(tip)).toBe(true);
+		await userEvent.unhover(link);
+		expect(tipEl()).toBeNull();
+	});
+
+	it("gives a slot's tip() the same tooltip, shown at once on keyboard focus", async () => {
+		render(RailTipHarness);
+		await settle();
+		const search = screen.getByRole('button', { name: 'Search' });
+		search.focus();
+		await new Promise((r) => setTimeout(r, 20));
+		const tip = tipEl()!;
+		expect(tip.textContent).toBe('Search');
+		expect(tip.matches(':popover-open')).toBe(true);
+		expect(onTop(tip)).toBe(true);
+		search.blur();
+		await settle();
+		expect(tipEl()).toBeNull();
+	});
+
+	it('hides a hover tooltip on a scroll and keeps one shown for keyboard focus', async () => {
+		render(RailTipHarness);
+		await settle();
+		const link = screen.getByRole('link', { name: 'Records' });
+		const list = document.querySelector('.ds-navrail .list')!;
+		await userEvent.hover(link);
+		await new Promise((r) => setTimeout(r, 400));
+		expect(tipEl()).not.toBeNull();
+		list.dispatchEvent(new Event('scroll'));
+		await settle();
+		expect(tipEl()).toBeNull();
+		await userEvent.unhover(link);
+		link.focus();
+		await new Promise((r) => setTimeout(r, 20));
+		list.dispatchEvent(new Event('scroll'));
+		await settle();
+		expect(tipEl()?.textContent).toBe('Records');
 	});
 });

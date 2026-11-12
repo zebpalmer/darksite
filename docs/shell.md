@@ -69,8 +69,9 @@ product is public: a public site can have a rail, and an admin tool with four se
 
 `ds-bg-0`, full height, at `ds-bp-phone` and above.
 
-- **Collapsed** `ds-rail-w` (56px): 40×36 icon items, labels as one fixed-position tooltip —
-  fixed, so a scrolling list never clips it. Hover after ~300ms, keyboard focus immediately.
+- **Collapsed** `ds-rail-w` (56px): 40×36 icon items, labels as one tooltip in the browser's top
+  layer, so neither a scrolling list nor anything layered on the page can clip or cover it. Hover
+  after ~300ms, keyboard focus immediately; a scroll hides a hover tooltip.
 - **Expanded** `ds-rail-w-expanded` (208px): 32px rows with icon, label and badge, and the
   product's name beside its mark at the top.
 - **Active** = `ds-bg-4` + `ds-text-1` + a 2px `ds-accent` bar on the leading edge.
@@ -90,7 +91,7 @@ product is public: a public site can have a rail, and an admin tool with four se
   removes the toggle, so the viewer cannot widen it either.
 - **Slots:** `search` (under the brand), `status` (in the footer, above the toggle) and `badge`
   (per item, replacing the count or dot). The `search` and `status` slots get a `tip(label)` helper
-  so a collapsed control shows the rail's own fixed tooltip, the same as an item. A search slot is
+  so a collapsed control shows the rail's own tooltip, the same as an item. A search slot is
   for an app with no `TopBar`; with one, search lives there.
 
 ## Phones

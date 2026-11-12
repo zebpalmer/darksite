@@ -8,9 +8,12 @@ group headings never disagree.
 
 ## Collapsed and expanded
 
-- **Collapsed** `ds-rail-w` (56px): 40×36 icon items. The label is one **fixed-position** tooltip
-  — fixed rather than absolute, so a scrolling item list cannot clip it. It appears after ~300ms
-  on hover and immediately on keyboard focus.
+- **Collapsed** `ds-rail-w` (56px): 40×36 icon items. The label is one tooltip shown in the
+  browser's **top layer** (a manual popover), so a scrolling item list cannot clip it and no
+  stacking on the page — a sticky ancestor, a card with a `z-index` — can paint over it. It
+  appears after ~300ms on hover and immediately on keyboard focus. A scroll hides a hover tooltip;
+  one shown for keyboard focus follows its item while the item is in view. A browser without the
+  Popover API gets a fixed tooltip at `ds-z-tooltip` instead.
 - **Expanded** `ds-rail-w-expanded` (208px): 32px rows with icon, label and badge, and the
   product's name beside its mark at the top.
 - The width animates over `ds-dur-base`, and not at all under reduced motion.
@@ -52,7 +55,7 @@ collapsed** — a work view that needs every pixel — pass both and no `remembe
 ## Slots
 
 Each slot receives `{ expanded, tip }`. `tip(label)` returns hover and focus handlers that show the
-rail's own fixed tooltip while it is collapsed; spread them on the control.
+rail's own tooltip while it is collapsed; spread them on the control.
 
 - **`search`** — under the brand. Collapsed, an icon `Button` that opens the app's search (a
   command palette, a search page); expanded, the same button at full width or a search field.

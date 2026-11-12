@@ -6,6 +6,15 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The collapsed `NavRail`'s tooltip could be covered by page content: the shell's sticky rail is
+  its own stacking context, so a positioned, layered element in the main column (a card with a
+  `z-index`) painted over it. The tooltip now shows in the browser's top layer (a manual popover),
+  above any stacking on the page, for items, the version and the `search` and `status` slots'
+  `tip()` alike; a browser without the Popover API keeps the fixed tooltip. A scroll now hides a
+  hover tooltip, and one shown for keyboard focus follows its item while it is in view.
+
 ## [0.24.1] — 2026-11-07
 
 ### Fixed
