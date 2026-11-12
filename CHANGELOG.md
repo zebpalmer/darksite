@@ -6,6 +6,8 @@ All notable changes to darksite are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.25.0] — 2026-11-11
+
 ### Added
 
 - `Sheet size`: `md` (default, the widths so far: up to 640px from the bottom, 440px from the
